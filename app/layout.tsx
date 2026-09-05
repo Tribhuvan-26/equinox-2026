@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Syne } from "next/font/google";
 import { event, nav } from "@/lib/content";
 import PillNav from "./PillNav";
-import { Footer } from "./Footer";
+import { FooterMinimal } from "./FooterMinimal";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -51,7 +51,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           initialLoadAnimation={true}
         />
         <main className="flex-1">{children}</main>
-        <Footer />
+        <FooterMinimal />
       </body>
     </html>
   );
