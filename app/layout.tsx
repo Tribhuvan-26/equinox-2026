@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Syne } from "next/font/google";
 import { event, nav } from "@/lib/content";
 import { NavBar } from "./NavBar";
 import { Footer } from "./Footer";
+import { Chatbot } from "./Chatbot";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
         <main className="flex-1">{children}</main>
         <Footer />
+        <Chatbot />
       </body>
     </html>
   );
