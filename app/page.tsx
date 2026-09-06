@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion, type Variants } from "framer-motion";
 import Link from "next/link";
 import {
   event,
@@ -34,6 +35,11 @@ import {
   ExternalLink,
 } from "lucide-react";
 
+const heroFadeUp: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+};
+
 export default function HomePage() {
   const [selectedEvent, setSelectedEvent] = useState<SubEvent | null>(null);
   const [activeSubEventTab, setActiveSubEventTab] = useState<"all" | "05" | "06">("all");
@@ -65,78 +71,95 @@ export default function HomePage() {
         {/* Institutional Header */}
         <InstitutionalHeader />
 
-        {/* Cover Title Area */}
-        <div className="relative my-auto flex flex-col items-center text-center">
-          {/* Top Row: Date Pill and Edition */}
-          <div className="flex w-full max-w-4xl items-center justify-between px-2 sm:px-4">
-            <span className="font-mono text-xs font-black tracking-widest uppercase text-white/90 sm:text-sm">
-              E-SUMMIT
-            </span>
-            <div className="flex items-center gap-2 rounded-full border-2 border-white bg-white/10 px-4 py-1.5 backdrop-blur-xs">
-              <Calendar className="h-4 w-4 text-white" />
-              <span className="font-mono text-xs font-black tracking-wider uppercase sm:text-sm">
-                {event.date}
+        {/* Cover Title Area — asymmetric on desktop: copy left, pop-up art offset right */}
+        <div className="relative my-auto flex flex-col items-center text-center lg:grid lg:grid-cols-12 lg:items-center lg:gap-10 lg:text-left">
+          <motion.div
+            className="lg:col-span-7"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.4 }}
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12 } } }}
+          >
+            {/* Top Row: Date Pill and Edition */}
+            <motion.div
+              variants={heroFadeUp}
+              className="flex w-full max-w-4xl items-center justify-between px-2 sm:px-4 lg:max-w-none lg:justify-start lg:gap-6 lg:px-0"
+            >
+              <span className="font-mono text-xs font-black tracking-widest uppercase text-white/90 sm:text-sm">
+                E-SUMMIT
               </span>
-            </div>
-          </div>
+              <div className="flex items-center gap-2 rounded-full border-2 border-white bg-white/10 px-4 py-1.5 backdrop-blur-xs">
+                <Calendar className="h-4 w-4 text-white" />
+                <span className="font-mono text-xs font-black tracking-wider uppercase sm:text-sm">
+                  {event.date}
+                </span>
+              </div>
+            </motion.div>
 
-          {/* Massive "THE EQUINOX" Title Lockup with Hanging "2.0" */}
-          <div className="relative mt-4 flex items-end justify-center">
-            <div className="leading-none">
-              <span className="block font-mono text-2xl font-black tracking-widest text-white sm:text-4xl lg:text-5xl">
-                THE
-              </span>
-              <h1 className="font-brochure-title brochure-title-shadow text-6xl tracking-tighter text-white sm:text-8xl md:text-9xl lg:text-[11rem]">
-                EQUINOX
-              </h1>
-            </div>
+            {/* Massive "THE EQUINOX" Title Lockup with Hanging "2.0" */}
+            <motion.div variants={heroFadeUp} className="relative mt-4 flex items-end justify-center lg:justify-start">
+              <div className="leading-none">
+                <span className="block font-mono text-2xl font-black tracking-widest text-white sm:text-4xl lg:text-5xl">
+                  THE
+                </span>
+                <h1 className="font-brochure-title brochure-title-shadow text-6xl tracking-tighter text-white sm:text-8xl md:text-9xl lg:text-[11rem]">
+                  EQUINOX
+                </h1>
+              </div>
 
-            {/* Hanging "2.0" Tag from Brochure */}
-            <div className="absolute -right-2 top-8 sm:-right-8 sm:top-10 md:-right-12 md:top-14">
-              <HangingTag />
-            </div>
-          </div>
+              {/* Hanging "2.0" Tag from Brochure */}
+              <div className="absolute -right-2 top-8 sm:-right-8 sm:top-10 md:-right-12 md:top-14 lg:right-auto lg:left-[92%]">
+                <HangingTag />
+              </div>
+            </motion.div>
 
-          {/* Hashtag Tagline Badge from Brochure */}
-          <div className="mt-4 sm:mt-6">
-            <div className="inline-flex items-center gap-2 rounded-md border-2 border-[#0d0e15] bg-white px-4 py-2 shadow-[4px_4px_0px_#0d0e15] sm:px-6 sm:py-2.5">
-              <span className="font-mono text-sm font-black text-[#0d0e15] sm:text-base">
-                #
-              </span>
-              <span className="font-mono text-xs font-black tracking-wider uppercase text-[#0d0e15] sm:text-sm md:text-base">
-                WHERE PASSION MEETS PERSEVERANCE
-              </span>
-            </div>
-          </div>
+            {/* Hashtag Tagline Badge from Brochure */}
+            <motion.div variants={heroFadeUp} className="mt-4 flex justify-center sm:mt-6 lg:justify-start">
+              <div className="inline-flex items-center gap-2 rounded-md border-2 border-[#0d0e15] bg-white px-4 py-2 shadow-[4px_4px_0px_#0d0e15] sm:px-6 sm:py-2.5">
+                <span className="font-mono text-sm font-black text-[#0d0e15] sm:text-base">
+                  #
+                </span>
+                <span className="font-mono text-xs font-black tracking-wider uppercase text-[#0d0e15] sm:text-sm md:text-base">
+                  WHERE PASSION MEETS PERSEVERANCE
+                </span>
+              </div>
+            </motion.div>
 
-          {/* Vector Pop-Up Book Editorial Art Centerpiece */}
-          <div className="mt-6 w-full max-w-2xl px-2 sm:mt-8">
+            {/* Spaced PROSPECTUS Typography */}
+            <motion.div variants={heroFadeUp} className="mt-4 w-full">
+              <h2 className="font-mono text-3xl font-black tracking-[0.28em] text-white uppercase sm:text-5xl md:text-6xl lg:text-7xl">
+                PROSPECTUS
+              </h2>
+            </motion.div>
+
+            {/* CTA & Quick Actions */}
+            <motion.div variants={heroFadeUp} className="mt-8 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
+              <a
+                href="#events"
+                className="flex items-center gap-2 rounded-full border-2 border-white bg-white px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-[#174ae8] shadow-lg transition hover:scale-105 hover:bg-white/95"
+              >
+                Explore 10 Sub-Events
+                <ArrowRight className="h-4 w-4" />
+              </a>
+              <a
+                href="#contents"
+                className="flex items-center gap-2 rounded-full border-2 border-white/60 bg-white/10 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-xs transition hover:bg-white hover:text-[#174ae8]"
+              >
+                Browse Contents
+              </a>
+            </motion.div>
+          </motion.div>
+
+          {/* Vector Pop-Up Book Editorial Art — offset into its own column, overlapping on desktop */}
+          <motion.div
+            className="mt-6 w-full max-w-2xl px-2 sm:mt-8 lg:col-span-5 lg:mt-0 lg:max-w-none lg:translate-x-6 lg:px-0"
+            initial={{ opacity: 0, scale: 0.94, y: 24 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
+          >
             <ProspectusPopUpArt />
-          </div>
-
-          {/* Spaced PROSPECTUS Typography */}
-          <div className="mt-4 w-full">
-            <h2 className="font-mono text-3xl font-black tracking-[0.28em] text-white uppercase sm:text-5xl md:text-6xl lg:text-7xl">
-              PROSPECTUS
-            </h2>
-          </div>
-
-          {/* CTA & Quick Actions */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <a
-              href="#events"
-              className="flex items-center gap-2 rounded-full border-2 border-white bg-white px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-[#174ae8] shadow-lg transition hover:scale-105 hover:bg-white/95"
-            >
-              Explore 10 Sub-Events
-              <ArrowRight className="h-4 w-4" />
-            </a>
-            <a
-              href="#contents"
-              className="flex items-center gap-2 rounded-full border-2 border-white/60 bg-white/10 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-xs transition hover:bg-white hover:text-[#174ae8]"
-            >
-              Browse Contents
-            </a>
-          </div>
+          </motion.div>
         </div>
 
         {/* Cover Page Footer Timeline */}
@@ -247,8 +270,8 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* 3-Part Editorial Grid: Who Are We, What We Do, What's In Store */}
-        <div className="mt-16 grid gap-8 md:grid-cols-3">
+        {/* Editorial Pair: Who Are We / What We Do — an intentional 2-up, not a padded 3rd column */}
+        <div className="mt-16 grid gap-8 md:grid-cols-2">
           {/* Who Are We */}
           <div className="brochure-card rounded-3xl border-2 border-white/40 bg-white/10 p-8 backdrop-blur-xs">
             <span className="font-mono text-xs font-black tracking-wider text-white/70 uppercase">
@@ -270,20 +293,22 @@ export default function HomePage() {
               {about.whatWeDo}
             </p>
           </div>
+        </div>
 
-          {/* What Is Equinox */}
-          <div className="brochure-card rounded-3xl border-2 border-white bg-white p-8 text-[#0d0e15] shadow-xl">
+        {/* What Is Equinox — a wide banner, not a forced third equal card */}
+        <div className="brochure-card mt-8 flex flex-col gap-8 rounded-3xl border-2 border-white bg-white p-8 text-[#0d0e15] shadow-xl sm:p-10 lg:flex-row lg:items-center lg:justify-between">
+          <div className="lg:max-w-xl">
             <span className="font-mono text-xs font-black tracking-wider text-[#174ae8] uppercase">
               03 · The Summit
             </span>
-            <h3 className="mt-2 text-2xl font-black text-[#0d0e15]">What Is Equinox?</h3>
-            <p className="mt-4 text-sm leading-relaxed text-[#1f222e]">
+            <h3 className="mt-2 text-3xl font-black text-[#0d0e15] sm:text-4xl">What Is Equinox?</h3>
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-[#1f222e]">
               A flagship two-day festival of ideas, hustle, investment, and cross-campus collaboration held annually at MLRIT Hyderabad.
             </p>
-            <div className="mt-6 flex items-center gap-2 font-mono text-xs font-black text-[#174ae8]">
-              <span>30 - 31 OCTOBER 2026</span>
-              <ArrowRight className="h-4 w-4" />
-            </div>
+          </div>
+          <div className="flex items-center gap-2 font-mono text-xs font-black text-[#174ae8] lg:shrink-0">
+            <span>30 - 31 OCTOBER 2026</span>
+            <ArrowRight className="h-4 w-4" />
           </div>
         </div>
 
