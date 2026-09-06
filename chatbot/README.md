@@ -1,6 +1,6 @@
 # Equinox 2026 AI Chatbot Overlay
 
-A self-contained, modular, floating chatbot overlay designed specifically for **The Equinox 2026 (E-Summit 2.0)** at MLRIT Hyderabad. It embodies the official event brochure aesthetic (Electric Royal Cobalt Blue, Bold Editorial Black, and Stark White) and features custom **GSAP animations** for in-chat event card reveals.
+A self-contained, modular, floating chatbot overlay designed specifically for **The Equinox 2026 (E-Summit 2.0)** at MLRIT Hyderabad. It embodies the official event program aesthetic (Electric Royal Cobalt Blue, Bold Editorial Black, and Stark White) and features custom **GSAP animations** for in-chat event card reveals.
 
 ---
 
@@ -17,13 +17,13 @@ chatbot/
 │   ├── ChatInput.tsx          # Text input bar with Enter detection & send trigger
 │   ├── QuickActions.tsx       # Prompt suggestion chips for instant event exploration
 │   ├── EventCard.tsx          # In-chat interactive card with embedded GSAP event animation
-│   └── EventDetail.tsx        # Full slide-over drawer showing confirmed brochure event particulars
+│   └── EventDetail.tsx        # Full slide-over drawer showing confirmed event particulars
 ├── animations/
 │   ├── chatAnimations.ts      # GSAP open/close window, trigger pulse, and message entry timelines
 │   └── eventAnimations.ts     # 10 custom GSAP event animations (Spotlight beam, IPL counter, etc.)
 ├── data/
-│   ├── events.ts              # Local source of truth for the 10 official brochure sub-events
-│   └── responses.ts           # Offline mock intelligence engine matching brochure queries
+│   ├── events.ts              # Local source of truth for the 10 official sub-events
+│   └── responses.ts           # Offline mock intelligence engine matching program queries
 ├── styles/
 │   └── chatbot.css            # Scoped design tokens, risograph print texture, and animations
 ├── index.ts                   # Public exports (`export { ChatbotOverlay } from './components/...'`)
@@ -92,9 +92,9 @@ Each sub-event has its own signature visual animation when rendered inside a cha
 
 ---
 
-## 💡 Grounded Event Information (Brochure Source of Truth)
+## 💡 Grounded Event Information (Official Source of Truth)
 
-All event cards and mock intelligence strictly adhere to the official brochure:
+All event cards and mock intelligence strictly adhere to the official event program:
 - **Confirmed Dates:** 30 - 31 OCT 2026
 - **Confirmed Venue:** MLR Institute of Technology, Dundigal, Hyderabad
 - **Student Coordinators:** Shyam (+91 93900 06806), Mahima (+91 94933 62006), Sanjana (+91 82084 99746), Adithya (+91 91822 40970)
