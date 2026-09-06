@@ -16,7 +16,7 @@ import {
 import { cn } from "@/lib/utils";
 
 const ICONS: Record<string, LucideIcon> = {
-  Prospectus: FileText,
+  Overview: FileText,
   About: Info,
   "Sub-Events": Layers,
   Impact: Calendar,
@@ -26,7 +26,7 @@ const ICONS: Record<string, LucideIcon> = {
 export function NavBar({
   items,
   className,
-  defaultActive = "Prospectus",
+  defaultActive = "Overview",
 }: {
   items: { name: string; url: string }[];
   className?: string;

@@ -30,7 +30,7 @@ export function Footer() {
           <div className="flex flex-wrap gap-12">
             <div>
               <p className="font-mono text-xs font-bold uppercase tracking-wider text-white/60">
-                Prospectus Index
+                Site Index
               </p>
               <ul className="mt-4 space-y-2">
                 {nav.map((item) => (
@@ -78,7 +78,7 @@ export function Footer() {
 
         {/* Massive Footer Wordmark */}
         <div className="border-t border-white/20 pt-8 text-center md:text-left">
-          <p className="font-brochure-title text-5xl font-black tracking-tighter text-white/25 sm:text-7xl md:text-8xl lg:text-[10rem]">
+          <p className="font-display-title text-5xl font-black tracking-tighter text-white/25 sm:text-7xl md:text-8xl lg:text-[10rem]">
             THE EQUINOX
           </p>
         </div>

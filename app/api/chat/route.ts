@@ -1,4 +1,4 @@
-import { getMockBrochureResponse } from "@/lib/chatbot";
+import { getMockEquinoxResponse } from "@/lib/chatbot";
 
 export async function POST(req: Request) {
   try {
@@ -12,8 +12,8 @@ export async function POST(req: Request) {
       );
     }
 
-    // Grounded mock brochure response
-    const mockResponse = getMockBrochureResponse(message);
+    // Grounded mock program response
+    const mockResponse = getMockEquinoxResponse(message);
 
     return Response.json({
       answer: mockResponse.answer,

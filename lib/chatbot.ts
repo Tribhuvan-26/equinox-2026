@@ -13,7 +13,7 @@ export interface ChatbotResponse {
   links?: { label: string; url: string }[];
 }
 
-export function getMockBrochureResponse(query: string): ChatbotResponse {
+export function getMockEquinoxResponse(query: string): ChatbotResponse {
   const q = query.toLowerCase().trim();
 
   // 1. Sub-event queries
@@ -112,7 +112,7 @@ export function getMockBrochureResponse(query: string): ChatbotResponse {
     return {
       answer: `**The Equinox 2.0** is confirmed for **${event.date}** (30th & 31st October 2026) at **${event.venue}**.\n\nTagline: *"${event.tagline}"* (# WHERE PASSION MEETS PERSEVERANCE).`,
       suggestions: ["Where is the venue?", "List the 10 sub-events", "Contact info"],
-      links: [{ label: "View Prospectus", url: "#top" }],
+      links: [{ label: "View Overview", url: "#top" }],
     };
   }
 
@@ -137,7 +137,7 @@ export function getMockBrochureResponse(query: string): ChatbotResponse {
   // 4. Sub-events general overview
   if (q.includes("event") || q.includes("sub-event") || q.includes("competition") || q.includes("list")) {
     return {
-      answer: `The Equinox 2.0 features **10 official sub-events** from the brochure:\n\n**Page 05:**\n1. Spotlight\n2. Cross Roads\n3. Startup Expo\n4. Brand Battles\n5. IPL Auction\n\n**Page 06:**\n6. Hustle Mania\n7. Internship Drive\n8. Startup Poly\n9. E-Cell Meet\n10. Pitch Deck\n\nClick any event on the website to view rules and details!`,
+      answer: `The Equinox 2.0 features **10 official sub-events** from the program:\n\n**Page 05:**\n1. Spotlight\n2. Cross Roads\n3. Startup Expo\n4. Brand Battles\n5. IPL Auction\n\n**Page 06:**\n6. Hustle Mania\n7. Internship Drive\n8. Startup Poly\n9. E-Cell Meet\n10. Pitch Deck\n\nClick any event on the website to view rules and details!`,
       suggestions: ["Tell me about Hustle Mania", "What is Startup Poly?", "IPL Auction details"],
       links: [{ label: "Explore Sub-Events", url: "#events" }],
     };
@@ -154,7 +154,7 @@ export function getMockBrochureResponse(query: string): ChatbotResponse {
 
   // Default fallback
   return {
-    answer: `I am your **Equinox 2.0 Assistant**, grounded on the official prospectus brochure. I can help you with details on all **10 Sub-Events** (Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, Pitch Deck), dates (**30 - 31 OCT**), venue at **MLRIT Hyderabad**, and student coordinators.`,
+    answer: `I am your **Equinox 2.0 Assistant**, grounded on the official event program. I can help you with details on all **10 Sub-Events** (Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, Pitch Deck), dates (**30 - 31 OCT**), venue at **MLRIT Hyderabad**, and student coordinators.`,
     suggestions: ["List all 10 Sub-Events", "Tell me about Hustle Mania", "When and where?", "Student Coordinator Contacts"],
     links: [{ label: "Browse Sub-Events", url: "#events" }],
   };

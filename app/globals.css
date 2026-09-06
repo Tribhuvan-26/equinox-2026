@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   THE EQUINOX 2.0 — Official Brochure Design System
+   THE EQUINOX 2.0 — Official Design System
    Color Ground: Electric Royal Cobalt Blue (#174ae8)
    Accents: Stark White (#ffffff), Bold Editorial Black (#0d0e15)
-   Textures: Risograph paper grain, blueprint grid lines, brochure timelines
+   Textures: Risograph paper grain, blueprint grid lines, page timelines
 --------------------------------------------------------------------------- */
 
 @theme {
@@ -45,11 +45,11 @@ body {
 }
 
 /* Risograph / fine paper grain overlay */
-.brochure-grain {
+.paper-grain {
   position: relative;
 }
 
-.brochure-grain::before {
+.paper-grain::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -69,22 +69,22 @@ body {
     repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 4px);
 }
 
-/* Typography styles matching the brochure */
-.font-brochure-title {
+/* Typography styles matching the official design system */
+.font-display-title {
   font-family: var(--font-display);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: -0.02em;
 }
 
-.font-brochure-mono {
+.font-label-mono {
   font-family: var(--font-mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 /* The Equinox Cover Drop Shadow Effect */
-.brochure-title-shadow {
+.display-title-shadow {
   text-shadow: 
     -2px -2px 0 #0d0e15,  
      2px -2px 0 #0d0e15,
@@ -169,11 +169,11 @@ body {
 }
 
 /* Card hover lift */
-.brochure-card {
+.program-card {
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
 }
 
-.brochure-card:hover {
+.program-card:hover {
   transform: translateY(-4px);
   border-color: rgba(255, 255, 255, 0.9);
   box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.35);

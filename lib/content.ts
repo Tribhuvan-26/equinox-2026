@@ -1,4 +1,4 @@
-// Equinox 2026 / The Equinox 2.0 Official Brochure Content & Ground Truth
+// Equinox 2026 / The Equinox 2.0 Official Content & Ground Truth
 
 export interface EventSPOC {
   name: string;
@@ -51,7 +51,7 @@ export const event = {
 };
 
 export const nav = [
-  { label: "Prospectus", href: "/#top" },
+  { label: "Overview", href: "/#top" },
   { label: "About", href: "/#about" },
   { label: "Sub-Events", href: "/#events" },
   { label: "Impact", href: "/#impact" },
@@ -94,7 +94,7 @@ export const studentCoordinators = [
   { name: "Adithya", phone: "+91 91822 40970", phoneRaw: "+919182240970", role: "Student Coordinator" },
 ];
 
-// The 10 Official Sub-Events from Pages 05 & 06 of the Brochure
+// The 10 Official Sub-Events from Pages 05 & 06 of the Program
 export const subEvents: SubEvent[] = [
   // Page 05
   {
@@ -428,7 +428,7 @@ export const subEvents: SubEvent[] = [
 // For backward compatibility where code references `events`
 export const events = subEvents;
 
-// Summit Highlights (Grounded in brochure scope)
+// Summit Highlights (Grounded in official program scope)
 export const highlights = [
   { value: "10", label: "Official Sub-Events", detail: "Across strategy, auctions, debates, and pitching" },
   { value: "2", label: "Action-Packed Days", detail: "30 & 31 October at MLRIT Hyderabad" },
