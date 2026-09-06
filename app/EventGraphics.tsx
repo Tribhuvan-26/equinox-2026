@@ -2,7 +2,14 @@
 
 import React from "react";
 
-// 1. Institutional Lockup (Top of Brochure Cover)
+// Official sub-event logo lockups, extracted from the printed Equinox 2.0
+// program materials (public/logos) — one shared renderer for every badge.
+function EventLogo({ slug, alt, className = "" }: { slug: string; alt: string; className?: string }) {
+  // eslint-disable-next-line @next/next/no-img-element -- real intrinsic aspect ratio per logo, no next/image benefit here
+  return <img src={`/logos/${slug}.png`} alt={alt} className={`h-full w-auto object-contain ${className}`} />;
+}
+
+// 1. Institutional Lockup (Top of Cover)
 export function InstitutionalHeader({ className = "" }: { className?: string }) {
   return (
     <div className={`flex flex-wrap items-center justify-between gap-4 py-4 text-white ${className}`}>
@@ -61,7 +68,7 @@ export function HangingTag({ className = "" }: { className?: string }) {
 }
 
 // 3. Vector Pop-Up Book Editorial Art Centerpiece (Cover Page)
-export function ProspectusPopUpArt({ className = "" }: { className?: string }) {
+export function CoverPopUpArt({ className = "" }: { className?: string }) {
   return (
     <div className={`relative flex items-center justify-center ${className}`}>
       <svg
@@ -259,153 +266,52 @@ export function PageFooterTimeline({
 
 // Page 05: SPOTLIGHT
 export function BadgeSpotlight() {
-  return (
-    <div className="flex items-center gap-2 font-black italic tracking-wider">
-      <svg viewBox="0 0 28 20" fill="none" className="h-5 w-6 text-white">
-        <polygon points="2,14 10,4 12,7 4,17" fill="currentColor" />
-        <polygon points="11,6 26,1 26,19 11,8" fill="currentColor" opacity="0.4" />
-      </svg>
-      <span className="text-xl uppercase sm:text-2xl font-black italic tracking-wide">
-        SPOTLIGHT
-      </span>
-    </div>
-  );
+  return <EventLogo slug="spotlight" alt="Spotlight" />;
 }
 
 // Page 05: CROSS ROADS
 export function BadgeCrossroads() {
-  return (
-    <div className="flex flex-col leading-none font-black uppercase tracking-wider">
-      <span className="text-lg sm:text-xl font-extrabold tracking-widest">CROSS</span>
-      <span className="text-lg sm:text-xl font-extrabold tracking-widest text-white/90">ROADS</span>
-    </div>
-  );
+  return <EventLogo slug="crossroads" alt="Crossroads" />;
 }
 
 // Page 05: STARTUP EXPO
 export function BadgeStartupExpo() {
-  return (
-    <div className="flex flex-col leading-none">
-      <div className="flex items-center gap-1 font-bold text-sm tracking-wider">
-        <span>ST</span>
-        {/* Tiny Rocket Icon */}
-        <svg viewBox="0 0 16 16" fill="currentColor" className="h-3 w-3">
-          <path d="M8 1c2 2 3 6 3 9l-3-2-3 2c0-3 1-7 3-9zM6 11l2-1 2 1-1 3H7l-1-3z" />
-        </svg>
-        <span>RTUP</span>
-      </div>
-      <span className="text-2xl font-black tracking-widest text-white">EXPO</span>
-    </div>
-  );
+  return <EventLogo slug="startup-expo" alt="Startup Expo" />;
 }
 
 // Page 05: BRAND BATTLES
 export function BadgeBrandBattles() {
-  return (
-    <div className="relative flex flex-col items-center leading-none">
-      <span className="text-[11px] font-bold tracking-widest text-white/80">BRAND</span>
-      <div className="relative mt-0.5">
-        <span className="text-xl sm:text-2xl font-black uppercase tracking-tight text-transparent [-webkit-text-stroke:1.2px_#ffffff]">
-          BATTLES
-        </span>
-        <div className="absolute top-1/2 left-[-4px] right-[-4px] h-[2px] bg-white -translate-y-1/2" />
-      </div>
-    </div>
-  );
+  return <EventLogo slug="brand-battles" alt="Brand Battles" />;
 }
 
 // Page 05: IPL AUCTION
 export function BadgeIPLAuction() {
-  return (
-    <div className="flex items-center gap-2">
-      {/* Batsman silhouette */}
-      <svg viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6 text-white shrink-0">
-        <circle cx="15" cy="5" r="2.5" />
-        <path d="M12 8l4 4-2 7h-2l1-5-3-3v4h-2V9l4-1z" />
-        <path d="M16 12l5 2-1 2-5-2z" />
-      </svg>
-      <div className="leading-none">
-        <span className="block text-xs font-black tracking-wider">IPL</span>
-        <span className="text-xl sm:text-2xl font-black uppercase tracking-tight">
-          Aucti<span className="inline-block relative">o<span className="absolute top-1/2 left-0 right-0 h-[1.5px] bg-white/70 rotate-45" /></span>n
-        </span>
-      </div>
-    </div>
-  );
+  return <EventLogo slug="ipl-auction" alt="IPL Auction" />;
 }
 
 // Page 06: HUSTLE MANIA
 export function BadgeHustleMania() {
-  return (
-    <div className="flex flex-col leading-none font-black italic tracking-wider">
-      <span className="text-lg sm:text-xl transform -rotate-1 font-serif font-black uppercase">
-        HUSTLE
-      </span>
-      <span className="text-xl sm:text-2xl transform rotate-1 font-serif font-black uppercase tracking-wide">
-        MANIA
-      </span>
-    </div>
-  );
+  return <EventLogo slug="hustle-mania" alt="Hustle Mania" />;
 }
 
 // Page 06: INTERNSHIP DRIVE
 export function BadgeInternshipDrive() {
-  return (
-    <div className="flex flex-col leading-none font-black italic">
-      <span className="text-lg sm:text-xl font-bold tracking-tight">Internship</span>
-      <span className="text-xl sm:text-2xl font-black tracking-tighter">drive</span>
-    </div>
-  );
+  return <EventLogo slug="internship-drive" alt="Internship Drive" />;
 }
 
 // Page 06: STARTUP POLY
 export function BadgeStartupPoly() {
-  return (
-    <div className="flex flex-col leading-none font-black">
-      <span className="text-xs font-black tracking-widest text-white/90">STARTUP</span>
-      <div className="flex items-center gap-1">
-        <span className="text-xl sm:text-2xl font-black tracking-tight">P</span>
-        {/* 3D Isometric Dice for 'O' */}
-        <div className="inline-block h-5 w-5 rounded-xs border border-white bg-white/20 p-0.5 shadow-xs">
-          <div className="grid grid-cols-2 gap-0.5 h-full w-full place-items-center">
-            <div className="h-1 w-1 rounded-full bg-white" />
-            <div className="h-1 w-1 rounded-full bg-white" />
-            <div className="h-1 w-1 rounded-full bg-white" />
-            <div className="h-1 w-1 rounded-full bg-white" />
-          </div>
-        </div>
-        <span className="text-xl sm:text-2xl font-black tracking-tight">LY</span>
-      </div>
-    </div>
-  );
+  return <EventLogo slug="startup-poly" alt="Startup Poly" />;
 }
 
 // Page 06: E-CELL MEET
 export function BadgeECellMeet() {
-  return (
-    <div className="flex flex-col items-center leading-none">
-      <span className="font-mono text-lg sm:text-xl font-black tracking-widest border-b border-dotted border-white pb-0.5">
-        E-CELL
-      </span>
-      <span className="mt-1 font-mono text-[10px] tracking-[0.3em] font-semibold text-white/80">
-        MEET
-      </span>
-    </div>
-  );
+  return <EventLogo slug="e-cell-meet" alt="E-Cell Meet" />;
 }
 
 // Page 06: PITCH DECK
 export function BadgePitchDeck() {
-  return (
-    <div className="flex flex-col items-center leading-none">
-      <span className="font-serif text-2xl sm:text-3xl font-black tracking-wider">
-        PITCH
-      </span>
-      <span className="text-[11px] font-black tracking-[0.25em] text-white/90 uppercase">
-        DECK
-      </span>
-    </div>
-  );
+  return <EventLogo slug="pitch-deck" alt="Pitch Deck" />;
 }
 
 // Sub-Event Badge Resolver
