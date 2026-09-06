@@ -1,456 +1,674 @@
+"use client";
+
+import React, { useState } from "react";
 import Link from "next/link";
 import {
-  about,
-  agenda,
-  audience,
-  communities,
   event,
-  events,
-  faqs,
-  hosts,
-  marquee,
-  partners,
-  speakerCount,
-  speakers,
-  sponsors,
-  tickets,
+  contentsList,
+  about,
+  subEvents,
+  SubEvent,
+  highlights,
+  studentCoordinators,
+  contact,
 } from "@/lib/content";
-import StrokeText from "./StrokeText";
-import ScrollExpand from "./ScrollExpand";
 import {
-  Arrow,
-  Avatar,
-  EventCard,
-  PageTransition,
-  Person,
-  SectionHeading,
-  Terminator,
-} from "./ui";
+  InstitutionalHeader,
+  HangingTag,
+  ProspectusPopUpArt,
+  WireframeTorus,
+  PageFooterTimeline,
+  SubEventBadge,
+} from "./BrochureGraphics";
+import { EventModal } from "./EventModal";
+import {
+  ArrowRight,
+  Mail,
+  Globe,
+  MapPin,
+  Phone,
+  Calendar,
+  Sparkles,
+  Layers,
+  ChevronRight,
+  ExternalLink,
+} from "lucide-react";
 
-/* The hero states the thesis: the wordmark sits on the horizon, half of it in
-   the light and half in the dark, the way the day itself splits at an equinox. */
-function Hero() {
+export default function HomePage() {
+  const [selectedEvent, setSelectedEvent] = useState<SubEvent | null>(null);
+  const [activeSubEventTab, setActiveSubEventTab] = useState<"all" | "05" | "06">("all");
+
+  const page05Events = subEvents.filter((e) => e.pageNumber === "05");
+  const page06Events = subEvents.filter((e) => e.pageNumber === "06");
+  const displayedEvents =
+    activeSubEventTab === "05"
+      ? page05Events
+      : activeSubEventTab === "06"
+      ? page06Events
+      : subEvents;
+
   return (
-    <section
-      id="top"
-      className="grain relative flex min-h-svh flex-col justify-between overflow-hidden bg-[radial-gradient(110%_32%_at_50%_50%,#4c2a8f_0%,#170f2e_45%,#07060e_100%)] pt-28 pb-10 sm:pt-32"
-    >
-      {/* Gutter inside the cap, matching every body section — with it outside,
-          the wordmark runs 32px wider than the content that follows it. */}
-      <div className="relative mx-auto flex w-full min-w-0 max-w-[1400px] flex-1 flex-col justify-center px-4 sm:px-8">
-        <div className="relative">
-          {/* The horizon. Full-bleed, clipped by the section. Near-white core
-              with a purple halo — the way a bright edge actually reads. */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-[-100vw] top-1/2 h-[2px] bg-[#ede9fe] shadow-[0_0_2px_1px_rgba(237,233,254,0.9),0_0_28px_5px_rgba(139,92,246,0.55)]"
-          />
-          {/* No font-size here on purpose: the wordmark sizes itself off the
-              width of this column, so there is nothing to tune per breakpoint. */}
-          <h1 className="relative">
-            <StrokeText
-              text={event.name.toUpperCase()}
-              strokeColor="#a78bfa"
-              fillColor="#edeaf5"
-              drawDuration={0.7}
-              fillDelay={0.1}
-              stagger={0.03}
-            />
-          </h1>
-        </div>
-        <p className="mt-8 flex flex-wrap items-baseline justify-center gap-x-3 text-xl tracking-tight sm:text-2xl lg:text-3xl">
-          <span>{event.tagline}</span>
-          <span className="relative inline-block h-[1.2em] overflow-hidden align-bottom">
-            <span className="rotator flex flex-col">
-              {[...event.rotatingWords, event.rotatingWords[0]].map((word, i) => (
-                <span key={i} className="h-[1.2em] font-medium text-beam">
-                  {word}
-                </span>
-              ))}
+    <div className="riso-texture min-h-screen text-white selection:bg-white selection:text-[#174ae8]">
+      {/* Event Details Interactive Modal */}
+      <EventModal
+        event={selectedEvent}
+        onClose={() => setSelectedEvent(null)}
+      />
+
+      {/* =========================================================================
+          SECTION 1: HERO / PROSPECTUS COVER (Page 01)
+          ========================================================================= */}
+      <section
+        id="top"
+        className="relative mx-auto flex min-h-screen max-w-[1400px] flex-col justify-between px-4 pt-4 pb-12 sm:px-8 sm:pt-6"
+      >
+        {/* Institutional Header */}
+        <InstitutionalHeader />
+
+        {/* Cover Title Area */}
+        <div className="relative my-auto flex flex-col items-center text-center">
+          {/* Top Row: Date Pill and Edition */}
+          <div className="flex w-full max-w-4xl items-center justify-between px-2 sm:px-4">
+            <span className="font-mono text-xs font-black tracking-widest uppercase text-white/90 sm:text-sm">
+              E-SUMMIT
             </span>
-          </span>
-        </p>
-      </div>
-
-      <div className="label relative mx-auto flex w-full max-w-[1400px] flex-col gap-4 px-4 text-fg/80 sm:flex-row sm:items-center sm:gap-6 sm:px-8">
-        <span className="data whitespace-nowrap">{event.date}</span>
-        <span className="hidden h-px flex-1 bg-fg/25 sm:block" />
-        <span className="whitespace-nowrap">{event.venue}</span>
-        <span className="hidden h-px flex-1 bg-fg/25 sm:block" />
-        <a href="#about" className="whitespace-nowrap text-beam">
-          Scroll
-        </a>
-      </div>
-    </section>
-  );
-}
-
-/* Set as an editorial read rather than heading-then-card-grid: the lead runs
-   large, the rest sits in a second column, and the section closes on the
-   event's own particulars. No placeholder tiles — an empty gradient rectangle
-   says nothing that the sentence beside it doesn't say better. */
-function About() {
-  const facts = [
-    ["Dates", event.date],
-    ["Events", `${events.length} across three days`],
-    ["Lineup", speakerCount],
-    ["Where", event.venue],
-  ];
-
-  return (
-    <section id="about" className="mx-auto max-w-[1400px] px-4 py-28 sm:px-8">
-      <SectionHeading eyebrow={about.eyebrow} heading={about.heading} />
-      <div className="mt-14 grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-20">
-        <p className="text-xl leading-relaxed text-fg/85 sm:text-2xl sm:leading-relaxed">
-          {about.body[0]}
-        </p>
-        <p className="leading-relaxed text-fg/75 lg:mt-2">{about.body[1]}</p>
-      </div>
-      <dl className="mt-16 grid gap-x-10 gap-y-6 border-t border-fg/12 pt-8 sm:grid-cols-2 lg:grid-cols-4">
-        {facts.map(([term, value]) => (
-          <div key={term} className="flex flex-col gap-2">
-            <dt className="label text-accent">{term}</dt>
-            <dd className="data text-sm text-fg/85">{value}</dd>
+            <div className="flex items-center gap-2 rounded-full border-2 border-white bg-white/10 px-4 py-1.5 backdrop-blur-xs">
+              <Calendar className="h-4 w-4 text-white" />
+              <span className="font-mono text-xs font-black tracking-wider uppercase sm:text-sm">
+                {event.date}
+              </span>
+            </div>
           </div>
-        ))}
-      </dl>
-    </section>
-  );
-}
 
-function Marquee() {
-  const words = [...marquee, ...marquee, ...marquee, ...marquee];
-  return (
-    <div className="overflow-hidden border-y border-fg/12 py-6">
-      <div className="marquee-track flex w-max gap-8 pr-8">
-        {[...words, ...words].map((word, i) => (
-          <span
-            key={i}
-            className="display text-3xl text-fg/85 sm:text-5xl"
-          >
-            {word} <span className="text-beam">·</span>
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
+          {/* Massive "THE EQUINOX" Title Lockup with Hanging "2.0" */}
+          <div className="relative mt-4 flex items-end justify-center">
+            <div className="leading-none">
+              <span className="block font-mono text-2xl font-black tracking-widest text-white sm:text-4xl lg:text-5xl">
+                THE
+              </span>
+              <h1 className="font-brochure-title brochure-title-shadow text-6xl tracking-tighter text-white sm:text-8xl md:text-9xl lg:text-[11rem]">
+                EQUINOX
+              </h1>
+            </div>
 
-/* A ruled list, not four boxes with a word in the corner. Each row states what
-   that group actually gets, which is the only reason the row exists. */
-function Audience() {
-  return (
-    <section className="mx-auto max-w-[1400px] px-4 py-24 sm:px-8">
-      <div className="grid gap-10 lg:grid-cols-[1fr_22rem] lg:gap-20">
-        <SectionHeading eyebrow={audience.eyebrow} heading={audience.heading} />
-        <p className="leading-relaxed text-fg/75 lg:self-end">{audience.note}</p>
-      </div>
-      <dl className="mt-14 flex flex-col">
-        {audience.groups.map((group) => (
-          <div
-            key={group.name}
-            className="grid gap-2 border-t border-fg/12 py-7 sm:grid-cols-[14rem_1fr] sm:gap-10"
-          >
-            <dt className="heading text-2xl">{group.name}</dt>
-            <dd className="max-w-2xl leading-relaxed text-fg/75">{group.what}</dd>
+            {/* Hanging "2.0" Tag from Brochure */}
+            <div className="absolute -right-2 top-8 sm:-right-8 sm:top-10 md:-right-12 md:top-14">
+              <HangingTag />
+            </div>
           </div>
-        ))}
-      </dl>
-    </section>
-  );
-}
 
-function Speakers() {
-  return (
-    <section id="speakers" className="py-24">
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-8">
-        <SectionHeading
-          eyebrow="Speakers"
-          heading="Who's speaking"
-        />
-      </div>
+          {/* Hashtag Tagline Badge from Brochure */}
+          <div className="mt-4 sm:mt-6">
+            <div className="inline-flex items-center gap-2 rounded-md border-2 border-[#0d0e15] bg-white px-4 py-2 shadow-[4px_4px_0px_#0d0e15] sm:px-6 sm:py-2.5">
+              <span className="font-mono text-sm font-black text-[#0d0e15] sm:text-base">
+                #
+              </span>
+              <span className="font-mono text-xs font-black tracking-wider uppercase text-[#0d0e15] sm:text-sm md:text-base">
+                WHERE PASSION MEETS PERSEVERANCE
+              </span>
+            </div>
+          </div>
 
-      {/* scroll-px keeps snapping from eating the container padding */}
-      <ul className="no-scrollbar mt-16 flex snap-x snap-mandatory scroll-px-4 gap-6 overflow-x-auto px-4 pb-4 sm:scroll-px-8 sm:px-8">
-        {speakers.map((speaker, i) => (
-          <li
-            key={speaker.name}
-            className={`w-[280px] shrink-0 snap-start sm:w-[320px] ${
-              i % 2 ? "sm:-mt-10" : ""
-            }`}
-          >
-            <div className="relative">
-              <Avatar
-                name={speaker.name}
-                className="aspect-[4/5] rounded-2xl bg-surface text-6xl"
-              />
-              <div className="label absolute right-3 bottom-3 flex gap-2">
-                <a
-                  href={speaker.instagram}
-                  aria-label={`${speaker.name} on Instagram`}
-                  className="press grid h-9 w-9 place-items-center rounded-lg bg-fg text-ground"
-                >
-                  IG
-                </a>
-                <a
-                  href={speaker.linkedin}
-                  aria-label={`${speaker.name} on LinkedIn`}
-                  className="press grid h-9 w-9 place-items-center rounded-lg bg-fg text-ground"
-                >
-                  in
-                </a>
+          {/* Vector Pop-Up Book Editorial Art Centerpiece */}
+          <div className="mt-6 w-full max-w-2xl px-2 sm:mt-8">
+            <ProspectusPopUpArt />
+          </div>
+
+          {/* Spaced PROSPECTUS Typography */}
+          <div className="mt-4 w-full">
+            <h2 className="font-mono text-3xl font-black tracking-[0.28em] text-white uppercase sm:text-5xl md:text-6xl lg:text-7xl">
+              PROSPECTUS
+            </h2>
+          </div>
+
+          {/* CTA & Quick Actions */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+            <a
+              href="#events"
+              className="flex items-center gap-2 rounded-full border-2 border-white bg-white px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-[#174ae8] shadow-lg transition hover:scale-105 hover:bg-white/95"
+            >
+              Explore 10 Sub-Events
+              <ArrowRight className="h-4 w-4" />
+            </a>
+            <a
+              href="#contents"
+              className="flex items-center gap-2 rounded-full border-2 border-white/60 bg-white/10 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-xs transition hover:bg-white hover:text-[#174ae8]"
+            >
+              Browse Contents
+            </a>
+          </div>
+        </div>
+
+        {/* Cover Page Footer Timeline */}
+        <PageFooterTimeline pageNumber="01" />
+      </section>
+
+      {/* =========================================================================
+          SECTION 2: CONTENTS & STRUCTURE (Page 02)
+          ========================================================================= */}
+      <section
+        id="contents"
+        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
+      >
+        <div className="grid gap-12 lg:grid-cols-12">
+          {/* Vertical "CONTENTS" Banner Column */}
+          <div className="lg:col-span-4 flex items-start">
+            <div className="relative flex items-stretch gap-6">
+              {/* Massive Rotated / Stacked Word */}
+              <div className="writing-vertical-lr flex select-none items-center text-6xl font-black tracking-widest text-white sm:text-7xl md:text-8xl lg:text-9xl">
+                <span className="relative">
+                  CONTENTS
+                  {/* Black Overlay Accent on 'T' like brochure */}
+                  <span className="absolute top-[38%] left-0 right-0 h-4 bg-[#0d0e15] -rotate-3 opacity-90" />
+                </span>
+              </div>
+
+              {/* Bracket Tree Timeline Line */}
+              <div className="hidden sm:flex flex-col items-center justify-between py-4">
+                <div className="h-3 w-3 border-2 border-white" />
+                <div className="h-full w-[2px] bg-white/60" />
+                <div className="h-3 w-3 border-2 border-white" />
               </div>
             </div>
-            <h3 className="heading mt-4 text-xl">{speaker.name}</h3>
-            <p className="text-fg/70">{speaker.role}</p>
-          </li>
-        ))}
-      </ul>
+          </div>
 
-      <div className="mx-auto mt-12 flex max-w-[1400px] items-center gap-6 px-4 sm:px-8">
-        <span className="label whitespace-nowrap text-accent">{speakerCount}</span>
-        <span className="h-px flex-1 bg-fg/20" />
-        <a
-          href="#speakers"
-          className="press flex items-center gap-3 whitespace-nowrap"
-        >
-          See All
-          <span className="grid h-10 w-10 place-items-center rounded-full bg-fg text-ground">
-            <Arrow />
-          </span>
-        </a>
-      </div>
-    </section>
-  );
-}
+          {/* Contents List and 3D Torus Wireframe Column */}
+          <div className="lg:col-span-8 flex flex-col justify-between">
+            <div>
+              <div className="mb-6 flex items-center justify-between border-b border-white/30 pb-3">
+                <span className="font-mono text-xs font-bold tracking-widest uppercase text-white/80">
+                  Prospectus Index · 10 Sections
+                </span>
+                <span className="font-mono text-xs text-white/70">MLR CIE 2026</span>
+              </div>
 
-function Events() {
-  return (
-    <section id="events" className="mx-auto max-w-[1400px] px-4 py-24 sm:px-8">
-      <SectionHeading
-        eyebrow="Events"
-        heading={`${events.length} events across the three days`}
-      />
-      <div className="mt-16 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-        {events.slice(0, 3).map((item) => (
-          <EventCard key={item.slug} event={item} />
-        ))}
-      </div>
-      <Link
-        href="/events"
-        transitionTypes={["nav-forward"]}
-        className="press mt-12 flex w-max items-center gap-3"
-      >
-        See all {events.length} events
-        <span className="grid h-10 w-10 place-items-center rounded-full bg-fg text-ground">
-          <Arrow />
-        </span>
-      </Link>
-    </section>
-  );
-}
-
-function Agenda() {
-  return (
-    <section id="agenda" className="mx-auto max-w-[1400px] px-4 py-24 sm:px-8">
-      <SectionHeading
-        eyebrow="Event agenda"
-        heading="What happens when"
-      />
-      <div className="mt-16 flex flex-col gap-16">
-        {agenda.map((day) => (
-          <div key={day.title} className="grid gap-8 lg:grid-cols-[16rem_1fr]">
-            <div className="lg:sticky lg:top-32 lg:self-start">
-              <p className="label text-accent">{day.tag}</p>
-              <h3 className="heading mt-3 text-2xl">{day.title}</h3>
+              {/* Connected Tree Items */}
+              <div className="space-y-4">
+                {contentsList.map((item, idx) => (
+                  <a
+                    key={item.id}
+                    href={item.href}
+                    className="group flex items-center justify-between rounded-xl border border-white/20 bg-white/5 px-6 py-4 transition hover:border-white hover:bg-white/15"
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className="font-mono text-xs font-bold text-white/60 group-hover:text-white">
+                        {String(idx + 1).padStart(2, "0")}.
+                      </span>
+                      <span className="text-lg font-bold tracking-tight text-white group-hover:underline">
+                        {item.label}
+                      </span>
+                    </div>
+                    <ChevronRight className="h-5 w-5 text-white/50 transition-transform group-hover:translate-x-1 group-hover:text-white" />
+                  </a>
+                ))}
+              </div>
             </div>
-            <div className="flex flex-col">
-              {day.sessions.map((session) => (
-                <div
-                  key={session.title}
-                  className="grid gap-4 border-t border-fg/12 py-8 sm:grid-cols-[10rem_1fr]"
-                >
-                  <p className="data text-sm text-fg/70">{session.time}</p>
-                  <div className="flex flex-col gap-4">
-                    <h4 className="heading text-xl">{session.title}</h4>
-                    <p className="max-w-2xl leading-relaxed text-fg/75">
-                      {session.body}
-                    </p>
-                    {"speaker" in session && session.speaker && (
-                      <Person {...session.speaker} />
-                    )}
-                    {"panel" in session && session.panel && (
-                      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                        {session.panel.map((p) => (
-                          <Person key={p.name} {...p} />
+
+            {/* Wireframe Torus Centerpiece from Page 02 */}
+            <div className="mt-12 flex flex-col items-center justify-center rounded-3xl border border-white/20 bg-white/5 p-8 text-center sm:flex-row sm:text-left">
+              <div className="flex-1">
+                <span className="rounded-full border border-white/40 bg-white/15 px-3 py-1 font-mono text-xs font-semibold uppercase text-white">
+                  Summit Architecture
+                </span>
+                <h3 className="mt-3 font-brochure-title text-2xl font-bold text-white">
+                  Dynamic Collegiate Confluence
+                </h3>
+                <p className="mt-2 max-w-md text-sm leading-relaxed text-white/80">
+                  A structured continuum of competitive tracks, networking bridges, and real capital access built by MLR CIE.
+                </p>
+              </div>
+              <div className="mt-6 sm:mt-0">
+                <WireframeTorus />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Page Footer Timeline */}
+        <PageFooterTimeline pageNumber="02" />
+      </section>
+
+      {/* =========================================================================
+          SECTION 3: ABOUT EQUINOX (Who Are We / What We Do / What Is Equinox)
+          ========================================================================= */}
+      <section
+        id="about"
+        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
+      >
+        <div className="max-w-4xl">
+          <span className="rounded-full border border-white/40 bg-white/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-white">
+            {about.eyebrow}
+          </span>
+          <h2 className="mt-4 font-brochure-title text-4xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">
+            {about.heading}
+          </h2>
+          <p className="mt-6 text-xl leading-relaxed text-white/90 sm:text-2xl font-medium">
+            {about.whatIsEquinox}
+          </p>
+        </div>
+
+        {/* 3-Part Editorial Grid: Who Are We, What We Do, What's In Store */}
+        <div className="mt-16 grid gap-8 md:grid-cols-3">
+          {/* Who Are We */}
+          <div className="brochure-card rounded-3xl border-2 border-white/40 bg-white/10 p-8 backdrop-blur-xs">
+            <span className="font-mono text-xs font-black tracking-wider text-white/70 uppercase">
+              01 · Vision
+            </span>
+            <h3 className="mt-2 text-2xl font-black text-white">Who Are We?</h3>
+            <p className="mt-4 text-sm leading-relaxed text-white/85">
+              {about.whoAreWe}
+            </p>
+          </div>
+
+          {/* What We Do */}
+          <div className="brochure-card rounded-3xl border-2 border-white/40 bg-white/10 p-8 backdrop-blur-xs">
+            <span className="font-mono text-xs font-black tracking-wider text-white/70 uppercase">
+              02 · Mission
+            </span>
+            <h3 className="mt-2 text-2xl font-black text-white">What We Do</h3>
+            <p className="mt-4 text-sm leading-relaxed text-white/85">
+              {about.whatWeDo}
+            </p>
+          </div>
+
+          {/* What Is Equinox */}
+          <div className="brochure-card rounded-3xl border-2 border-white bg-white p-8 text-[#0d0e15] shadow-xl">
+            <span className="font-mono text-xs font-black tracking-wider text-[#174ae8] uppercase">
+              03 · The Summit
+            </span>
+            <h3 className="mt-2 text-2xl font-black text-[#0d0e15]">What Is Equinox?</h3>
+            <p className="mt-4 text-sm leading-relaxed text-[#1f222e]">
+              A flagship two-day festival of ideas, hustle, investment, and cross-campus collaboration held annually at MLRIT Hyderabad.
+            </p>
+            <div className="mt-6 flex items-center gap-2 font-mono text-xs font-black text-[#174ae8]">
+              <span>30 - 31 OCTOBER 2026</span>
+              <ArrowRight className="h-4 w-4" />
+            </div>
+          </div>
+        </div>
+
+        {/* Highlights Row */}
+        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {highlights.map((item) => (
+            <div
+              key={item.label}
+              className="rounded-2xl border border-white/25 bg-white/5 p-6 backdrop-blur-xs"
+            >
+              <p className="font-mono text-4xl font-black text-white sm:text-5xl">
+                {item.value}
+              </p>
+              <p className="mt-2 font-bold text-white text-base">
+                {item.label}
+              </p>
+              <p className="mt-1 text-xs text-white/70">
+                {item.detail}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* Page Footer Timeline */}
+        <PageFooterTimeline pageNumber="03" />
+      </section>
+
+      {/* =========================================================================
+          SECTION 4: SUB-EVENTS (Pages 05 & 06)
+          ========================================================================= */}
+      <section
+        id="events"
+        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
+      >
+        {/* Section Header */}
+        <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+          <div>
+            <span className="rounded-full border border-white/40 bg-white/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-white">
+              Brochure Pages 05 &amp; 06
+            </span>
+            <h2 className="mt-3 font-brochure-title text-5xl font-black tracking-tight text-white sm:text-7xl lg:text-8xl">
+              SUB-EVENTS
+            </h2>
+            <p className="mt-3 max-w-xl text-base text-white/85 sm:text-lg">
+              Official sub-events directly from the prospectus. Click any event badge to open full format, venue details, and registration criteria.
+            </p>
+          </div>
+
+          {/* Page Filter Tabs */}
+          <div className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 p-1.5 backdrop-blur-xs">
+            <button
+              onClick={() => setActiveSubEventTab("all")}
+              className={`rounded-full px-5 py-2 text-xs font-bold transition ${
+                activeSubEventTab === "all"
+                  ? "bg-white text-[#174ae8] shadow-sm"
+                  : "text-white hover:bg-white/10"
+              }`}
+            >
+              All 10 Events
+            </button>
+            <button
+              onClick={() => setActiveSubEventTab("05")}
+              className={`rounded-full px-5 py-2 text-xs font-bold transition ${
+                activeSubEventTab === "05"
+                  ? "bg-white text-[#174ae8] shadow-sm"
+                  : "text-white hover:bg-white/10"
+              }`}
+            >
+              Page 05 Events
+            </button>
+            <button
+              onClick={() => setActiveSubEventTab("06")}
+              className={`rounded-full px-5 py-2 text-xs font-bold transition ${
+                activeSubEventTab === "06"
+                  ? "bg-white text-[#174ae8] shadow-sm"
+                  : "text-white hover:bg-white/10"
+              }`}
+            >
+              Page 06 Events
+            </button>
+          </div>
+        </div>
+
+        {/* Vertical Timeline Layout Recreating Pages 05 & 06 */}
+        <div className="relative mt-16 pl-6 sm:pl-10 md:pl-16">
+          {/* Vertical White Timeline Rule */}
+          <div className="absolute top-4 bottom-4 left-2 sm:left-4 md:left-6 w-[2px] bg-white/40" />
+
+          <div className="space-y-12 sm:space-y-16">
+            {displayedEvents.map((item, idx) => (
+              <div
+                key={item.id}
+                onClick={() => setSelectedEvent(item)}
+                className="group relative cursor-pointer"
+              >
+                {/* Timeline Tick / Marker */}
+                <div className="absolute -left-[23px] sm:-left-[31px] md:-left-[47px] top-6 flex h-6 w-6 items-center justify-center">
+                  <div className="h-3.5 w-3.5 rounded-full border-2 border-[#174ae8] bg-white shadow-[0_0_0_4px_rgba(255,255,255,0.3)] transition-transform group-hover:scale-125" />
+                </div>
+
+                {/* Event Card Row */}
+                <div className="brochure-card grid gap-6 rounded-3xl border-2 border-white/30 bg-white/5 p-6 backdrop-blur-xs transition hover:border-white hover:bg-white/15 sm:p-8 lg:grid-cols-12 lg:gap-10">
+                  {/* Left Column: White Outline Badge Pill */}
+                  <div className="lg:col-span-5 flex flex-col justify-center">
+                    <div className="flex items-center justify-between gap-3 mb-3">
+                      <span className="font-mono text-xs font-black tracking-widest text-white/70">
+                        EVENT {String(idx + 1).padStart(2, "0")} · PAGE {item.pageNumber}
+                      </span>
+                      <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                        {item.category}
+                      </span>
+                    </div>
+
+                    {/* Official Custom Typographic Badge in White Rounded Card */}
+                    <div className="flex min-h-[96px] w-full items-center justify-center rounded-2xl border-2 border-white bg-[#174ae8] p-4 text-center shadow-md transition-transform group-hover:scale-[1.02] group-hover:bg-[#1f54fa]">
+                      <SubEventBadge slug={item.slug} />
+                    </div>
+                  </div>
+
+                  {/* Right Column: Exact Brochure Text Description */}
+                  <div className="lg:col-span-7 flex flex-col justify-between">
+                    <div>
+                      <p className="text-base leading-relaxed text-white sm:text-lg">
+                        {item.description}
+                      </p>
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {item.skills.map((skill) => (
+                          <span
+                            key={skill}
+                            className="rounded-full border border-white/25 bg-white/10 px-3 py-0.5 text-xs text-white/90"
+                          >
+                            {skill}
+                          </span>
                         ))}
                       </div>
-                    )}
+                    </div>
+
+                    <div className="mt-6 flex items-center justify-between border-t border-white/20 pt-4 text-xs font-semibold text-white/80">
+                      <span className="flex items-center gap-1.5">
+                        <Calendar className="h-3.5 w-3.5" />
+                        {item.timing}
+                      </span>
+                      <span className="flex items-center gap-1 font-bold text-white group-hover:underline">
+                        View Event Details &amp; Rules
+                        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                      </span>
+                    </div>
                   </div>
                 </div>
-              ))}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Page Footer Markers */}
+        <PageFooterTimeline
+          pageNumber={activeSubEventTab === "06" ? "06" : "05"}
+        />
+      </section>
+
+      {/* =========================================================================
+          SECTION 5: SUMMIT HIGHLIGHTS & IMPACT
+          ========================================================================= */}
+      <section
+        id="impact"
+        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
+      >
+        <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+          <div>
+            <span className="rounded-full border border-white/40 bg-white/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-white">
+              Why Sponsor &amp; Partner
+            </span>
+            <h2 className="mt-4 font-brochure-title text-4xl font-black tracking-tight text-white sm:text-6xl">
+              Our Impact &amp; Footprint
+            </h2>
+            <p className="mt-4 text-lg leading-relaxed text-white/85">
+              The Equinox connects the brightest engineering and business minds with early-stage venture ecosystems. Sponsoring Equinox places your brand at the epicentre of student entrepreneurship across southern India.
+            </p>
+
+            <div className="mt-8 space-y-4">
+              <div className="rounded-2xl border border-white/25 bg-white/10 p-5">
+                <h4 className="font-bold text-white text-lg">Direct Campus Engagement</h4>
+                <p className="mt-1 text-sm text-white/80">
+                  Direct visibility before 1,000+ top engineering and MBA students, coders, and startup innovators.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-white/25 bg-white/10 p-5">
+                <h4 className="font-bold text-white text-lg">Talent &amp; Startup Scouting</h4>
+                <p className="mt-1 text-sm text-white/80">
+                  Immediate access to hiring pipelines via Internship Drive and pre-screened student ventures in Pitch Deck and Startup Expo.
+                </p>
+              </div>
             </div>
           </div>
-        ))}
-      </div>
-    </section>
-  );
-}
 
-/* Only the sponsors get cells — those slots hold real logos later. Partners and
-   communities are names, and names read better as a line of text than as twelve
-   more empty rectangles. */
-function Backers() {
-  return (
-    <section id="sponsors" className="mx-auto max-w-[1400px] px-4 py-24 sm:px-8">
-      <SectionHeading eyebrow="Backers" heading="Who's backing it" />
+          {/* Big Number Editorial Blocks */}
+          <div className="grid grid-cols-2 gap-4 sm:gap-6">
+            <div className="rounded-3xl border-2 border-white bg-white p-8 text-[#0d0e15] shadow-xl">
+              <span className="font-mono text-xs font-bold uppercase text-[#174ae8]">Official</span>
+              <p className="mt-2 font-mono text-5xl font-black sm:text-6xl">10</p>
+              <p className="mt-2 font-bold text-base">Flagship Sub-Events</p>
+            </div>
 
-      <div className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-fg/12 sm:grid-cols-4">
-        {sponsors.map((name) => (
-          <div
-            key={name}
-            className="label grid h-24 place-items-center bg-ground text-fg/70"
-          >
-            {name}
+            <div className="rounded-3xl border-2 border-white/60 bg-white/10 p-8 backdrop-blur-xs">
+              <span className="font-mono text-xs font-bold uppercase text-white/70">Duration</span>
+              <p className="mt-2 font-mono text-5xl font-black text-white sm:text-6xl">2</p>
+              <p className="mt-2 font-bold text-white text-base">Full Summit Days</p>
+            </div>
+
+            <div className="rounded-3xl border-2 border-white/60 bg-white/10 p-8 backdrop-blur-xs">
+              <span className="font-mono text-xs font-bold uppercase text-white/70">Scale</span>
+              <p className="mt-2 font-mono text-5xl font-black text-white sm:text-6xl">1K+</p>
+              <p className="mt-2 font-bold text-white text-base">Attendees &amp; Builders</p>
+            </div>
+
+            <div className="rounded-3xl border-2 border-white bg-white p-8 text-[#0d0e15] shadow-xl">
+              <span className="font-mono text-xs font-bold uppercase text-[#174ae8]">Network</span>
+              <p className="mt-2 font-mono text-5xl font-black sm:text-6xl">50+</p>
+              <p className="mt-2 font-bold text-base">Partner E-Cells</p>
+            </div>
           </div>
-        ))}
-      </div>
-
-      <dl className="mt-10 flex flex-col gap-6 sm:flex-row sm:gap-16">
-        {[
-          { title: "Partners", names: partners },
-          { title: "Communities", names: communities },
-        ].map((group) => (
-          <div key={group.title} className="flex flex-col gap-3">
-            <dt className="label text-accent">{group.title}</dt>
-            <dd className="data max-w-xl text-sm leading-relaxed text-fg/75">
-              {group.names.join(" · ")}
-            </dd>
-          </div>
-        ))}
-      </dl>
-    </section>
-  );
-}
-
-function Faq() {
-  return (
-    <section className="mx-auto max-w-[1400px] px-4 py-24 sm:px-8">
-      <SectionHeading
-        eyebrow="Questions"
-        heading="Before you come"
-      />
-      <div className="mt-16 flex flex-col">
-        {faqs.map((faq) => (
-          <details key={faq.q} className="group border-t border-fg/12">
-            <summary className="flex items-center justify-between gap-6 py-6 text-lg font-medium">
-              {faq.q}
-              <span className="faq-plus grid h-8 w-8 shrink-0 place-items-center rounded-full bg-fg/10 text-xl leading-none transition-transform duration-200">
-                +
-              </span>
-            </summary>
-            <p className="max-w-3xl pb-6 leading-relaxed text-fg/75">{faq.a}</p>
-          </details>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function Hosts() {
-  return (
-    <section id="venue" className="mx-auto max-w-[1400px] px-4 py-24 sm:px-8">
-      <div className="grid gap-10 lg:grid-cols-2 lg:gap-20">
-        <SectionHeading eyebrow={hosts.eyebrow} heading={hosts.heading} />
-        <div className="flex flex-col justify-end gap-6">
-          <p className="leading-relaxed text-fg/75">{hosts.body}</p>
-          <p className="label text-accent">{event.host}</p>
         </div>
-      </div>
-    </section>
-  );
-}
 
-function Tickets() {
-  return (
-    <section id="tickets" className="mx-auto max-w-[1400px] px-4 py-24 sm:px-8">
-      <SectionHeading
-        eyebrow="Registration"
-        heading="Passes"
-      />
-      {/* Summary only — the passes and the flow live on /register. */}
-      <div className="mt-16 grid gap-4 sm:grid-cols-3">
-        {tickets.map((ticket) => (
-          <div
-            key={ticket.name}
-            className="flex flex-col gap-2 rounded-2xl bg-surface p-6"
-          >
-            <span className="label w-max rounded-full border border-accent/40 px-3 py-1 text-accent">
-              {ticket.badge}
-            </span>
-            <h3 className="heading mt-1 text-xl">{ticket.name}</h3>
-            <p className="data text-3xl">{ticket.price}</p>
-            <p className="label text-fg/70">{ticket.unit}</p>
+        {/* Page Footer Timeline */}
+        <PageFooterTimeline pageNumber="08" />
+      </section>
+
+      {/* =========================================================================
+          SECTION 6: CONTACT US (Page 12)
+          ========================================================================= */}
+      <section
+        id="contact"
+        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
+      >
+        {/* Dark Editorial Heading Replicating Page 12 */}
+        <div className="max-w-3xl">
+          <h2 className="font-brochure-title text-6xl font-black tracking-tighter text-[#0d0e15] drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)] sm:text-7xl lg:text-8xl">
+            Contact Us
+          </h2>
+          <p className="mt-6 text-lg leading-relaxed text-white/95 sm:text-xl font-medium">
+            {contact.lead}
+          </p>
+        </div>
+
+        {/* Student Coordinators from Page 12 */}
+        <div className="mt-12">
+          <h3 className="font-mono text-sm font-black uppercase tracking-wider text-white/80">
+            {contact.subheading}
+          </h3>
+          <p className="mt-1 font-bold text-xl text-white">Student Coordinators</p>
+
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {studentCoordinators.map((coordinator) => (
+              <a
+                key={coordinator.name}
+                href={`tel:${coordinator.phoneRaw}`}
+                className="brochure-card group flex items-center justify-between rounded-2xl border-2 border-white/40 bg-white/10 p-5 backdrop-blur-xs transition hover:border-white hover:bg-white hover:text-[#174ae8]"
+              >
+                <div>
+                  <p className="font-bold text-lg text-white group-hover:text-[#174ae8]">
+                    {coordinator.name}
+                  </p>
+                  <p className="font-mono text-sm text-white/80 group-hover:text-[#0d0e15]">
+                    {coordinator.phone}
+                  </p>
+                </div>
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-current">
+                  <Phone className="h-4 w-4" />
+                </div>
+              </a>
+            ))}
           </div>
-        ))}
-      </div>
-      <Link
-        href="/register"
-        transitionTypes={["nav-forward"]}
-        className="press mt-8 flex w-max items-center gap-2 rounded-full bg-fg py-1.5 pr-1.5 pl-6 font-semibold text-ground"
-      >
-        Register now
-        <span className="grid h-10 w-10 place-items-center rounded-full bg-accent text-ground">
-          <Arrow />
-        </span>
-      </Link>
-    </section>
-  );
-}
+        </div>
 
-export default function Home() {
-  return (
-    <PageTransition>
-      <Hero />
-      {/* Low scrim while the panel is a gradient; raise it toward 0.45 once a
-          real venue photo is passed as src. */}
-      <ScrollExpand
-        title={event.venue}
-        scrollHint="Keep scrolling"
-        overlayScrim={0.2}
-        scrollDistance={0.55}
-        holdDistance={0.1}
-      >
-        <p>
-          {event.date} · {event.host}
-        </p>
-      </ScrollExpand>
-      <About />
-      <Marquee />
-      <Events />
+        {/* Official Contact Box (Rounded Card with border matching Page 12) */}
+        <div className="mt-12 rounded-3xl border-2 border-white/40 bg-white/10 p-8 backdrop-blur-xs sm:p-10">
+          <div className="grid gap-8 lg:grid-cols-2">
+            {/* Email & Website */}
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#174ae8]">
+                  <Mail className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wider text-white/70">
+                    Mail
+                  </p>
+                  <a
+                    href={`mailto:${contact.email}`}
+                    className="text-lg font-bold text-white hover:underline sm:text-xl"
+                  >
+                    {contact.email}
+                  </a>
+                </div>
+              </div>
 
-      {/* The crossing. Everything above runs in the dark half, everything
-          below in the light half — equal grounds, one line between them. The
-          rising crossing lives inside the day wrapper so the light ground is
-          painted by one box and leaves no seam. */}
-      <div className="day">
-        <Terminator
-          into="day"
-          label="Vernal equinox · 20 March 2026 · day and night equal"
-        />
-        <Audience />
-        <Speakers />
-        <Agenda />
-        <Backers />
-        <Faq />
-        <Hosts />
-        <Tickets />
-      </div>
+              <div className="flex items-start gap-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#174ae8]">
+                  <Globe className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wider text-white/70">
+                    Website
+                  </p>
+                  <a
+                    href={contact.websiteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-lg font-bold text-white hover:underline sm:text-xl"
+                  >
+                    {contact.website}
+                  </a>
+                </div>
+              </div>
+            </div>
 
-      <Terminator
-        into="night"
-        label={`${event.name} ${event.year} · ${event.date} · Hyderabad`}
-      />
-    </PageTransition>
+            {/* Address */}
+            <div className="flex items-start gap-4 border-t border-white/20 pt-6 lg:border-t-0 lg:border-l lg:pl-8 lg:pt-0">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#174ae8]">
+                <MapPin className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-white/70">
+                  Address
+                </p>
+                <div className="mt-1 text-sm leading-relaxed text-white/90">
+                  {contact.addressLines.map((line, i) => (
+                    <p key={i}>{line}</p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Social Links Row from Page 12 */}
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-white/20 pt-6">
+            <div className="flex flex-wrap items-center gap-4">
+              {contact.socials.map((social) => (
+                <a
+                  key={social.platform}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-xs font-bold text-white transition hover:bg-white hover:text-[#174ae8]"
+                >
+                  {social.platform === "Instagram" && (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">
+                      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                    </svg>
+                  )}
+                  {social.platform === "LinkedIn" && (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">
+                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                      <rect width="4" height="12" x="2" y="9" />
+                      <circle cx="4" cy="4" r="2" />
+                    </svg>
+                  )}
+                  {social.platform === "X" && (
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                  )}
+                  {social.platform === "Facebook" && (
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                    </svg>
+                  )}
+                  <span>{social.handle}</span>
+                </a>
+              ))}
+            </div>
+
+            <span className="font-mono text-xs text-white/70">
+              MLRIT CIE · Official Prospectus
+            </span>
+          </div>
+        </div>
+
+        {/* Page 12 Footer Timeline Marker */}
+        <PageFooterTimeline pageNumber="12" />
+      </section>
+    </div>
   );
 }
