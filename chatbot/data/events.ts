@@ -1,5 +1,5 @@
 // chatbot/data/events.ts
-// Official source of truth for the 10 Equinox 2026 sub-events from the brochure
+// Official source of truth for the 10 Equinox 2026 sub-events from the program
 
 export interface EventCoordinator {
   name: string;
@@ -7,7 +7,7 @@ export interface EventCoordinator {
   phoneRaw: string;
 }
 
-export interface BrochureSubEvent {
+export interface SubEventInfo {
   id: string;
   slug: string;
   name: string;
@@ -42,7 +42,7 @@ export const OFFICIAL_COORDINATORS: EventCoordinator[] = [
   { name: "Adithya", phone: "+91 91822 40970", phoneRaw: "+919182240970" },
 ];
 
-export const BROCHURE_EVENTS: BrochureSubEvent[] = [
+export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
   // Page 05 Sub-Events
   {
     id: "spotlight",
