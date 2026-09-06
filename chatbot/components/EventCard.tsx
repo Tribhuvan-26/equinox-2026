@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { BrochureSubEvent } from "../data/events";
+import { SubEventInfo } from "../data/events";
 import { triggerEventAnimation } from "../animations/eventAnimations";
 import { ArrowRight, Calendar, MapPin, Sparkles, Gavel, Tag, Handshake, DollarSign, Dices } from "lucide-react";
 
 interface EventCardProps {
-  event: BrochureSubEvent;
-  onSelect: (event: BrochureSubEvent) => void;
+  event: SubEventInfo;
+  onSelect: (event: SubEventInfo) => void;
 }
 
 export function EventCard({ event, onSelect }: EventCardProps) {

@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import { BrochureSubEvent, OFFICIAL_COORDINATORS } from "../data/events";
+import { SubEventInfo, OFFICIAL_COORDINATORS } from "../data/events";
 import { X, Calendar, MapPin, Award, Users, Phone, ArrowLeft } from "lucide-react";
 
 interface EventDetailProps {
-  event: BrochureSubEvent | null;
+  event: SubEventInfo | null;
   onClose: () => void;
 }
 
@@ -25,7 +25,7 @@ export function EventDetail({ event, onClose }: EventDetailProps) {
         </button>
 
         <span className="font-mono text-[11px] font-black uppercase tracking-wider text-white/80">
-          Brochure Page {event.pageNumber}
+          Page {event.pageNumber}
         </span>
 
         <button
@@ -55,7 +55,7 @@ export function EventDetail({ event, onClose }: EventDetailProps) {
         {/* Official Description */}
         <div>
           <h5 className="font-mono text-[11px] font-black uppercase tracking-wider text-white/70">
-            Brochure Synopsis
+            Official Synopsis
           </h5>
           <p className="mt-1.5 text-xs leading-relaxed text-white/95">
             {event.description}

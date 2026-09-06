@@ -76,7 +76,7 @@ export function ChatInput({
       </form>
 
       <div className="mt-1.5 flex items-center justify-between px-1 text-[10px] text-white/60 font-mono">
-        <span>Equinox 2.0 · Offline Prospectus</span>
+        <span>Equinox 2.0 · Offline Assistant</span>
         <span>Press Enter ↵</span>
       </div>
     </div>

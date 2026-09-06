@@ -77,7 +77,7 @@ export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOv
 
           <div className="text-left">
             <span className="block font-mono text-[9px] sm:text-[10px] font-black tracking-widest uppercase text-white/75 group-hover:text-[#174ae8]/80">
-              {isOpen ? "CLOSE" : "ASK BROCHURE"}
+              {isOpen ? "CLOSE" : "ASK EQUINOX"}
             </span>
             <span className="block font-mono text-xs sm:text-sm font-black tracking-wider uppercase text-white group-hover:text-[#174ae8]">
               EQUINOX AI

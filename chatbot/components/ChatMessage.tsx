@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { BrochureSubEvent } from "../data/events";
+import { SubEventInfo } from "../data/events";
 import { EventCard } from "./EventCard";
 import { QuickActions } from "./QuickActions";
 import { animateMessageEntrance } from "../animations/chatAnimations";
@@ -11,14 +11,14 @@ export interface MessageData {
   id: string;
   sender: "user" | "bot";
   text: string;
-  eventCard?: BrochureSubEvent;
+  eventCard?: SubEventInfo;
   suggestions?: string[];
   timestamp?: string;
 }
 
 interface ChatMessageProps {
   message: MessageData;
-  onSelectEvent: (event: BrochureSubEvent) => void;
+  onSelectEvent: (event: SubEventInfo) => void;
   onSelectSuggestion: (text: string) => void;
   isLast?: boolean;
 }

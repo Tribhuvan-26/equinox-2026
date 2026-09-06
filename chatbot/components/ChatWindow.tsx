@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { MessageData, ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { EventDetail } from "./EventDetail";
-import { BrochureSubEvent } from "../data/events";
+import { SubEventInfo } from "../data/events";
 import { getBotResponse } from "../data/responses";
 import { Sparkles, X, RotateCcw, Bot, Calendar } from "lucide-react";
 
@@ -38,7 +38,7 @@ const DEFAULT_QUICK_ACTIONS = [
 const INITIAL_MESSAGE: MessageData = {
   id: "msg-welcome",
   sender: "bot",
-  text: "Welcome to **The Equinox 2.0**!\n\nI am your interactive event assistant, grounded directly in the official brochure. Ask me about any of our **10 sub-events**, confirmed dates (**30 - 31 OCT**), MLRIT venue, or coordinators!",
+  text: "Welcome to **The Equinox 2.0**!\n\nI am your interactive event assistant, grounded directly in the official event program. Ask me about any of our **10 sub-events**, confirmed dates (**30 - 31 OCT**), MLRIT venue, or coordinators!",
   suggestions: [
     "Events",
     "Tell me about Hustle Mania",
@@ -53,7 +53,7 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
   const router = useRouter();
   const [messages, setMessages] = useState<MessageData[]>([INITIAL_MESSAGE]);
   const [isTyping, setIsTyping] = useState(false);
-  const [activeEventDetail, setActiveEventDetail] = useState<BrochureSubEvent | null>(null);
+  const [activeEventDetail, setActiveEventDetail] = useState<SubEventInfo | null>(null);
   const [isEventListOpen, setIsEventListOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -132,7 +132,7 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
               </span>
             </div>
             <p className="text-[10px] text-white/75 font-mono">
-              Official Brochure Grounded
+              Grounded In Official Details
             </p>
           </div>
         </div>
