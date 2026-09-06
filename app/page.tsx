@@ -130,10 +130,10 @@ export default function HomePage() {
                 <ArrowRight className="h-4 w-4" />
               </a>
               <a
-                href="#contents"
+                href="#about"
                 className="flex items-center gap-2 rounded-full border-2 border-white/60 bg-white/10 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-xs transition hover:bg-white hover:text-[#174ae8]"
               >
-                Browse Contents
+                About Equinox
               </a>
             </motion.div>
           </motion.div>
