@@ -14,10 +14,10 @@ import {
 import {
   InstitutionalHeader,
   HangingTag,
-  ProspectusPopUpArt,
+  CoverPopUpArt,
   PageFooterTimeline,
   SubEventBadge,
-} from "./BrochureGraphics";
+} from "./EventGraphics";
 import {
   ArrowRight,
   Mail,
@@ -50,7 +50,7 @@ export default function HomePage() {
   return (
     <div className="riso-texture min-h-screen text-white selection:bg-white selection:text-[#174ae8]">
       {/* =========================================================================
-          SECTION 1: HERO / PROSPECTUS COVER (Page 01)
+          SECTION 1: HERO / COVER (Page 01)
           ========================================================================= */}
       <section
         id="top"
@@ -90,18 +90,18 @@ export default function HomePage() {
                 <span className="block font-mono text-2xl font-black tracking-widest text-white sm:text-4xl lg:text-5xl">
                   THE
                 </span>
-                <h1 className="font-brochure-title brochure-title-shadow text-6xl tracking-tighter text-white sm:text-8xl md:text-9xl lg:text-[11rem]">
+                <h1 className="font-display-title display-title-shadow text-6xl tracking-tighter text-white sm:text-8xl md:text-9xl lg:text-[11rem]">
                   EQUINOX
                 </h1>
               </div>
 
-              {/* Hanging "2.0" Tag from Brochure */}
+              {/* Hanging "2.0" Tag from the Cover */}
               <div className="absolute -right-2 top-8 sm:-right-8 sm:top-10 md:-right-12 md:top-14 lg:right-auto lg:left-[92%]">
                 <HangingTag />
               </div>
             </motion.div>
 
-            {/* Hashtag Tagline Badge from Brochure */}
+            {/* Hashtag Tagline Badge */}
             <motion.div variants={heroFadeUp} className="mt-4 flex justify-center sm:mt-6 lg:justify-start">
               <div className="inline-flex items-center gap-2 rounded-md border-2 border-[#0d0e15] bg-white px-4 py-2 shadow-[4px_4px_0px_#0d0e15] sm:px-6 sm:py-2.5">
                 <span className="font-mono text-sm font-black text-[#0d0e15] sm:text-base">
@@ -113,10 +113,10 @@ export default function HomePage() {
               </div>
             </motion.div>
 
-            {/* Spaced PROSPECTUS Typography */}
+            {/* Spaced OVERVIEW Typography */}
             <motion.div variants={heroFadeUp} className="mt-4 w-full">
               <h2 className="font-mono text-3xl font-black tracking-[0.28em] text-white uppercase sm:text-5xl md:text-6xl lg:text-7xl">
-                PROSPECTUS
+                OVERVIEW
               </h2>
             </motion.div>
 
@@ -146,7 +146,7 @@ export default function HomePage() {
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
           >
-            <ProspectusPopUpArt />
+            <CoverPopUpArt />
           </motion.div>
         </div>
 
@@ -165,7 +165,7 @@ export default function HomePage() {
           <span className="rounded-full border border-white/40 bg-white/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-white">
             {about.eyebrow}
           </span>
-          <h2 className="mt-4 font-brochure-title text-4xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">
+          <h2 className="mt-4 font-display-title text-4xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">
             {about.heading}
           </h2>
           <p className="mt-6 text-xl leading-relaxed text-white/90 sm:text-2xl font-medium">
@@ -176,7 +176,7 @@ export default function HomePage() {
         {/* Editorial Pair: Who Are We / What We Do — an intentional 2-up, not a padded 3rd column */}
         <div className="mt-16 grid gap-8 md:grid-cols-2">
           {/* Who Are We */}
-          <div className="brochure-card rounded-3xl border-2 border-white/40 bg-white/10 p-8 backdrop-blur-xs">
+          <div className="program-card rounded-3xl border-2 border-white/40 bg-white/10 p-8 backdrop-blur-xs">
             <span className="font-mono text-xs font-black tracking-wider text-white/70 uppercase">
               01 · Vision
             </span>
@@ -187,7 +187,7 @@ export default function HomePage() {
           </div>
 
           {/* What We Do */}
-          <div className="brochure-card rounded-3xl border-2 border-white/40 bg-white/10 p-8 backdrop-blur-xs">
+          <div className="program-card rounded-3xl border-2 border-white/40 bg-white/10 p-8 backdrop-blur-xs">
             <span className="font-mono text-xs font-black tracking-wider text-white/70 uppercase">
               02 · Mission
             </span>
@@ -199,7 +199,7 @@ export default function HomePage() {
         </div>
 
         {/* What Is Equinox — a wide banner, not a forced third equal card */}
-        <div className="brochure-card mt-8 flex flex-col gap-8 rounded-3xl border-2 border-white bg-white p-8 text-[#0d0e15] shadow-xl sm:p-10 lg:flex-row lg:items-center lg:justify-between">
+        <div className="program-card mt-8 flex flex-col gap-8 rounded-3xl border-2 border-white bg-white p-8 text-[#0d0e15] shadow-xl sm:p-10 lg:flex-row lg:items-center lg:justify-between">
           <div className="lg:max-w-xl">
             <span className="font-mono text-xs font-black tracking-wider text-[#174ae8] uppercase">
               03 · The Summit
@@ -250,13 +250,13 @@ export default function HomePage() {
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <div>
             <span className="rounded-full border border-white/40 bg-white/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-white">
-              Brochure Pages 05 &amp; 06
+              Pages 05 &amp; 06
             </span>
-            <h2 className="mt-3 font-brochure-title text-5xl font-black tracking-tight text-white sm:text-7xl lg:text-8xl">
+            <h2 className="mt-3 font-display-title text-5xl font-black tracking-tight text-white sm:text-7xl lg:text-8xl">
               SUB-EVENTS
             </h2>
             <p className="mt-3 max-w-xl text-base text-white/85 sm:text-lg">
-              Official sub-events directly from the prospectus. Click any event badge to open full format, venue details, and registration criteria.
+              Official sub-events straight from Equinox 2.0&apos;s program. Click any event badge to open full format, venue details, and registration criteria.
             </p>
           </div>
 
@@ -313,7 +313,7 @@ export default function HomePage() {
                 </div>
 
                 {/* Event Card Row */}
-                <div className="brochure-card grid gap-6 rounded-3xl border-2 border-white/30 bg-white/5 p-6 backdrop-blur-xs transition hover:border-white hover:bg-white/15 sm:p-8 lg:grid-cols-12 lg:gap-10">
+                <div className="program-card grid gap-6 rounded-3xl border-2 border-white/30 bg-white/5 p-6 backdrop-blur-xs transition hover:border-white hover:bg-white/15 sm:p-8 lg:grid-cols-12 lg:gap-10">
                   {/* Left Column: White Outline Badge Pill */}
                   <div className="lg:col-span-5 flex flex-col justify-center">
                     <div className="flex items-center justify-between gap-3 mb-3">
@@ -331,7 +331,7 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  {/* Right Column: Exact Brochure Text Description */}
+                  {/* Right Column: Exact Program Text Description */}
                   <div className="lg:col-span-7 flex flex-col justify-between">
                     <div>
                       <p className="text-base leading-relaxed text-white sm:text-lg">
@@ -385,7 +385,7 @@ export default function HomePage() {
             <span className="rounded-full border border-white/40 bg-white/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-white">
               Why Sponsor &amp; Partner
             </span>
-            <h2 className="mt-4 font-brochure-title text-4xl font-black tracking-tight text-white sm:text-6xl">
+            <h2 className="mt-4 font-display-title text-4xl font-black tracking-tight text-white sm:text-6xl">
               Our Impact &amp; Footprint
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-white/85">
@@ -450,7 +450,7 @@ export default function HomePage() {
       >
         {/* Dark Editorial Heading Replicating Page 12 */}
         <div className="max-w-3xl">
-          <h2 className="font-brochure-title text-6xl font-black tracking-tighter text-[#0d0e15] drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)] sm:text-7xl lg:text-8xl">
+          <h2 className="font-display-title text-6xl font-black tracking-tighter text-[#0d0e15] drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)] sm:text-7xl lg:text-8xl">
             Contact Us
           </h2>
           <p className="mt-6 text-lg leading-relaxed text-white/95 sm:text-xl font-medium">
@@ -470,7 +470,7 @@ export default function HomePage() {
               <a
                 key={coordinator.name}
                 href={`tel:${coordinator.phoneRaw}`}
-                className="brochure-card group flex items-center justify-between rounded-2xl border-2 border-white/40 bg-white/10 p-5 backdrop-blur-xs transition hover:border-white hover:bg-white hover:text-[#174ae8]"
+                className="program-card group flex items-center justify-between rounded-2xl border-2 border-white/40 bg-white/10 p-5 backdrop-blur-xs transition hover:border-white hover:bg-white hover:text-[#174ae8]"
               >
                 <div>
                   <p className="font-bold text-lg text-white group-hover:text-[#174ae8]">
@@ -589,7 +589,7 @@ export default function HomePage() {
             </div>
 
             <span className="font-mono text-xs text-white/70">
-              MLRIT CIE · Official Prospectus
+              MLRIT CIE · Official Program
             </span>
           </div>
         </div>
