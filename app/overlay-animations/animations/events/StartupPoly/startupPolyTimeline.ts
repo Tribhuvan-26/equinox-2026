@@ -26,8 +26,8 @@ export interface StartupPolyTimelineOptions {
  *
  * Sequence:
  * 1. ENTRANCE (0 -> ~0.6s): Overlay fades in, 12 tiles snap/pop in clockwise stagger
- * 2. DICE ROLL (~0.6s -> ~1.6s): Die tumbles from off-screen, lands near center with squash/stretch bounce
- * 3. TITLE REVEAL (~1.6s -> ~2.4s): "STARTUP" + "POLY" revealed, die animates into the "O" of POLY
+ * 2. DICE ROLL (~0.6s -> ~1.6s): Die pops into its slot (the "O" of POLY) and settles with squash/stretch bounce
+ * 3. TITLE REVEAL (~1.6s -> ~2.4s): "STARTUP" + "POLY" revealed
  * 4. RESOLUTION (~2.4s -> ~3.2s): Tagline wipes in, card decks slide in from left/right, sparkles appear
  * 5. HOLD (~3.2s -> ~3.8s): Gentle breathing motion
  * 6. EXIT (~3.8s -> ~4.4s): Elements fade out, tiles disassemble outward in reverse stagger, reveals website
@@ -114,13 +114,12 @@ export function createStartupPolyTimeline(
   }
 
   if (die) {
-    // Die starts off-screen top-right
+    // Die stays put at its resting slot (the "O" of POLY) the whole time —
+    // only opacity/scale/rotation animate, so it can never land off-position.
     gsap.set(die, {
       opacity: 0,
-      x: 750,
-      y: -500,
-      rotation: -160,
-      scale: 1.35,
+      scale: 0.3,
+      rotation: -45,
       transformOrigin: "center center",
     });
   }
@@ -206,25 +205,15 @@ export function createStartupPolyTimeline(
   tl.addLabel("diceRoll", 0.62);
 
   if (die) {
-    // Reveal and initial tumble into frame
+    // Pop in and tumble in place (rotation + squash/stretch only — the die
+    // never leaves its resting slot, so it can't end up mispositioned).
     tl.to(
       die,
       {
         opacity: 1,
-        duration: 0.05,
-      },
-      "diceRoll"
-    );
-
-    // Tumbling arc along 3 snaps toward the board center
-    tl.to(
-      die,
-      {
-        x: 340,
-        y: -240,
-        rotation: -45,
         scale: 1.25,
-        duration: 0.25,
+        rotation: 25,
+        duration: 0.22,
         ease: "power1.out",
       },
       "diceRoll"
@@ -232,62 +221,43 @@ export function createStartupPolyTimeline(
       .to(
         die,
         {
-          x: 140,
-          y: -80,
-          rotation: 65,
-          scale: 1.12,
-          duration: 0.22,
+          rotation: -20,
+          duration: 0.2,
           ease: "power1.inOut",
         },
-        "diceRoll+=0.25"
+        "diceRoll+=0.22"
       )
+      // Landing bounce with squash and stretch
       .to(
         die,
         {
-          x: 0,
-          y: -140,
-          rotation: 175,
-          scale: 1.0,
-          duration: 0.22,
-          ease: "power2.in",
+          scaleX: 1.35,
+          scaleY: 0.72,
+          rotation: 0,
+          duration: 0.1,
+          ease: "power2.out",
         },
-        "diceRoll+=0.47"
-      );
-
-    // Landing bounce on board near center with squash and stretch
-    tl.to(
-      die,
-      {
-        scaleX: 1.35,
-        scaleY: 0.72,
-        y: -125,
-        duration: 0.08,
-        ease: "power2.out",
-      },
-      "diceRoll+=0.69"
-    )
+        "diceRoll+=0.42"
+      )
       .to(
         die,
         {
           scaleX: 0.88,
           scaleY: 1.18,
-          y: -160,
-          duration: 0.12,
+          duration: 0.14,
           ease: "power1.out",
         },
-        "diceRoll+=0.77"
+        "diceRoll+=0.52"
       )
       .to(
         die,
         {
           scaleX: 1.0,
           scaleY: 1.0,
-          y: -140,
-          rotation: 185,
-          duration: 0.16,
+          duration: 0.18,
           ease: "bounce.out",
         },
-        "diceRoll+=0.89"
+        "diceRoll+=0.66"
       );
   }
 
@@ -334,23 +304,6 @@ export function createStartupPolyTimeline(
         ease: "power1.out",
       },
       "titleReveal+=0.18"
-    );
-  }
-
-  // Die smoothly flips & glides right into the "O" of POLY as the final beat
-  // (gap between "P" and "LY" is centered at x=961.5, base translate is x=944)
-  if (die) {
-    tl.to(
-      die,
-      {
-        x: 18,
-        y: 0,
-        rotation: 0,
-        scale: 1.0,
-        duration: 0.44,
-        ease: "back.out(1.4)",
-      },
-      "titleReveal+=0.24"
     );
   }
 

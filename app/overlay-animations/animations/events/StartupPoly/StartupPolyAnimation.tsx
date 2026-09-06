@@ -924,10 +924,10 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
           </g>
 
           {/* ============================================================== */}
-          {/* Reused Die Element (rolls, bounces, and lands in "O" of POLY) */}
-          {/* Positioned at "O" center: (944, 520)                           */}
+          {/* Reused Die Element (pops/settles into the "O" of POLY)         */}
+          {/* Positioned at the actual P/LY gap center: (962, 520)           */}
           {/* ============================================================== */}
-          <g ref={dieRef} transform="translate(944, 520)">
+          <g ref={dieRef} transform="translate(962, 520)">
             {/* Die Body Face */}
             <rect
               x="-35"
