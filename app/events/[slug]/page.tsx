@@ -31,6 +31,18 @@ export default async function EventPage({ params }: PageProps) {
   const item = eventsData[slug];
   if (!item) notFound();
 
+  if (slug === "ipl-auction") {
+    return (
+      <div className="fixed inset-0 z-[9999]">
+        <iframe
+          src="/ipl-auction.html"
+          className="h-full w-full border-0"
+          title="IPL Auction 3D Hero"
+        />
+      </div>
+    );
+  }
+
   return (
     <main className="riso-texture brochure-grain min-h-screen bg-[#174ae8] px-4 pt-32 pb-20 text-white sm:px-8 md:pt-36">
       {/* Consumes one-time chatbot-set pending animation trigger */}
