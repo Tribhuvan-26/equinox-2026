@@ -5,10 +5,8 @@ import { motion, type Variants } from "framer-motion";
 import Link from "next/link";
 import {
   event,
-  contentsList,
   about,
   subEvents,
-  SubEvent,
   highlights,
   studentCoordinators,
   contact,
@@ -17,11 +15,9 @@ import {
   InstitutionalHeader,
   HangingTag,
   ProspectusPopUpArt,
-  WireframeTorus,
   PageFooterTimeline,
   SubEventBadge,
 } from "./BrochureGraphics";
-import { EventModal } from "./EventModal";
 import {
   ArrowRight,
   Mail,
@@ -31,7 +27,6 @@ import {
   Calendar,
   Sparkles,
   Layers,
-  ChevronRight,
   ExternalLink,
 } from "lucide-react";
 
@@ -41,7 +36,6 @@ const heroFadeUp: Variants = {
 };
 
 export default function HomePage() {
-  const [selectedEvent, setSelectedEvent] = useState<SubEvent | null>(null);
   const [activeSubEventTab, setActiveSubEventTab] = useState<"all" | "05" | "06">("all");
 
   const page05Events = subEvents.filter((e) => e.pageNumber === "05");
@@ -55,12 +49,6 @@ export default function HomePage() {
 
   return (
     <div className="riso-texture min-h-screen text-white selection:bg-white selection:text-[#174ae8]">
-      {/* Event Details Interactive Modal */}
-      <EventModal
-        event={selectedEvent}
-        onClose={() => setSelectedEvent(null)}
-      />
-
       {/* =========================================================================
           SECTION 1: HERO / PROSPECTUS COVER (Page 01)
           ========================================================================= */}
@@ -167,92 +155,7 @@ export default function HomePage() {
       </section>
 
       {/* =========================================================================
-          SECTION 2: CONTENTS & STRUCTURE (Page 02)
-          ========================================================================= */}
-      <section
-        id="contents"
-        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
-      >
-        <div className="grid gap-12 lg:grid-cols-12">
-          {/* Vertical "CONTENTS" Banner Column */}
-          <div className="lg:col-span-4 flex items-start">
-            <div className="relative flex items-stretch gap-6">
-              {/* Massive Rotated / Stacked Word */}
-              <div className="writing-vertical-lr flex select-none items-center text-6xl font-black tracking-widest text-white sm:text-7xl md:text-8xl lg:text-9xl">
-                <span className="relative">
-                  CONTENTS
-                  {/* Black Overlay Accent on 'T' like brochure */}
-                  <span className="absolute top-[38%] left-0 right-0 h-4 bg-[#0d0e15] -rotate-3 opacity-90" />
-                </span>
-              </div>
-
-              {/* Bracket Tree Timeline Line */}
-              <div className="hidden sm:flex flex-col items-center justify-between py-4">
-                <div className="h-3 w-3 border-2 border-white" />
-                <div className="h-full w-[2px] bg-white/60" />
-                <div className="h-3 w-3 border-2 border-white" />
-              </div>
-            </div>
-          </div>
-
-          {/* Contents List and 3D Torus Wireframe Column */}
-          <div className="lg:col-span-8 flex flex-col justify-between">
-            <div>
-              <div className="mb-6 flex items-center justify-between border-b border-white/30 pb-3">
-                <span className="font-mono text-xs font-bold tracking-widest uppercase text-white/80">
-                  Prospectus Index · 10 Sections
-                </span>
-                <span className="font-mono text-xs text-white/70">MLR CIE 2026</span>
-              </div>
-
-              {/* Connected Tree Items */}
-              <div className="space-y-4">
-                {contentsList.map((item, idx) => (
-                  <a
-                    key={item.id}
-                    href={item.href}
-                    className="group flex items-center justify-between rounded-xl border border-white/20 bg-white/5 px-6 py-4 transition hover:border-white hover:bg-white/15"
-                  >
-                    <div className="flex items-center gap-4">
-                      <span className="font-mono text-xs font-bold text-white/60 group-hover:text-white">
-                        {String(idx + 1).padStart(2, "0")}.
-                      </span>
-                      <span className="text-lg font-bold tracking-tight text-white group-hover:underline">
-                        {item.label}
-                      </span>
-                    </div>
-                    <ChevronRight className="h-5 w-5 text-white/50 transition-transform group-hover:translate-x-1 group-hover:text-white" />
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Wireframe Torus Centerpiece from Page 02 */}
-            <div className="mt-12 flex flex-col items-center justify-center rounded-3xl border border-white/20 bg-white/5 p-8 text-center sm:flex-row sm:text-left">
-              <div className="flex-1">
-                <span className="rounded-full border border-white/40 bg-white/15 px-3 py-1 font-mono text-xs font-semibold uppercase text-white">
-                  Summit Architecture
-                </span>
-                <h3 className="mt-3 font-brochure-title text-2xl font-bold text-white">
-                  Dynamic Collegiate Confluence
-                </h3>
-                <p className="mt-2 max-w-md text-sm leading-relaxed text-white/80">
-                  A structured continuum of competitive tracks, networking bridges, and real capital access built by MLR CIE.
-                </p>
-              </div>
-              <div className="mt-6 sm:mt-0">
-                <WireframeTorus />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Page Footer Timeline */}
-        <PageFooterTimeline pageNumber="02" />
-      </section>
-
-      {/* =========================================================================
-          SECTION 3: ABOUT EQUINOX (Who Are We / What We Do / What Is Equinox)
+          SECTION 2: ABOUT EQUINOX (Who Are We / What We Do / What Is Equinox)
           ========================================================================= */}
       <section
         id="about"
@@ -399,10 +302,10 @@ export default function HomePage() {
 
           <div className="space-y-12 sm:space-y-16">
             {displayedEvents.map((item, idx) => (
-              <div
+              <Link
                 key={item.id}
-                onClick={() => setSelectedEvent(item)}
-                className="group relative cursor-pointer"
+                href={`/events/${item.slug}`}
+                className="group relative block"
               >
                 {/* Timeline Tick / Marker */}
                 <div className="absolute -left-[23px] sm:-left-[31px] md:-left-[47px] top-6 flex h-6 w-6 items-center justify-center">
@@ -459,7 +362,7 @@ export default function HomePage() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

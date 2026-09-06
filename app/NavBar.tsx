@@ -6,7 +6,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   FileText,
-  List,
   Info,
   Calendar,
   Layers,
@@ -18,7 +17,6 @@ import { cn } from "@/lib/utils";
 
 const ICONS: Record<string, LucideIcon> = {
   Prospectus: FileText,
-  Contents: List,
   About: Info,
   "Sub-Events": Layers,
   Impact: Calendar,
@@ -36,6 +34,12 @@ export function NavBar({
 }) {
   const pathname = usePathname();
   const [activeTab, setActiveTab] = useState(defaultActive);
+
+  const isActiveItem = (name: string) => {
+    if (pathname.startsWith("/events")) return name === "Sub-Events";
+    if (pathname !== "/") return false;
+    return activeTab === name;
+  };
 
   return (
     <header
@@ -65,7 +69,7 @@ export function NavBar({
         >
           {items.map((item) => {
             const Icon = ICONS[item.name] ?? Circle;
-            const isActive = activeTab === item.name;
+            const isActive = isActiveItem(item.name);
 
             return (
               <a
@@ -89,7 +93,7 @@ export function NavBar({
         {/* Mobile Sub-Events CTA & Date Badge */}
         <div className="flex items-center gap-2">
           <a
-            href="#events"
+            href="/#events"
             className="flex items-center gap-1.5 rounded-full border-2 border-white bg-white px-4 py-2 text-xs font-bold text-[#174ae8] shadow-md transition hover:bg-white/90"
           >
             <span>10 Events</span>

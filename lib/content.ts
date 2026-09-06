@@ -52,7 +52,6 @@ export const event = {
 
 export const nav = [
   { label: "Prospectus", href: "/#top" },
-  { label: "Contents", href: "/#contents" },
   { label: "About", href: "/#about" },
   { label: "Sub-Events", href: "/#events" },
   { label: "Impact", href: "/#impact" },
