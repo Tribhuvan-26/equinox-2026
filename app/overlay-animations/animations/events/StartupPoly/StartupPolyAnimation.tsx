@@ -883,7 +883,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
               y="442"
               textAnchor="middle"
               className={styles.titleStartup}
-              fontSize="78"
+              fontSize="58"
             >
               STARTUP
             </text>
@@ -901,10 +901,10 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
 
             {/* Title: "P" and "LY" Text surrounding the Die slot */}
             <g ref={titlePolyTextRef} className={styles.titlePolyText}>
-              <text x="830" y="550" fontSize="90">
+              <text x="830" y="550" fontSize="82">
                 P
               </text>
-              <text x="996" y="550" fontSize="90">
+              <text x="996" y="550" fontSize="82">
                 LY
               </text>
             </g>
