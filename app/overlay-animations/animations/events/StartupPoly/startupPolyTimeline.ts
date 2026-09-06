@@ -338,11 +338,12 @@ export function createStartupPolyTimeline(
   }
 
   // Die smoothly flips & glides right into the "O" of POLY as the final beat
+  // (gap between "P" and "LY" is centered at x=961.5, base translate is x=944)
   if (die) {
     tl.to(
       die,
       {
-        x: -16,
+        x: 18,
         y: 0,
         rotation: 0,
         scale: 1.0,
