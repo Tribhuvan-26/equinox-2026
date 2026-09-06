@@ -6,9 +6,6 @@ export {
   triggerAnimation,
   subscribeToAnimation,
   OverlayAnimationHost,
-  PENDING_ANIMATION_KEY,
-  setPendingAnimation,
-  consumePendingAnimation,
 } from "./animations/core/animationRegistry";
 
 export type {

@@ -7,7 +7,6 @@ import { ChatInput } from "./ChatInput";
 import { EventDetail } from "./EventDetail";
 import { BrochureSubEvent } from "../data/events";
 import { getBotResponse } from "../data/responses";
-import { setPendingAnimation, triggerAnimation } from "@/app/overlay-animations";
 import { Sparkles, X, RotateCcw, Bot } from "lucide-react";
 
 interface ChatWindowProps {
@@ -106,16 +105,10 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
   };
 
   const handleEventClick = (slug: string) => {
-    // 1. Sets one-time pending-trigger marker BEFORE navigating
     if (onEventSelect) {
       onEventSelect(slug);
     } else {
-      if (typeof window !== "undefined" && window.location.pathname === `/events/${slug}`) {
-        triggerAnimation({ type: "event", event: slug as any });
-      } else {
-        setPendingAnimation(slug);
-        router.push(`/events/${slug}`);
-      }
+      router.push(`/events/${slug}`);
     }
   };
 

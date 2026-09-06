@@ -68,51 +68,6 @@ if (typeof window !== "undefined") {
     triggerAnimation;
 }
 
-export const PENDING_ANIMATION_KEY = "equinox:pendingAnimation";
-
-/**
- * Sets a one-time pending animation trigger in sessionStorage before navigation.
- */
-export function setPendingAnimation(slug: string): void {
-  if (typeof window !== "undefined" && window.sessionStorage) {
-    try {
-      console.log("[OverlayAnimations] setPendingAnimation:", slug);
-      window.sessionStorage.setItem(PENDING_ANIMATION_KEY, slug);
-    } catch (err) {
-      console.warn("[OverlayAnimations] Failed to set pending animation in sessionStorage:", err);
-    }
-  }
-}
-
-/**
- * Consumes the one-time pending animation trigger on destination page mount.
- * Immediately clears the sessionStorage key regardless of outcome to prevent replays.
- * If the key matches targetSlug, calls triggerAnimation exactly once.
- */
-export function consumePendingAnimation(targetSlug: string): boolean {
-  if (typeof window === "undefined" || !window.sessionStorage) {
-    return false;
-  }
-
-  try {
-    const pendingSlug = window.sessionStorage.getItem(PENDING_ANIMATION_KEY);
-    console.log("[OverlayAnimations] consumePendingAnimation called for:", targetSlug, "found in storage:", pendingSlug);
-
-    // Immediately remove key regardless of outcome to avoid replay on reload or race conditions
-    window.sessionStorage.removeItem(PENDING_ANIMATION_KEY);
-
-    if (pendingSlug && pendingSlug === targetSlug) {
-      console.log("[OverlayAnimations] Consuming pending animation and triggering:", pendingSlug);
-      triggerAnimation({ type: "event", event: pendingSlug as AnimationEventKey });
-      return true;
-    }
-  } catch (err) {
-    console.warn("[OverlayAnimations] Failed to consume pending animation:", err);
-  }
-
-  return false;
-}
-
 /**
  * OverlayAnimationHost
  * Renders the currently active overlay animation at the root of the viewport.

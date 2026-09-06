@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { canonicalSlugs, eventsData } from "../eventsData";
 import { SubEventBadge } from "../../BrochureGraphics";
-import { PendingTrigger } from "../PendingTrigger";
+import { AutoPlayAnimation } from "../AutoPlayAnimation";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -45,8 +45,7 @@ export default async function EventPage({ params }: PageProps) {
 
   return (
     <main className="riso-texture brochure-grain min-h-screen bg-[#174ae8] px-4 pt-32 pb-20 text-white sm:px-8 md:pt-36">
-      {/* Consumes one-time chatbot-set pending animation trigger */}
-      <PendingTrigger slug={slug} />
+      <AutoPlayAnimation slug={slug} />
 
       <div className="mx-auto max-w-[1200px]">
         {/* Top Brochure Institutional & Navigation Header */}
