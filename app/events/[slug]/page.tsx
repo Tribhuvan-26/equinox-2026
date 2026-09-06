@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { canonicalSlugs, eventsData } from "../eventsData";
-import { SubEventBadge } from "../../BrochureGraphics";
+import { SubEventBadge } from "../../EventGraphics";
 import { AutoPlayAnimation } from "../AutoPlayAnimation";
 
 interface PageProps {
@@ -31,24 +31,12 @@ export default async function EventPage({ params }: PageProps) {
   const item = eventsData[slug];
   if (!item) notFound();
 
-  if (slug === "ipl-auction") {
-    return (
-      <div className="fixed inset-0 z-[9999]">
-        <iframe
-          src="/ipl-auction.html"
-          className="h-full w-full border-0"
-          title="IPL Auction 3D Hero"
-        />
-      </div>
-    );
-  }
-
   return (
-    <main className="riso-texture brochure-grain min-h-screen bg-[#174ae8] px-4 pt-32 pb-20 text-white sm:px-8 md:pt-36">
+    <main className="riso-texture paper-grain min-h-screen bg-[#174ae8] px-4 pt-32 pb-20 text-white sm:px-8 md:pt-36">
       <AutoPlayAnimation slug={slug} />
 
       <div className="mx-auto max-w-[1200px]">
-        {/* Top Brochure Institutional & Navigation Header */}
+        {/* Top Institutional & Navigation Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/30 pb-5">
           <Link
             href="/events"
@@ -68,15 +56,15 @@ export default async function EventPage({ params }: PageProps) {
           </div>
         </div>
 
-        {/* Hero Section: Brochure Headline with Word-Pair Contrast & Official Badge */}
+        {/* Hero Section: Headline with Word-Pair Contrast & Official Badge */}
         <div className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-          <div>
+          <div className="min-w-0">
             <span className="inline-block border border-white/40 bg-[#0d0e15] px-3.5 py-1 font-mono text-xs font-black uppercase tracking-widest text-white shadow-[2px_2px_0px_#ffffff]">
-              Official Prospectus Sub-Event · {item.category}
+              Official Equinox Sub-Event · {item.category}
             </span>
 
-            {/* Headline with Brochure Word-Pair Styling (Black + White Contrast) */}
-            <h1 className="mt-4 font-brochure-title text-4xl font-black uppercase tracking-tight sm:text-6xl lg:text-8xl">
+            {/* Headline with Word-Pair Styling (Black + White Contrast) */}
+            <h1 className="mt-4 font-display-title text-4xl font-black uppercase tracking-tight break-words sm:text-6xl lg:text-7xl">
               <span className="mr-2 inline-block bg-white px-2.5 py-0.5 text-[#0d0e15] shadow-[3px_3px_0px_#0d0e15] sm:mr-3 sm:px-3 sm:shadow-[4px_4px_0px_#0d0e15]">
                 {item.headlineWordPair.blackWord}
               </span>
@@ -84,7 +72,7 @@ export default async function EventPage({ params }: PageProps) {
             </h1>
           </div>
 
-          {/* Authentic Rounded Badge Card from Brochure Pages 05 & 06 */}
+          {/* Authentic Rounded Badge Card from Pages 05 & 06 */}
           <div className="shrink-0">
             <div className="flex h-[88px] min-w-[200px] items-center justify-center rounded-2xl border-2 border-white bg-white/10 px-6 py-4 shadow-[4px_4px_0px_rgba(0,0,0,0.25)] sm:min-w-[220px] sm:px-8">
               <SubEventBadge slug={item.slug} />
@@ -92,25 +80,25 @@ export default async function EventPage({ params }: PageProps) {
           </div>
         </div>
 
-        {/* Section Divider with Brochure Blueprint Tick Marks */}
+        {/* Section Divider with Blueprint Tick Marks */}
         <div className="relative my-10 border-t border-white/40">
           <div className="absolute -top-1.5 left-0 h-3 w-[2px] bg-white" />
           <div className="absolute -top-1.5 left-1/2 h-3 w-[2px] -translate-x-1/2 bg-white/60" />
           <div className="absolute -top-1.5 right-0 h-3 w-[2px] bg-white" />
         </div>
 
-        {/* Main Event Overview: Solid Black Contrast Block matching Brochure Sections */}
+        {/* Main Event Overview: Solid Black Contrast Block matching Program Sections */}
         <section className="border-2 border-white/40 bg-[#0d0e15] p-6 text-white shadow-[6px_6px_0px_#000000] sm:p-10">
           <div className="flex items-center gap-2 font-mono text-xs font-black uppercase tracking-wider text-white/70">
             <span className="inline-block h-2.5 w-2.5 bg-white" />
-            <span>Official Event Description · Prospectus Source of Truth</span>
+            <span>Official Event Description · Source of Truth</span>
           </div>
           <p className="mt-5 text-xl font-medium leading-relaxed text-white sm:text-2xl">
             {item.description}
           </p>
         </section>
 
-        {/* Section Divider with Brochure Blueprint Tick Marks */}
+        {/* Section Divider with Blueprint Tick Marks */}
         <div className="relative my-12 border-t border-white/40">
           <div className="absolute -top-1.5 left-0 h-3 w-[2px] bg-white" />
           <div className="absolute -top-1.5 left-1/2 h-3 w-[2px] -translate-x-1/2 bg-white/60" />
@@ -120,7 +108,7 @@ export default async function EventPage({ params }: PageProps) {
         {/* Logistics Placeholders (Clearly marked TODO, zero invented rules/dates) */}
         <section>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
-            <h2 className="font-brochure-title text-3xl font-black uppercase tracking-tight text-white sm:text-5xl">
+            <h2 className="font-display-title text-3xl font-black uppercase tracking-tight text-white sm:text-5xl">
               Event Logistics
             </h2>
             <span className="font-mono text-xs uppercase tracking-wider text-white/80">
@@ -139,7 +127,7 @@ export default async function EventPage({ params }: PageProps) {
                   TODO
                 </span>
               </div>
-              <h3 className="mt-3 font-brochure-title text-xl font-bold uppercase text-white">
+              <h3 className="mt-3 font-display-title text-xl font-bold uppercase text-white">
                 Date &amp; Timing
               </h3>
               <p className="mt-3 font-mono text-sm leading-relaxed text-white/85">
@@ -157,7 +145,7 @@ export default async function EventPage({ params }: PageProps) {
                   TODO
                 </span>
               </div>
-              <h3 className="font-brochure-title mt-3 text-xl font-bold uppercase text-white">
+              <h3 className="font-display-title mt-3 text-xl font-bold uppercase text-white">
                 Venue
               </h3>
               <p className="mt-3 font-mono text-sm leading-relaxed text-white/85">
@@ -175,7 +163,7 @@ export default async function EventPage({ params }: PageProps) {
                   TODO
                 </span>
               </div>
-              <h3 className="font-brochure-title mt-3 text-xl font-bold uppercase text-white">
+              <h3 className="font-display-title mt-3 text-xl font-bold uppercase text-white">
                 Rules &amp; Guidelines
               </h3>
               <p className="mt-3 font-mono text-sm leading-relaxed text-white/85">
@@ -185,7 +173,7 @@ export default async function EventPage({ params }: PageProps) {
           </div>
         </section>
 
-        {/* Bottom Timeline Footer (Brochure Style from Pages 03, 05, 06) */}
+        {/* Bottom Timeline Footer (Page Style from Pages 03, 05, 06) */}
         <div className="relative mt-16 border-t border-white/40 pt-6">
           <div className="absolute -top-1.5 left-0 h-3 w-[2px] bg-white" />
           <div className="absolute -top-1.5 left-1/2 h-3 w-[2px] -translate-x-1/2 bg-white/60" />
@@ -200,7 +188,7 @@ export default async function EventPage({ params }: PageProps) {
               <span>Back to All Events</span>
             </Link>
 
-            {/* Brochure Page Marker */}
+            {/* Page Marker */}
             <div className="flex items-center gap-4">
               <div className="leading-none text-right">
                 <span className="block text-[10px] font-black tracking-widest uppercase text-white/70">
