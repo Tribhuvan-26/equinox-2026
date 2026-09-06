@@ -4,6 +4,7 @@ import type { ComponentType } from "react";
 export type AnimationEventKey =
   | "spotlight"
   | "startup-poly"
+  | "ipl-auction"
   | (string & {});
 
 export interface AnimationTriggerPayload {

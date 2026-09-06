@@ -4,6 +4,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { SpotlightAnimation } from "../events/Spotlight/SpotlightAnimation";
 import { StartupPolyAnimation } from "../events/StartupPoly/StartupPolyAnimation";
+import { IplAuctionAnimation } from "../events/IplAuction/IplAuctionAnimation";
 import type {
   AnimationRegistry,
   AnimationTriggerPayload,
@@ -24,6 +25,11 @@ export const animationRegistry: AnimationRegistry = {
     Component: StartupPolyAnimation,
     id: "startup-poly",
     title: "Startup Poly",
+  },
+  "ipl-auction": {
+    Component: IplAuctionAnimation,
+    id: "ipl-auction",
+    title: "IPL Auction",
   },
 };
 
