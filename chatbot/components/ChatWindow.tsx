@@ -7,7 +7,7 @@ import { ChatInput } from "./ChatInput";
 import { EventDetail } from "./EventDetail";
 import { BrochureSubEvent } from "../data/events";
 import { getBotResponse } from "../data/responses";
-import { Sparkles, X, RotateCcw, Bot } from "lucide-react";
+import { Sparkles, X, RotateCcw, Bot, Calendar } from "lucide-react";
 
 interface ChatWindowProps {
   onClose: () => void;
@@ -28,24 +28,24 @@ export const SUB_EVENTS = [
 ] as const;
 
 const DEFAULT_QUICK_ACTIONS = [
-  "⚡ Hustle Mania",
-  "🎲 Startup Poly",
-  "🏏 IPL Auction",
-  "📅 Dates & Venue",
-  "📞 Coordinators",
+  "Hustle Mania",
+  "Startup Poly",
+  "IPL Auction",
+  "Dates & Venue",
+  "Coordinators",
 ];
 
 const INITIAL_MESSAGE: MessageData = {
   id: "msg-welcome",
   sender: "bot",
-  text: "Welcome to **The Equinox 2.0**! 🚀\n\nI am your interactive event assistant, grounded directly in the official brochure. Ask me about any of our **10 sub-events**, confirmed dates (**30 - 31 OCT**), MLRIT venue, or coordinators!",
+  text: "Welcome to **The Equinox 2.0**!\n\nI am your interactive event assistant, grounded directly in the official brochure. Ask me about any of our **10 sub-events**, confirmed dates (**30 - 31 OCT**), MLRIT venue, or coordinators!",
   suggestions: [
-    "📅 Events",
-    "⚡ Tell me about Hustle Mania",
-    "🎲 What is Startup Poly?",
-    "🏏 How does IPL Auction work?",
-    "📅 Dates & Venue",
-    "📞 Coordinators",
+    "Events",
+    "Tell me about Hustle Mania",
+    "What is Startup Poly?",
+    "How does IPL Auction work?",
+    "Dates & Venue",
+    "Coordinators",
   ],
 };
 
@@ -93,11 +93,7 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
   };
 
   const handleSuggestionSelect = (suggestion: string) => {
-    if (
-      suggestion === "📅 Events" ||
-      suggestion === "Events" ||
-      suggestion === "📅 Browse Events"
-    ) {
+    if (suggestion === "Events" || suggestion === "Browse Events") {
       setIsEventListOpen(true);
       return;
     }
@@ -191,7 +187,7 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
           <div>
             <div className="mb-1.5 flex items-center justify-between font-mono text-[11px] text-white/90">
               <span className="font-bold tracking-wider uppercase text-white flex items-center gap-1.5">
-                <span>📅</span>
+                <Calendar className="h-3 w-3" />
                 <span>Select Sub-Event:</span>
               </span>
               <button
@@ -221,9 +217,10 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
             <button
               type="button"
               onClick={() => setIsEventListOpen(true)}
-              className="rounded-full border border-white bg-white/20 px-2.5 py-1 font-mono text-[11px] font-black text-white shadow-xs transition hover:bg-white hover:text-[#174ae8] active:scale-95"
+              className="flex items-center gap-1 rounded-full border border-white bg-white/20 px-2.5 py-1 font-mono text-[11px] font-black text-white shadow-xs transition hover:bg-white hover:text-[#174ae8] active:scale-95"
             >
-              📅 Events
+              <Calendar className="h-3 w-3" />
+              Events
             </button>
             {DEFAULT_QUICK_ACTIONS.map((action, idx) => (
               <button

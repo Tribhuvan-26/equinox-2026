@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import { BrochureSubEvent } from "../data/events";
 import { triggerEventAnimation } from "../animations/eventAnimations";
-import { ArrowRight, Calendar, MapPin, Sparkles } from "lucide-react";
+import { ArrowRight, Calendar, MapPin, Sparkles, Gavel, Tag, Handshake, DollarSign, Dices } from "lucide-react";
 
 interface EventCardProps {
   event: BrochureSubEvent;
@@ -104,7 +104,7 @@ export function EventCard({ event, onSelect }: EventCardProps) {
           {event.animationType === "ipl-auction" && (
             <div className="relative flex h-full w-full items-center justify-around px-4">
               <div className="ipl-gavel-icon rounded-full border border-purple-300/60 bg-purple-500/30 p-2 text-purple-200">
-                🏏
+                <Gavel className="h-4 w-4" />
               </div>
               <div className="flex flex-col items-center">
                 <span className="font-mono text-[9px] text-purple-300 uppercase">Live Bid</span>
@@ -118,14 +118,14 @@ export function EventCard({ event, onSelect }: EventCardProps) {
           {/* Hustle Mania Animation Elements */}
           {event.animationType === "hustle-mania" && (
             <div className="relative flex h-full w-full items-center justify-center gap-1.5">
-              <div className="hustle-card-1 rounded border border-pink-300 bg-pink-500/30 px-2 py-1 font-mono text-[10px] font-bold text-white shadow-xs">
-                🏷️ Sell
+              <div className="hustle-card-1 flex items-center gap-1 rounded border border-pink-300 bg-pink-500/30 px-2 py-1 font-mono text-[10px] font-bold text-white shadow-xs">
+                <Tag className="h-3 w-3" /> Sell
               </div>
-              <div className="hustle-card-2 rounded border border-pink-300 bg-pink-500/30 px-2 py-1 font-mono text-[10px] font-bold text-white shadow-xs">
-                🤝 Pitch
+              <div className="hustle-card-2 flex items-center gap-1 rounded border border-pink-300 bg-pink-500/30 px-2 py-1 font-mono text-[10px] font-bold text-white shadow-xs">
+                <Handshake className="h-3 w-3" /> Pitch
               </div>
-              <div className="hustle-card-3 rounded border border-white bg-pink-600 px-2.5 py-1 font-mono text-[10px] font-black text-white shadow-md">
-                💰 Profit
+              <div className="hustle-card-3 flex items-center gap-1 rounded border border-white bg-pink-600 px-2.5 py-1 font-mono text-[10px] font-black text-white shadow-md">
+                <DollarSign className="h-3 w-3" /> Profit
               </div>
             </div>
           )}
@@ -157,8 +157,8 @@ export function EventCard({ event, onSelect }: EventCardProps) {
           {/* Startup Poly Animation Elements */}
           {event.animationType === "startup-poly" && (
             <div className="relative flex h-full w-full items-center justify-center gap-4">
-              <div className="poly-dice-icon flex h-8 w-8 items-center justify-center rounded-lg border-2 border-white bg-yellow-400 text-sm font-black text-[#0d0e15] shadow-md">
-                🎲
+              <div className="poly-dice-icon flex h-8 w-8 items-center justify-center rounded-lg border-2 border-white bg-yellow-400 text-[#0d0e15] shadow-md">
+                <Dices className="h-4 w-4" />
               </div>
               <div className="poly-board-tile rounded border border-yellow-300/60 bg-yellow-500/20 px-3 py-1 font-mono text-xs font-bold text-yellow-200">
                 Enterprise Tile

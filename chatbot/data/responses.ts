@@ -122,7 +122,7 @@ export function getBotResponse(userQuery: string): BotReply {
 
   if (q.includes("where") || q.includes("venue") || q.includes("location") || q.includes("address") || q.includes("mlrit")) {
     return {
-      text: `📍 **Summit Venue:**\n${EQUINOX_INFO.address}\n\nOrganized by the **${EQUINOX_INFO.host}**.`,
+      text: `**Summit Venue:**\n${EQUINOX_INFO.address}\n\nOrganized by the **${EQUINOX_INFO.host}**.`,
       suggestions: ["When is it?", "Who can participate?", "Coordinator contacts"],
     };
   }
@@ -131,7 +131,7 @@ export function getBotResponse(userQuery: string): BotReply {
   if (q.includes("contact") || q.includes("phone") || q.includes("coordinator") || q.includes("email") || q.includes("shyam") || q.includes("mahima")) {
     const list = OFFICIAL_COORDINATORS.map((c) => `• **${c.name}**: ${c.phone}`).join("\n");
     return {
-      text: `📞 **Official Student Coordinators:**\n${list}\n\n📧 **Official Email:** ${EQUINOX_INFO.email}\n🌐 **Website:** ${EQUINOX_INFO.website}`,
+      text: `**Official Student Coordinators:**\n${list}\n\n**Official Email:** ${EQUINOX_INFO.email}\n**Website:** ${EQUINOX_INFO.website}`,
       suggestions: ["List all 10 sub-events", "When is Equinox?", "Tell me about Hustle Mania"],
     };
   }
@@ -148,11 +148,11 @@ export function getBotResponse(userQuery: string): BotReply {
   return {
     text: `I am your **Equinox AI Assistant**, grounded directly in the official brochure.\n\nAsk me about any of the **10 sub-events**, dates (**30 - 31 OCT**), MLRIT venue, or coordinators!`,
     suggestions: [
-      "⚡ Tell me about Hustle Mania",
-      "🎲 What is Startup Poly?",
-      "🏏 How does IPL Auction work?",
-      "📅 Summit dates & venue",
-      "📞 Coordinator contacts",
+      "Tell me about Hustle Mania",
+      "What is Startup Poly?",
+      "How does IPL Auction work?",
+      "Summit dates & venue",
+      "Coordinator contacts",
     ],
   };
 }

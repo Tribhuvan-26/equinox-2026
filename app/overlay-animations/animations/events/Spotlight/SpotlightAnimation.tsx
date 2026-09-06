@@ -3,6 +3,7 @@
 
 import React, { useRef, useLayoutEffect, useEffect } from "react";
 import gsap from "gsap";
+import { X } from "lucide-react";
 import type { AnimationComponentProps } from "../../core/animationTypes";
 import {
   createSpotlightTimeline,
@@ -212,7 +213,7 @@ export const SpotlightAnimation: React.FC<AnimationComponentProps> = ({
         onClick={handleManualDismiss}
         aria-label="Skip Animation"
       >
-        Skip ✕
+        Skip <X className="h-3 w-3" />
       </button>
 
       {/* Responsive Scalable SVG Stage Canvas */}
