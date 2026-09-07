@@ -64,7 +64,7 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
     });
   }, [messages, isTyping, isEventListOpen]);
 
-  const handleSendMessage = (text: string) => {
+  const handleSendMessage = async (text: string) => {
     const userMsg: MessageData = {
       id: `usr-${Date.now()}`,
       sender: "user",
@@ -75,8 +75,31 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
     setMessages((prev) => [...prev, userMsg]);
     setIsTyping(true);
 
-    // Realistic processing delay for polished UI feel
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Chat API responded with status ${res.status}`);
+      }
+
+      const data = await res.json();
+      const botMsg: MessageData = {
+        id: `bot-${Date.now()}`,
+        sender: "bot",
+        text: data.answer || "I received an empty response. Please try again.",
+        eventCard: data.eventCard,
+        suggestions: data.suggestions,
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+
+      setMessages((prev) => [...prev, botMsg]);
+    } catch (err) {
+      console.warn("ChatWindow backend fetch failed, using fallback:", err);
+      // Deprecated fallback to local responses if network/server is unreachable
       const reply = getBotResponse(text);
       const botMsg: MessageData = {
         id: `bot-${Date.now()}`,
@@ -86,10 +109,10 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
         suggestions: reply.suggestions,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
-
       setMessages((prev) => [...prev, botMsg]);
+    } finally {
       setIsTyping(false);
-    }, 450);
+    }
   };
 
   const handleSuggestionSelect = (suggestion: string) => {

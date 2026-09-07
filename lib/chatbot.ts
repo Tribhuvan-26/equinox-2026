@@ -13,6 +13,10 @@ export interface ChatbotResponse {
   links?: { label: string; url: string }[];
 }
 
+/**
+ * @deprecated Replaced by the RAG pipeline in `lib/rag/generate.ts`.
+ * Retained as an offline fallback when API keys or network are unavailable.
+ */
 export function getMockEquinoxResponse(query: string): ChatbotResponse {
   const q = query.toLowerCase().trim();
 

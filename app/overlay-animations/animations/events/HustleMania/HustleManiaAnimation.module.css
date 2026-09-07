@@ -6,46 +6,61 @@
   width: 100vw;
   height: 100vh;
   z-index: 99999;
-  background-color: #f0e6d8;
-  overflow: hidden;
+  background-color: #0b0d11;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
   user-select: none;
   pointer-events: auto;
   opacity: 0;
 }
 
-.stageSvg {
+/* 16:9 aspect-ratio responsive stage frame (contain-fit within viewport) */
+.stageFrame {
+  position: relative;
+  width: 100vw;
+  height: calc(100vw * (9 / 16));
+  max-width: calc(100vh * (16 / 9));
+  max-height: 100vh;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6);
+}
+
+.baseImage {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  position: absolute;
-  inset: 0;
+  object-fit: contain;
+  display: block;
   pointer-events: none;
 }
 
-/* Subtle paper-grain texture overlay */
-.paperNoise {
+.stageSvg {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  z-index: 2;
-  opacity: 0.12;
-  mix-blend-mode: multiply;
 }
 
-/* Skip / Dismiss button */
+/* Skip button */
 .skipButton {
   position: absolute;
-  top: 24px;
-  right: 28px;
-  z-index: 10;
+  top: 20px;
+  right: 24px;
+  z-index: 20;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(17, 17, 17, 0.06);
-  border: 1.5px solid rgba(17, 17, 17, 0.22);
-  color: #111111;
+  background: rgba(17, 17, 17, 0.75);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
   font-family: var(--font-mono, monospace);
   font-size: 11px;
   font-weight: 700;
@@ -54,117 +69,63 @@
   padding: 6px 14px;
   border-radius: 9999px;
   cursor: pointer;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
   transition: all 0.2s ease;
   pointer-events: auto;
   opacity: 0;
 }
 
 .skipButton:hover {
-  background: rgba(17, 17, 17, 0.12);
-  border-color: rgba(17, 17, 17, 0.45);
+  background: rgba(24, 86, 243, 0.85);
+  border-color: rgba(255, 255, 255, 0.6);
   transform: translateY(-1px);
 }
 
-/* -------------------------------------------------------
-   Shared SVG class shortcuts used across elements
-------------------------------------------------------- */
-
-/* Stall roof fill */
-.stallRoof {
-  fill: #111111;
-}
-
-/* Stall counter */
-.stallCounter {
-  fill: #1856f3;
-}
-
-/* Figure shapes */
-.figureHead {
-  fill: #111111;
-}
-.figureBody {
-  fill: #111111;
-}
-.figureAccent {
-  fill: #1856f3;
-}
-.figureFace {
-  fill: #c4906a;
-}
-
-/* Speech bubbles */
-.bubble {
-  fill: #ffffff;
-  stroke: #111111;
-  stroke-width: 2.5;
-}
-.bubbleText {
-  font-family: var(--font-syne), "Arial Black", Impact, sans-serif;
+/* Title & typography */
+.hustleText {
+  font-family: Impact, "Arial Black", var(--font-syne), sans-serif;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
-  fill: #111111;
+  letter-spacing: 0.04em;
+  fill: #11161d;
 }
 
-/* Title text */
-.titleHustle {
-  font-family: var(--font-syne), "Arial Black", Impact, sans-serif;
+.maniaText {
+  font-family: Impact, "Arial Black", var(--font-syne), sans-serif;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: -0.03em;
-  fill: #111111;
+  letter-spacing: 0.03em;
+  fill: #0058ff;
 }
-.titleMania {
-  font-family: var(--font-syne), "Arial Black", Impact, sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-  fill: #1856f3;
-}
+
 .taglineText {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--font-mono), monospace;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.22em;
-  fill: #111111;
+  letter-spacing: 0.28em;
+  fill: #11161d;
 }
 
-/* Corner annotations */
-.cornerText {
-  font-family: var(--font-mono, monospace);
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  fill: #111111;
-}
-.cornerBrand {
-  font-family: var(--font-syne), "Arial Black", sans-serif;
+.dreamsText {
+  font-family: Impact, "Arial Black", var(--font-syne), sans-serif;
   font-weight: 900;
-  letter-spacing: -0.01em;
-  fill: #111111;
-}
-.cornerBrandBlue {
-  fill: #1856f3;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  fill: #0058ff;
 }
 
-/* Signage text helpers */
-.bannerText {
-  font-family: var(--font-syne), "Arial Black", sans-serif;
+.signBoardText {
+  font-family: var(--font-syne), Impact, "Arial Black", sans-serif;
   font-weight: 900;
-  letter-spacing: 0.06em;
-}
-.monoLabel {
-  font-family: var(--font-mono, monospace);
-  font-weight: 800;
+  text-transform: uppercase;
   letter-spacing: 0.08em;
+  fill: #ffffff;
 }
 
-/* Steam wisp paths */
-.steam {
-  fill: none;
-  stroke: #111111;
-  stroke-width: 2;
-  stroke-linecap: round;
-  opacity: 0.38;
+.priceTagText {
+  font-family: var(--font-mono), monospace;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  fill: #ffffff;
 }

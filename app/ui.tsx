@@ -1,7 +1,6 @@
-/* Shared page furniture. Everything here is used by two or more routes. */
-
 import { ViewTransition } from "react";
 import Link from "next/link";
+import { SubEventBadge } from "./EventGraphics";
 
 export function Arrow({ className = "" }: { className?: string }) {
   return (
@@ -22,14 +21,12 @@ export function Arrow({ className = "" }: { className?: string }) {
 export function Disc({ className = "" }: { className?: string }) {
   return (
     <span
-      className={`inline-block shrink-0 rounded-full border border-current bg-[linear-gradient(90deg,currentColor_50%,transparent_50%)] ${className}`}
+      className={`inline-block shrink-0 rounded-full border border-[#F7CA50] bg-[linear-gradient(90deg,#F7CA50_50%,transparent_50%)] ${className}`}
     />
   );
 }
 
-/* The crossing between the two grounds. `into` names which half comes next, so
-   the glow bleeds off the night side either way. The label carries the fact the
-   whole design is built on, not decoration. */
+/* The crossing between the two grounds. */
 export function Terminator({
   into,
   label,
@@ -43,7 +40,7 @@ export function Terminator({
         into === "day" ? "terminator--rising day" : "terminator--setting night"
       }`}
     >
-      <p className="label data text-center text-fg/70">{label}</p>
+      <p className="label data text-center text-white/80">{label}</p>
     </div>
   );
 }
@@ -57,8 +54,7 @@ function initials(name: string) {
     .toUpperCase();
 }
 
-/* Placeholder portrait: gradient tile with initials. Drop an <Image> in here
-   once real photos exist. */
+/* Placeholder portrait: gradient tile with initials. */
 export function Avatar({
   name,
   className = "",
@@ -68,9 +64,9 @@ export function Avatar({
 }) {
   return (
     <div
-      className={`grid place-items-center bg-gradient-to-br from-fg/20 to-fg/5 text-fg/70 ${className}`}
+      className={`grid place-items-center rounded-full bg-[#0B2D6D] border border-white/30 text-[#F7CA50] font-bold ${className}`}
     >
-      <span className="display text-[0.6em] tracking-normal">
+      <span className="display text-[0.7em] tracking-normal">
         {initials(name)}
       </span>
     </div>
@@ -79,7 +75,7 @@ export function Avatar({
 
 export function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <p className="label flex items-center gap-3 text-accent">
+    <p className="label flex items-center gap-3 text-[#F7CA50] font-mono font-bold text-xs uppercase tracking-wider">
       <Disc className="h-2.5 w-2.5" />
       {children}
     </p>
@@ -96,7 +92,7 @@ export function SectionHeading({
   return (
     <div className="flex flex-col gap-5">
       <Eyebrow>{eyebrow}</Eyebrow>
-      <h2 className="heading max-w-4xl text-4xl sm:text-5xl lg:text-6xl">
+      <h2 className="font-display-title max-w-4xl text-4xl sm:text-5xl lg:text-6xl text-white">
         {heading}
       </h2>
     </div>
@@ -108,14 +104,14 @@ export function Person({ name, role }: { name: string; role: string }) {
     <div className="flex items-center gap-3">
       <Avatar name={name} className="h-11 w-11 shrink-0 rounded-full text-lg" />
       <div className="min-w-0">
-        <p className="truncate font-medium">{name}</p>
-        <p className="truncate text-sm text-fg/70">{role}</p>
+        <p className="truncate font-bold text-white text-base">{name}</p>
+        <p className="truncate font-mono text-xs text-[#F7CA50]">{role}</p>
       </div>
     </div>
   );
 }
 
-/* SPOC / board contact card — the gmail and phone are meant to be tapped. */
+/* SPOC / board contact card — the email and phone are meant to be tapped. */
 export function ContactCard({
   name,
   role,
@@ -128,16 +124,16 @@ export function ContactCard({
   phone?: string;
 }) {
   return (
-    <div className="flex flex-col gap-4 rounded-2xl bg-surface p-6">
+    <div className="flex flex-col gap-4 rounded-2xl border-2 border-white/30 bg-white/10 p-6 backdrop-blur-xs transition hover:border-[#F7CA50] hover:bg-white/15">
       <Person name={name} role={role} />
       <div className="data flex flex-col gap-1 text-sm">
-        <a href={`mailto:${email}`} className="text-accent hover:text-fg">
+        <a href={`mailto:${email}`} className="text-[#F7CA50] font-medium hover:underline">
           {email}
         </a>
         {phone && (
           <a
             href={`tel:${phone.replace(/\s/g, "")}`}
-            className="text-fg/70 hover:text-fg"
+            className="text-white/80 font-mono hover:text-[#F7CA50]"
           >
             {phone}
           </a>
@@ -162,23 +158,24 @@ export function EventCard({
     <Link
       href={`/events/${event.slug}`}
       transitionTypes={["nav-forward"]}
-      className="press group flex flex-col gap-4"
+      className="press group flex flex-col gap-4 rounded-3xl border-2 border-white/30 bg-white/10 p-6 backdrop-blur-xs transition hover:border-white hover:bg-white/15"
     >
       {/* The tile is the morph target: it grows into the event page's hero. */}
       <ViewTransition name={`event-${event.slug}`} share="morph" default="none">
-        <div className="grain relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-surface-2 via-surface to-ground transition duration-200 group-hover:from-accent/45">
-          <span className="label absolute top-4 left-4 rounded-full border border-fg/15 bg-ground/50 px-3 py-1 backdrop-blur-md">
+        <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border-2 border-white bg-[#FF4D79] p-4 flex items-center justify-center shadow-[4px_4px_0px_rgba(0,0,0,0.2)] transition duration-200 group-hover:bg-[#f03867]">
+          <SubEventBadge slug={event.slug} />
+          <span className="label absolute top-3 left-3 rounded-full border border-white/40 bg-[#0B2D6D]/80 px-2.5 py-0.5 text-[10px] font-bold text-white uppercase backdrop-blur-md">
             {event.category}
           </span>
-          <span className="absolute right-4 bottom-4 grid h-10 w-10 place-items-center rounded-full bg-fg text-ground opacity-0 transition duration-200 group-hover:opacity-100">
+          <span className="absolute right-3 bottom-3 grid h-9 w-9 place-items-center rounded-full bg-white text-[#0d0e15] opacity-0 transition duration-200 group-hover:opacity-100">
             <Arrow />
           </span>
         </div>
       </ViewTransition>
       <div>
-        <h3 className="heading text-xl">{event.name}</h3>
-        <p className="text-fg/70">{event.tagline}</p>
-        <p className="label mt-2 text-fg/70">{event.day}</p>
+        <h3 className="heading text-xl font-bold text-white">{event.name}</h3>
+        <p className="text-white/85 text-sm mt-1">{event.tagline}</p>
+        <p className="label mt-2 font-mono text-xs font-bold text-[#F7CA50]">{event.day}</p>
       </div>
     </Link>
   );

@@ -1,0 +1,17 @@
+{
+  "include": [
+    "python-service"
+  ],
+  "exclude": [
+    "python-service/venv",
+    "**/node_modules"
+  ],
+  "venvPath": "python-service",
+  "venv": "venv",
+  "extraPaths": [
+    "python-service",
+    "python-service/venv/lib/python3.14/site-packages",
+    "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages"
+  ],
+  "reportMissingImports": "none"
+}

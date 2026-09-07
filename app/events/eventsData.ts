@@ -26,7 +26,7 @@ export const eventsData: Record<string, EventDetail> = {
       whiteWord: "SPOTLIGHT",
     },
     description:
-      "Spotlight features presentations from industry experts on technology, entrepreneurship, and startups. It gives students valuable insights into emerging technologies, industry trends, and the future of entrepreneurship.",
+      "Spotlight features talk sessions by industry experts covering the latest trends across various fields. It gives students valuable insights into emerging ideas, industry developments, and new opportunities.",
     logistics: {
       dateTime: "[TODO] Date and schedule to be announced",
       venue: "[TODO] Venue and location to be announced",
@@ -111,7 +111,7 @@ export const eventsData: Record<string, EventDetail> = {
       whiteWord: "MANIA",
     },
     description:
-      "Hustle Mania gives students an opportunity to showcase their marketing and negotiation skills by selling products of their choice. Participants compete with others while developing their communication, persuasion, and business skills.",
+      "Hustle Mania is a student-organized stall event where students sell products of their choice. Participants compete with others while developing their communication, persuasion, and business skills.",
     logistics: {
       dateTime: "[TODO] Date and schedule to be announced",
       venue: "[TODO] Venue and location to be announced",

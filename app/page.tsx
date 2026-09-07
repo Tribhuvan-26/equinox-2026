@@ -48,7 +48,7 @@ export default function HomePage() {
       : subEvents;
 
   return (
-    <div className="riso-texture min-h-screen text-white selection:bg-white selection:text-[#174ae8]">
+    <div className="riso-texture brochure-grid min-h-screen text-white selection:bg-[#F7CA50] selection:text-[#0d0e15]">
       {/* =========================================================================
           SECTION 1: HERO / COVER (Page 01)
           ========================================================================= */}
@@ -77,8 +77,8 @@ export default function HomePage() {
                 E-SUMMIT
               </span>
               <div className="flex items-center gap-2 rounded-full border-2 border-white bg-white/10 px-4 py-1.5 backdrop-blur-xs">
-                <Calendar className="h-4 w-4 text-white" />
-                <span className="font-mono text-xs font-black tracking-wider uppercase sm:text-sm">
+                <Calendar className="h-4 w-4 text-[#F7CA50]" />
+                <span className="font-mono text-xs font-black tracking-wider uppercase sm:text-sm text-white">
                   {event.date}
                 </span>
               </div>
@@ -87,10 +87,10 @@ export default function HomePage() {
             {/* Massive "THE EQUINOX" Title Lockup with Hanging "2.0" */}
             <motion.div variants={heroFadeUp} className="relative mt-4 flex items-end justify-center lg:justify-start">
               <div className="leading-none">
-                <span className="block font-mono text-2xl font-black tracking-widest text-white sm:text-4xl lg:text-5xl">
+                <span className="block font-mono text-2xl font-black tracking-widest text-[#FF4D79] sm:text-4xl lg:text-5xl">
                   THE
                 </span>
-                <h1 className="font-display-title display-title-shadow text-6xl tracking-tighter text-white sm:text-8xl md:text-9xl lg:text-[11rem]">
+                <h1 className="font-display-title display-title-shadow text-6xl tracking-tighter text-[#F7CA50] sm:text-8xl md:text-9xl lg:text-[11rem]">
                   EQUINOX
                 </h1>
               </div>
@@ -103,7 +103,7 @@ export default function HomePage() {
 
             {/* Hashtag Tagline Badge */}
             <motion.div variants={heroFadeUp} className="mt-4 flex justify-center sm:mt-6 lg:justify-start">
-              <div className="inline-flex items-center gap-2 rounded-md border-2 border-[#0d0e15] bg-white px-4 py-2 shadow-[4px_4px_0px_#0d0e15] sm:px-6 sm:py-2.5">
+              <div className="inline-flex items-center gap-2 rounded-md border-2 border-[#0d0e15] bg-[#F7CA50] px-4 py-2 shadow-[4px_4px_0px_#0d0e15] sm:px-6 sm:py-2.5">
                 <span className="font-mono text-sm font-black text-[#0d0e15] sm:text-base">
                   #
                 </span>
@@ -124,14 +124,14 @@ export default function HomePage() {
             <motion.div variants={heroFadeUp} className="mt-8 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
               <a
                 href="#events"
-                className="flex items-center gap-2 rounded-full border-2 border-white bg-white px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-[#174ae8] shadow-lg transition hover:scale-105 hover:bg-white/95"
+                className="flex items-center gap-2 rounded-full border-2 border-[#0d0e15] bg-[#F7CA50] px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-[#0d0e15] shadow-[4px_4px_0px_#0d0e15] transition hover:scale-105 hover:bg-[#ffe17d]"
               >
                 Explore 10 Sub-Events
                 <ArrowRight className="h-4 w-4" />
               </a>
               <a
                 href="#about"
-                className="flex items-center gap-2 rounded-full border-2 border-white/60 bg-white/10 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-xs transition hover:bg-white hover:text-[#174ae8]"
+                className="flex items-center gap-2 rounded-full border-2 border-white bg-white/10 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-xs transition hover:bg-white hover:text-[#1B5FD6]"
               >
                 About Equinox
               </a>
@@ -163,76 +163,113 @@ export default function HomePage() {
       >
         <div className="max-w-4xl">
           <span className="rounded-full border border-white/40 bg-white/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-white">
-            {about.eyebrow}
+            Page 01 · {about.eyebrow}
           </span>
           <h2 className="mt-4 font-display-title text-4xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">
             {about.heading}
           </h2>
-          <p className="mt-6 text-xl leading-relaxed text-white/90 sm:text-2xl font-medium">
+          <p className="mt-6 text-xl leading-relaxed text-white/95 sm:text-2xl font-medium">
             {about.whatIsEquinox}
           </p>
         </div>
 
-        {/* Editorial Pair: Who Are We / What We Do — an intentional 2-up, not a padded 3rd column */}
+        {/* Editorial Pair: who are we? / what we do — matching brochure casing */}
         <div className="mt-16 grid gap-8 md:grid-cols-2">
-          {/* Who Are We */}
+          {/* who are we? (lowercase bold matching Brochure Page 01) */}
           <div className="program-card rounded-3xl border-2 border-white/40 bg-white/10 p-8 backdrop-blur-xs">
-            <span className="font-mono text-xs font-black tracking-wider text-white/70 uppercase">
+            <span className="font-mono text-xs font-black tracking-wider text-[#F7CA50] uppercase">
               01 · Vision
             </span>
-            <h3 className="mt-2 text-2xl font-black text-white">Who Are We?</h3>
-            <p className="mt-4 text-sm leading-relaxed text-white/85">
-              {about.whoAreWe}
+            <h3 className="mt-2 text-3xl font-black lowercase text-white sm:text-4xl">
+              who <span className="text-[#F7CA50]">are we?</span>
+            </h3>
+            <p className="mt-2 font-mono text-xs font-bold uppercase tracking-wider text-white/80">
+              Centre for Innovation &amp; Entrepreneurship @MLRIT
+            </p>
+            <p className="mt-4 text-sm leading-relaxed text-white/90">
+              Established in 2015, MLRIT-CIE is an <span className="font-bold text-[#F7CA50]">entrepreneurship development cell</span> dedicated to nurturing young innovators and supporting <span className="font-bold text-[#F7CA50]">early-stage startups</span>. We focus on building a strong and thriving ecosystem that encourages growth, collaboration, and innovation.
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-white/90">
+              By inspiring <span className="font-bold text-[#F7CA50]">creativity</span> and <span className="font-bold text-[#F7CA50]">entrepreneurial spirit</span> among students, alumni, faculty, and industry partners, we create opportunities for <span className="font-bold text-[#F7CA50]">learning, development</span>, and success. Through continuous support and guidance, we aim to drive innovation and turn <span className="font-bold text-[#F7CA50]">ideas into reality</span>.
             </p>
           </div>
 
-          {/* What We Do */}
-          <div className="program-card rounded-3xl border-2 border-white/40 bg-white/10 p-8 backdrop-blur-xs">
-            <span className="font-mono text-xs font-black tracking-wider text-white/70 uppercase">
-              02 · Mission
-            </span>
-            <h3 className="mt-2 text-2xl font-black text-white">What We Do</h3>
-            <p className="mt-4 text-sm leading-relaxed text-white/85">
-              {about.whatWeDo}
-            </p>
+          {/* what we do (lowercase bold matching brochure treatment) */}
+          <div className="program-card rounded-3xl border-2 border-white/40 bg-white/10 p-8 backdrop-blur-xs flex flex-col justify-between">
+            <div>
+              <span className="font-mono text-xs font-black tracking-wider text-[#F7CA50] uppercase">
+                02 · Mission
+              </span>
+              <h3 className="mt-2 text-3xl font-black lowercase text-white sm:text-4xl">
+                what <span className="text-[#F7CA50]">we do</span>
+              </h3>
+              <p className="mt-4 text-base leading-relaxed text-white/95 sm:text-lg">
+                We host high-impact hackathons, from MetaLoop, our biggest national-level AR/VR hackathon, to Inventron, our flagship 36-hour build challenge.
+              </p>
+              <p className="mt-4 text-sm leading-relaxed text-white/85">
+                CIE MLRIT creates an ecosystem where ambitious students transform theoretical ideas into viable ventures through hands-on mentorship, seed funding, prototype support, and direct access to angel investors.
+              </p>
+            </div>
+
+            <div className="mt-6 rounded-2xl border border-white/20 bg-white/5 p-4">
+              <span className="font-mono text-xs font-black text-[#F7CA50] uppercase">
+                Flagship Hackathon Series
+              </span>
+              <p className="mt-1 font-bold text-white text-sm">
+                MetaLoop (National AR/VR) &amp; Inventron (36-Hour Build Challenge)
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* What Is Equinox — a wide banner, not a forced third equal card */}
+        {/* what is THE EQUINOX 2.0 — Banner matching Brochure Page 03 */}
         <div className="program-card mt-8 flex flex-col gap-8 rounded-3xl border-2 border-white bg-white p-8 text-[#0d0e15] shadow-xl sm:p-10 lg:flex-row lg:items-center lg:justify-between">
           <div className="lg:max-w-xl">
-            <span className="font-mono text-xs font-black tracking-wider text-[#174ae8] uppercase">
-              03 · The Summit
+            <span className="font-mono text-xs font-black tracking-wider text-[#1B5FD6] uppercase">
+              03 · The Summit (Page 03)
             </span>
-            <h3 className="mt-2 text-3xl font-black text-[#0d0e15] sm:text-4xl">What Is Equinox?</h3>
-            <p className="mt-4 max-w-md text-sm leading-relaxed text-[#1f222e]">
-              A flagship two-day festival of ideas, hustle, investment, and cross-campus collaboration held annually at MLRIT Hyderabad.
+            <h3 className="mt-2 text-3xl font-black text-[#0d0e15] sm:text-4xl">
+              what is <span className="text-[#FF4D79]">THE</span> <span className="text-[#1B5FD6]">EQUINOX</span> <span className="text-[#FF4D79]">2.0</span>
+            </h3>
+            <p className="mt-4 text-sm leading-relaxed text-[#1f222e]">
+              Equinox is a 2-day E Summit at MLR Institute of Technology, Hyderabad. It pictures a vibrant and engaging environment where students come together to take on real-world challenges and explore entrepreneurship through events like Spotlight, Case-Study Competitions, Brand Battles, IPL Auction, Startup Expo, Pitch Deck, and E-Cell Meet.
             </p>
           </div>
-          <div className="flex items-center gap-2 font-mono text-xs font-black text-[#174ae8] lg:shrink-0">
+          <div className="flex items-center gap-2 font-mono text-xs font-black text-[#1B5FD6] lg:shrink-0">
             <span>30 - 31 OCTOBER 2026</span>
             <ArrowRight className="h-4 w-4" />
           </div>
         </div>
 
-        {/* Highlights Row */}
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {highlights.map((item) => (
-            <div
-              key={item.label}
-              className="rounded-2xl border border-white/25 bg-white/5 p-6 backdrop-blur-xs"
-            >
-              <p className="font-mono text-4xl font-black text-white sm:text-5xl">
-                {item.value}
-              </p>
-              <p className="mt-2 font-bold text-white text-base">
-                {item.label}
-              </p>
-              <p className="mt-1 text-xs text-white/70">
-                {item.detail}
-              </p>
-            </div>
-          ))}
+        {/* Highlights Row (What's In Store stats) */}
+        <div className="mt-16">
+          <div className="mb-6 flex items-center justify-between">
+            <span className="font-mono text-xs font-black uppercase tracking-widest text-white/80">
+              What&apos;s In Store · Summit Scale
+            </span>
+            <span className="font-mono text-xs font-bold text-[#F7CA50] uppercase">
+              Page 04
+            </span>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {highlights.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-2xl border-2 border-white/30 bg-white/10 p-6 backdrop-blur-xs transition hover:border-white hover:bg-white/15"
+              >
+                <p className="font-mono text-4xl font-black text-[#F7CA50] sm:text-5xl">
+                  {item.value}
+                </p>
+                <p className="mt-2 font-bold text-white text-base">
+                  {item.label}
+                </p>
+                <p className="mt-1 text-xs text-white/80">
+                  {item.detail}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Page Footer Timeline */}
@@ -255,7 +292,7 @@ export default function HomePage() {
             <h2 className="mt-3 font-display-title text-5xl font-black tracking-tight text-white sm:text-7xl lg:text-8xl">
               SUB-EVENTS
             </h2>
-            <p className="mt-3 max-w-xl text-base text-white/85 sm:text-lg">
+            <p className="mt-3 max-w-xl text-base text-white/90 sm:text-lg">
               Official sub-events straight from Equinox 2.0&apos;s program. Click any event badge to open full format, venue details, and registration criteria.
             </p>
           </div>
@@ -266,7 +303,7 @@ export default function HomePage() {
               onClick={() => setActiveSubEventTab("all")}
               className={`rounded-full px-5 py-2 text-xs font-bold transition ${
                 activeSubEventTab === "all"
-                  ? "bg-white text-[#174ae8] shadow-sm"
+                  ? "bg-[#F7CA50] text-[#0d0e15] shadow-sm"
                   : "text-white hover:bg-white/10"
               }`}
             >
@@ -276,7 +313,7 @@ export default function HomePage() {
               onClick={() => setActiveSubEventTab("05")}
               className={`rounded-full px-5 py-2 text-xs font-bold transition ${
                 activeSubEventTab === "05"
-                  ? "bg-white text-[#174ae8] shadow-sm"
+                  ? "bg-[#F7CA50] text-[#0d0e15] shadow-sm"
                   : "text-white hover:bg-white/10"
               }`}
             >
@@ -286,7 +323,7 @@ export default function HomePage() {
               onClick={() => setActiveSubEventTab("06")}
               className={`rounded-full px-5 py-2 text-xs font-bold transition ${
                 activeSubEventTab === "06"
-                  ? "bg-white text-[#174ae8] shadow-sm"
+                  ? "bg-[#F7CA50] text-[#0d0e15] shadow-sm"
                   : "text-white hover:bg-white/10"
               }`}
             >
@@ -309,15 +346,15 @@ export default function HomePage() {
               >
                 {/* Timeline Tick / Marker */}
                 <div className="absolute -left-[23px] sm:-left-[31px] md:-left-[47px] top-6 flex h-6 w-6 items-center justify-center">
-                  <div className="h-3.5 w-3.5 rounded-full border-2 border-[#174ae8] bg-white shadow-[0_0_0_4px_rgba(255,255,255,0.3)] transition-transform group-hover:scale-125" />
+                  <div className="h-3.5 w-3.5 rounded-full border-2 border-white bg-[#FF4D79] shadow-[0_0_0_4px_rgba(255,255,255,0.3)] transition-transform group-hover:scale-125" />
                 </div>
 
                 {/* Event Card Row */}
                 <div className="program-card grid gap-6 rounded-3xl border-2 border-white/30 bg-white/5 p-6 backdrop-blur-xs transition hover:border-white hover:bg-white/15 sm:p-8 lg:grid-cols-12 lg:gap-10">
-                  {/* Left Column: White Outline Badge Pill */}
+                  {/* Left Column: Coral Sub-Event Badge Card (Brochure Page 05 Signature Treatment) */}
                   <div className="lg:col-span-5 flex flex-col justify-center">
                     <div className="flex items-center justify-between gap-3 mb-3">
-                      <span className="font-mono text-xs font-black tracking-widest text-white/70">
+                      <span className="font-mono text-xs font-black tracking-widest text-[#F7CA50]">
                         EVENT {String(idx + 1).padStart(2, "0")} · PAGE {item.pageNumber}
                       </span>
                       <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
@@ -325,8 +362,8 @@ export default function HomePage() {
                       </span>
                     </div>
 
-                    {/* Official Custom Typographic Badge in White Rounded Card */}
-                    <div className="flex min-h-[96px] w-full items-center justify-center rounded-2xl border-2 border-white bg-[#174ae8] p-4 text-center shadow-md transition-transform group-hover:scale-[1.02] group-hover:bg-[#1f54fa]">
+                    {/* Official Custom Typographic Badge in Coral Card (#FF4D79) with White Border */}
+                    <div className="flex min-h-[96px] w-full items-center justify-center rounded-2xl border-2 border-white bg-[#FF4D79] p-4 text-center shadow-[4px_4px_0px_rgba(0,0,0,0.2)] transition-transform group-hover:scale-[1.02] group-hover:bg-[#f03867]">
                       <SubEventBadge slug={item.slug} />
                     </div>
                   </div>
@@ -334,7 +371,7 @@ export default function HomePage() {
                   {/* Right Column: Exact Program Text Description */}
                   <div className="lg:col-span-7 flex flex-col justify-between">
                     <div>
-                      <p className="text-base leading-relaxed text-white sm:text-lg">
+                      <p className="text-base leading-relaxed text-white sm:text-lg font-normal">
                         {item.description}
                       </p>
 
@@ -342,7 +379,7 @@ export default function HomePage() {
                         {item.skills.map((skill) => (
                           <span
                             key={skill}
-                            className="rounded-full border border-white/25 bg-white/10 px-3 py-0.5 text-xs text-white/90"
+                            className="rounded-full border border-white/25 bg-white/10 px-3 py-0.5 text-xs text-white/95"
                           >
                             {skill}
                           </span>
@@ -352,10 +389,10 @@ export default function HomePage() {
 
                     <div className="mt-6 flex items-center justify-between border-t border-white/20 pt-4 text-xs font-semibold text-white/80">
                       <span className="flex items-center gap-1.5">
-                        <Calendar className="h-3.5 w-3.5" />
+                        <Calendar className="h-3.5 w-3.5 text-[#F7CA50]" />
                         {item.timing}
                       </span>
-                      <span className="flex items-center gap-1 font-bold text-white group-hover:underline">
+                      <span className="flex items-center gap-1 font-bold text-[#F7CA50] group-hover:underline">
                         View Event Details &amp; Rules
                         <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                       </span>
@@ -374,7 +411,7 @@ export default function HomePage() {
       </section>
 
       {/* =========================================================================
-          SECTION 5: SUMMIT HIGHLIGHTS & IMPACT
+          SECTION 5: SUMMIT HIGHLIGHTS & OUR IMPACT (Why Sponsor Us)
           ========================================================================= */}
       <section
         id="impact"
@@ -382,57 +419,62 @@ export default function HomePage() {
       >
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           <div>
-            <span className="rounded-full border border-white/40 bg-white/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-white">
-              Why Sponsor &amp; Partner
-            </span>
-            <h2 className="mt-4 font-display-title text-4xl font-black tracking-tight text-white sm:text-6xl">
-              Our Impact &amp; Footprint
+            <div className="flex items-center gap-2">
+              <span className="rounded-full border border-white/40 bg-white/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-white">
+                Brochure Page 07 · Impact
+              </span>
+              <span className="font-mono text-sm font-bold text-[#FF4D79] italic">
+                Why Sponsor Us
+              </span>
+            </div>
+            <h2 className="mt-4 font-display-title text-4xl font-black tracking-tight text-white sm:text-6xl uppercase">
+              OUR IMPACT
             </h2>
-            <p className="mt-4 text-lg leading-relaxed text-white/85">
+            <p className="mt-4 text-lg leading-relaxed text-white/90">
               The Equinox connects the brightest engineering and business minds with early-stage venture ecosystems. Sponsoring Equinox places your brand at the epicentre of student entrepreneurship across southern India.
             </p>
 
             <div className="mt-8 space-y-4">
               <div className="rounded-2xl border border-white/25 bg-white/10 p-5">
-                <h4 className="font-bold text-white text-lg">Direct Campus Engagement</h4>
-                <p className="mt-1 text-sm text-white/80">
-                  Direct visibility before 1,000+ top engineering and MBA students, coders, and startup innovators.
+                <h4 className="font-bold text-[#F7CA50] text-lg">Direct Campus Engagement</h4>
+                <p className="mt-1 text-sm text-white/85">
+                  Direct visibility before 2,000+ top engineering and MBA students, coders, and startup innovators.
                 </p>
               </div>
 
               <div className="rounded-2xl border border-white/25 bg-white/10 p-5">
-                <h4 className="font-bold text-white text-lg">Talent &amp; Startup Scouting</h4>
-                <p className="mt-1 text-sm text-white/80">
+                <h4 className="font-bold text-[#F7CA50] text-lg">Talent &amp; Startup Scouting</h4>
+                <p className="mt-1 text-sm text-white/85">
                   Immediate access to hiring pipelines via Internship Drive and pre-screened student ventures in Pitch Deck and Startup Expo.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Big Number Editorial Blocks */}
+          {/* Distinct "Why Sponsor Us" Stats (2,000+ Footfall, 600+ Participants distinct) */}
           <div className="grid grid-cols-2 gap-4 sm:gap-6">
             <div className="rounded-3xl border-2 border-white bg-white p-8 text-[#0d0e15] shadow-xl">
-              <span className="font-mono text-xs font-bold uppercase text-[#174ae8]">Official</span>
-              <p className="mt-2 font-mono text-5xl font-black sm:text-6xl">10</p>
-              <p className="mt-2 font-bold text-base">Flagship Sub-Events</p>
+              <span className="font-mono text-xs font-black uppercase text-[#1B5FD6]">Audience Reach</span>
+              <p className="mt-2 font-mono text-5xl font-black text-[#1B5FD6] sm:text-6xl">2,000+</p>
+              <p className="mt-2 font-bold text-base text-[#0d0e15]">Footfall</p>
             </div>
 
             <div className="rounded-3xl border-2 border-white/60 bg-white/10 p-8 backdrop-blur-xs">
-              <span className="font-mono text-xs font-bold uppercase text-white/70">Duration</span>
-              <p className="mt-2 font-mono text-5xl font-black text-white sm:text-6xl">2</p>
-              <p className="mt-2 font-bold text-white text-base">Full Summit Days</p>
+              <span className="font-mono text-xs font-black uppercase text-[#F7CA50]">Active Delegates</span>
+              <p className="mt-2 font-mono text-5xl font-black text-[#F7CA50] sm:text-6xl">600+</p>
+              <p className="mt-2 font-bold text-white text-base">Participants</p>
             </div>
 
             <div className="rounded-3xl border-2 border-white/60 bg-white/10 p-8 backdrop-blur-xs">
-              <span className="font-mono text-xs font-bold uppercase text-white/70">Scale</span>
-              <p className="mt-2 font-mono text-5xl font-black text-white sm:text-6xl">1K+</p>
-              <p className="mt-2 font-bold text-white text-base">Attendees &amp; Builders</p>
+              <span className="font-mono text-xs font-black uppercase text-[#F7CA50]">Ecosystem</span>
+              <p className="mt-2 font-mono text-5xl font-black text-[#F7CA50] sm:text-6xl">15+</p>
+              <p className="mt-2 font-bold text-white text-base">Startups</p>
             </div>
 
             <div className="rounded-3xl border-2 border-white bg-white p-8 text-[#0d0e15] shadow-xl">
-              <span className="font-mono text-xs font-bold uppercase text-[#174ae8]">Network</span>
-              <p className="mt-2 font-mono text-5xl font-black sm:text-6xl">50+</p>
-              <p className="mt-2 font-bold text-base">Partner E-Cells</p>
+              <span className="font-mono text-xs font-black uppercase text-[#FF4D79]">Competitions</span>
+              <p className="mt-2 font-mono text-5xl font-black text-[#FF4D79] sm:text-6xl">10</p>
+              <p className="mt-2 font-bold text-base text-[#0d0e15]">Sub-Events</p>
             </div>
           </div>
         </div>
@@ -458,9 +500,9 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* Student Coordinators from Page 12 */}
+        {/* Student Coordinators from Page 12 (Updated: Sanjana, Adithya, Mahith, Yashashri) */}
         <div className="mt-12">
-          <h3 className="font-mono text-sm font-black uppercase tracking-wider text-white/80">
+          <h3 className="font-mono text-sm font-black uppercase tracking-wider text-[#F7CA50]">
             {contact.subheading}
           </h3>
           <p className="mt-1 font-bold text-xl text-white">Student Coordinators</p>
@@ -470,17 +512,17 @@ export default function HomePage() {
               <a
                 key={coordinator.name}
                 href={`tel:${coordinator.phoneRaw}`}
-                className="program-card group flex items-center justify-between rounded-2xl border-2 border-white/40 bg-white/10 p-5 backdrop-blur-xs transition hover:border-white hover:bg-white hover:text-[#174ae8]"
+                className="program-card group flex items-center justify-between rounded-2xl border-2 border-white/40 bg-white/10 p-5 backdrop-blur-xs transition hover:border-[#F7CA50] hover:bg-white hover:text-[#1B5FD6]"
               >
                 <div>
-                  <p className="font-bold text-lg text-white group-hover:text-[#174ae8]">
+                  <p className="font-bold text-lg text-white group-hover:text-[#1B5FD6]">
                     {coordinator.name}
                   </p>
-                  <p className="font-mono text-sm text-white/80 group-hover:text-[#0d0e15]">
+                  <p className="font-mono text-sm text-[#F7CA50] group-hover:text-[#0d0e15] font-semibold">
                     {coordinator.phone}
                   </p>
                 </div>
-                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-current">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-current text-[#F7CA50] group-hover:text-[#1B5FD6]">
                   <Phone className="h-4 w-4" />
                 </div>
               </a>
@@ -494,7 +536,7 @@ export default function HomePage() {
             {/* Email & Website */}
             <div className="space-y-6">
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#174ae8]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#1B5FD6]">
                   <Mail className="h-5 w-5" />
                 </div>
                 <div>
@@ -511,7 +553,7 @@ export default function HomePage() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#174ae8]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#1B5FD6]">
                   <Globe className="h-5 w-5" />
                 </div>
                 <div>
@@ -532,7 +574,7 @@ export default function HomePage() {
 
             {/* Address */}
             <div className="flex items-start gap-4 border-t border-white/20 pt-6 lg:border-t-0 lg:border-l lg:pl-8 lg:pt-0">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#174ae8]">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#1B5FD6]">
                 <MapPin className="h-5 w-5" />
               </div>
               <div>
@@ -557,7 +599,7 @@ export default function HomePage() {
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-xs font-bold text-white transition hover:bg-white hover:text-[#174ae8]"
+                  className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-xs font-bold text-white transition hover:bg-white hover:text-[#1B5FD6]"
                 >
                   {social.platform === "Instagram" && (
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">

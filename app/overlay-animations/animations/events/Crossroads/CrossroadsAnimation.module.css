@@ -6,7 +6,7 @@
   width: 100vw;
   height: 100vh;
   z-index: 99999;
-  background-color: #f0e6d8;
+  background-color: #f1e4cf;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -30,7 +30,7 @@
   inset: 0;
   pointer-events: none;
   z-index: 2;
-  opacity: 0.12;
+  opacity: 0.08;
   mix-blend-mode: multiply;
 }
 
@@ -43,9 +43,9 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(17, 17, 17, 0.06);
-  border: 1.5px solid rgba(17, 17, 17, 0.22);
-  color: #111111;
+  background: rgba(27, 31, 37, 0.08);
+  border: 1.5px solid rgba(27, 31, 37, 0.25);
+  color: #1b1f25;
   font-family: var(--font-mono, monospace);
   font-size: 11px;
   font-weight: 700;
@@ -61,44 +61,23 @@
 }
 
 .skipButton:hover {
-  background: rgba(17, 17, 17, 0.12);
-  border-color: rgba(17, 17, 17, 0.45);
+  background: rgba(27, 31, 37, 0.16);
+  border-color: rgba(27, 31, 37, 0.55);
   transform: translateY(-1px);
 }
 
-/* -------------------------------------------------------
-   Typography and SVG styling
-------------------------------------------------------- */
-
+/* Typography and SVG styling */
 .titleText {
   font-family: Impact, "Arial Black", var(--font-syne), sans-serif;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.cornerText {
-  font-family: var(--font-mono, monospace);
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  fill: #111111;
-}
-
-.cornerBrand {
-  font-family: var(--font-syne), "Arial Black", sans-serif;
-  font-weight: 900;
   letter-spacing: -0.01em;
-  fill: #111111;
 }
 
-.cornerBrandBlue {
-  fill: #1856f3;
-}
-
-.annotationText {
+.sideAnnotationText {
   font-family: var(--font-syne), "Arial Black", sans-serif;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  fill: #111111;
+  fill: #1b1f25;
 }

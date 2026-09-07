@@ -1,227 +1,256 @@
 // app/overlay-animations/animations/events/HustleMania/hustleManiaTimeline.ts
 import gsap from "gsap";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Types
-// ─────────────────────────────────────────────────────────────────────────────
-
 export interface HustleManiaSceneTargets {
   container: HTMLElement | null;
+  stageFrame: HTMLElement | null;
+  baseImage: HTMLElement | null;
   skipButton: HTMLElement | null;
-  // Groups animated together in entrance (tight stagger)
-  leftStall: SVGElement | null;
-  rightStall: SVGElement | null;
-  centerBg: SVGElement | null;
-  buntingGroup: SVGElement | null;
-  titleGroup: SVGElement | null;
-  callout: SVGElement | null;
-  leftBuyer: SVGElement | null;
-  rightBuyer: SVGElement | null;
-  bubbleDeal: SVGElement | null;
-  bubbleYours: SVGElement | null;
-  rightSign: SVGElement | null;
-  steamGroup: SVGElement | null;
-  cornerAnnotations: SVGElement | null;
-  // For idle loops
-  buntingFlags: SVGElement[];
-  steamEls: SVGElement[];
+
+  // Header & branding
+  brandingLeft: SVGElement | null;
+  brandingRight: SVGElement | null;
+  topTagline: SVGElement | null;
+
+  // Scene accents
+  signBoard: SVGElement | null;
+  hangingTagGroup: SVGElement | null;
+  hangingTag: SVGElement | null; // inner tag for swinging rotation
+  dealBubbleGroup: SVGElement | null;
+
+  // Title elements
+  titleBlock: SVGElement | null;
+  titleHustle: SVGElement | null;
+  titleMania: SVGElement | null;
+  motionLinesLeft: SVGElement | null;
+  motionLinesRight: SVGElement | null;
+
+  // Slanted callout
+  sameGameDreams: SVGElement | null;
 }
 
 export interface HustleManiaTimelineOptions {
-  /** Fires when the entrance phase finishes (time to start idle loops). */
   onEntranceComplete?: () => void;
-  /** Fires when the exit phase finishes (time to unmount/clear). */
   onComplete?: () => void;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Entrance timeline (pop-in, ~0.55s)
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * Creates and returns the entrance GSAP timeline (paused).
- * Call .play() after creation.
- * When the entrance finishes, `options.onEntranceComplete` fires so the
- * caller can start idle loops.
- */
-export function createHustleManiaEntranceTl(
+export function createHustleManiaMasterTl(
   t: HustleManiaSceneTargets,
   options: HustleManiaTimelineOptions = {}
 ): gsap.core.Timeline {
   const { onEntranceComplete, onComplete } = options;
 
-  // ── Initial states ────────────────────────────────────────────────────────
+  // ── Initial Setup ──────────────────────────────────────────────────────────
   if (t.container) gsap.set(t.container, { opacity: 0 });
+  if (t.stageFrame) gsap.set(t.stageFrame, { opacity: 0, scale: 0.96 });
+  if (t.baseImage) gsap.set(t.baseImage, { opacity: 0, scale: 0.97 });
   if (t.skipButton) gsap.set(t.skipButton, { opacity: 0, pointerEvents: "none" });
 
-  const sceneGroups = [
-    t.leftStall,
-    t.rightStall,
-    t.centerBg,
-    t.buntingGroup,
-    t.titleGroup,
-    t.callout,
-    t.leftBuyer,
-    t.rightBuyer,
-    t.rightSign,
-    t.steamGroup,
-    t.cornerAnnotations,
-  ].filter(Boolean) as SVGElement[];
-  if (sceneGroups.length) gsap.set(sceneGroups, { opacity: 0 });
+  // Branding & taglines
+  if (t.brandingLeft) gsap.set(t.brandingLeft, { opacity: 0, y: -10 });
+  if (t.brandingRight) gsap.set(t.brandingRight, { opacity: 0, y: -10 });
+  if (t.topTagline) gsap.set(t.topTagline, { opacity: 0, y: -8 });
 
-  if (t.bubbleDeal) gsap.set(t.bubbleDeal, { opacity: 0, scale: 0, transformOrigin: "685px 494px" });
-  if (t.bubbleYours) gsap.set(t.bubbleYours, { opacity: 0, scale: 0, transformOrigin: "1618px 494px" });
-  if (t.leftStall) gsap.set(t.leftStall, { x: -30, transformOrigin: "320px 600px" });
-  if (t.rightStall) gsap.set(t.rightStall, { x: 30, transformOrigin: "1555px 600px" });
-  if (t.titleGroup) gsap.set(t.titleGroup, { opacity: 0 });
+  // Main props
+  if (t.signBoard) gsap.set(t.signBoard, { opacity: 0, scale: 0.85, transformOrigin: "256px 540px" });
+  if (t.hangingTagGroup) gsap.set(t.hangingTagGroup, { opacity: 0, y: -15 });
+  if (t.hangingTag) gsap.set(t.hangingTag, { transformOrigin: "765px 282px" });
 
-  // ── Timeline build ────────────────────────────────────────────────────────
+  // Interaction bubble
+  if (t.dealBubbleGroup) gsap.set(t.dealBubbleGroup, { opacity: 0, scale: 0.5, transformOrigin: "530px 355px" });
+
+  // Title & motion lines
+  if (t.titleHustle) gsap.set(t.titleHustle, { opacity: 0, y: -20, scaleY: 0.8, transformOrigin: "505px 145px" });
+  if (t.titleMania) gsap.set(t.titleMania, { opacity: 0, scale: 0.82, transformOrigin: "505px 245px" });
+  if (t.motionLinesLeft) gsap.set(t.motionLinesLeft, { opacity: 0, x: 15 });
+  if (t.motionLinesRight) gsap.set(t.motionLinesRight, { opacity: 0, x: -15 });
+
+  // Slanted callout
+  if (t.sameGameDreams) gsap.set(t.sameGameDreams, { opacity: 0, scale: 0.88, transformOrigin: "900px 150px" });
+
+  // ── Master Timeline ────────────────────────────────────────────────────────
   const tl = gsap.timeline({
     paused: true,
     onComplete: () => {
-      onEntranceComplete?.();
       onComplete?.();
     },
   });
 
-  // Container fades in
-  tl.to(t.container, { opacity: 1, duration: 0.28, ease: "power1.out" }, 0);
+  // 1. ENTRANCE (~0.5s): Overlay fades in, base stall image scales/fades in centered
+  tl.to(t.container, { opacity: 1, duration: 0.35, ease: "power1.out" }, 0);
+  tl.to(t.stageFrame, { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" }, 0.05);
+  tl.to(t.baseImage, { opacity: 1, scale: 1, duration: 0.55, ease: "power2.out" }, 0.08);
+  tl.to(t.skipButton, { opacity: 1, pointerEvents: "auto", duration: 0.25 }, 0.25);
 
-  // Skip button appears
-  tl.to(t.skipButton, { opacity: 1, pointerEvents: "auto", duration: 0.2 }, 0.18);
+  // 2. MAIN IDEA (~0.5s → ~1.3s): Sign board and hanging tag pop in around the stall image
+  if (t.signBoard) {
+    tl.to(
+      t.signBoard,
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 0.45,
+        ease: "back.out(1.4)",
+      },
+      0.55
+    );
+  }
 
-  // Background + center
-  if (t.centerBg)
-    tl.to(t.centerBg, { opacity: 1, duration: 0.25, ease: "power1.out" }, 0.04);
+  if (t.hangingTagGroup) {
+    tl.to(
+      t.hangingTagGroup,
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.48,
+        ease: "back.out(1.3)",
+      },
+      0.72
+    );
+  }
 
-  // Stalls pop in from each side
-  if (t.leftStall)
-    tl.to(t.leftStall, { opacity: 1, x: 0, duration: 0.32, ease: "back.out(1.3)" }, 0.06);
-  if (t.rightStall)
-    tl.to(t.rightStall, { opacity: 1, x: 0, duration: 0.32, ease: "back.out(1.3)" }, 0.1);
+  // 3. INTERACTION (~1.3s → ~1.9s): "DEAL?" speech bubble pops in near the figures
+  if (t.dealBubbleGroup) {
+    tl.to(
+      t.dealBubbleGroup,
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 0.35,
+        ease: "back.out(1.8)",
+      },
+      1.35
+    );
+  }
 
-  // Title group fades in
-  if (t.titleGroup)
-    tl.to(t.titleGroup, { opacity: 1, duration: 0.3, ease: "power1.out" }, 0.16);
+  // 4. TITLE REVEAL (~1.9s → ~2.6s): "HUSTLE" wipes in, "MANIA" wipes in beneath ~0.1s after
+  if (t.titleHustle) {
+    tl.to(
+      t.titleHustle,
+      {
+        opacity: 1,
+        y: 0,
+        scaleY: 1,
+        duration: 0.35,
+        ease: "back.out(1.5)",
+      },
+      1.9
+    );
+  }
 
-  // Bunting
-  if (t.buntingGroup)
-    tl.to(t.buntingGroup, { opacity: 1, duration: 0.22, ease: "power1.out" }, 0.18);
+  if (t.titleMania) {
+    tl.to(
+      t.titleMania,
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 0.38,
+        ease: "back.out(1.6)",
+      },
+      2.05
+    );
+  }
 
-  // Callout
-  if (t.callout)
-    tl.to(t.callout, { opacity: 1, duration: 0.22 }, 0.26);
+  // 5. RESOLUTION / HOLD (~2.6s → ~3.3s): Tagline, "SAME GAME BIGGER DREAMS", motion lines
+  if (t.topTagline) {
+    tl.to(t.topTagline, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 2.5);
+  }
 
-  // Buyers appear
-  if (t.leftBuyer)
-    tl.to(t.leftBuyer, { opacity: 1, duration: 0.24, ease: "power1.out" }, 0.24);
-  if (t.rightBuyer)
-    tl.to(t.rightBuyer, { opacity: 1, duration: 0.24, ease: "power1.out" }, 0.28);
+  if (t.brandingLeft) {
+    tl.to(t.brandingLeft, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 2.55);
+  }
 
-  // Speech bubbles pop in
-  if (t.bubbleDeal)
-    tl.to(t.bubbleDeal, { opacity: 1, scale: 1, duration: 0.22, ease: "back.out(2.2)" }, 0.32);
-  if (t.bubbleYours)
-    tl.to(t.bubbleYours, { opacity: 1, scale: 1, duration: 0.22, ease: "back.out(2.2)" }, 0.35);
+  if (t.brandingRight) {
+    tl.to(t.brandingRight, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 2.55);
+  }
 
-  // Standing sign + steam + corners
-  if (t.rightSign)
-    tl.to(t.rightSign, { opacity: 1, duration: 0.2 }, 0.34);
-  if (t.steamGroup)
-    tl.to(t.steamGroup, { opacity: 1, duration: 0.2 }, 0.38);
-  if (t.cornerAnnotations)
-    tl.to(t.cornerAnnotations, { opacity: 1, duration: 0.28 }, 0.36);
+  if (t.sameGameDreams) {
+    tl.to(
+      t.sameGameDreams,
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 0.35,
+        ease: "back.out(1.4)",
+      },
+      2.6
+    );
+  }
+
+  if (t.motionLinesLeft) {
+    tl.to(t.motionLinesLeft, { opacity: 1, x: 0, duration: 0.25, ease: "power2.out" }, 2.65);
+  }
+
+  if (t.motionLinesRight) {
+    tl.to(t.motionLinesRight, { opacity: 1, x: 0, duration: 0.25, ease: "power2.out" }, 2.65);
+  }
+
+  tl.call(() => {
+    onEntranceComplete?.();
+  }, undefined, 2.7);
+
+  // 6. EXIT (~3.3s → ~3.9s): Everything fades out fast, base image fades/scales out last
+  tl.to(
+    [
+      t.titleHustle,
+      t.titleMania,
+      t.topTagline,
+      t.sameGameDreams,
+      t.motionLinesLeft,
+      t.motionLinesRight,
+      t.dealBubbleGroup,
+      t.signBoard,
+      t.hangingTagGroup,
+      t.brandingLeft,
+      t.brandingRight,
+      t.skipButton,
+    ],
+    {
+      opacity: 0,
+      duration: 0.28,
+      ease: "power2.in",
+    },
+    3.3
+  );
+
+  tl.to(
+    t.baseImage,
+    {
+      opacity: 0,
+      scale: 0.96,
+      duration: 0.35,
+      ease: "power2.in",
+    },
+    3.45
+  );
+
+  tl.to(
+    t.container,
+    {
+      opacity: 0,
+      duration: 0.3,
+      ease: "power2.in",
+    },
+    3.6
+  );
 
   return tl;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Idle loops — call after entrance completes
-// Returns an array of live tweens so the caller can kill them on exit.
-// All created inside the gsap.context() scope of the component.
-// ─────────────────────────────────────────────────────────────────────────────
-
-export function startHustleManiaIdleLoops(
-  t: Pick<HustleManiaSceneTargets, "buntingFlags" | "steamEls" | "bubbleDeal" | "bubbleYours" | "callout">
-): gsap.core.Tween[] {
+export function startHustleManiaIdleLoops(targets: {
+  hangingTag: SVGElement | null;
+}): gsap.core.Tween[] {
   const loops: gsap.core.Tween[] = [];
 
-  // 1. Bunting flag sway — each flag sways from its resting position
-  t.buntingFlags.forEach((flag, i) => {
-    if (!flag) return;
-    const amplitude = 4 + (i % 3) * 1.5;
-    const dur = 0.75 + (i % 4) * 0.12;
-    const delay = i * 0.05;
+  if (targets.hangingTag) {
     loops.push(
-      gsap.to(flag, {
-        rotation: amplitude,
-        transformOrigin: "top center",
-        duration: dur,
+      gsap.to(targets.hangingTag, {
+        rotation: 4.5,
+        duration: 1.4,
         ease: "sine.inOut",
         yoyo: true,
         repeat: -1,
-        delay,
-      })
-    );
-  });
-
-  // 2. Steam wisps — continuous upward drift + fade, staggered starts
-  t.steamEls.forEach((steam, i) => {
-    if (!steam) return;
-    loops.push(
-      gsap.fromTo(
-        steam,
-        { y: 0, opacity: 0.38 },
-        {
-          y: -52,
-          opacity: 0,
-          duration: 1.3 + i * 0.28,
-          ease: "power1.out",
-          repeat: -1,
-          delay: i * 0.45,
-        }
-      )
-    );
-  });
-
-  // 3. Speech bubble pulse — subtle scale breathe
-  if (t.bubbleDeal) {
-    loops.push(
-      gsap.to(t.bubbleDeal, {
-        scale: 1.042,
-        transformOrigin: "882px 378px",
-        duration: 1.3,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-      })
-    );
-  }
-  if (t.bubbleYours) {
-    loops.push(
-      gsap.to(t.bubbleYours, {
-        scale: 1.038,
-        transformOrigin: "1480px 404px",
-        duration: 1.5,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-        delay: 0.4,
-      })
-    );
-  }
-
-  // 4. Callout sway — very subtle, slow rotation
-  if (t.callout) {
-    loops.push(
-      gsap.to(t.callout, {
-        rotation: 2.5,
-        transformOrigin: "1490px 188px",
-        duration: 2.8,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-        delay: 0.6,
+        transformOrigin: "765px 282px",
       })
     );
   }
@@ -229,32 +258,21 @@ export function startHustleManiaIdleLoops(
   return loops;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Exit — kill idle loops then fade everything out
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * Kills all running idle loops and fades out the overlay container.
- * `onComplete` fires when the exit fade finishes.
- */
 export function runHustleManiaExit(
   container: HTMLElement | null,
-  idleLoops: gsap.core.Tween[],
+  idleTweens: gsap.core.Tween[],
   onComplete?: () => void
 ): void {
-  // Kill idle loops first — important so they don't fight the fade-out
-  idleLoops.forEach((t) => t.kill());
-
+  idleTweens.forEach((tw) => tw.kill());
   if (!container) {
     onComplete?.();
     return;
   }
-
+  gsap.killTweensOf(container);
   gsap.to(container, {
     opacity: 0,
-    duration: 0.5,
+    duration: 0.25,
     ease: "power2.in",
-    overwrite: "auto",
     onComplete: () => {
       onComplete?.();
     },

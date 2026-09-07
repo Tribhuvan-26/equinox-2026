@@ -4,24 +4,38 @@ import gsap from "gsap";
 export interface CrossroadsSceneTargets {
   container: HTMLElement | null;
   skipButton: HTMLElement | null;
+
+  // Background & Clouds
+  backgroundGroup: SVGElement | null;
+  cloudsGroup: SVGElement | null;
+
+  // Semicircle Glow behind signpost
   semicircleGlow: SVGElement | null;
+
+  // Signpost Pole & Base
   signpostPole: SVGElement | null;
+
+  // 3 Arrow Signs
   signArrow1: SVGElement | null;
   signArrow2: SVGElement | null;
   signArrow3: SVGElement | null;
-  // Road A stroked elements (drawn from signpost outward)
-  roadAEls: SVGElement[];
-  // Road B stroked elements
-  roadBEls: SVGElement[];
-  // Crosswalk X
-  crosswalkXArm1: SVGLineElement | null;
-  crosswalkXArm2: SVGLineElement | null;
-  // Title wipe reveal clip rects
-  titleClipLeft: SVGRectElement | null;
-  titleClipRight: SVGRectElement | null;
+
+  // Roads Group & Extension Clips
+  roadsGroup: SVGElement | null;
+  roadLeftGroup: SVGElement | null;
+  roadRightGroup: SVGElement | null;
+  clipRectRoadLeft: SVGRectElement | null;
+  clipRectRoadRight: SVGRectElement | null;
+  crosswalkX: SVGElement | null;
+  roadBottomBlue: SVGElement | null;
+
+  // Motion-line Accents
+  motionAccentsGroup: SVGElement | null;
+
+  // Title Wipe & Ambient
   titleGroup: SVGElement | null;
+  titleClipRect: SVGRectElement | null;
   ambientGroup: SVGElement | null;
-  cornerAnnotations: SVGElement | null;
 }
 
 export interface CrossroadsTimelineOptions {
@@ -35,40 +49,91 @@ export function createCrossroadsMasterTl(
 ): gsap.core.Timeline {
   const { onEntranceComplete, onComplete } = options;
 
-  // ── Initial states ─────────────────────────────────────────────────────────
+  // ── Initial setup ───────────────────────────────────────────────────────────
   if (t.container) gsap.set(t.container, { opacity: 0 });
   if (t.skipButton) gsap.set(t.skipButton, { opacity: 0, pointerEvents: "none" });
 
-  if (t.semicircleGlow) gsap.set(t.semicircleGlow, { opacity: 0, scale: 0.8, transformOrigin: "960px 650px" });
-  if (t.signpostPole) gsap.set(t.signpostPole, { scaleY: 0, transformOrigin: "960px 650px", opacity: 0 });
+  if (t.cloudsGroup) gsap.set(t.cloudsGroup, { opacity: 0, y: -15 });
+  if (t.backgroundGroup) gsap.set(t.backgroundGroup, { opacity: 0 });
 
-  if (t.signArrow1) gsap.set(t.signArrow1, { scale: 0, transformOrigin: "960px 185px", opacity: 0 });
-  if (t.signArrow2) gsap.set(t.signArrow2, { scale: 0, transformOrigin: "960px 255px", opacity: 0 });
-  if (t.signArrow3) gsap.set(t.signArrow3, { scale: 0, transformOrigin: "960px 325px", opacity: 0 });
+  if (t.signpostPole) {
+    gsap.set(t.signpostPole, {
+      scaleY: 0,
+      transformOrigin: "730px 562px",
+      opacity: 0,
+    });
+  }
 
-  // Roads initially hidden via strokeDashoffset
-  const roadLen = 1400;
-  t.roadAEls.forEach((el) => {
-    if (el) gsap.set(el, { strokeDasharray: roadLen, strokeDashoffset: roadLen });
-  });
-  t.roadBEls.forEach((el) => {
-    if (el) gsap.set(el, { strokeDasharray: roadLen, strokeDashoffset: roadLen });
-  });
+  if (t.semicircleGlow) {
+    gsap.set(t.semicircleGlow, {
+      opacity: 0,
+      scale: 0.75,
+      transformOrigin: "730px 424px",
+    });
+  }
 
-  // Crosswalk X arms
-  const xArmLen = 300;
-  if (t.crosswalkXArm1) gsap.set(t.crosswalkXArm1, { strokeDasharray: xArmLen, strokeDashoffset: xArmLen });
-  if (t.crosswalkXArm2) gsap.set(t.crosswalkXArm2, { strokeDasharray: xArmLen, strokeDashoffset: xArmLen });
+  if (t.signArrow1) {
+    gsap.set(t.signArrow1, {
+      scale: 0,
+      transformOrigin: "730px 100px",
+      opacity: 0,
+    });
+  }
+  if (t.signArrow2) {
+    gsap.set(t.signArrow2, {
+      scale: 0,
+      transformOrigin: "730px 178px",
+      opacity: 0,
+    });
+  }
+  if (t.signArrow3) {
+    gsap.set(t.signArrow3, {
+      scale: 0,
+      transformOrigin: "730px 273px",
+      opacity: 0,
+    });
+  }
 
-  // Title clip rectangles: initially 0 width anchored at x=960
-  if (t.titleClipLeft) gsap.set(t.titleClipLeft, { attr: { x: 960, width: 0 } });
-  if (t.titleClipRight) gsap.set(t.titleClipRight, { attr: { x: 960, width: 0 } });
-  if (t.titleGroup) gsap.set(t.titleGroup, { opacity: 1 });
+  // Roads initially clipped at center (x=730, width=0)
+  if (t.clipRectRoadLeft) {
+    gsap.set(t.clipRectRoadLeft, { attr: { x: 730, width: 0 } });
+  }
+  if (t.clipRectRoadRight) {
+    gsap.set(t.clipRectRoadRight, { attr: { x: 725, width: 0 } });
+  }
+  if (t.roadLeftGroup) {
+    gsap.set(t.roadLeftGroup, { transformOrigin: "730px 562px", opacity: 0.8 });
+  }
+  if (t.roadRightGroup) {
+    gsap.set(t.roadRightGroup, { transformOrigin: "730px 562px", opacity: 0.8 });
+  }
+  if (t.roadBottomBlue) {
+    gsap.set(t.roadBottomBlue, { opacity: 0 });
+  }
+  if (t.crosswalkX) {
+    gsap.set(t.crosswalkX, {
+      scale: 0,
+      transformOrigin: "730px 617px",
+      opacity: 0,
+    });
+  }
 
-  if (t.ambientGroup) gsap.set(t.ambientGroup, { opacity: 0 });
-  if (t.cornerAnnotations) gsap.set(t.cornerAnnotations, { opacity: 0 });
+  if (t.motionAccentsGroup) {
+    gsap.set(t.motionAccentsGroup, { opacity: 0, scale: 0.6, transformOrigin: "730px 240px" });
+  }
 
-  // ── Timeline construction ──────────────────────────────────────────────────
+  // Title clip: initially 0 width centered at x=730
+  if (t.titleClipRect) {
+    gsap.set(t.titleClipRect, { attr: { x: 730, width: 0 } });
+  }
+  if (t.titleGroup) {
+    gsap.set(t.titleGroup, { opacity: 1 });
+  }
+  if (t.ambientGroup) {
+    gsap.set(t.ambientGroup, { opacity: 0 });
+  }
+
+  // ── Timeline construction ───────────────────────────────────────────────────
   const tl = gsap.timeline({
     paused: true,
     onComplete: () => {
@@ -76,191 +141,269 @@ export function createCrossroadsMasterTl(
     },
   });
 
-  // 1. ENTRANCE (0 → ~0.5s)
+  // ── PHASE 1: ENTRANCE (0 → ~0.4s) ──────────────────────────────────────────
   tl.to(t.container, { opacity: 1, duration: 0.35, ease: "power1.out" }, 0);
+  tl.to(t.backgroundGroup, { opacity: 1, duration: 0.35, ease: "power1.out" }, 0);
   tl.to(t.skipButton, { opacity: 1, pointerEvents: "auto", duration: 0.25 }, 0.2);
 
-  // Semicircle glow fades & scales in behind signpost
-  if (t.semicircleGlow) {
-    tl.to(t.semicircleGlow, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.2)" }, 0.08);
+  // Clouds fade in & float gently down to resting position
+  if (t.cloudsGroup) {
+    tl.to(t.cloudsGroup, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 0.05);
   }
 
-  // Signpost pole grows up from base
+  // Signpost pole pops in growing upward from base (730, 562)
   if (t.signpostPole) {
-    tl.to(t.signpostPole, { scaleY: 1, opacity: 1, duration: 0.42, ease: "power2.out" }, 0.12);
+    tl.to(t.signpostPole, {
+      scaleY: 1,
+      opacity: 1,
+      duration: 0.38,
+      ease: "back.out(1.4)",
+    }, 0.1);
   }
 
-  // 3 arrow signs pop in with 0.05s stagger
-  if (t.signArrow1) tl.to(t.signArrow1, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.8)" }, 0.3);
-  if (t.signArrow2) tl.to(t.signArrow2, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.8)" }, 0.35);
-  if (t.signArrow3) tl.to(t.signArrow3, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.8)" }, 0.4);
-
-  // 2. MAIN IDEA — ROADS EXTEND AND CROSS (~0.5s → ~1.5s)
-  // Road A extends from signpost outward toward bottom-left
-  t.roadAEls.forEach((el) => {
-    if (el) {
-      tl.to(el, { strokeDashoffset: 0, duration: 0.95, ease: "power2.inOut" }, 0.5);
-    }
-  });
-
-  // Road B extends from signpost outward toward bottom-right (slight 0.08s stagger)
-  t.roadBEls.forEach((el) => {
-    if (el) {
-      tl.to(el, { strokeDashoffset: 0, duration: 0.95, ease: "power2.inOut" }, 0.58);
-    }
-  });
-
-  // Crosswalk X marking draws on right as roads complete
-  if (t.crosswalkXArm1) {
-    tl.to(t.crosswalkXArm1, { strokeDashoffset: 0, duration: 0.28, ease: "power1.out" }, 1.38);
-  }
-  if (t.crosswalkXArm2) {
-    tl.to(t.crosswalkXArm2, { strokeDashoffset: 0, duration: 0.28, ease: "power1.out" }, 1.44);
+  // ── PHASE 2: MAIN IDEA — ROADS EXTEND (~0.4s → ~1.4s) ──────────────────────
+  // Semicircle glow fades in behind the signpost as roads begin extending
+  if (t.semicircleGlow) {
+    tl.to(t.semicircleGlow, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.55,
+      ease: "power2.out",
+    }, 0.38);
   }
 
-  // 3. TITLE EMERGES FROM SIGN (~1.5s → ~2.3s)
-  // "CROSS" emerges/slides out from the LEFT side of the signpost
-  if (t.titleClipLeft) {
-    tl.to(
-      t.titleClipLeft,
-      {
-        attr: { x: 0, width: 960 },
-        duration: 0.72,
-        ease: "power3.out",
-      },
-      1.52
-    );
+  // Left road extends from signpost outward toward bottom-left corner
+  if (t.clipRectRoadLeft) {
+    tl.to(t.clipRectRoadLeft, {
+      attr: { x: 0, width: 735 },
+      duration: 0.88,
+      ease: "power2.inOut",
+    }, 0.42);
+  }
+  if (t.roadLeftGroup) {
+    tl.to(t.roadLeftGroup, { opacity: 1, duration: 0.4 }, 0.42);
   }
 
-  // "ROADS" emerges/slides out from the RIGHT side of the signpost (staggered ~0.1s after CROSS)
-  if (t.titleClipRight) {
-    tl.to(
-      t.titleClipRight,
-      {
-        attr: { x: 960, width: 960 },
-        duration: 0.72,
-        ease: "power3.out",
-      },
-      1.62
-    );
+  // Right road extends from signpost outward toward bottom-right (0.07s slight stagger)
+  if (t.clipRectRoadRight) {
+    tl.to(t.clipRectRoadRight, {
+      attr: { width: 735 },
+      duration: 0.88,
+      ease: "power2.inOut",
+    }, 0.49);
+  }
+  if (t.roadRightGroup) {
+    tl.to(t.roadRightGroup, { opacity: 1, duration: 0.4 }, 0.49);
   }
 
-  // 4. RESOLUTION / HOLD (~2.3s → ~3.8s)
-  // Ambient details and corner annotations fade in softly
-  if (t.ambientGroup) {
-    tl.to(t.ambientGroup, { opacity: 1, duration: 0.55, ease: "power1.out" }, 2.15);
-  }
-  if (t.cornerAnnotations) {
-    tl.to(t.cornerAnnotations, { opacity: 1, duration: 0.45, ease: "power1.out" }, 2.2);
+  // Bottom convergence blue border reveals
+  if (t.roadBottomBlue) {
+    tl.to(t.roadBottomBlue, { opacity: 1, duration: 0.35, ease: "power1.out" }, 1.05);
   }
 
-  // Notify entrance complete at 2.3s
+  // ── PHASE 3: INTERACTION (~1.4s → ~1.8s) ───────────────────────────────────
+  // White crosswalk X marks the convergence point right as roads finish extending
+  if (t.crosswalkX) {
+    tl.to(t.crosswalkX, {
+      scale: 1,
+      opacity: 1,
+      duration: 0.32,
+      ease: "back.out(1.6)",
+    }, 1.35);
+  }
+
+  // 3 arrow signs pop in with sequential stagger
+  if (t.signArrow1) {
+    tl.to(t.signArrow1, {
+      scale: 1,
+      opacity: 1,
+      duration: 0.32,
+      ease: "back.out(1.9)",
+    }, 1.42);
+  }
+  if (t.signArrow2) {
+    tl.to(t.signArrow2, {
+      scale: 1,
+      opacity: 1,
+      duration: 0.32,
+      ease: "back.out(1.9)",
+    }, 1.50);
+  }
+  if (t.signArrow3) {
+    tl.to(t.signArrow3, {
+      scale: 1,
+      opacity: 1,
+      duration: 0.32,
+      ease: "back.out(1.9)",
+    }, 1.58);
+  }
+
+  // Motion-line accents flicker in
+  if (t.motionAccentsGroup) {
+    tl.to(t.motionAccentsGroup, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.24,
+      ease: "back.out(2)",
+    }, 1.64);
+  }
+
+  // Call onEntranceComplete hook
   tl.call(() => {
     onEntranceComplete?.();
-  }, undefined, 2.3);
+  }, undefined, 1.78);
 
-  // 5. EXIT (~4.6s → ~5.2s)
-  // Title fades out fast
+  // ── PHASE 4: TITLE REVEAL (~1.8s → ~2.5s) ──────────────────────────────────
+  // "CROSS" (black) + "ROADS" (blue) wipes in outward from center x=730
+  if (t.titleClipRect) {
+    tl.to(t.titleClipRect, {
+      attr: { x: 180, width: 1100 },
+      duration: 0.65,
+      ease: "power2.out",
+    }, 1.82);
+  }
+
+  // Side text ("IDEAS PEOPLE OPPORTUNITIES" & "DIFFERENT PERSPECTIVES...") fade in
+  if (t.ambientGroup) {
+    tl.to(t.ambientGroup, { opacity: 1, duration: 0.45, ease: "power1.out" }, 2.05);
+  }
+
+  // ── PHASE 5: RESOLUTION / HOLD (~2.5s → ~3.2s) ─────────────────────────────
+  // Idle settle period — no new disruptive elements, holds until 3.2s
+  tl.to({}, { duration: 0.7 }, 2.5);
+
+  // ── PHASE 6: EXIT (~3.2s → ~3.8s) ──────────────────────────────────────────
+  // Title fades quickly first
   if (t.titleGroup) {
-    tl.to(t.titleGroup, { opacity: 0, duration: 0.25, ease: "power2.in" }, 4.6);
+    tl.to(t.titleGroup, { opacity: 0, duration: 0.22, ease: "power1.in" }, 3.20);
   }
   if (t.ambientGroup) {
-    tl.to(t.ambientGroup, { opacity: 0, duration: 0.25, ease: "power2.in" }, 4.65);
+    tl.to(t.ambientGroup, { opacity: 0, duration: 0.22, ease: "power1.in" }, 3.20);
   }
-  if (t.crosswalkXArm1) {
-    tl.to(t.crosswalkXArm1, { strokeDashoffset: xArmLen, duration: 0.25, ease: "power2.in" }, 4.65);
-  }
-  if (t.crosswalkXArm2) {
-    tl.to(t.crosswalkXArm2, { strokeDashoffset: xArmLen, duration: 0.25, ease: "power2.in" }, 4.65);
+  if (t.motionAccentsGroup) {
+    tl.to(t.motionAccentsGroup, { opacity: 0, duration: 0.16 }, 3.22);
   }
 
-  // Roads retract back into the signpost
-  t.roadAEls.forEach((el) => {
-    if (el) tl.to(el, { strokeDashoffset: roadLen, duration: 0.42, ease: "power2.in" }, 4.7);
-  });
-  t.roadBEls.forEach((el) => {
-    if (el) tl.to(el, { strokeDashoffset: roadLen, duration: 0.42, ease: "power2.in" }, 4.72);
-  });
+  // Roads retract back into the signpost (reverse of extension)
+  if (t.clipRectRoadLeft) {
+    tl.to(t.clipRectRoadLeft, {
+      attr: { x: 730, width: 0 },
+      duration: 0.45,
+      ease: "power2.in",
+    }, 3.25);
+  }
+  if (t.clipRectRoadRight) {
+    tl.to(t.clipRectRoadRight, {
+      attr: { width: 0 },
+      duration: 0.45,
+      ease: "power2.in",
+    }, 3.25);
+  }
+  if (t.crosswalkX) {
+    tl.to(t.crosswalkX, { scale: 0, opacity: 0, duration: 0.25, ease: "power2.in" }, 3.26);
+  }
+  if (t.roadBottomBlue) {
+    tl.to(t.roadBottomBlue, { opacity: 0, duration: 0.2 }, 3.28);
+  }
 
-  // Signpost and glow fade out last
-  if (t.signArrow1) tl.to(t.signArrow1, { scale: 0, opacity: 0, duration: 0.2, ease: "power2.in" }, 4.85);
-  if (t.signArrow2) tl.to(t.signArrow2, { scale: 0, opacity: 0, duration: 0.2, ease: "power2.in" }, 4.88);
-  if (t.signArrow3) tl.to(t.signArrow3, { scale: 0, opacity: 0, duration: 0.2, ease: "power2.in" }, 4.9);
-  if (t.signpostPole) tl.to(t.signpostPole, { scaleY: 0, opacity: 0, duration: 0.25, ease: "power2.in" }, 4.92);
-  if (t.semicircleGlow) tl.to(t.semicircleGlow, { opacity: 0, scale: 0.8, duration: 0.25, ease: "power2.in" }, 4.95);
-  if (t.cornerAnnotations) tl.to(t.cornerAnnotations, { opacity: 0, duration: 0.25 }, 4.95);
+  // Semicircle glow shrinks & fades
+  if (t.semicircleGlow) {
+    tl.to(t.semicircleGlow, { scale: 0.75, opacity: 0, duration: 0.32, ease: "power2.in" }, 3.32);
+  }
 
-  // Background fades out
-  tl.to(t.container, { opacity: 0, duration: 0.35, ease: "power2.in" }, 5.0);
+  // Arrow signs pop out in reverse order
+  if (t.signArrow3) {
+    tl.to(t.signArrow3, { scale: 0, opacity: 0, duration: 0.22, ease: "back.in(1.6)" }, 3.34);
+  }
+  if (t.signArrow2) {
+    tl.to(t.signArrow2, { scale: 0, opacity: 0, duration: 0.22, ease: "back.in(1.6)" }, 3.38);
+  }
+  if (t.signArrow1) {
+    tl.to(t.signArrow1, { scale: 0, opacity: 0, duration: 0.22, ease: "back.in(1.6)" }, 3.42);
+  }
+
+  // Signpost pole shrinks back down to base
+  if (t.signpostPole) {
+    tl.to(t.signpostPole, { scaleY: 0, opacity: 0, duration: 0.3, ease: "power2.in" }, 3.44);
+  }
+
+  // Clouds and background fade out, revealing website
+  if (t.cloudsGroup) {
+    tl.to(t.cloudsGroup, { opacity: 0, y: -10, duration: 0.28 }, 3.50);
+  }
+  tl.to(t.container, { opacity: 0, duration: 0.3, ease: "power1.in" }, 3.52);
 
   return tl;
 }
 
-export function startCrossroadsIdleLoops(
-  targets: Pick<CrossroadsSceneTargets, "signArrow1" | "signArrow2" | "signArrow3">
-): gsap.core.Tween[] {
-  const loops: gsap.core.Tween[] = [];
+// ── Gentle ambient idle loops ──────────────────────────────────────────────────
+export function startCrossroadsIdleLoops(t: CrossroadsSceneTargets): gsap.core.Tween[] {
+  const tweens: gsap.core.Tween[] = [];
 
-  if (targets.signArrow1) {
-    loops.push(
-      gsap.to(targets.signArrow1, {
-        rotation: "+=2.2",
-        duration: 2.2,
-        ease: "sine.inOut",
+  if (t.cloudsGroup) {
+    tweens.push(
+      gsap.to(t.cloudsGroup, {
+        y: "+=6",
+        duration: 3.2,
         yoyo: true,
         repeat: -1,
-        transformOrigin: "960px 185px",
-      })
-    );
-  }
-  if (targets.signArrow2) {
-    loops.push(
-      gsap.to(targets.signArrow2, {
-        rotation: "-=2.4",
-        duration: 2.6,
-        delay: 0.3,
         ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-        transformOrigin: "960px 255px",
-      })
-    );
-  }
-  if (targets.signArrow3) {
-    loops.push(
-      gsap.to(targets.signArrow3, {
-        rotation: "+=1.8",
-        duration: 2.4,
-        delay: 0.6,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-        transformOrigin: "960px 325px",
       })
     );
   }
 
-  return loops;
+  if (t.motionAccentsGroup) {
+    tweens.push(
+      gsap.to(t.motionAccentsGroup, {
+        opacity: 0.75,
+        duration: 0.8,
+        yoyo: true,
+        repeat: -1,
+        ease: "sine.inOut",
+      })
+    );
+  }
+
+  return tweens;
 }
 
+// ── Interruptible exit transition ─────────────────────────────────────────────
 export function runCrossroadsExit(
-  container: HTMLElement | null,
-  idleLoops: gsap.core.Tween[],
-  onComplete?: () => void
+  t: CrossroadsSceneTargets,
+  onComplete: () => void,
+  idleTweens: gsap.core.Tween[] = []
 ): void {
-  idleLoops.forEach((tw) => tw.kill());
+  idleTweens.forEach((tw) => tw.kill());
 
-  if (!container) {
-    onComplete?.();
-    return;
-  }
-
-  gsap.to(container, {
-    opacity: 0,
-    duration: 0.3,
-    ease: "power2.in",
+  const exitTl = gsap.timeline({
     onComplete: () => {
-      onComplete?.();
+      onComplete();
     },
   });
+
+  if (t.titleGroup) {
+    exitTl.to(t.titleGroup, { opacity: 0, duration: 0.18 }, 0);
+  }
+  if (t.ambientGroup) {
+    exitTl.to(t.ambientGroup, { opacity: 0, duration: 0.18 }, 0);
+  }
+  if (t.motionAccentsGroup) {
+    exitTl.to(t.motionAccentsGroup, { opacity: 0, duration: 0.15 }, 0);
+  }
+
+  if (t.clipRectRoadLeft) {
+    exitTl.to(t.clipRectRoadLeft, { attr: { x: 730, width: 0 }, duration: 0.28, ease: "power2.in" }, 0.05);
+  }
+  if (t.clipRectRoadRight) {
+    exitTl.to(t.clipRectRoadRight, { attr: { width: 0 }, duration: 0.28, ease: "power2.in" }, 0.05);
+  }
+  if (t.crosswalkX) {
+    exitTl.to(t.crosswalkX, { scale: 0, opacity: 0, duration: 0.2 }, 0.05);
+  }
+  if (t.signArrow1) exitTl.to(t.signArrow1, { scale: 0, opacity: 0, duration: 0.18 }, 0.1);
+  if (t.signArrow2) exitTl.to(t.signArrow2, { scale: 0, opacity: 0, duration: 0.18 }, 0.1);
+  if (t.signArrow3) exitTl.to(t.signArrow3, { scale: 0, opacity: 0, duration: 0.18 }, 0.1);
+  if (t.signpostPole) exitTl.to(t.signpostPole, { scaleY: 0, opacity: 0, duration: 0.2 }, 0.14);
+  if (t.semicircleGlow) exitTl.to(t.semicircleGlow, { scale: 0.75, opacity: 0, duration: 0.2 }, 0.14);
+  if (t.container) exitTl.to(t.container, { opacity: 0, duration: 0.24, ease: "power1.in" }, 0.18);
 }

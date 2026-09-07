@@ -8,10 +8,13 @@
 --------------------------------------------------------------------------- */
 
 @theme {
-  --color-equinox-blue: #174ae8;
-  --color-equinox-blue-dark: #0f35b5;
-  --color-equinox-blue-deep: #081a63;
-  --color-equinox-blue-light: #3b6cfa;
+  --color-equinox-blue: #1B5FD6;
+  --color-equinox-blue-dark: #1348AA;
+  --color-equinox-blue-deep: #0B2D6D;
+  --color-equinox-blue-light: #3577EC;
+  --color-equinox-yellow: #F7CA50;
+  --color-equinox-coral: #FF4D79;
+  --color-equinox-coral-dark: #E0335F;
   --color-equinox-black: #0d0e15;
   --color-equinox-charcoal: #1f222e;
   --color-equinox-white: #ffffff;
@@ -23,21 +26,35 @@
 }
 
 :root {
-  --bg-cobalt: #174ae8;
-  --bg-cobalt-dark: #1038ba;
+  --equinox-blue: #1B5FD6;
+  --equinox-blue-dark: #1348AA;
+  --equinox-blue-deep: #0B2D6D;
+  --equinox-yellow: #F7CA50;
+  --equinox-coral: #FF4D79;
+  --equinox-white: #ffffff;
+  --equinox-black: #0d0e15;
+
+  /* Legacy & compatibility variables */
+  --bg-cobalt: var(--equinox-blue);
+  --bg-cobalt-dark: var(--equinox-blue-dark);
   --fg-white: #ffffff;
   --fg-black: #0d0e15;
+  --ground: var(--equinox-blue);
+  --surface: rgba(255, 255, 255, 0.1);
+  --surface-2: rgba(255, 255, 255, 0.18);
+  --fg: #ffffff;
+  --accent: var(--equinox-yellow);
 }
 
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
-  background-color: #174ae8;
+  background-color: #1B5FD6;
   color: #ffffff;
 }
 
 body {
-  background-color: #174ae8;
+  background-color: #1B5FD6;
   color: #ffffff;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -60,13 +77,22 @@ body {
   z-index: 1;
 }
 
-/* Subtle print noise effect */
-.riso-texture {
-  background-color: #174ae8;
+/* Graph paper grid line pattern from the brochure overlaid on bright royal blue */
+.riso-texture,
+.brochure-grid {
+  background-color: var(--equinox-blue);
   background-image: 
-    radial-gradient(at 10% 20%, rgba(35, 95, 255, 0.6) 0px, transparent 50%),
-    radial-gradient(at 90% 80%, rgba(12, 45, 175, 0.5) 0px, transparent 50%),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 4px);
+    linear-gradient(to right, rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+  background-size: 34px 34px;
+}
+
+.brochure-grid-dense {
+  background-color: var(--equinox-blue);
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 
 /* Typography styles matching the official design system */
@@ -83,14 +109,12 @@ body {
   text-transform: uppercase;
 }
 
-/* The Equinox Cover Drop Shadow Effect */
+/* The Equinox Cover Drop Shadow Effect (Dark drop shadow behind golden yellow EQUINOX) */
 .display-title-shadow {
   text-shadow: 
-    -2px -2px 0 #0d0e15,  
-     2px -2px 0 #0d0e15,
-    -2px  2px 0 #0d0e15,
-     2px  2px 0 #0d0e15,
-     4px  5px 0 #0d0e15;
+    3px 3px 0 #0d0e15,
+    5px 5px 0 #0d0e15,
+    6px 7px 0 rgba(11, 45, 109, 0.95);
 }
 
 /* Hanging tag physics bounce */
@@ -120,16 +144,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #1038ba;
+  background: var(--equinox-blue-deep);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.35);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--equinox-yellow);
 }
 
 /* White outline pill badge */

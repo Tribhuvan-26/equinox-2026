@@ -55,11 +55,11 @@ export function HangingTag({ className = "" }: { className?: string }) {
         <div className="h-6 w-[2px] bg-white/80" />
         <div className="h-6 w-[2px] bg-white/80" />
       </div>
-      {/* White Card with Heavy Black Border */}
-      <div className="relative rounded-md border-[3px] border-[#0d0e15] bg-white px-3 py-1 text-center shadow-[4px_4px_0px_#0d0e15]">
+      {/* Coral Card matching Brochure Accent 2 */}
+      <div className="relative rounded-md border-[3px] border-[#0d0e15] bg-[#FF4D79] px-3 py-1 text-center shadow-[4px_4px_0px_#0d0e15]">
         <div className="absolute top-1 left-2 h-1.5 w-1.5 rounded-full bg-[#0d0e15]" />
         <div className="absolute top-1 right-2 h-1.5 w-1.5 rounded-full bg-[#0d0e15]" />
-        <span className="font-mono text-2xl font-black tracking-tighter text-[#0d0e15] sm:text-3xl">
+        <span className="font-mono text-2xl font-black tracking-tighter text-white sm:text-3xl">
           2.0
         </span>
       </div>
@@ -78,18 +78,18 @@ export function CoverPopUpArt({ className = "" }: { className?: string }) {
         className="w-full max-w-[540px] drop-shadow-2xl"
       >
         {/* Background Graphic Shadow */}
-        <ellipse cx="300" cy="450" rx="240" ry="20" fill="#081b66" opacity="0.6" />
+        <ellipse cx="300" cy="450" rx="240" ry="20" fill="#0B2D6D" opacity="0.6" />
 
         {/* Back Book Pages Layer */}
         <polygon points="120,240 180,180 300,200 300,420 120,380" fill="#ffffff" stroke="#0d0e15" strokeWidth="4" />
         <polygon points="480,240 420,180 300,200 300,420 480,380" fill="#f8fafc" stroke="#0d0e15" strokeWidth="4" />
 
         {/* Diagonal folder tab / index markers */}
-        <path d="M70,220 L130,220 L130,260 L70,260 Z" fill="#ffffff" stroke="#0d0e15" strokeWidth="3" />
+        <path d="M70,220 L130,220 L130,260 L70,260 Z" fill="#F7CA50" stroke="#0d0e15" strokeWidth="3" />
         <path d="M60,240 L120,240 L120,340 L60,340 Z" fill="#ffffff" stroke="#0d0e15" strokeWidth="3" />
 
         {/* Left Side: Editorial Block & Striped Texture */}
-        <rect x="140" y="270" width="40" height="90" fill="#174ae8" stroke="#0d0e15" strokeWidth="3" />
+        <rect x="140" y="270" width="40" height="90" fill="#1B5FD6" stroke="#0d0e15" strokeWidth="3" />
         <path d="M80,310 C80,290 130,290 130,340" fill="none" stroke="#0d0e15" strokeWidth="3" strokeDasharray="3 3" />
         {/* Vertical stripes pattern box */}
         <g stroke="#0d0e15" strokeWidth="2.5">
@@ -107,7 +107,7 @@ export function CoverPopUpArt({ className = "" }: { className?: string }) {
         <polygon points="410,190 310,195 310,400 430,390" fill="#ffffff" stroke="#0d0e15" strokeWidth="4" strokeLinejoin="round" />
 
         {/* Center Spine Vertical Banner: E-SUMMIT */}
-        <rect x="235" y="180" width="65" height="215" fill="#ffffff" stroke="#0d0e15" strokeWidth="4" />
+        <rect x="235" y="180" width="65" height="215" fill="#F7CA50" stroke="#0d0e15" strokeWidth="4" />
         <text
           x="-375"
           y="280"
@@ -126,8 +126,8 @@ export function CoverPopUpArt({ className = "" }: { className?: string }) {
           {/* Character Head & Cap */}
           <ellipse cx="60" cy="50" rx="18" ry="14" fill="#ffffff" stroke="#0d0e15" strokeWidth="3" />
           {/* Beanie / Cap */}
-          <path d="M42,46 C42,34 78,34 78,46 Z" fill="#174ae8" stroke="#0d0e15" strokeWidth="3" />
-          <ellipse cx="60" cy="34" rx="5" ry="4" fill="#174ae8" stroke="#0d0e15" strokeWidth="2" />
+          <path d="M42,46 C42,34 78,34 78,46 Z" fill="#FF4D79" stroke="#0d0e15" strokeWidth="3" />
+          <ellipse cx="60" cy="34" rx="5" ry="4" fill="#F7CA50" stroke="#0d0e15" strokeWidth="2" />
           {/* Eyes & Nose */}
           <circle cx="53" cy="50" r="2" fill="#0d0e15" />
           <path d="M48,53 Q44,55 48,57" fill="none" stroke="#0d0e15" strokeWidth="2" strokeLinecap="round" />
@@ -136,7 +136,7 @@ export function CoverPopUpArt({ className = "" }: { className?: string }) {
           {/* Blue Body / Sleeve */}
           <path
             d="M28,68 C28,110 50,130 90,120 C100,105 100,85 85,80 C60,82 50,75 50,68 Z"
-            fill="#174ae8"
+            fill="#1B5FD6"
             stroke="#0d0e15"
             strokeWidth="3.5"
             strokeLinejoin="round"
@@ -145,7 +145,7 @@ export function CoverPopUpArt({ className = "" }: { className?: string }) {
 
         {/* Right side capsule with halftone dots */}
         <g transform="translate(420, 250)">
-          <path d="M0,0 C25,0 40,20 40,50 C40,80 25,100 0,100 Z" fill="#174ae8" stroke="#0d0e15" strokeWidth="3" />
+          <path d="M0,0 C25,0 40,20 40,50 C40,80 25,100 0,100 Z" fill="#FF4D79" stroke="#0d0e15" strokeWidth="3" />
           <path d="M0,50 C20,50 30,70 30,95 L0,95 Z" fill="#ffffff" stroke="#0d0e15" strokeWidth="3" />
           {/* Dot pattern */}
           <circle cx="8" cy="65" r="2.5" fill="#0d0e15" />
@@ -158,7 +158,7 @@ export function CoverPopUpArt({ className = "" }: { className?: string }) {
         </g>
 
         {/* Blue Half-Moon graphic behind right page */}
-        <path d="M460,230 C490,240 500,280 480,305 Z" fill="#174ae8" stroke="#0d0e15" strokeWidth="3" />
+        <path d="M460,230 C490,240 500,280 480,305 Z" fill="#1B5FD6" stroke="#0d0e15" strokeWidth="3" />
 
         {/* Flying Currency Notes (Cash bills) */}
         {/* Note 1 (Left floating) */}
@@ -246,10 +246,10 @@ export function PageFooterTimeline({
       {/* Brand Badge */}
       <div className="flex items-center gap-2">
         <div className="leading-none">
-          <span className="block text-[10px] font-black tracking-widest uppercase">THE</span>
-          <span className="block text-base font-black tracking-tighter uppercase sm:text-lg">EQUINOX</span>
+          <span className="block text-[10px] font-black tracking-widest uppercase text-[#FF4D79]">THE</span>
+          <span className="block text-base font-black tracking-tighter uppercase text-[#F7CA50] sm:text-lg">EQUINOX</span>
         </div>
-        <div className="rounded border border-white bg-white px-1 py-0.5 text-[9px] font-black text-[#0d0e15]">
+        <div className="rounded border border-white/60 bg-[#FF4D79] px-1.5 py-0.5 text-[9px] font-black text-white">
           2.0
         </div>
       </div>

@@ -49,12 +49,12 @@ export function NavBar({
         {/* Brand Mark Link */}
         <Link
           href="/#top"
-          className="group flex items-center gap-2 rounded-full border border-white/40 bg-[#0f35b5]/80 px-4 py-2 backdrop-blur-md transition hover:bg-white hover:text-[#174ae8]"
+          className="group flex items-center gap-2 rounded-full border border-white/40 bg-[#0B2D6D]/85 px-4 py-2 backdrop-blur-md transition hover:bg-[#F7CA50] hover:text-[#0d0e15]"
         >
-          <span className="font-mono text-xs font-black tracking-widest text-white group-hover:text-[#174ae8] uppercase">
+          <span className="font-mono text-xs font-black tracking-widest text-[#F7CA50] group-hover:text-[#0d0e15] uppercase">
             EQUINOX
           </span>
-          <span className="rounded bg-white px-1 py-0.2 text-[10px] font-black text-[#0d0e15] group-hover:bg-[#174ae8] group-hover:text-white">
+          <span className="rounded bg-[#FF4D79] px-1.5 py-0.5 text-[10px] font-black text-white group-hover:bg-[#0d0e15] group-hover:text-white">
             2.0
           </span>
         </Link>
@@ -62,7 +62,7 @@ export function NavBar({
         {/* Center Nav Navigation */}
         <motion.nav
           aria-label="Primary"
-          className="hidden md:flex items-center gap-1 rounded-full border-2 border-white/50 bg-[#0d2d99]/85 p-1.5 shadow-2xl backdrop-blur-md"
+          className="hidden md:flex items-center gap-1 rounded-full border-2 border-white/40 bg-[#0B2D6D]/90 p-1.5 shadow-2xl backdrop-blur-md"
           initial={{ y: -16, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.3 }}
@@ -79,8 +79,8 @@ export function NavBar({
                 className={cn(
                   "relative flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition",
                   isActive
-                    ? "bg-white text-[#174ae8] shadow-md"
-                    : "text-white/85 hover:bg-white/15 hover:text-white"
+                    ? "bg-[#F7CA50] text-[#0d0e15] shadow-md"
+                    : "text-white/90 hover:bg-white/15 hover:text-white"
                 )}
               >
                 <Icon className="h-3.5 w-3.5" />
@@ -94,7 +94,7 @@ export function NavBar({
         <div className="flex items-center gap-2">
           <a
             href="/#events"
-            className="flex items-center gap-1.5 rounded-full border-2 border-white bg-white px-4 py-2 text-xs font-bold text-[#174ae8] shadow-md transition hover:bg-white/90"
+            className="flex items-center gap-1.5 rounded-full border-2 border-white bg-[#FF4D79] px-4 py-2 text-xs font-bold text-white shadow-md transition hover:bg-[#f03a6c]"
           >
             <span>10 Events</span>
           </a>
