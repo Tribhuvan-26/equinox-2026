@@ -117,6 +117,26 @@ body {
     6px 7px 0 rgba(11, 45, 109, 0.95);
 }
 
+/* Gentle up-down float, e.g. the cover pop-up book illustration */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float {
+    animation: none;
+  }
+}
+
 /* Hanging tag physics bounce */
 @keyframes sway {
   0%, 100% {

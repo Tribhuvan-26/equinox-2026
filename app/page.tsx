@@ -48,7 +48,7 @@ export default function HomePage() {
       : subEvents;
 
   return (
-    <div className="riso-texture brochure-grid min-h-screen text-white selection:bg-[#F7CA50] selection:text-[#0d0e15]">
+    <div className="riso-texture brochure-grid min-h-screen overflow-x-hidden text-white selection:bg-[#F7CA50] selection:text-[#0d0e15]">
       {/* =========================================================================
           SECTION 1: HERO / COVER (Page 01)
           ========================================================================= */}
@@ -85,19 +85,24 @@ export default function HomePage() {
             </motion.div>
 
             {/* Massive "THE EQUINOX" Title Lockup with Hanging "2.0" */}
-            <motion.div variants={heroFadeUp} className="relative mt-4 flex items-end justify-center lg:justify-start">
+            <motion.div variants={heroFadeUp} className="mt-4 flex justify-center lg:justify-start">
               <div className="leading-none">
                 <span className="block font-mono text-2xl font-black tracking-widest text-[#FF4D79] sm:text-4xl lg:text-5xl">
                   THE
                 </span>
-                <h1 className="font-display-title display-title-shadow text-6xl tracking-tighter text-[#F7CA50] sm:text-8xl md:text-9xl lg:text-[11rem]">
-                  EQUINOX
-                </h1>
-              </div>
-
-              {/* Hanging "2.0" Tag from the Cover */}
-              <div className="absolute -right-2 top-8 sm:-right-8 sm:top-10 md:-right-12 md:top-14 lg:right-auto lg:left-[92%]">
-                <HangingTag />
+                {/* Wrapping the word in its own relative box (sized to the text itself,
+                    not the full row) lets the tag anchor to the actual top-right corner
+                    of "EQUINOX" at any size, instead of a viewport-relative guess. */}
+                <div className="relative inline-block">
+                  <h1 className="font-display-title display-title-shadow text-6xl tracking-tighter text-[#F7CA50] sm:text-8xl md:text-9xl lg:text-[clamp(4rem,10vw,12rem)]">
+                    EQUINOX
+                  </h1>
+                  {/* Left is a % of the word's own box, so it tracks the "I/N" boundary
+                      at any text size instead of a viewport-relative guess. */}
+                  <div className="absolute top-full left-[57%] -mt-4 sm:-mt-6 lg:-mt-10">
+                    <HangingTag />
+                  </div>
+                </div>
               </div>
             </motion.div>
 
@@ -140,13 +145,15 @@ export default function HomePage() {
 
           {/* Vector Pop-Up Book Editorial Art — offset into its own column, overlapping on desktop */}
           <motion.div
-            className="mt-6 w-full max-w-2xl px-2 sm:mt-8 lg:col-span-5 lg:mt-0 lg:max-w-none lg:translate-x-6 lg:px-0"
+            className="mt-6 w-full max-w-2xl px-2 sm:mt-8 lg:col-span-5 lg:mt-20 lg:max-w-none lg:translate-x-6 lg:px-0"
             initial={{ opacity: 0, scale: 0.94, y: 24 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
           >
-            <CoverPopUpArt />
+            <div className="animate-float">
+              <CoverPopUpArt />
+            </div>
           </motion.div>
         </div>
 
