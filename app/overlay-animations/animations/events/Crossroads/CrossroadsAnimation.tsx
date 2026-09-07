@@ -98,15 +98,24 @@ export const CrossroadsAnimation: React.FC<AnimationComponentProps> = ({
           const targetTitleTop = arrowsBottom + ARROWS_TITLE_GAP;
           const dy = targetTitleTop - titleBBox.y;
 
-          // Apply position and scale to title
-          gsap.set(titleGroupRef.current, {
-            y: dy,
-            scaleX: scale,
-            scaleY: scale,
-            transformOrigin: "730px 415px",
+          // Apply vertical position directly to the tspans' own y attribute
+          // instead of a group transform: a transform on titleGroupRef would move
+          // its clip-path along with it too, and re-adding `dy` to the clip rect
+          // below on top of that double-counts the shift and crops the text.
+          // Plain attributes keep title text and clip rect in the same space.
+          titleTextRef.current.querySelectorAll("tspan").forEach((tspan) => {
+            const currentY = parseFloat(tspan.getAttribute("y") || "0");
+            tspan.setAttribute("y", String(currentY + dy));
           });
+          if (scale !== 1) {
+            gsap.set(titleGroupRef.current, {
+              scaleX: scale,
+              scaleY: scale,
+              transformOrigin: "730px 415px",
+            });
+          }
 
-          // Synchronize wipe clip rect dimensions in root SVG coordinates
+          // Synchronize wipe clip rect dimensions in the same plain coordinate space
           if (titleClipRectRef.current) {
             titleClipRectRef.current.setAttribute("y", String(titleBBox.y + dy - 20));
             titleClipRectRef.current.setAttribute("height", String(titleBBox.height * scale + 40));
