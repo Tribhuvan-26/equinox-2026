@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   FileText,
@@ -45,20 +44,7 @@ export function NavBar({
     <header
       className={cn("fixed top-4 right-0 left-0 z-[9990] px-4", className)}
     >
-      <div className="mx-auto flex max-w-[1400px] items-center justify-between">
-        {/* Brand Mark Link */}
-        <Link
-          href="/#top"
-          className="group flex items-center gap-2 rounded-full border border-white/40 bg-[#0B2D6D]/85 px-4 py-2 backdrop-blur-md transition hover:bg-[#F7CA50] hover:text-[#0d0e15]"
-        >
-          <span className="font-mono text-xs font-black tracking-widest text-[#F7CA50] group-hover:text-[#0d0e15] uppercase">
-            EQUINOX
-          </span>
-          <span className="rounded bg-[#FF4D79] px-1.5 py-0.5 text-[10px] font-black text-white group-hover:bg-[#0d0e15] group-hover:text-white">
-            2.0
-          </span>
-        </Link>
-
+      <div className="mx-auto flex max-w-[1400px] items-center justify-center">
         {/* Center Nav Navigation */}
         <motion.nav
           aria-label="Primary"
@@ -89,16 +75,6 @@ export function NavBar({
             );
           })}
         </motion.nav>
-
-        {/* Mobile Sub-Events CTA & Date Badge */}
-        <div className="flex items-center gap-2">
-          <a
-            href="/#events"
-            className="flex items-center gap-1.5 rounded-full border-2 border-white bg-[#FF4D79] px-4 py-2 text-xs font-bold text-white shadow-md transition hover:bg-[#f03a6c]"
-          >
-            <span>10 Events</span>
-          </a>
-        </div>
       </div>
     </header>
   );
