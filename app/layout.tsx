@@ -4,10 +4,7 @@ import { event, nav } from "@/lib/content";
 import { NavBar } from "./NavBar";
 import { Footer } from "./Footer";
 import { Chatbot } from "./Chatbot";
-<<<<<<< HEAD
-=======
 import { OverlayAnimationHost } from "./overlay-animations";
->>>>>>> ChatBot
 import "./globals.css";
 
 const geistSans = Geist({
@@ -50,10 +47,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <main className="flex-1">{children}</main>
         <Footer />
         <Chatbot />
-<<<<<<< HEAD
-=======
         <OverlayAnimationHost />
->>>>>>> ChatBot
       </body>
     </html>
   );
