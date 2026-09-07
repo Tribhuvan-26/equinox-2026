@@ -8,6 +8,7 @@ import { IplAuctionAnimation } from "../events/IplAuction/IplAuctionAnimation";
 import { HustleManiaAnimation } from "../events/HustleMania/HustleManiaAnimation";
 import { CrossroadsAnimation } from "../events/Crossroads/CrossroadsAnimation";
 import { PitchDeckAnimation } from "../events/PitchDeck/PitchDeckAnimation";
+import { createPlaceholderAnimation } from "../events/Placeholder/PlaceholderAnimation";
 import type {
   AnimationRegistry,
   AnimationTriggerPayload,
@@ -48,6 +49,26 @@ export const animationRegistry: AnimationRegistry = {
     Component: PitchDeckAnimation,
     id: "pitch-deck",
     title: "Pitch Deck",
+  },
+  "startup-expo": {
+    Component: createPlaceholderAnimation("Startup Expo", "startup-expo"),
+    id: "startup-expo",
+    title: "Startup Expo",
+  },
+  "brand-battles": {
+    Component: createPlaceholderAnimation("Brand Battles", "brand-battles"),
+    id: "brand-battles",
+    title: "Brand Battles",
+  },
+  "internship-drive": {
+    Component: createPlaceholderAnimation("Internship Drive", "internship-drive"),
+    id: "internship-drive",
+    title: "Internship Drive",
+  },
+  "e-cell-meet": {
+    Component: createPlaceholderAnimation("E-Cell Meet", "e-cell-meet"),
+    id: "e-cell-meet",
+    title: "E-Cell Meet",
   },
 };
 

@@ -30,4 +30,20 @@ export const OVERLAY_EVENTS: Record<string, OverlayEventMetadata> = {
     id: "pitch-deck",
     title: "Pitch Deck",
   },
+  "startup-expo": {
+    id: "startup-expo",
+    title: "Startup Expo",
+  },
+  "brand-battles": {
+    id: "brand-battles",
+    title: "Brand Battles",
+  },
+  "internship-drive": {
+    id: "internship-drive",
+    title: "Internship Drive",
+  },
+  "e-cell-meet": {
+    id: "e-cell-meet",
+    title: "E-Cell Meet",
+  },
 };
