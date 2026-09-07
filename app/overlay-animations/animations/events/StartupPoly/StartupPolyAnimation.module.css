@@ -1,0 +1,131 @@
+/* app/overlay-animations/animations/events/StartupPoly/StartupPolyAnimation.module.css */
+
+.overlayContainer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  background-color: #f0e6d8;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  pointer-events: auto;
+  opacity: 0;
+}
+
+.stageSvg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Subtle background grain / paper texture effect */
+.paperNoise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.18;
+  mix-blend-mode: multiply;
+}
+
+/* Board Group */
+.boardGroup {
+  transform-origin: 960px 520px;
+}
+
+/* Tile styling */
+.tile {
+  cursor: default;
+}
+
+.tileBase {
+  fill: #ffffff;
+  stroke: #111111;
+  stroke-width: 2.5;
+}
+
+.tileBlue {
+  fill: #1856f3;
+  stroke: #111111;
+  stroke-width: 2.5;
+}
+
+.tileStripeBlue {
+  fill: #1856f3;
+}
+
+.tileLabel {
+  font-family: var(--font-syne), "Arial Black", Impact, sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  fill: #111111;
+}
+
+.tileLabelWhite {
+  font-family: var(--font-syne), "Arial Black", Impact, sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  fill: #ffffff;
+}
+
+/* Center Panel Typography */
+.titleStartup {
+  font-family: var(--font-syne), "Arial Black", Impact, sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  fill: #111111;
+}
+
+.titlePolyText {
+  font-family: var(--font-syne), "Arial Black", Impact, sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  fill: #ffffff;
+}
+
+.taglineText {
+  font-family: var(--font-mono, monospace);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  fill: #111111;
+}
+
+/* Skip / Close indicator button styled for warm neutral backdrop */
+.skipButton {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  z-index: 10;
+  background: rgba(17, 17, 17, 0.06);
+  border: 1.5px solid rgba(17, 17, 17, 0.22);
+  color: #111111;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+  pointer-events: auto;
+  opacity: 0;
+}
+
+.skipButton:hover {
+  background: rgba(17, 17, 17, 0.12);
+  border-color: rgba(17, 17, 17, 0.45);
+  transform: translateY(-1px);
+}

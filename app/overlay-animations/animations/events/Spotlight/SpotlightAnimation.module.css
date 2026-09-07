@@ -1,0 +1,151 @@
+/* app/overlay-animations/animations/events/Spotlight/SpotlightAnimation.module.css */
+
+.overlayContainer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  background-color: #050505;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  pointer-events: auto;
+  opacity: 0;
+}
+
+.stageSvg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Faint cinematic vignette */
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 85% 75% at 50% 50%,
+    transparent 35%,
+    rgba(5, 5, 5, 0.5) 70%,
+    rgba(2, 2, 2, 0.95) 100%
+  );
+  z-index: 2;
+  opacity: 0;
+}
+
+/* Subtle CSS grain / noise */
+.grainOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  mix-blend-mode: overlay;
+}
+
+/* Convergence Hit Flash */
+.flashOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 60% 50% at 50% 55%,
+    rgba(255, 250, 220, 0.85) 0%,
+    rgba(255, 255, 255, 0.35) 40%,
+    rgba(255, 240, 180, 0.08) 70%,
+    transparent 85%
+  );
+  mix-blend-mode: screen;
+  z-index: 4;
+  opacity: 0;
+}
+
+/* Light beams blend mode */
+.lightConesGroup {
+  mix-blend-mode: screen;
+}
+
+/* Floor Pool of Light */
+.floorGlow {
+  mix-blend-mode: screen;
+  opacity: 0;
+  transform-origin: 50% 88%;
+}
+
+/* Fixtures */
+.fixtureLeft,
+.fixtureRight {
+  opacity: 0;
+  transform-origin: center;
+}
+
+/* Ambient Accents */
+.ambientAccents {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Title Container */
+.titleGroup {
+  font-family: var(--font-syne), "Arial Black", Impact, system-ui, -apple-system, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  font-style: italic;
+}
+
+.titleText {
+  user-select: none;
+}
+
+.titleSpot {
+  fill: #f5f1e6;
+  filter: drop-shadow(0 4px 20px rgba(245, 241, 230, 0.25));
+}
+
+.titleLight {
+  fill: #3b6cfa;
+  filter: drop-shadow(0 4px 25px rgba(59, 108, 250, 0.65));
+}
+
+.titleStreak {
+  stroke: #3b6cfa;
+  stroke-width: 6;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 10px rgba(59, 108, 250, 0.8));
+}
+
+/* Skip / Close indicator button */
+.skipButton {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.65);
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+  pointer-events: auto;
+  opacity: 0;
+}
+
+.skipButton:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+}
