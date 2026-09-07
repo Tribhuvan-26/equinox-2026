@@ -18,4 +18,16 @@ export const OVERLAY_EVENTS: Record<string, OverlayEventMetadata> = {
     id: "ipl-auction",
     title: "IPL Auction",
   },
+  "hustle-mania": {
+    id: "hustle-mania",
+    title: "Hustle Mania",
+  },
+  crossroads: {
+    id: "crossroads",
+    title: "Cross Roads",
+  },
+  "pitch-deck": {
+    id: "pitch-deck",
+    title: "Pitch Deck",
+  },
 };

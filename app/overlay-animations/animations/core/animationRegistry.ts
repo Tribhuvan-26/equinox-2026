@@ -5,6 +5,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import { SpotlightAnimation } from "../events/Spotlight/SpotlightAnimation";
 import { StartupPolyAnimation } from "../events/StartupPoly/StartupPolyAnimation";
 import { IplAuctionAnimation } from "../events/IplAuction/IplAuctionAnimation";
+import { HustleManiaAnimation } from "../events/HustleMania/HustleManiaAnimation";
+import { CrossroadsAnimation } from "../events/Crossroads/CrossroadsAnimation";
+import { PitchDeckAnimation } from "../events/PitchDeck/PitchDeckAnimation";
 import type {
   AnimationRegistry,
   AnimationTriggerPayload,
@@ -30,6 +33,21 @@ export const animationRegistry: AnimationRegistry = {
     Component: IplAuctionAnimation,
     id: "ipl-auction",
     title: "IPL Auction",
+  },
+  "hustle-mania": {
+    Component: HustleManiaAnimation,
+    id: "hustle-mania",
+    title: "Hustle Mania",
+  },
+  crossroads: {
+    Component: CrossroadsAnimation,
+    id: "crossroads",
+    title: "Cross Roads",
+  },
+  "pitch-deck": {
+    Component: PitchDeckAnimation,
+    id: "pitch-deck",
+    title: "Pitch Deck",
   },
 };
 

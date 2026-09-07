@@ -1,0 +1,170 @@
+/* app/overlay-animations/animations/events/HustleMania/HustleManiaAnimation.module.css */
+
+.overlayContainer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  background-color: #f0e6d8;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  pointer-events: auto;
+  opacity: 0;
+}
+
+.stageSvg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Subtle paper-grain texture overlay */
+.paperNoise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.12;
+  mix-blend-mode: multiply;
+}
+
+/* Skip / Dismiss button */
+.skipButton {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(17, 17, 17, 0.06);
+  border: 1.5px solid rgba(17, 17, 17, 0.22);
+  color: #111111;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+  pointer-events: auto;
+  opacity: 0;
+}
+
+.skipButton:hover {
+  background: rgba(17, 17, 17, 0.12);
+  border-color: rgba(17, 17, 17, 0.45);
+  transform: translateY(-1px);
+}
+
+/* -------------------------------------------------------
+   Shared SVG class shortcuts used across elements
+------------------------------------------------------- */
+
+/* Stall roof fill */
+.stallRoof {
+  fill: #111111;
+}
+
+/* Stall counter */
+.stallCounter {
+  fill: #1856f3;
+}
+
+/* Figure shapes */
+.figureHead {
+  fill: #111111;
+}
+.figureBody {
+  fill: #111111;
+}
+.figureAccent {
+  fill: #1856f3;
+}
+.figureFace {
+  fill: #c4906a;
+}
+
+/* Speech bubbles */
+.bubble {
+  fill: #ffffff;
+  stroke: #111111;
+  stroke-width: 2.5;
+}
+.bubbleText {
+  font-family: var(--font-syne), "Arial Black", Impact, sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  fill: #111111;
+}
+
+/* Title text */
+.titleHustle {
+  font-family: var(--font-syne), "Arial Black", Impact, sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  fill: #111111;
+}
+.titleMania {
+  font-family: var(--font-syne), "Arial Black", Impact, sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  fill: #1856f3;
+}
+.taglineText {
+  font-family: var(--font-mono, monospace);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  fill: #111111;
+}
+
+/* Corner annotations */
+.cornerText {
+  font-family: var(--font-mono, monospace);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  fill: #111111;
+}
+.cornerBrand {
+  font-family: var(--font-syne), "Arial Black", sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  fill: #111111;
+}
+.cornerBrandBlue {
+  fill: #1856f3;
+}
+
+/* Signage text helpers */
+.bannerText {
+  font-family: var(--font-syne), "Arial Black", sans-serif;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+.monoLabel {
+  font-family: var(--font-mono, monospace);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+/* Steam wisp paths */
+.steam {
+  fill: none;
+  stroke: #111111;
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.38;
+}
