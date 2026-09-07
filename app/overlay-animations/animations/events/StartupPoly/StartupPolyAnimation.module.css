@@ -6,7 +6,7 @@
   width: 100vw;
   height: 100vh;
   z-index: 99999;
-  background-color: #f0e6d8;
+  background-color: #ffffff;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -46,18 +46,18 @@
 
 .tileBase {
   fill: #ffffff;
-  stroke: #111111;
+  stroke: #0d0e15;
   stroke-width: 2.5;
 }
 
 .tileBlue {
-  fill: #1856f3;
-  stroke: #111111;
+  fill: #1B5FD6;
+  stroke: #0d0e15;
   stroke-width: 2.5;
 }
 
 .tileStripeBlue {
-  fill: #1856f3;
+  fill: #1B5FD6;
 }
 
 .tileLabel {
@@ -65,7 +65,7 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  fill: #111111;
+  fill: #0d0e15;
 }
 
 .tileLabelWhite {
@@ -82,7 +82,7 @@
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -0.02em;
-  fill: #111111;
+  fill: #0d0e15;
 }
 
 .titlePolyText {
@@ -98,7 +98,7 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  fill: #111111;
+  fill: #0d0e15;
 }
 
 /* Skip / Close indicator button styled for warm neutral backdrop */
@@ -112,7 +112,7 @@
   gap: 6px;
   background: rgba(17, 17, 17, 0.06);
   border: 1.5px solid rgba(17, 17, 17, 0.22);
-  color: #111111;
+  color: #0d0e15;
   font-family: var(--font-mono, monospace);
   font-size: 11px;
   font-weight: 700;

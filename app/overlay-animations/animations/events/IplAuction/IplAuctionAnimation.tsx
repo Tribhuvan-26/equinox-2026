@@ -20,10 +20,10 @@ const useIsomorphicLayoutEffect =
 // signal "which team" with brand color only, styled like the site's own
 // bordered program cards rather than any official logo artwork.
 const PADDLE_TEAMS = [
-  { label: "CSK", accent: "#fdb913" },
-  { label: "MI", accent: "#3b6cfa" },
-  { label: "RCB", accent: "#ff3b3b" },
-  { label: "SRH", accent: "#ee6730" },
+  { label: "CSK", accent: "#F7CA50" },
+  { label: "MI", accent: "#1B5FD6" },
+  { label: "RCB", accent: "#FF4D79" },
+  { label: "SRH", accent: "#E0335F" },
 ];
 
 export const IplAuctionAnimation: React.FC<AnimationComponentProps> = ({
@@ -106,7 +106,7 @@ export const IplAuctionAnimation: React.FC<AnimationComponentProps> = ({
         type="button"
         onClick={handleManualDismiss}
         aria-label="Skip Animation"
-        className="absolute right-7 top-6 z-10 inline-flex items-center gap-2 border-2 border-white bg-transparent px-4 py-1.5 font-mono text-xs font-black uppercase tracking-wider text-white transition hover:bg-white hover:text-[#174ae8]"
+        className="absolute right-7 top-6 z-10 inline-flex items-center gap-2 border-2 border-white bg-transparent px-4 py-1.5 font-mono text-xs font-black uppercase tracking-wider text-white transition hover:bg-white hover:text-[#1B5FD6]"
       >
         Skip <X className="h-3 w-3" />
       </button>
@@ -140,7 +140,7 @@ export const IplAuctionAnimation: React.FC<AnimationComponentProps> = ({
 
         <div
           ref={bidBlockRef}
-          className="mt-9 border-2 border-white/40 bg-[#0d0e15] px-10 py-5 shadow-[6px_6px_0px_#000000]"
+          className="mt-9 border-2 border-white/40 bg-[#0d0e15] px-10 py-5 shadow-[6px_6px_0px_#0d0e15]"
         >
           <span className="font-mono text-xs font-black uppercase tracking-widest text-white/70">
             Current Bid

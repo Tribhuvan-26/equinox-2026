@@ -6,7 +6,7 @@
   width: 100vw;
   height: 100vh;
   z-index: 99999;
-  background-color: #0b0d11;
+  background-color: #0d0e15;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,7 +87,7 @@
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  fill: #111111;
+  fill: #0d0e15;
 }
 
 .deckText {
@@ -95,7 +95,7 @@
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  fill: #1856f3;
+  fill: #1B5FD6;
 }
 
 .taglineText {
@@ -107,7 +107,7 @@
 }
 
 .taglineBlue {
-  fill: #1856f3;
+  fill: #1B5FD6;
 }
 
 .iconLabelTitle {
@@ -115,7 +115,7 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  fill: #0f172a;
+  fill: #0d0e15;
 }
 
 .iconLabelSub {
@@ -123,7 +123,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  fill: #1856f3;
+  fill: #1B5FD6;
 }
 
 .headerText {
@@ -131,7 +131,7 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  fill: #0f172a;
+  fill: #0d0e15;
 }
 
 .bannerWord {
