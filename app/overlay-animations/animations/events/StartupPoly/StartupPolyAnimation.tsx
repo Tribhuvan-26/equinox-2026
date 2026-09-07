@@ -3,6 +3,7 @@
 
 import React, { useRef, useLayoutEffect, useEffect } from "react";
 import gsap from "gsap";
+import { X } from "lucide-react";
 import type { AnimationComponentProps } from "../../core/animationTypes";
 import {
   createStartupPolyTimeline,
@@ -155,14 +156,14 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
         onClick={handleManualDismiss}
         aria-label="Skip Animation"
       >
-        Skip ✕
+        Skip <X className="h-3 w-3" />
       </button>
 
       {/* Scalable SVG Canvas */}
       <svg
         className={styles.stageSvg}
         viewBox="0 0 1920 1080"
-        preserveAspectRatio="xMidYMid slice"
+        preserveAspectRatio="xMidYMid meet"
         xmlns="http://www.w3.org/2000/svg"
       >
         {/* Background Clouds matching reference poster */}
@@ -883,7 +884,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
               y="442"
               textAnchor="middle"
               className={styles.titleStartup}
-              fontSize="78"
+              fontSize="58"
             >
               STARTUP
             </text>
@@ -901,10 +902,10 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
 
             {/* Title: "P" and "LY" Text surrounding the Die slot */}
             <g ref={titlePolyTextRef} className={styles.titlePolyText}>
-              <text x="830" y="550" fontSize="90">
+              <text x="830" y="550" fontSize="82">
                 P
               </text>
-              <text x="996" y="550" fontSize="90">
+              <text x="996" y="550" fontSize="82">
                 LY
               </text>
             </g>
@@ -923,10 +924,10 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
           </g>
 
           {/* ============================================================== */}
-          {/* Reused Die Element (rolls, bounces, and lands in "O" of POLY) */}
-          {/* Positioned at "O" center: (944, 520)                           */}
+          {/* Reused Die Element (pops/settles into the "O" of POLY)         */}
+          {/* Positioned at the actual P/LY gap center: (962, 520)           */}
           {/* ============================================================== */}
-          <g ref={dieRef} transform="translate(944, 520)">
+          <g ref={dieRef} transform="translate(962, 520)">
             {/* Die Body Face */}
             <rect
               x="-35"

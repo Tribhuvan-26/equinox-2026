@@ -1,138 +1,105 @@
 "use client";
 
-/* Floating nav. The active tab carries the half-lit disc — the site's mark —
-   and both the disc and the pill behind it slide between tabs on a critically
-   damped spring, so the bar reads as one object moving rather than two states
-   crossfading.
-
-   Icons are resolved here from the item name (a server component cannot hand
-   component references across the boundary), and clicks do not preventDefault
-   so hash links still jump to their section. */
-
 import { useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  CalendarDays,
+  FileText,
+  Info,
+  Calendar,
+  Layers,
+  Phone,
   Circle,
-  House,
-  LayoutGrid,
-  Mail,
-  MapPin,
-  Mic,
-  Ticket,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-/* Inlined rather than imported from ui.tsx — that module would drag the whole
-   set of shared cards into the client bundle for one span. */
-const DISC =
-  "inline-block h-2.5 w-2.5 shrink-0 rounded-full border border-current bg-[linear-gradient(90deg,currentColor_50%,transparent_50%)]";
-
 const ICONS: Record<string, LucideIcon> = {
-  Home: House,
-  Events: LayoutGrid,
-  Speakers: Mic,
-  Agenda: CalendarDays,
-  Venue: MapPin,
-  Register: Ticket,
-  Contact: Mail,
+  Overview: FileText,
+  About: Info,
+  "Sub-Events": Layers,
+  Impact: Calendar,
+  Contact: Phone,
 };
 
 export function NavBar({
   items,
   className,
-  defaultActive = "Home",
+  defaultActive = "Overview",
 }: {
   items: { name: string; url: string }[];
   className?: string;
   defaultActive?: string;
 }) {
   const pathname = usePathname();
-  const reduce = useReducedMotion();
-  /* Route decides the active tab. A click also marks the tab active right away
-     — tagged with the path it happened on, so a hash link on the current page
-     keeps the highlight while a real navigation hands it back to the route. */
-  const [clicked, setClicked] = useState<{ path: string; name: string } | null>(
-    null,
-  );
+  const [activeTab, setActiveTab] = useState(defaultActive);
 
-  const routeTab =
-    items.find((item) => {
-      const path = item.url.split("#")[0];
-      return path !== "/" && pathname.startsWith(path);
-    })?.name ?? defaultActive;
-  const activeTab = clicked?.path === pathname ? clicked.name : routeTab;
-
-  /* Apple's move spring: critically damped, response 0.4 — no overshoot on a
-     reposition. bounce is reserved for motion a gesture threw. */
-  const move = reduce
-    ? { duration: 0 }
-    : ({ type: "spring", bounce: 0, duration: 0.4 } as const);
+  const isActiveItem = (name: string) => {
+    if (pathname.startsWith("/events")) return name === "Sub-Events";
+    if (pathname !== "/") return false;
+    return activeTab === name;
+  };
 
   return (
-    /* Named for view transitions so the bar stays put while page content slides
-       underneath. The name has to sit on the fixed element itself — on a
-       wrapper it becomes a containing block and paint-clips the bar away. */
-    <div
-      className={cn("fixed top-6 right-0 left-0 z-[9999] px-4", className)}
-      style={{ viewTransitionName: "site-header" }}
+    <header
+      className={cn("fixed top-4 right-0 left-0 z-[9990] px-4", className)}
     >
-      <div className="flex justify-center pt-6">
+      <div className="mx-auto flex max-w-[1400px] items-center justify-between">
+        {/* Brand Mark Link */}
+        <Link
+          href="/#top"
+          className="group flex items-center gap-2 rounded-full border border-white/40 bg-[#0f35b5]/80 px-4 py-2 backdrop-blur-md transition hover:bg-white hover:text-[#174ae8]"
+        >
+          <span className="font-mono text-xs font-black tracking-widest text-white group-hover:text-[#174ae8] uppercase">
+            EQUINOX
+          </span>
+          <span className="rounded bg-white px-1 py-0.2 text-[10px] font-black text-[#0d0e15] group-hover:bg-[#174ae8] group-hover:text-white">
+            2.0
+          </span>
+        </Link>
+
+        {/* Center Nav Navigation */}
         <motion.nav
           aria-label="Primary"
-          className="material relative flex items-center gap-1 rounded-full p-1.5"
+          className="hidden md:flex items-center gap-1 rounded-full border-2 border-white/50 bg-[#0d2d99]/85 p-1.5 shadow-2xl backdrop-blur-md"
           initial={{ y: -16, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={move}
+          transition={{ duration: 0.3 }}
         >
           {items.map((item) => {
             const Icon = ICONS[item.name] ?? Circle;
-            const isActive = activeTab === item.name;
+            const isActive = isActiveItem(item.name);
 
             return (
-              <Link
+              <a
                 key={item.name}
                 href={item.url}
-                transitionTypes={["nav-fade"]}
-                aria-current={isActive ? "page" : undefined}
-                onClick={() => setClicked({ path: pathname, name: item.name })}
+                onClick={() => setActiveTab(item.name)}
                 className={cn(
-                  "press relative rounded-full px-5 py-2.5 text-sm font-medium",
-                  "text-fg/70 hover:text-fg focus-visible:ring-2 focus-visible:ring-beam focus-visible:outline-none",
-                  isActive && "text-fg",
+                  "relative flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition",
+                  isActive
+                    ? "bg-white text-[#174ae8] shadow-md"
+                    : "text-white/85 hover:bg-white/15 hover:text-white"
                 )}
               >
-                {isActive && (
-                  <>
-                    <motion.span
-                      layoutId="nav-pill"
-                      className="absolute inset-0 -z-10 rounded-full bg-beam/22 ring-1 ring-beam/45"
-                      transition={move}
-                    />
-                    {/* The mark rides the active tab. */}
-                    <motion.span
-                      layoutId="nav-mark"
-                      className="pointer-events-none absolute -top-3.5 left-1/2 -translate-x-1/2 text-beam"
-                      transition={move}
-                    >
-                      <span className={DISC} />
-                    </motion.span>
-                  </>
-                )}
-
-                <span className="relative hidden md:inline">{item.name}</span>
-                <span className="relative md:hidden">
-                  <Icon size={18} strokeWidth={2} aria-hidden />
-                  <span className="sr-only">{item.name}</span>
-                </span>
-              </Link>
+                <Icon className="h-3.5 w-3.5" />
+                <span>{item.name}</span>
+              </a>
             );
           })}
         </motion.nav>
+
+        {/* Mobile Sub-Events CTA & Date Badge */}
+        <div className="flex items-center gap-2">
+          <a
+            href="/#events"
+            className="flex items-center gap-1.5 rounded-full border-2 border-white bg-white px-4 py-2 text-xs font-bold text-[#174ae8] shadow-md transition hover:bg-white/90"
+          >
+            <span>10 Events</span>
+          </a>
+        </div>
       </div>
-    </div>
+    </header>
   );
 }

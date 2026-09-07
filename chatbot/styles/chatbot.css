@@ -1,0 +1,81 @@
+/* chatbot/styles/chatbot.css */
+/* Scoped styles for the Equinox 2026 self-contained chatbot overlay */
+
+.equinox-chatbot-root {
+  --eq-blue: #174ae8;
+  --eq-blue-hover: #1f54fa;
+  --eq-blue-deep: #0c2b94;
+  --eq-blue-dark: #071a5c;
+  --eq-black: #0d0e15;
+  --eq-white: #ffffff;
+  --eq-border: rgba(255, 255, 255, 0.35);
+  --eq-glass: rgba(23, 74, 232, 0.94);
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+}
+
+/* Texture overlay on chat header and panels */
+.chatbot-riso-bg {
+  background-color: var(--eq-blue);
+  background-image: 
+    radial-gradient(at 10% 10%, rgba(59, 108, 250, 0.5) 0px, transparent 45%),
+    radial-gradient(at 90% 90%, rgba(12, 43, 148, 0.7) 0px, transparent 50%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 3px);
+}
+
+/* Floating button idle pulse */
+@keyframes eq-pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
+.chatbot-pulse-ring {
+  animation: eq-pulse-ring 2.5s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
+
+/* Custom scrollbar for chat window */
+.chatbot-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chatbot-scrollbar::-webkit-scrollbar-track {
+  background: rgba(7, 26, 92, 0.6);
+  border-radius: 4px;
+}
+
+.chatbot-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.chatbot-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* Event visual badges */
+.event-card-container {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+}
+
+.event-card-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+}
+
+/* Visual animations canvas container */
+.event-anim-canvas {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: rgba(12, 43, 148, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
