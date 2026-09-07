@@ -12,8 +12,8 @@ import { board, contact, event } from "@/lib/content";
 function ContactHero() {
   return (
     <section className="mx-auto max-w-[1400px] px-4 pt-40 pb-24 sm:px-8 sm:pt-48">
-      <SectionHeading eyebrow={contact.eyebrow} heading={contact.heading} />
-      <p className="mt-10 max-w-2xl text-xl leading-relaxed text-fg/85 sm:text-2xl sm:leading-relaxed">
+      <SectionHeading eyebrow="Brochure Page 12" heading="Contact Us" />
+      <p className="mt-10 max-w-2xl text-xl leading-relaxed text-white/90 sm:text-2xl sm:leading-relaxed">
         {contact.body}
       </p>
     </section>
@@ -23,9 +23,9 @@ function ContactHero() {
 function Board() {
   return (
     <section className="mx-auto max-w-[1400px] px-4 pb-24 sm:px-8">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {board.map((person) => (
-          <ContactCard key={person.email} {...person} />
+          <ContactCard key={person.name} {...person} />
         ))}
       </div>
     </section>
@@ -38,26 +38,26 @@ function Particulars() {
   return (
     <section className="mx-auto max-w-[1400px] px-4 pb-28 sm:px-8">
       <dl className="flex flex-col">
-        <div className="grid gap-2 border-t border-fg/12 py-7 sm:grid-cols-[14rem_1fr] sm:gap-10">
-          <dt className="heading text-2xl">General enquiries</dt>
-          <dd className="data max-w-2xl text-fg/75">
-            <a href={`mailto:${contact.email}`} className="text-accent hover:text-fg">
+        <div className="grid gap-2 border-t border-white/20 py-7 sm:grid-cols-[14rem_1fr] sm:gap-10">
+          <dt className="font-display-title text-2xl text-white">General enquiries</dt>
+          <dd className="data max-w-2xl text-white/85">
+            <a href={`mailto:${contact.email}`} className="text-[#F7CA50] font-bold hover:underline">
               {contact.email}
             </a>
           </dd>
         </div>
-        <div className="grid gap-2 border-t border-b border-fg/12 py-7 sm:grid-cols-[14rem_1fr] sm:gap-10">
-          <dt className="heading text-2xl">Venue</dt>
-          <dd className="max-w-2xl leading-relaxed text-fg/75">{event.venue}</dd>
+        <div className="grid gap-2 border-t border-b border-white/20 py-7 sm:grid-cols-[14rem_1fr] sm:gap-10">
+          <dt className="font-display-title text-2xl text-white">Venue</dt>
+          <dd className="max-w-2xl leading-relaxed text-white/85">{event.venueFull}</dd>
         </div>
       </dl>
 
       <a
         href="/register"
-        className="press mt-12 flex w-max items-center gap-2 rounded-full bg-fg py-1.5 pr-1.5 pl-6 font-semibold text-ground"
+        className="press mt-12 flex w-max items-center gap-2 rounded-full border-2 border-[#0d0e15] bg-[#F7CA50] py-2 pr-2 pl-6 font-bold text-[#0d0e15] shadow-[4px_4px_0px_#0d0e15] transition hover:bg-[#ffe17d]"
       >
         Register instead
-        <span className="grid h-10 w-10 place-items-center rounded-full bg-accent text-ground">
+        <span className="grid h-9 w-9 place-items-center rounded-full bg-[#FF4D79] text-white">
           <Arrow />
         </span>
       </a>
@@ -68,9 +68,11 @@ function Particulars() {
 export default function ContactPage() {
   return (
     <PageTransition>
-      <ContactHero />
-      <Board />
-      <Particulars />
+      <main className="riso-texture brochure-grid min-h-screen bg-[#1B5FD6] text-white selection:bg-[#F7CA50] selection:text-[#0d0e15]">
+        <ContactHero />
+        <Board />
+        <Particulars />
+      </main>
     </PageTransition>
   );
 }

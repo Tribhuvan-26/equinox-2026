@@ -1,0 +1,14 @@
+/* app/overlay-animations/animations/events/IplAuction/IplAuctionAnimation.module.css */
+
+.overlayContainer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  background-color: #174ae8;
+  overflow: hidden;
+  user-select: none;
+  pointer-events: auto;
+  opacity: 0;
+}

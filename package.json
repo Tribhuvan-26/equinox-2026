@@ -10,8 +10,18 @@
   },
   "dependencies": {
     "@google/genai": "^2.21.0",
+<<<<<<< HEAD
     "framer-motion": "^13.1.0",
     "lucide-react": "^1.31.0",
+=======
+    "@gsap/react": "^2.1.2",
+    "animejs": "^4.5.0",
+    "framer-motion": "^13.2.0",
+    "gsap": "^3.15.0",
+    "lottie-web": "^5.13.0",
+    "lucide-react": "^1.41.0",
+    "motion": "^13.2.0",
+>>>>>>> ChatBot
     "next": "16.3.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"

@@ -1,57 +1,95 @@
 import Link from "next/link";
-import { event, nav, socials } from "@/lib/content";
+import { event, nav, socials, contact } from "@/lib/content";
 
 export function Footer() {
   return (
     <footer
-      id="contact"
-      className="grain relative overflow-hidden bg-[radial-gradient(90%_130%_at_50%_130%,#2e1b54_0%,#150f2b_45%,#07060e_80%)] pt-24 pb-10"
+      id="site-footer"
+      className="relative overflow-hidden border-t-2 border-white/20 bg-[#0B2D6D] pt-20 pb-12 text-white brochure-grid-dense"
     >
-      {/* Gutter inside the cap, matching every body section — with it outside,
-          the footer's content edge sits 32px wider than the page above it. */}
-      <div className="@container relative mx-auto flex max-w-[1400px] flex-col gap-12 px-4 sm:px-8">
-        <div className="flex flex-col justify-between gap-8 sm:flex-row">
-          <div className="flex flex-col gap-3">
-            <p className="label text-fg/70">Social</p>
-            <ul className="flex gap-3">
-              {socials.map((social) => (
-                <li key={social.label}>
-                  {/* Spelled out — a two-letter abbreviation made GitHub read
-                      as "GI" and LinkedIn as "LI". */}
+      <div className="relative mx-auto flex max-w-[1400px] flex-col gap-12 px-4 sm:px-8">
+        {/* Top Section */}
+        <div className="flex flex-col justify-between gap-8 md:flex-row md:items-start">
+          <div className="max-w-md">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-2xl font-black tracking-widest text-[#FF4D79] uppercase">
+                THE
+              </span>
+              <span className="font-mono text-2xl font-black tracking-widest text-[#F7CA50] uppercase">
+                EQUINOX
+              </span>
+              <span className="rounded border border-white/50 bg-[#FF4D79] px-2 py-0.5 font-mono text-xs font-black text-white">
+                2.0
+              </span>
+            </div>
+            <p className="mt-3 text-sm leading-relaxed text-white/80">
+              The flagship entrepreneurship summit at MLR Institute of Technology, organized by the Centre for Innovation and Entrepreneurship (CIE).
+            </p>
+            <p className="mt-2 font-mono text-xs font-bold text-[#F7CA50]">
+              # WHERE PASSION MEETS PERSEVERANCE
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-12">
+            <div>
+              <p className="font-mono text-xs font-bold uppercase tracking-wider text-[#F7CA50]">
+                Site Index
+              </p>
+              <ul className="mt-4 space-y-2">
+                {nav.map((item) => (
+                  <li key={item.label}>
+                    <a
+                      href={item.href}
+                      className="text-sm font-medium text-white/80 transition hover:text-[#F7CA50] hover:underline"
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <p className="font-mono text-xs font-bold uppercase tracking-wider text-[#F7CA50]">
+                Official Connect
+              </p>
+              <ul className="mt-4 space-y-2">
+                {socials.map((social) => (
+                  <li key={social.label}>
+                    <a
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm font-medium text-white/80 transition hover:text-[#F7CA50] hover:underline"
+                    >
+                      {social.label}
+                    </a>
+                  </li>
+                ))}
+                <li>
                   <a
-                    href={social.href}
-                    className="press label rounded-full border border-fg/15 px-4 py-2.5 transition-colors hover:border-beam hover:text-beam"
+                    href={`mailto:${contact.email}`}
+                    className="text-sm font-medium text-white/80 transition hover:text-[#F7CA50] hover:underline"
                   >
-                    {social.label}
+                    Email Organizers
                   </a>
                 </li>
-              ))}
-            </ul>
+              </ul>
+            </div>
           </div>
-          <ul className="label flex flex-wrap gap-6">
-            {nav.map((item) => (
-              <li key={item.label}>
-                <Link href={item.href} className="text-fg/70 hover:text-beam">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
         </div>
 
-        {/* The sign-off restates the thesis: one wordmark, lit on top, dark
-            below, split on a hard line. */}
-        {/* Sized in cqw, not vw — past 1400px the container stops growing and a
-            vw-sized wordmark ran off the right edge. */}
-        <p className="display bg-[linear-gradient(to_bottom,#edeaf5_0_50%,#3a2d63_50%_100%)] bg-clip-text text-[13cqw] text-transparent">
-          {event.name.toUpperCase()}
-        </p>
-
-        <div className="label flex flex-col justify-between gap-2 border-t border-fg/15 pt-6 text-fg/70 sm:flex-row">
-          <p>
-            © {event.year} {event.name}. All rights reserved.
+        {/* Massive Footer Wordmark */}
+        <div className="border-t border-white/20 pt-8 text-center md:text-left">
+          <p className="font-display-title text-5xl font-black tracking-tighter text-[#F7CA50]/20 sm:text-7xl md:text-8xl lg:text-[10rem]">
+            THE EQUINOX
           </p>
-          <p>{event.host}</p>
+        </div>
+
+        {/* Bottom Legal / Institutional Bar */}
+        <div className="flex flex-col justify-between gap-4 border-t border-white/20 pt-6 text-xs text-white/70 sm:flex-row">
+          <p>© 2026 The Equinox 2.0 · Centre for Innovation &amp; Entrepreneurship (CIE), MLRIT.</p>
+          <p>Dundigal Police Station Road, Hyderabad – 500 043, Telangana, India.</p>
         </div>
       </div>
     </footer>

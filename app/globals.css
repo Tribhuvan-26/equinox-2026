@@ -1,385 +1,204 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   Equal Night — the design system for Equinox 2026.
-
-   An equinox is the moment day and night are exactly equal. The page runs on
-   two grounds, night and day, that meet at a hard purple line. Every colour is
-   a semantic token so a subtree flips grounds with one class (.night / .day):
-   Tailwind utilities compile to var(--color-*), and custom properties cascade,
-   so `text-fg/70` resolves against whichever ground it sits in.
-
-   Brand constants are fixed; the six semantic tokens are what the grounds swap.
+   THE EQUINOX 2.0 — Official Design System
+   Color Ground: Electric Royal Cobalt Blue (#174ae8)
+   Accents: Stark White (#ffffff), Bold Editorial Black (#0d0e15)
+   Textures: Risograph paper grain, blueprint grid lines, page timelines
 --------------------------------------------------------------------------- */
 
 @theme {
-  /* Brand constants — never reassigned. `beam` is the light-side purple, kept
-     at a tint that clears 4.5:1 on the night ground so it can carry 12px
-     labels; deeper purples appear inline where they are decorative only. */
-  --color-night: #0a0812;
-  --color-day: #e8e6ef;
-  --color-beam: #a78bfa;
-  --color-violet: #4c1d95;
+  --color-equinox-blue: #1B5FD6;
+  --color-equinox-blue-dark: #1348AA;
+  --color-equinox-blue-deep: #0B2D6D;
+  --color-equinox-blue-light: #3577EC;
+  --color-equinox-yellow: #F7CA50;
+  --color-equinox-coral: #FF4D79;
+  --color-equinox-coral-dark: #E0335F;
+  --color-equinox-black: #0d0e15;
+  --color-equinox-charcoal: #1f222e;
+  --color-equinox-white: #ffffff;
+  --color-equinox-card: rgba(255, 255, 255, 0.08);
 
-  /* Semantic tokens — reassigned by .night / .day below. Values here are the
-     night defaults so utilities still resolve outside a ground wrapper. */
-  --color-ground: #0a0812;
-  --color-surface: #14102a;
-  --color-surface-2: #1f1740;
-  --color-fg: #edeaf5;
-  --color-accent: #a78bfa;
-
-  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --font-display: var(--font-syne), var(--font-geist-sans), sans-serif;
 }
 
-.night {
-  --color-ground: var(--color-night);
-  --color-surface: #14102a;
-  --color-surface-2: #1f1740;
-  --color-fg: #edeaf5;
-  --color-accent: var(--color-beam);
-  background: var(--color-ground);
-  color: var(--color-fg);
-}
+:root {
+  --equinox-blue: #1B5FD6;
+  --equinox-blue-dark: #1348AA;
+  --equinox-blue-deep: #0B2D6D;
+  --equinox-yellow: #F7CA50;
+  --equinox-coral: #FF4D79;
+  --equinox-white: #ffffff;
+  --equinox-black: #0d0e15;
 
-/* The light half. fg is literally the night ground — the inversion is the
-   point, not a separate palette. */
-.day {
-  --color-ground: var(--color-day);
-  --color-surface: #dad7e4;
-  --color-surface-2: #c9c5d8;
-  --color-fg: var(--color-night);
-  --color-accent: var(--color-violet);
-  background: var(--color-ground);
-  color: var(--color-fg);
+  /* Legacy & compatibility variables */
+  --bg-cobalt: var(--equinox-blue);
+  --bg-cobalt-dark: var(--equinox-blue-dark);
+  --fg-white: #ffffff;
+  --fg-black: #0d0e15;
+  --ground: var(--equinox-blue);
+  --surface: rgba(255, 255, 255, 0.1);
+  --surface-2: rgba(255, 255, 255, 0.18);
+  --fg: #ffffff;
+  --accent: var(--equinox-yellow);
 }
 
 html {
   scroll-behavior: smooth;
-  /* Clears the floating nav bar. */
-  scroll-padding-top: 7rem;
+  scroll-padding-top: 5rem;
+  background-color: #1B5FD6;
+  color: #ffffff;
 }
 
 body {
-  background: var(--color-night);
-  color: var(--color-fg);
+  background-color: #1B5FD6;
+  color: #ffffff;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
-/* ---- Type ------------------------------------------------------------------
-   Tracking is size-specific: display sizes read too loose at their default
-   spacing and need negative tracking, small utility text needs positive.
-   One letter-spacing value for the whole site would be wrong somewhere. */
-
-.display {
-  font-family: var(--font-display);
-  font-weight: 800;
-  line-height: 0.92;
-  letter-spacing: -0.035em;
-}
-
-.heading {
-  font-family: var(--font-display);
-  font-weight: 700;
-  line-height: 1.04;
-  letter-spacing: -0.02em;
-}
-
-/* Utility face for data the reader scans rather than reads: times, fees, prize
-   pools, eyebrows. Monospace so columns of figures line up. */
-.label {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.data {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.01em;
-}
-
-/* ---- The signature: the terminator ----------------------------------------
-   The line where the two grounds meet, with light bleeding off the night side.
-   Rising crosses into day, setting crosses back into night. Used twice on the
-   home page and nowhere else — it marks the crossing, it isn't decoration. */
-
-.terminator {
+/* Risograph / fine paper grain overlay */
+.paper-grain {
   position: relative;
-  /* Lifts the bleed above the neighbouring section, which is itself positioned
-     and would otherwise paint over the glow. */
-  z-index: 1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem 1.5rem;
-  padding: 1.5rem 1rem;
-  background: var(--color-ground);
-  /* The mid purple, not the hero's near-white core: the core would vanish
-     against the light ground on the day side of the line. */
-  border-top: 2px solid #8b5cf6;
 }
 
-.terminator::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 8rem;
-  pointer-events: none;
-  background: linear-gradient(
-    to top,
-    color-mix(in oklab, #8b5cf6 58%, transparent),
-    transparent 76%
-  );
-}
-
-/* Rising: the glow sits above the line, in the night we are leaving. */
-.terminator--rising::before {
-  bottom: 100%;
-}
-
-/* Setting: the glow falls below the line, into the night we are entering. */
-.terminator--setting::before {
-  top: 100%;
-  transform: scaleY(-1);
-}
-
-/* ---- Materials ------------------------------------------------------------
-   The nav bar is a floating translucent layer with content scrolling beneath
-   it. It keeps the night material over both grounds: a heavier material over
-   lighter content reads as structure, and holding it constant means the bar
-   never appears to change identity mid-scroll. */
-
-.material {
-  background: color-mix(in oklab, var(--color-night) 62%, transparent);
-  backdrop-filter: blur(24px) saturate(160%);
-  /* Bright top edge — light catching the leading face of the material. */
-  border: 1px solid color-mix(in oklab, white 14%, transparent);
-  border-top-color: color-mix(in oklab, white 22%, transparent);
-  box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.6);
-}
-
-/* Press feedback lands on pointer-down, not on release. */
-.press {
-  transition: transform 100ms ease-out;
-}
-.press:active {
-  transform: scale(0.97);
-}
-
-/* Grain belongs to the night half only — on a light ground it reads as dirt.
-   ::before, not ::after: as the first child it paints beneath the positioned
-   content that follows it. Laid over the content instead, an overlay-blended
-   noise at 0.35 eats the edges of the hero wordmark and reads as blur. */
-.grain::before {
+.paper-grain::before {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);
+  background-size: 16px 16px;
   opacity: 0.35;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-}
-.day .grain::before {
-  display: none;
+  z-index: 1;
 }
 
-/* ---- Ambient motion ------------------------------------------------------- */
+/* Graph paper grid line pattern from the brochure overlaid on bright royal blue */
+.riso-texture,
+.brochure-grid {
+  background-color: var(--equinox-blue);
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+  background-size: 34px 34px;
+}
 
-@keyframes marquee {
-  to {
-    transform: translateX(-50%);
+.brochure-grid-dense {
+  background-color: var(--equinox-blue);
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Typography styles matching the official design system */
+.font-display-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.font-label-mono {
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* The Equinox Cover Drop Shadow Effect (Dark drop shadow behind golden yellow EQUINOX) */
+.display-title-shadow {
+  text-shadow: 
+    3px 3px 0 #0d0e15,
+    5px 5px 0 #0d0e15,
+    6px 7px 0 rgba(11, 45, 109, 0.95);
+}
+
+/* Hanging tag physics bounce */
+@keyframes sway {
+  0%, 100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
   }
 }
 
-.marquee-track {
-  animation: marquee 42s linear infinite;
+.animate-tag-sway {
+  transform-origin: top center;
+  animation: sway 4s ease-in-out infinite;
 }
 
-/* Hero word rotator: one word visible at a time inside a clipped line box.
-   The stack renders 4 words + a repeat of the first, so each step is -20%.
-   Adding/removing words in content.ts means editing these stops to match. */
-@keyframes rotate-words {
-  0%,
-  17% {
-    transform: translateY(0%);
-  }
-  25%,
-  42% {
-    transform: translateY(-20%);
-  }
-  50%,
-  67% {
-    transform: translateY(-40%);
-  }
-  75%,
-  92% {
-    transform: translateY(-60%);
-  }
-  100% {
-    transform: translateY(-80%);
-  }
+.animate-tag-sway:hover {
+  animation-play-state: paused;
+  transform: rotate(6deg) scale(1.05);
+  transition: transform 0.2s ease;
 }
 
-.rotator {
-  animation: rotate-words 6s cubic-bezier(0.76, 0, 0.24, 1) infinite;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-/* FAQ accordion (native <details>) */
-details > summary {
-  list-style: none;
-  cursor: pointer;
-}
-details > summary::-webkit-details-marker {
-  display: none;
-}
-details[open] .faq-plus {
-  transform: rotate(45deg);
+::-webkit-scrollbar-track {
+  background: var(--equinox-blue-deep);
 }
 
-/* ---- View transitions ------------------------------------------------------
-
-   Timings live here — the whole navigation should land in ~250ms. Old content
-   leaves fast, new content follows straight after. */
-:root {
-  --vt-exit: 70ms;
-  --vt-enter: 110ms;
-  --vt-move: 180ms;
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 4px;
 }
 
-::view-transition-old(.nav-forward) {
-  --slide-offset: -40px;
-  animation:
-    var(--vt-exit) ease-in both vt-fade reverse,
-    var(--vt-move) ease-in-out both vt-slide reverse;
-}
-::view-transition-new(.nav-forward) {
-  --slide-offset: 40px;
-  animation:
-    var(--vt-enter) ease-out var(--vt-exit) both vt-fade,
-    var(--vt-move) ease-in-out both vt-slide;
+::-webkit-scrollbar-thumb:hover {
+  background: var(--equinox-yellow);
 }
 
-::view-transition-old(.nav-back) {
-  --slide-offset: 40px;
-  animation:
-    var(--vt-exit) ease-in both vt-fade reverse,
-    var(--vt-move) ease-in-out both vt-slide reverse;
-}
-::view-transition-new(.nav-back) {
-  --slide-offset: -40px;
-  animation:
-    var(--vt-enter) ease-out var(--vt-exit) both vt-fade,
-    var(--vt-move) ease-in-out both vt-slide;
-}
-
-/* Peer navigation from the nav bar: no direction to imply, so crossfade. */
-::view-transition-old(.nav-fade) {
-  animation: var(--vt-exit) ease-in both vt-fade reverse;
-}
-::view-transition-new(.nav-fade) {
-  animation: var(--vt-enter) ease-out var(--vt-exit) both vt-fade;
+/* White outline pill badge */
+.badge-pill-white {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background-color: transparent;
+  border: 1.5px solid #ffffff;
+  border-radius: 9999px;
+  color: #ffffff;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Blur hides interpolation artifacts while a card morphs into a hero. */
-::view-transition-group(.morph) {
-  animation-duration: var(--vt-move);
-}
-::view-transition-image-pair(.morph) {
-  animation-name: vt-blur;
-}
-
-/* The nav bar is the spatial anchor — it must not travel with the content. */
-::view-transition-group(site-header) {
-  animation: none;
-  z-index: 100;
-}
-::view-transition-old(site-header) {
-  display: none;
-}
-::view-transition-new(site-header) {
-  animation: none;
+.badge-pill-white:hover {
+  background-color: #ffffff;
+  color: #174ae8;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 }
 
-/* Clicks during a transition would otherwise land on the snapshot overlay. */
-::view-transition {
-  pointer-events: none;
+/* Timeline markers */
+.timeline-axis {
+  position: relative;
 }
 
-@keyframes vt-fade {
-  from {
-    filter: blur(3px);
-    opacity: 0;
-  }
-  to {
-    filter: blur(0);
-    opacity: 1;
-  }
+.timeline-axis::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background-color: rgba(255, 255, 255, 0.4);
 }
 
-@keyframes vt-slide {
-  from {
-    translate: var(--slide-offset);
-  }
-  to {
-    translate: 0;
-  }
+/* Card hover lift */
+.program-card {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
 }
 
-@keyframes vt-blur {
-  30% {
-    filter: blur(3px);
-  }
-}
-
-/* ---- Accessibility --------------------------------------------------------
-   Reduced motion drops the travel, not the feedback. Reduced transparency and
-   raised contrast make the floating material solid instead of frosted. */
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  .marquee-track,
-  .rotator {
-    animation: none;
-  }
-  .press:active {
-    transform: none;
-  }
-  ::view-transition-old(*),
-  ::view-transition-new(*),
-  ::view-transition-group(*) {
-    animation-duration: 0s !important;
-    animation-delay: 0s !important;
-  }
-}
-
-@media (prefers-reduced-transparency: reduce) {
-  .material {
-    background: var(--color-night);
-    backdrop-filter: none;
-  }
-}
-
-@media (prefers-contrast: more) {
-  .material {
-    background: var(--color-night);
-    backdrop-filter: none;
-    border-color: var(--color-beam);
-  }
-}
-
-/* Hide the speaker carousel scrollbar without killing the scroll. */
-.no-scrollbar {
-  scrollbar-width: none;
-}
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+.program-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.35);
 }

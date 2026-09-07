@@ -1,153 +1,210 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ViewTransition } from "react";
-import { board, event, events } from "@/lib/content";
-import { Arrow, ContactCard, Eyebrow, PageTransition } from "../../ui";
+import { canonicalSlugs, eventsData } from "../eventsData";
+import { SubEventBadge } from "../../EventGraphics";
+import { AutoPlayAnimation } from "../AutoPlayAnimation";
+
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
 
 export function generateStaticParams() {
-  return events.map((item) => ({ slug: item.slug }));
+  return canonicalSlugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
   params,
-}: PageProps<"/events/[slug]">): Promise<Metadata> {
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const item = events.find((e) => e.slug === slug);
+  const item = eventsData[slug];
   if (!item) return {};
 
   return {
-    title: `${item.name} — ${event.name} ${event.year}`,
-    description: `${item.tagline}. ${item.day}, ${item.venue}. ${item.teamSize}, ${item.fee}.`,
+    title: `${item.title} — The Equinox 2026`,
+    description: item.description,
   };
 }
 
-export default async function EventPage({ params }: PageProps<"/events/[slug]">) {
+export default async function EventPage({ params }: PageProps) {
   const { slug } = await params;
-  const item = events.find((e) => e.slug === slug);
+  const item = eventsData[slug];
   if (!item) notFound();
 
-  const facts = [
-    { label: "When", value: item.time },
-    { label: "Where", value: item.venue },
-    { label: "Team size", value: item.teamSize },
-    { label: "Entry", value: item.fee },
-    { label: "Prize pool", value: item.prize },
-  ];
-
   return (
-    <PageTransition>
-      {/* Same name as the card on the events grid, so the tile grows into this
-          hero instead of the page blinking over. */}
-      <ViewTransition name={`event-${item.slug}`} share="morph" default="none">
-        <section className="grain relative flex min-h-[70svh] flex-col justify-end overflow-hidden bg-[radial-gradient(120%_55%_at_50%_100%,#4c2a8f_0%,#170f2e_48%,#07060e_100%)] px-4 pt-40 pb-12 sm:px-8">
-          {/* The horizon again, low in the frame — the same device as the home
-              hero so an event page reads as the same world. */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] bg-[#ede9fe] shadow-[0_0_2px_1px_rgba(237,233,254,0.9),0_0_28px_5px_rgba(139,92,246,0.5)]"
-          />
-          <div className="relative mx-auto flex w-full max-w-[1400px] flex-col gap-4">
-            <Eyebrow>
-              {item.category} · {item.day}
-            </Eyebrow>
-            <h1 className="display max-w-4xl text-4xl sm:text-6xl lg:text-7xl">
-              {item.name}
-            </h1>
-            <p className="max-w-2xl text-xl text-fg/75">{item.tagline}</p>
-          </div>
-        </section>
-      </ViewTransition>
+    <main className="riso-texture brochure-grid min-h-screen bg-[#1B5FD6] px-4 pt-32 pb-20 text-white sm:px-8 md:pt-36 selection:bg-[#F7CA50] selection:text-[#0d0e15]">
+      <AutoPlayAnimation slug={slug} />
 
-      <section className="mx-auto max-w-[1400px] px-4 py-16 sm:px-8">
-        <dl className="grid gap-px overflow-hidden rounded-2xl bg-fg/10 sm:grid-cols-2 lg:grid-cols-5">
-          {facts.map((fact) => (
-            <div key={fact.label} className="flex flex-col gap-2 bg-ground p-6">
-              <dt className="label text-accent">{fact.label}</dt>
-              <dd className="data text-sm">{fact.value}</dd>
-            </div>
-          ))}
-        </dl>
-
-        <div className="mt-16 grid gap-12 lg:grid-cols-[1fr_22rem]">
-          <div className="flex flex-col gap-10">
-            <div className="flex flex-col gap-4 text-fg/70">
-              {item.about.map((paragraph) => (
-                <p key={paragraph} className="max-w-2xl leading-relaxed">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-
-            <div className="flex flex-col gap-4">
-              <h2 className="heading text-2xl">Rules</h2>
-              <ul className="flex flex-col gap-3">
-                {item.rules.map((rule) => (
-                  <li
-                    key={rule}
-                    className="border-l-2 border-beam/50 pl-3 text-fg/70"
-                  >
-                    {rule}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          <aside className="flex flex-col gap-6">
-            <Link
-              href="/register"
-              transitionTypes={["nav-forward"]}
-              className="flex items-center justify-between rounded-2xl bg-fg px-6 py-5 font-semibold text-ground transition hover:bg-fg/90"
-            >
-              Register for {item.name}
-              <Arrow />
-            </Link>
-
-            <div className="flex flex-col gap-3">
-              <h2 className="label text-fg/70">
-                Event SPOC
-              </h2>
-              <ContactCard
-                name={item.spoc.name}
-                role={`SPOC · ${item.name}`}
-                email={item.spoc.email}
-                phone={item.spoc.phone}
-              />
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <h2 className="label text-fg/70">
-                Organising board
-              </h2>
-              {board.slice(0, 2).map((member) => (
-                <ContactCard key={member.email} {...member} />
-              ))}
-              <Link
-                href="/contact"
-                transitionTypes={["nav-forward"]}
-                className="flex items-center gap-2 text-sm text-accent hover:text-fg"
-              >
-                All board contacts
-                <Arrow />
-              </Link>
-            </div>
-          </aside>
-        </div>
-
-        <div className="mt-20 flex flex-wrap items-center gap-6 border-t border-fg/10 pt-8">
+      <div className="mx-auto max-w-[1200px]">
+        {/* Top Institutional & Navigation Header */}
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/30 pb-5">
           <Link
             href="/events"
-            transitionTypes={["nav-back"]}
-            className="flex items-center gap-3 text-fg/70 hover:text-fg"
+            className="inline-flex items-center gap-2 border-2 border-white bg-[#F7CA50] px-4 py-1.5 font-mono text-xs font-black uppercase tracking-wider text-[#0d0e15] shadow-[2px_2px_0px_#0d0e15] transition hover:bg-white hover:text-[#1B5FD6]"
           >
-            <span className="grid h-10 w-10 place-items-center rounded-full bg-fg/10">
-              <Arrow className="rotate-180" />
-            </span>
-            All events
+            <span>&larr;</span>
+            <span>All Sub-Events</span>
           </Link>
+
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-xs font-bold tracking-widest text-[#0d0e15] bg-[#F7CA50] px-2 py-0.5 uppercase">
+              Page {item.pageNumber}
+            </span>
+            <span className="font-mono text-xs font-bold uppercase tracking-wider text-white/90">
+              # Where Passion Meets Perseverance
+            </span>
+          </div>
         </div>
-      </section>
-    </PageTransition>
+
+        {/* Hero Section: Headline with Word-Pair Contrast & Official Badge */}
+        <div className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <div className="min-w-0">
+            <span className="inline-block border border-white/40 bg-[#0B2D6D] px-3.5 py-1 font-mono text-xs font-black uppercase tracking-widest text-[#F7CA50] shadow-[2px_2px_0px_#ffffff]">
+              Official Equinox Sub-Event · {item.category}
+            </span>
+
+            {/* Headline with Word-Pair Styling (Golden Yellow + White Contrast) */}
+            <h1 className="mt-4 font-display-title text-4xl font-black uppercase tracking-tight break-words sm:text-6xl lg:text-7xl">
+              <span className="mr-2 inline-block bg-[#F7CA50] px-2.5 py-0.5 text-[#0d0e15] shadow-[3px_3px_0px_#0d0e15] sm:mr-3 sm:px-3 sm:shadow-[4px_4px_0px_#0d0e15]">
+                {item.headlineWordPair.blackWord}
+              </span>
+              <span className="break-words text-white">{item.headlineWordPair.whiteWord}</span>
+            </h1>
+          </div>
+
+          {/* Authentic Coral Rounded Badge Card from Brochure Pages 05 & 06 */}
+          <div className="shrink-0">
+            <div className="flex h-[88px] min-w-[200px] items-center justify-center rounded-2xl border-2 border-white bg-[#FF4D79] px-6 py-4 shadow-[4px_4px_0px_rgba(0,0,0,0.25)] sm:min-w-[220px] sm:px-8">
+              <SubEventBadge slug={item.slug} />
+            </div>
+          </div>
+        </div>
+
+        {/* Section Divider with Blueprint Tick Marks */}
+        <div className="relative my-10 border-t border-white/40">
+          <div className="absolute -top-1.5 left-0 h-3 w-[2px] bg-white" />
+          <div className="absolute -top-1.5 left-1/2 h-3 w-[2px] -translate-x-1/2 bg-white/60" />
+          <div className="absolute -top-1.5 right-0 h-3 w-[2px] bg-white" />
+        </div>
+
+        {/* Main Event Overview: Royal Deep Block matching Brochure Sections */}
+        <section className="rounded-3xl border-2 border-white/40 bg-[#0B2D6D]/80 p-6 text-white shadow-[6px_6px_0px_rgba(0,0,0,0.25)] backdrop-blur-xs sm:p-10">
+          <div className="flex items-center gap-2 font-mono text-xs font-black uppercase tracking-wider text-[#F7CA50]">
+            <span className="inline-block h-2.5 w-2.5 bg-[#FF4D79]" />
+            <span>Official Event Description · Source of Truth</span>
+          </div>
+          <p className="mt-5 text-xl font-medium leading-relaxed text-white sm:text-2xl">
+            {item.description}
+          </p>
+        </section>
+
+        {/* Section Divider with Blueprint Tick Marks */}
+        <div className="relative my-12 border-t border-white/40">
+          <div className="absolute -top-1.5 left-0 h-3 w-[2px] bg-white" />
+          <div className="absolute -top-1.5 left-1/2 h-3 w-[2px] -translate-x-1/2 bg-white/60" />
+          <div className="absolute -top-1.5 right-0 h-3 w-[2px] bg-white" />
+        </div>
+
+        {/* Logistics Placeholders (Clearly marked TODO, zero invented rules/dates) */}
+        <section>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
+            <h2 className="font-display-title text-3xl font-black uppercase tracking-tight text-white sm:text-5xl">
+              Event Logistics
+            </h2>
+            <span className="font-mono text-xs uppercase tracking-wider text-white/80">
+              Official Details · Pending CIE Scheduling
+            </span>
+          </div>
+
+          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {/* Date & Timing Placeholder */}
+            <div className="rounded-2xl border-2 border-white/40 bg-[#0B2D6D]/80 p-6 shadow-[4px_4px_0px_rgba(0,0,0,0.25)] backdrop-blur-xs">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#F7CA50]">
+                  01 · Schedule
+                </span>
+                <span className="border border-white/60 bg-[#FF4D79] px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-white">
+                  TODO
+                </span>
+              </div>
+              <h3 className="mt-3 font-display-title text-xl font-bold uppercase text-white">
+                Date &amp; Timing
+              </h3>
+              <p className="mt-3 font-mono text-sm leading-relaxed text-white/85">
+                {item.logistics.dateTime}
+              </p>
+            </div>
+
+            {/* Venue Placeholder */}
+            <div className="rounded-2xl border-2 border-white/40 bg-[#0B2D6D]/80 p-6 shadow-[4px_4px_0px_rgba(0,0,0,0.25)] backdrop-blur-xs">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#F7CA50]">
+                  02 · Location
+                </span>
+                <span className="border border-white/60 bg-[#FF4D79] px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-white">
+                  TODO
+                </span>
+              </div>
+              <h3 className="font-display-title mt-3 text-xl font-bold uppercase text-white">
+                Venue
+              </h3>
+              <p className="mt-3 font-mono text-sm leading-relaxed text-white/85">
+                {item.logistics.venue}
+              </p>
+            </div>
+
+            {/* Rules & Guidelines Placeholder */}
+            <div className="rounded-2xl border-2 border-white/40 bg-[#0B2D6D]/80 p-6 shadow-[4px_4px_0px_rgba(0,0,0,0.25)] backdrop-blur-xs sm:col-span-2 lg:col-span-1">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#F7CA50]">
+                  03 · Regulations
+                </span>
+                <span className="border border-white/60 bg-[#FF4D79] px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-white">
+                  TODO
+                </span>
+              </div>
+              <h3 className="font-display-title mt-3 text-xl font-bold uppercase text-white">
+                Rules &amp; Guidelines
+              </h3>
+              <p className="mt-3 font-mono text-sm leading-relaxed text-white/85">
+                {item.logistics.rules}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Bottom Timeline Footer (Page Style from Pages 03, 05, 06) */}
+        <div className="relative mt-16 border-t border-white/40 pt-6">
+          <div className="absolute -top-1.5 left-0 h-3 w-[2px] bg-white" />
+          <div className="absolute -top-1.5 left-1/2 h-3 w-[2px] -translate-x-1/2 bg-white/60" />
+          <div className="absolute -top-1.5 right-0 h-3 w-[2px] bg-white" />
+
+          <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+            <Link
+              href="/events"
+              className="inline-flex items-center gap-3 border-2 border-white bg-[#F7CA50] px-6 py-3 font-mono text-xs font-black uppercase tracking-wider text-[#0d0e15] shadow-[3px_3px_0px_#0d0e15] transition hover:bg-white hover:text-[#1B5FD6]"
+            >
+              <span>&larr;</span>
+              <span>Back to All Events</span>
+            </Link>
+
+            {/* Page Marker */}
+            <div className="flex items-center gap-4">
+              <div className="leading-none text-right">
+                <span className="block text-[10px] font-black tracking-widest uppercase text-[#FF4D79]">
+                  The
+                </span>
+                <span className="block text-base font-black tracking-tighter uppercase text-[#F7CA50]">
+                  Equinox 2.0
+                </span>
+              </div>
+              <div className="font-mono text-3xl font-black tracking-widest text-white">
+                {item.pageNumber}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }
