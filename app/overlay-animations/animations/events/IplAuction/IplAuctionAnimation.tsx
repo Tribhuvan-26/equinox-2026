@@ -20,10 +20,10 @@ const useIsomorphicLayoutEffect =
 // signal "which team" with brand color only, styled like the site's own
 // bordered program cards rather than any official logo artwork.
 const PADDLE_TEAMS = [
-  { label: "CSK", accent: "#F7CA50" },
-  { label: "MI", accent: "#1B5FD6" },
-  { label: "RCB", accent: "#FF4D79" },
-  { label: "SRH", accent: "#E0335F" },
+  { label: "CSK", accent: "#F9D47B" },
+  { label: "MI", accent: "#2074D5" },
+  { label: "RCB", accent: "#EB547C" },
+  { label: "SRH", accent: "#C93D62" },
 ];
 
 export const IplAuctionAnimation: React.FC<AnimationComponentProps> = ({
@@ -106,14 +106,14 @@ export const IplAuctionAnimation: React.FC<AnimationComponentProps> = ({
         type="button"
         onClick={handleManualDismiss}
         aria-label="Skip Animation"
-        className="absolute right-7 top-6 z-10 inline-flex items-center gap-2 border-2 border-white bg-transparent px-4 py-1.5 font-mono text-xs font-black uppercase tracking-wider text-white transition hover:bg-white hover:text-[#1B5FD6]"
+        className="absolute right-7 top-6 z-10 inline-flex items-center gap-2 border-2 border-white bg-transparent px-4 py-1.5 font-mono text-xs font-black uppercase tracking-wider text-white transition hover:bg-white hover:text-[#2074D5]"
       >
         Skip <X className="h-3 w-3" />
       </button>
 
       <div className="relative z-[2] flex h-full w-full flex-col items-center justify-center px-6 text-center">
         <div ref={tagRef}>
-          <span className="inline-block border border-white/40 bg-[#0d0e15] px-3.5 py-1 font-mono text-xs font-black uppercase tracking-widest text-white shadow-[2px_2px_0px_#ffffff]">
+          <span className="inline-block border border-white/40 bg-[#282828] px-3.5 py-1 font-mono text-xs font-black uppercase tracking-widest text-white shadow-[2px_2px_0px_#ffffff]">
             Official Equinox Sub-Event · Strategic Simulation
           </span>
         </div>
@@ -121,7 +121,7 @@ export const IplAuctionAnimation: React.FC<AnimationComponentProps> = ({
         <h2 className="font-display-title mt-5 text-5xl font-black uppercase tracking-tight sm:text-7xl lg:text-8xl">
           <span
             ref={headlineBlackRef}
-            className="mr-2 inline-block bg-white px-2.5 py-0.5 text-[#0d0e15] shadow-[3px_3px_0px_#0d0e15] sm:mr-3 sm:px-3 sm:shadow-[4px_4px_0px_#0d0e15]"
+            className="mr-2 inline-block bg-white px-2.5 py-0.5 text-[#282828] shadow-[3px_3px_0px_#282828] sm:mr-3 sm:px-3 sm:shadow-[4px_4px_0px_#282828]"
           >
             IPL
           </span>
@@ -140,7 +140,7 @@ export const IplAuctionAnimation: React.FC<AnimationComponentProps> = ({
 
         <div
           ref={bidBlockRef}
-          className="mt-9 border-2 border-white/40 bg-[#0d0e15] px-10 py-5 shadow-[6px_6px_0px_#0d0e15]"
+          className="mt-9 border-2 border-white/40 bg-[#282828] px-10 py-5 shadow-[6px_6px_0px_#282828]"
         >
           <span className="font-mono text-xs font-black uppercase tracking-widest text-white/70">
             Current Bid

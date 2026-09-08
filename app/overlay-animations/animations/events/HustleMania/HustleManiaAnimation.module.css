@@ -6,7 +6,7 @@
   width: 100vw;
   height: 100vh;
   z-index: 99999;
-  background-color: #0d0e15;
+  background-color: #282828;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,7 +87,7 @@
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  fill: #0d0e15;
+  fill: #282828;
 }
 
 .maniaText {
@@ -95,7 +95,7 @@
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  fill: #1B5FD6;
+  fill: #2074D5;
 }
 
 .taglineText {
@@ -103,7 +103,7 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.28em;
-  fill: #0d0e15;
+  fill: #282828;
 }
 
 .dreamsText {
@@ -111,7 +111,7 @@
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  fill: #1B5FD6;
+  fill: #2074D5;
 }
 
 .signBoardText {

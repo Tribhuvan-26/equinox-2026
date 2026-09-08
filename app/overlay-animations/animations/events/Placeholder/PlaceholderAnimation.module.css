@@ -6,7 +6,7 @@
   width: 100vw;
   height: 100vh;
   z-index: 99999;
-  background: linear-gradient(135deg, #0b2d6d 0%, #0d0e15 100%);
+  background: linear-gradient(135deg, #0b2d6d 0%, #282828 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -56,7 +56,7 @@
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(10px);
-  box-shadow: 6px 6px 0px #0d0e15;
+  box-shadow: 6px 6px 0px #282828;
   text-align: center;
   max-width: 90vw;
 }
@@ -74,7 +74,7 @@
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #f7ca50;
+  color: #F9D47B;
 }
 
 .title {

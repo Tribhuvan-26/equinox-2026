@@ -6,7 +6,7 @@
   width: 100vw;
   height: 100vh;
   z-index: 99999;
-  background-color: #0d0e15;
+  background-color: #282828;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -110,12 +110,12 @@
 }
 
 .titleLight {
-  fill: #1B5FD6;
+  fill: #2074D5;
   filter: drop-shadow(0 4px 25px rgba(27, 95, 214, 0.65));
 }
 
 .titleStreak {
-  stroke: #1B5FD6;
+  stroke: #2074D5;
   stroke-width: 6;
   stroke-linecap: round;
   filter: drop-shadow(0 0 10px rgba(27, 95, 214, 0.8));

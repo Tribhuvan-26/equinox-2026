@@ -181,7 +181,7 @@ export const HustleManiaAnimation: React.FC<AnimationComponentProps> = ({
               fontSize="7.5"
               fontWeight="800"
               letterSpacing="0.14em"
-              fill="#0d0e15"
+              fill="#282828"
             >
               THE
             </text>
@@ -192,12 +192,12 @@ export const HustleManiaAnimation: React.FC<AnimationComponentProps> = ({
               fontSize="14"
               fontWeight="900"
               letterSpacing="0.04em"
-              fill="#0d0e15"
+              fill="#282828"
             >
               EQUINOX
             </text>
             {/* 2.0 badge positioned beneath the 'OX' of EQUINOX */}
-            <rect x="96" y="47" width="22" height="13" rx="2" fill="#0d0e15" />
+            <rect x="96" y="47" width="22" height="13" rx="2" fill="#282828" />
             <text
               x="107"
               y="57"
@@ -261,14 +261,14 @@ export const HustleManiaAnimation: React.FC<AnimationComponentProps> = ({
             <text
               x="988"
               y="38"
-              fill="#0d0e15"
+              fill="#282828"
               fontSize="9.5"
               fontWeight="900"
               letterSpacing="0.14em"
             >
               30 - 31 OCT
             </text>
-            <line x1="935" y1="46" x2="988" y2="46" stroke="#0d0e15" strokeWidth="1.2" />
+            <line x1="935" y1="46" x2="988" y2="46" stroke="#282828" strokeWidth="1.2" />
             <text
               x="988"
               y="58"
@@ -312,7 +312,7 @@ export const HustleManiaAnimation: React.FC<AnimationComponentProps> = ({
             <text y="24" className={styles.dreamsText} fontSize="17">
               DREAMS
             </text>
-            <line x1="-36" y1="31" x2="36" y2="31" stroke="#0d0e15" strokeWidth="1.8" strokeLinecap="round" />
+            <line x1="-36" y1="31" x2="36" y2="31" stroke="#282828" strokeWidth="1.8" strokeLinecap="round" />
           </g>
 
           {/* ── 5. TITLE BLOCK: HUSTLE MANIA + MOTION ACCENTS (Above stall) ── */}
@@ -344,7 +344,7 @@ export const HustleManiaAnimation: React.FC<AnimationComponentProps> = ({
               <path
                 d="M 472,116 C 498,112 536,113 602,107"
                 fill="none"
-                stroke="#1B5FD6"
+                stroke="#2074D5"
                 strokeWidth="4.2"
                 strokeLinecap="round"
               />
@@ -352,16 +352,16 @@ export const HustleManiaAnimation: React.FC<AnimationComponentProps> = ({
 
             {/* Left motion-line accents */}
             <g ref={motionLinesLeftRef}>
-              <polygon points="355,53 372,66 369,69 352,56" fill="#1B5FD6" />
-              <polygon points="362,77 384,86 381,90 359,81" fill="#1B5FD6" />
-              <polygon points="338,111 362,99 360,95 336,107" fill="#0d0e15" />
+              <polygon points="355,53 372,66 369,69 352,56" fill="#2074D5" />
+              <polygon points="362,77 384,86 381,90 359,81" fill="#2074D5" />
+              <polygon points="338,111 362,99 360,95 336,107" fill="#282828" />
             </g>
 
             {/* Right motion-line accents */}
             <g ref={motionLinesRightRef}>
-              <polygon points="655,50 676,38 678,42 657,54" fill="#0d0e15" />
-              <polygon points="662,75 690,73 690,78 662,80" fill="#0d0e15" />
-              <polygon points="664,96 685,111 682,114 661,99" fill="#1B5FD6" />
+              <polygon points="655,50 676,38 678,42 657,54" fill="#282828" />
+              <polygon points="662,75 690,73 690,78 662,80" fill="#282828" />
+              <polygon points="664,96 685,111 682,114 661,99" fill="#2074D5" />
             </g>
           </g>
 
@@ -370,7 +370,7 @@ export const HustleManiaAnimation: React.FC<AnimationComponentProps> = ({
             {/* Rounded comic speech bubble */}
             <path
               d="M 494,342 C 494,324 511,318 534,318 C 557,318 574,324 574,342 C 574,360 557,366 534,366 C 522,366 515,364 507,369 L 493,378 L 499,365 C 495,359 494,351 494,342 Z"
-              fill="#0d0e15"
+              fill="#282828"
             />
             <text
               x="533"
@@ -386,26 +386,26 @@ export const HustleManiaAnimation: React.FC<AnimationComponentProps> = ({
               DEAL?
             </text>
             {/* Conversation action ticks radiating below bubble */}
-            <line x1="522" y1="384" x2="520" y2="394" stroke="#0d0e15" strokeWidth="1.5" strokeLinecap="round" />
-            <line x1="535" y1="387" x2="536" y2="398" stroke="#0d0e15" strokeWidth="1.5" strokeLinecap="round" />
-            <line x1="548" y1="385" x2="552" y2="394" stroke="#0d0e15" strokeWidth="1.5" strokeLinecap="round" />
+            <line x1="522" y1="384" x2="520" y2="394" stroke="#282828" strokeWidth="1.5" strokeLinecap="round" />
+            <line x1="535" y1="387" x2="536" y2="398" stroke="#282828" strokeWidth="1.5" strokeLinecap="round" />
+            <line x1="548" y1="385" x2="552" y2="394" stroke="#282828" strokeWidth="1.5" strokeLinecap="round" />
           </g>
 
           {/* ── 7. A-FRAME SIGN BOARD (Left of stall) ──────────────────── */}
           <g ref={signBoardRef}>
             {/* Outer A-frame easel structure */}
             {/* Rear kickstand leg */}
-            <polygon points="252,352 260,352 349,548 339,548" fill="#0d0e15" />
+            <polygon points="252,352 260,352 349,548 339,548" fill="#282828" />
             {/* Front left leg */}
-            <polygon points="178,355 188,355 167,548 157,548" fill="#0d0e15" />
+            <polygon points="178,355 188,355 167,548 157,548" fill="#282828" />
             {/* Front right leg */}
-            <polygon points="328,355 338,355 322,548 312,548" fill="#0d0e15" />
+            <polygon points="328,355 338,355 322,548 312,548" fill="#282828" />
             {/* Bottom crossbar brace */}
-            <rect x="172" y="475" width="154" height="5" fill="#0d0e15" />
+            <rect x="172" y="475" width="154" height="5" fill="#282828" />
             {/* Main board face frame */}
-            <polygon points="182,360 334,360 322,534 168,534" fill="#0d0e15" />
+            <polygon points="182,360 334,360 322,534 168,534" fill="#282828" />
             {/* Inner blue chalkboard face */}
-            <polygon points="198,375 320,375 310,518 186,518" fill="#1B5FD6" />
+            <polygon points="198,375 320,375 310,518 186,518" fill="#2074D5" />
             {/* Chalkboard lettering: IDEAS / PRODUCTS / PEOPLE */}
             <text
               x="253"
@@ -446,18 +446,18 @@ export const HustleManiaAnimation: React.FC<AnimationComponentProps> = ({
           {/* ── 8. HANGING PRICE TAG + SUPPORT ARM (Right of stall) ────── */}
           <g ref={hangingTagGroupRef}>
             {/* Support pole & arm extending from stall counter */}
-            <line x1="685" y1="440" x2="685" y2="280" stroke="#0d0e15" strokeWidth="3" strokeLinecap="round" />
-            <line x1="685" y1="280" x2="765" y2="245" stroke="#0d0e15" strokeWidth="3" strokeLinecap="round" />
-            <circle cx="765" cy="245" r="3.5" fill="none" stroke="#0d0e15" strokeWidth="2" />
+            <line x1="685" y1="440" x2="685" y2="280" stroke="#282828" strokeWidth="3" strokeLinecap="round" />
+            <line x1="685" y1="280" x2="765" y2="245" stroke="#282828" strokeWidth="3" strokeLinecap="round" />
+            <circle cx="765" cy="245" r="3.5" fill="none" stroke="#282828" strokeWidth="2" />
             {/* String dropping to tag hole */}
-            <line x1="765" y1="248" x2="765" y2="282" stroke="#0d0e15" strokeWidth="1.6" />
+            <line x1="765" y1="248" x2="765" y2="282" stroke="#282828" strokeWidth="1.6" />
 
             {/* Inner tag group animated for gentle swing loop around pivot (765, 282) */}
             <g ref={hangingTagRef}>
               {/* Tag body polygon (tilted price tag) */}
               <polygon
                 points="745,282 785,282 824,324 824,448 706,448 706,324"
-                fill="#0d0e15"
+                fill="#282828"
               />
               {/* Eyelet hole */}
               <circle cx="765" cy="296" r="3.5" fill="#ffffff" />
@@ -506,8 +506,8 @@ export const HustleManiaAnimation: React.FC<AnimationComponentProps> = ({
             </g>
 
             {/* Action ticks to the right of the tag */}
-            <line x1="838" y1="338" x2="854" y2="330" stroke="#0d0e15" strokeWidth="2" strokeLinecap="round" />
-            <line x1="845" y1="358" x2="860" y2="358" stroke="#0d0e15" strokeWidth="2" strokeLinecap="round" />
+            <line x1="838" y1="338" x2="854" y2="330" stroke="#282828" strokeWidth="2" strokeLinecap="round" />
+            <line x1="845" y1="358" x2="860" y2="358" stroke="#282828" strokeWidth="2" strokeLinecap="round" />
           </g>
         </svg>
       </div>
