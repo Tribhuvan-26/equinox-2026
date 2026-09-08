@@ -13,12 +13,12 @@ export function EventDetail({ event, onClose }: EventDetailProps) {
   if (!event) return null;
 
   return (
-    <div className="absolute inset-0 z-30 flex flex-col bg-[#174ae8] text-white">
+    <div className="absolute inset-0 z-30 flex flex-col bg-[#2074d5] text-white">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-white/20 bg-[#0c2b94] px-4 py-3">
         <button
           onClick={onClose}
-          className="flex items-center gap-1.5 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-bold text-white transition hover:bg-white hover:text-[#174ae8]"
+          className="flex items-center gap-1.5 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-bold text-white transition hover:bg-white hover:text-[#2074d5]"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           <span>Back to Chat</span>
@@ -115,7 +115,7 @@ export function EventDetail({ event, onClose }: EventDetailProps) {
         </div>
 
         {/* Coordinator Contacts */}
-        <div className="rounded-xl border border-white/30 bg-[#0d0e15]/40 p-3">
+        <div className="rounded-xl border border-white/30 bg-[#282828]/40 p-3">
           <p className="text-[11px] font-bold text-white/80">
             Student Coordinators for {event.name}:
           </p>
@@ -139,7 +139,7 @@ export function EventDetail({ event, onClose }: EventDetailProps) {
         <a
           href="#contact"
           onClick={onClose}
-          className="inline-flex w-full items-center justify-center rounded-xl border-2 border-white bg-white py-2 text-xs font-bold text-[#174ae8] shadow-md transition hover:bg-white/90"
+          className="inline-flex w-full items-center justify-center rounded-xl border-2 border-white bg-white py-2 text-xs font-bold text-[#2074d5] shadow-md transition hover:bg-white/90"
         >
           Enquire / Hold Slot for {event.name}
         </a>

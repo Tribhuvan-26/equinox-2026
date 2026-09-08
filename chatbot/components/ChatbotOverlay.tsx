@@ -61,11 +61,11 @@ export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOv
           onClick={toggleOpen}
           onMouseEnter={() => animateTriggerHover(triggerRef.current)}
           onMouseLeave={() => animateTriggerLeave(triggerRef.current)}
-          className="group relative flex items-center gap-2.5 rounded-full border-2 border-white bg-[#0f35b5] px-4 py-2.5 sm:px-5 sm:py-3 text-white shadow-2xl transition hover:bg-white hover:text-[#174ae8]"
+          className="group relative flex items-center gap-2.5 rounded-full border-2 border-white bg-[#0f35b5] px-4 py-2.5 sm:px-5 sm:py-3 text-white shadow-2xl transition hover:bg-white hover:text-[#2074d5]"
           aria-label={isOpen ? "Close Equinox AI Chat" : "Open Equinox AI Chat"}
         >
           {/* Animated Glowing Beacon */}
-          <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#174ae8] group-hover:bg-[#174ae8] group-hover:text-white shadow-md">
+          <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#2074d5] group-hover:bg-[#2074d5] group-hover:text-white shadow-md">
             {isOpen ? <X className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
             {!isOpen && (
               <span className="absolute -top-1 -right-1 flex h-3 w-3">
@@ -76,10 +76,10 @@ export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOv
           </div>
 
           <div className="text-left">
-            <span className="block font-mono text-[9px] sm:text-[10px] font-black tracking-widest uppercase text-white/75 group-hover:text-[#174ae8]/80">
+            <span className="block font-mono text-[9px] sm:text-[10px] font-black tracking-widest uppercase text-white/75 group-hover:text-[#2074d5]/80">
               {isOpen ? "CLOSE" : "ASK EQUINOX"}
             </span>
-            <span className="block font-mono text-xs sm:text-sm font-black tracking-wider uppercase text-white group-hover:text-[#174ae8]">
+            <span className="block font-mono text-xs sm:text-sm font-black tracking-wider uppercase text-white group-hover:text-[#2074d5]">
               EQUINOX AI
             </span>
           </div>

@@ -26,7 +26,7 @@ export function EventCard({ event, onSelect }: EventCardProps) {
         <span className="font-mono text-[10px] font-black uppercase tracking-wider text-white/80">
           PAGE {event.pageNumber} · {event.category}
         </span>
-        <span className="rounded bg-white px-1.5 py-0.5 font-mono text-[9px] font-black text-[#0d0e15]">
+        <span className="rounded bg-white px-1.5 py-0.5 font-mono text-[9px] font-black text-[#282828]">
           EQUINOX 2.0
         </span>
       </div>
@@ -148,7 +148,7 @@ export function EventCard({ event, onSelect }: EventCardProps) {
                   className="intern-connect-line"
                 />
               </svg>
-              <div className="intern-offer-badge rounded-full border border-white bg-cyan-500 px-2 py-1 font-mono text-[10px] font-black text-[#0d0e15]">
+              <div className="intern-offer-badge rounded-full border border-white bg-cyan-500 px-2 py-1 font-mono text-[10px] font-black text-[#282828]">
                 Startup
               </div>
             </div>
@@ -157,7 +157,7 @@ export function EventCard({ event, onSelect }: EventCardProps) {
           {/* Startup Poly Animation Elements */}
           {event.animationType === "startup-poly" && (
             <div className="relative flex h-full w-full items-center justify-center gap-4">
-              <div className="poly-dice-icon flex h-8 w-8 items-center justify-center rounded-lg border-2 border-white bg-yellow-400 text-[#0d0e15] shadow-md">
+              <div className="poly-dice-icon flex h-8 w-8 items-center justify-center rounded-lg border-2 border-white bg-yellow-400 text-[#282828] shadow-md">
                 <Dices className="h-4 w-4" />
               </div>
               <div className="poly-board-tile rounded border border-yellow-300/60 bg-yellow-500/20 px-3 py-1 font-mono text-xs font-bold text-yellow-200">
@@ -201,7 +201,7 @@ export function EventCard({ event, onSelect }: EventCardProps) {
 
           <button
             onClick={() => onSelect(event)}
-            className="flex items-center gap-1 rounded-full border border-white bg-white px-3 py-1 font-mono text-xs font-black text-[#174ae8] transition hover:bg-white/90"
+            className="flex items-center gap-1 rounded-full border border-white bg-white px-3 py-1 font-mono text-xs font-black text-[#2074d5] transition hover:bg-white/90"
           >
             <span>View Details</span>
             <ArrowRight className="h-3 w-3" />
