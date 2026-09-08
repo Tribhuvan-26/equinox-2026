@@ -2,20 +2,20 @@
 
 /* ---------------------------------------------------------------------------
    THE EQUINOX 2.0 — Official Design System
-   Color Ground: Electric Royal Cobalt Blue (#174ae8)
-   Accents: Stark White (#ffffff), Bold Editorial Black (#0d0e15)
+   Color Ground: Electric Royal Cobalt Blue (#2074d5)
+   Accents: Stark White (#ffffff), Bold Editorial Black (#282828)
    Textures: Risograph paper grain, blueprint grid lines, page timelines
 --------------------------------------------------------------------------- */
 
 @theme {
-  --color-equinox-blue: #1B5FD6;
-  --color-equinox-blue-dark: #1348AA;
+  --color-equinox-blue: #2074D5;
+  --color-equinox-blue-dark: #16529E;
   --color-equinox-blue-deep: #0B2D6D;
   --color-equinox-blue-light: #3577EC;
-  --color-equinox-yellow: #F7CA50;
-  --color-equinox-coral: #FF4D79;
-  --color-equinox-coral-dark: #E0335F;
-  --color-equinox-black: #0d0e15;
+  --color-equinox-yellow: #F9D47B;
+  --color-equinox-coral: #EB547C;
+  --color-equinox-coral-dark: #C93D62;
+  --color-equinox-black: #282828;
   --color-equinox-charcoal: #1f222e;
   --color-equinox-white: #ffffff;
   --color-equinox-card: rgba(255, 255, 255, 0.08);
@@ -26,19 +26,19 @@
 }
 
 :root {
-  --equinox-blue: #1B5FD6;
-  --equinox-blue-dark: #1348AA;
+  --equinox-blue: #2074D5;
+  --equinox-blue-dark: #16529E;
   --equinox-blue-deep: #0B2D6D;
-  --equinox-yellow: #F7CA50;
-  --equinox-coral: #FF4D79;
+  --equinox-yellow: #F9D47B;
+  --equinox-coral: #EB547C;
   --equinox-white: #ffffff;
-  --equinox-black: #0d0e15;
+  --equinox-black: #282828;
 
   /* Legacy & compatibility variables */
   --bg-cobalt: var(--equinox-blue);
   --bg-cobalt-dark: var(--equinox-blue-dark);
   --fg-white: #ffffff;
-  --fg-black: #0d0e15;
+  --fg-black: #282828;
   --ground: var(--equinox-blue);
   --surface: rgba(255, 255, 255, 0.1);
   --surface-2: rgba(255, 255, 255, 0.18);
@@ -49,16 +49,16 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
-  background-color: #1B5FD6;
+  background-color: #2074D5;
   color: #ffffff;
 }
 
 body {
-  background-color: #1B5FD6;
+  background-color: #2074D5;
   color: #ffffff;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Risograph / fine paper grain overlay */
@@ -112,8 +112,8 @@ body {
 /* The Equinox Cover Drop Shadow Effect (Dark drop shadow behind golden yellow EQUINOX) */
 .display-title-shadow {
   text-shadow: 
-    3px 3px 0 #0d0e15,
-    5px 5px 0 #0d0e15,
+    3px 3px 0 #282828,
+    5px 5px 0 #282828,
     6px 7px 0 rgba(11, 45, 109, 0.95);
 }
 
@@ -192,7 +192,7 @@ body {
 
 .badge-pill-white:hover {
   background-color: #ffffff;
-  color: #174ae8;
+  color: #2074d5;
   transform: translateY(-2px);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 }
