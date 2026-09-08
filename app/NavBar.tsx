@@ -65,7 +65,7 @@ export function NavBar({
                 className={cn(
                   "relative flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition",
                   isActive
-                    ? "bg-[#F7CA50] text-[#0d0e15] shadow-md"
+                    ? "bg-[#F9D47B] text-[#282828] shadow-md"
                     : "text-white/90 hover:bg-white/15 hover:text-white"
                 )}
               >
