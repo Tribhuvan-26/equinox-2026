@@ -12,27 +12,27 @@ export function Footer() {
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-start">
           <div className="max-w-md">
             <div className="flex items-center gap-2">
-              <span className="font-mono text-2xl font-black tracking-widest text-[#FF4D79] uppercase">
+              <span className="font-mono text-2xl font-black tracking-widest text-[#EB547C] uppercase">
                 THE
               </span>
-              <span className="font-mono text-2xl font-black tracking-widest text-[#F7CA50] uppercase">
+              <span className="font-mono text-2xl font-black tracking-widest text-[#F9D47B] uppercase">
                 EQUINOX
               </span>
-              <span className="rounded border border-white/50 bg-[#FF4D79] px-2 py-0.5 font-mono text-xs font-black text-white">
+              <span className="rounded border border-white/50 bg-[#EB547C] px-2 py-0.5 font-mono text-xs font-black text-white">
                 2.0
               </span>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-white/80">
               The flagship entrepreneurship summit at MLR Institute of Technology, organized by the Centre for Innovation and Entrepreneurship (CIE).
             </p>
-            <p className="mt-2 font-mono text-xs font-bold text-[#F7CA50]">
+            <p className="mt-2 font-mono text-xs font-bold text-[#F9D47B]">
               # WHERE PASSION MEETS PERSEVERANCE
             </p>
           </div>
 
           <div className="flex flex-wrap gap-12">
             <div>
-              <p className="font-mono text-xs font-bold uppercase tracking-wider text-[#F7CA50]">
+              <p className="font-mono text-xs font-bold uppercase tracking-wider text-[#F9D47B]">
                 Site Index
               </p>
               <ul className="mt-4 space-y-2">
@@ -40,7 +40,7 @@ export function Footer() {
                   <li key={item.label}>
                     <a
                       href={item.href}
-                      className="text-sm font-medium text-white/80 transition hover:text-[#F7CA50] hover:underline"
+                      className="text-sm font-medium text-white/80 transition hover:text-[#F9D47B] hover:underline"
                     >
                       {item.label}
                     </a>
@@ -50,7 +50,7 @@ export function Footer() {
             </div>
 
             <div>
-              <p className="font-mono text-xs font-bold uppercase tracking-wider text-[#F7CA50]">
+              <p className="font-mono text-xs font-bold uppercase tracking-wider text-[#F9D47B]">
                 Official Connect
               </p>
               <ul className="mt-4 space-y-2">
@@ -60,7 +60,7 @@ export function Footer() {
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm font-medium text-white/80 transition hover:text-[#F7CA50] hover:underline"
+                      className="text-sm font-medium text-white/80 transition hover:text-[#F9D47B] hover:underline"
                     >
                       {social.label}
                     </a>
@@ -69,7 +69,7 @@ export function Footer() {
                 <li>
                   <a
                     href={`mailto:${contact.email}`}
-                    className="text-sm font-medium text-white/80 transition hover:text-[#F7CA50] hover:underline"
+                    className="text-sm font-medium text-white/80 transition hover:text-[#F9D47B] hover:underline"
                   >
                     Email Organizers
                   </a>
@@ -81,7 +81,7 @@ export function Footer() {
 
         {/* Massive Footer Wordmark */}
         <div className="border-t border-white/20 pt-8 text-center md:text-left">
-          <p className="font-display-title text-5xl font-black tracking-tighter text-[#F7CA50]/20 sm:text-7xl md:text-8xl lg:text-[10rem]">
+          <p className="font-display-title text-5xl font-black tracking-tighter text-[#F9D47B]/20 sm:text-7xl md:text-8xl lg:text-[10rem]">
             THE EQUINOX
           </p>
         </div>

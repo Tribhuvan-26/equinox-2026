@@ -233,10 +233,10 @@ export const SpotlightAnimation: React.FC<AnimationComponentProps> = ({
             y2="100%"
           >
             <stop offset="0%" stopColor="#ffffff" stopOpacity="0.98" />
-            <stop offset="8%" stopColor="#F7CA50" stopOpacity="0.88" />
-            <stop offset="35%" stopColor="#F7CA50" stopOpacity="0.55" />
-            <stop offset="70%" stopColor="#F7CA50" stopOpacity="0.22" />
-            <stop offset="100%" stopColor="#F7CA50" stopOpacity="0" />
+            <stop offset="8%" stopColor="#F9D47B" stopOpacity="0.88" />
+            <stop offset="35%" stopColor="#F9D47B" stopOpacity="0.55" />
+            <stop offset="70%" stopColor="#F9D47B" stopOpacity="0.22" />
+            <stop offset="100%" stopColor="#F9D47B" stopOpacity="0" />
           </linearGradient>
 
           {/* Floor Light Pool Radial Gradient */}
@@ -249,10 +249,10 @@ export const SpotlightAnimation: React.FC<AnimationComponentProps> = ({
             fy="45%"
           >
             <stop offset="0%" stopColor="#ffffff" stopOpacity="0.98" />
-            <stop offset="20%" stopColor="#F7CA50" stopOpacity="0.85" />
-            <stop offset="50%" stopColor="#F7CA50" stopOpacity="0.5" />
-            <stop offset="78%" stopColor="#F7CA50" stopOpacity="0.2" />
-            <stop offset="100%" stopColor="#F7CA50" stopOpacity="0" />
+            <stop offset="20%" stopColor="#F9D47B" stopOpacity="0.85" />
+            <stop offset="50%" stopColor="#F9D47B" stopOpacity="0.5" />
+            <stop offset="78%" stopColor="#F9D47B" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="#F9D47B" stopOpacity="0" />
           </radialGradient>
 
           {/* Soft Floor Glow Filter */}
@@ -301,7 +301,7 @@ export const SpotlightAnimation: React.FC<AnimationComponentProps> = ({
             cy="920"
             rx="340"
             ry="58"
-            fill="#F7CA50"
+            fill="#F9D47B"
             opacity="0.8"
             filter="blur(18px)"
           />
@@ -327,30 +327,30 @@ export const SpotlightAnimation: React.FC<AnimationComponentProps> = ({
             <path
               d="M170,90 C170,120 200,140 240,140 C280,140 310,120 310,90"
               fill="none"
-              stroke="#0d0e15"
+              stroke="#282828"
               strokeWidth="10"
               strokeLinecap="round"
             />
-            <line x1="240" y1="50" x2="240" y2="90" stroke="#0d0e15" strokeWidth="12" />
-            <circle cx="240" cy="50" r="14" fill="#0d0e15" stroke="#333" strokeWidth="3" />
+            <line x1="240" y1="50" x2="240" y2="90" stroke="#282828" strokeWidth="12" />
+            <circle cx="240" cy="50" r="14" fill="#282828" stroke="#333" strokeWidth="3" />
 
             {/* Cylinder Housing Body */}
             <path
               d="M205,100 L275,100 L265,150 L215,150 Z"
-              fill="#0d0e15"
-              stroke="#0d0e15"
+              fill="#282828"
+              stroke="#282828"
               strokeWidth="3"
             />
             {/* Cooling Fins / Ridges */}
-            <line x1="208" y1="114" x2="272" y2="114" stroke="#0d0e15" strokeWidth="2" />
-            <line x1="211" y1="128" x2="269" y2="128" stroke="#0d0e15" strokeWidth="2" />
+            <line x1="208" y1="114" x2="272" y2="114" stroke="#282828" strokeWidth="2" />
+            <line x1="211" y1="128" x2="269" y2="128" stroke="#282828" strokeWidth="2" />
 
             {/* Barndoor Flaps */}
-            <polygon points="215,150 185,190 205,195 225,150" fill="#0d0e15" />
-            <polygon points="265,150 295,190 275,195 255,150" fill="#0d0e15" />
+            <polygon points="215,150 185,190 205,195 225,150" fill="#282828" />
+            <polygon points="265,150 295,190 275,195 255,150" fill="#282828" />
 
             {/* Emitting Lens Rim */}
-            <ellipse cx="240" cy="148" rx="25" ry="8" fill="#F7CA50" opacity="0.95" />
+            <ellipse cx="240" cy="148" rx="25" ry="8" fill="#F9D47B" opacity="0.95" />
           </g>
         </g>
 
@@ -374,30 +374,30 @@ export const SpotlightAnimation: React.FC<AnimationComponentProps> = ({
             <path
               d="M1610,90 C1610,120 1640,140 1680,140 C1720,140 1750,120 1750,90"
               fill="none"
-              stroke="#0d0e15"
+              stroke="#282828"
               strokeWidth="10"
               strokeLinecap="round"
             />
-            <line x1="1680" y1="50" x2="1680" y2="90" stroke="#0d0e15" strokeWidth="12" />
-            <circle cx="1680" cy="50" r="14" fill="#0d0e15" stroke="#333" strokeWidth="3" />
+            <line x1="1680" y1="50" x2="1680" y2="90" stroke="#282828" strokeWidth="12" />
+            <circle cx="1680" cy="50" r="14" fill="#282828" stroke="#333" strokeWidth="3" />
 
             {/* Cylinder Housing Body */}
             <path
               d="M1645,100 L1715,100 L1705,150 L1655,150 Z"
-              fill="#0d0e15"
-              stroke="#0d0e15"
+              fill="#282828"
+              stroke="#282828"
               strokeWidth="3"
             />
             {/* Cooling Fins / Ridges */}
-            <line x1="1648" y1="114" x2="1712" y2="114" stroke="#0d0e15" strokeWidth="2" />
-            <line x1="1651" y1="128" x2="1709" y2="128" stroke="#0d0e15" strokeWidth="2" />
+            <line x1="1648" y1="114" x2="1712" y2="114" stroke="#282828" strokeWidth="2" />
+            <line x1="1651" y1="128" x2="1709" y2="128" stroke="#282828" strokeWidth="2" />
 
             {/* Barndoor Flaps */}
-            <polygon points="1655,150 1625,190 1645,195 1665,150" fill="#0d0e15" />
-            <polygon points="1705,150 1735,190 1715,195 1695,150" fill="#0d0e15" />
+            <polygon points="1655,150 1625,190 1645,195 1665,150" fill="#282828" />
+            <polygon points="1705,150 1735,190 1715,195 1695,150" fill="#282828" />
 
             {/* Emitting Lens Rim */}
-            <ellipse cx="1680" cy="148" rx="25" ry="8" fill="#F7CA50" opacity="0.95" />
+            <ellipse cx="1680" cy="148" rx="25" ry="8" fill="#F9D47B" opacity="0.95" />
           </g>
         </g>
 
@@ -407,7 +407,7 @@ export const SpotlightAnimation: React.FC<AnimationComponentProps> = ({
           <path
             d="M1420,160 C1560,120 1680,220 1720,320"
             fill="none"
-            stroke="#1B5FD6"
+            stroke="#2074D5"
             strokeWidth="2.5"
             strokeLinecap="round"
             opacity="0.45"
@@ -416,7 +416,7 @@ export const SpotlightAnimation: React.FC<AnimationComponentProps> = ({
           <path
             d="M260,780 C360,840 440,790 520,720"
             fill="none"
-            stroke="#1B5FD6"
+            stroke="#2074D5"
             strokeWidth="2"
             strokeLinecap="round"
             opacity="0.35"
@@ -455,14 +455,14 @@ export const SpotlightAnimation: React.FC<AnimationComponentProps> = ({
               className={styles.titleText}
             >
               <tspan fill="#ffffff" className={styles.titleSpot}>SPOT</tspan>
-              <tspan fill="#1B5FD6" className={styles.titleLight}>LIGHT</tspan>
+              <tspan fill="#2074D5" className={styles.titleLight}>LIGHT</tspan>
             </text>
 
             {/* Iconic 4-point star inside the letter 'O' of SPOT matching the reference */}
             <g ref={starGroupRef}>
               <path
                 d="M0,-38 Q0,0 30,0 Q0,0 0,38 Q0,0 -30,0 Q0,0 0,-38 Z"
-                fill="#0d0e15"
+                fill="#282828"
                 opacity="0.95"
               />
               <path

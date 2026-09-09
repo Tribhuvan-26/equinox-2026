@@ -264,7 +264,7 @@ export const PitchDeckAnimation: React.FC<AnimationComponentProps> = ({
           {/* ── 2. SIDE BANNERS ────────────────────────────────────────── */}
           {/* Left banner: TURN IDEAS INTO IMPACT */}
           <g ref={leftBannerRef}>
-            <rect x="38" y="180" width="98" height="175" fill="#1B5FD6" rx="2" />
+            <rect x="38" y="180" width="98" height="175" fill="#2074D5" rx="2" />
             <g textAnchor="middle" fill="#ffffff">
               <text x="87" y="240" className={styles.bannerWord} fontSize="14">TURN</text>
               <text x="87" y="266" className={styles.bannerWord} fontSize="14">IDEAS</text>
@@ -275,7 +275,7 @@ export const PitchDeckAnimation: React.FC<AnimationComponentProps> = ({
 
           {/* Right banner: SAME GAME BIGGER DREAMS */}
           <g ref={rightBannerRef}>
-            <rect x="888" y="180" width="98" height="175" fill="#1B5FD6" rx="2" />
+            <rect x="888" y="180" width="98" height="175" fill="#2074D5" rx="2" />
             <g textAnchor="middle" fill="#ffffff">
               <text x="937" y="240" className={styles.bannerWord} fontSize="14">SAME</text>
               <text x="937" y="266" className={styles.bannerWord} fontSize="14">GAME</text>
@@ -299,45 +299,45 @@ export const PitchDeckAnimation: React.FC<AnimationComponentProps> = ({
           {/* ── 4. CEILING PENDANT LAMPS (cord + shade + bulb) ─────────── */}
           {/* Left Lamp (x=237) */}
           <g ref={lampLeftGroupRef}>
-            <line x1="237" y1="0" x2="237" y2="52" stroke="#0d0e15" strokeWidth="2.5" />
+            <line x1="237" y1="0" x2="237" y2="52" stroke="#282828" strokeWidth="2.5" />
             <path
               d="M217,74 C217,54 225,50 237,50 C249,50 257,54 257,74 Z"
-              fill="#0d0e15"
+              fill="#282828"
             />
-            <rect x="214" y="73" width="46" height="3" rx="1.5" fill="#0d0e15" />
+            <rect x="214" y="73" width="46" height="3" rx="1.5" fill="#282828" />
             <circle cx="237" cy="76" r="3" fill="#ffffff" />
           </g>
 
           {/* Right Lamp (x=787) */}
           <g ref={lampRightGroupRef}>
-            <line x1="787" y1="0" x2="787" y2="52" stroke="#0d0e15" strokeWidth="2.5" />
+            <line x1="787" y1="0" x2="787" y2="52" stroke="#282828" strokeWidth="2.5" />
             <path
               d="M767,74 C767,54 775,50 787,50 C799,50 807,54 807,74 Z"
-              fill="#0d0e15"
+              fill="#282828"
             />
-            <rect x="764" y="73" width="46" height="3" rx="1.5" fill="#0d0e15" />
+            <rect x="764" y="73" width="46" height="3" rx="1.5" fill="#282828" />
             <circle cx="787" cy="76" r="3" fill="#ffffff" />
           </g>
 
           {/* ── 5. POTTED PLANTS (in front of banners) ────────────────── */}
           {/* Left Plant (x=47, y=470) */}
           <g ref={plantLeftRef} transform="translate(47, 470)">
-            <path d="M0,0 C-15,-30 -30,-45 -35,-60 C-25,-55 -5,-25 0,0 Z" fill="#1B5FD6" />
-            <path d="M0,0 C-10,-45 -18,-70 -20,-85 C-10,-75 0,-40 0,0 Z" fill="#1B5FD6" />
-            <path d="M0,0 C-5,-50 0,-90 0,-100 C5,-90 10,-50 0,0 Z" fill="#1B5FD6" />
-            <path d="M0,0 C10,-45 18,-70 20,-85 C10,-75 0,-40 0,0 Z" fill="#1B5FD6" />
-            <path d="M0,0 C15,-30 30,-45 35,-60 C25,-55 5,-25 0,0 Z" fill="#1B5FD6" />
-            <polygon points="-18,0 18,0 13,32 -13,32" fill="#0d0e15" />
+            <path d="M0,0 C-15,-30 -30,-45 -35,-60 C-25,-55 -5,-25 0,0 Z" fill="#2074D5" />
+            <path d="M0,0 C-10,-45 -18,-70 -20,-85 C-10,-75 0,-40 0,0 Z" fill="#2074D5" />
+            <path d="M0,0 C-5,-50 0,-90 0,-100 C5,-90 10,-50 0,0 Z" fill="#2074D5" />
+            <path d="M0,0 C10,-45 18,-70 20,-85 C10,-75 0,-40 0,0 Z" fill="#2074D5" />
+            <path d="M0,0 C15,-30 30,-45 35,-60 C25,-55 5,-25 0,0 Z" fill="#2074D5" />
+            <polygon points="-18,0 18,0 13,32 -13,32" fill="#282828" />
           </g>
 
           {/* Right Plant (x=973, y=470) */}
           <g ref={plantRightRef} transform="translate(973, 470)">
-            <path d="M0,0 C-15,-30 -30,-45 -35,-60 C-25,-55 -5,-25 0,0 Z" fill="#1B5FD6" />
-            <path d="M0,0 C-10,-45 -18,-70 -20,-85 C-10,-75 0,-40 0,0 Z" fill="#1B5FD6" />
-            <path d="M0,0 C-5,-50 0,-90 0,-100 C5,-90 10,-50 0,0 Z" fill="#1B5FD6" />
-            <path d="M0,0 C10,-45 18,-70 20,-85 C10,-75 0,-40 0,0 Z" fill="#1B5FD6" />
-            <path d="M0,0 C15,-30 30,-45 35,-60 C25,-55 5,-25 0,0 Z" fill="#1B5FD6" />
-            <polygon points="-18,0 18,0 13,32 -13,32" fill="#0d0e15" />
+            <path d="M0,0 C-15,-30 -30,-45 -35,-60 C-25,-55 -5,-25 0,0 Z" fill="#2074D5" />
+            <path d="M0,0 C-10,-45 -18,-70 -20,-85 C-10,-75 0,-40 0,0 Z" fill="#2074D5" />
+            <path d="M0,0 C-5,-50 0,-90 0,-100 C5,-90 10,-50 0,0 Z" fill="#2074D5" />
+            <path d="M0,0 C10,-45 18,-70 20,-85 C10,-75 0,-40 0,0 Z" fill="#2074D5" />
+            <path d="M0,0 C15,-30 30,-45 35,-60 C25,-55 5,-25 0,0 Z" fill="#2074D5" />
+            <polygon points="-18,0 18,0 13,32 -13,32" fill="#282828" />
           </g>
 
           {/* ── 6. PODIUM FRONT TEXT ───────────────────────────────────── */}
@@ -352,12 +352,12 @@ export const PitchDeckAnimation: React.FC<AnimationComponentProps> = ({
           {/* ── 7. PROJECTOR SCREEN STRUCTURE ─────────────────────────── */}
           <g ref={screenFrameGroupRef}>
             {/* Top black roller bar & wall brackets */}
-            <rect x="281" y="82" width="6" height="19" rx="1" fill="#0d0e15" />
-            <rect x="737" y="82" width="6" height="19" rx="1" fill="#0d0e15" />
-            <rect x="285" y="85" width="454" height="14" rx="2" fill="#0d0e15" />
+            <rect x="281" y="82" width="6" height="19" rx="1" fill="#282828" />
+            <rect x="737" y="82" width="6" height="19" rx="1" fill="#282828" />
+            <rect x="285" y="85" width="454" height="14" rx="2" fill="#282828" />
             {/* Side black frame lines */}
-            <line x1="295" y1="99" x2="295" y2="369" stroke="#0d0e15" strokeWidth="2" />
-            <line x1="728" y1="99" x2="728" y2="369" stroke="#0d0e15" strokeWidth="2" />
+            <line x1="295" y1="99" x2="295" y2="369" stroke="#282828" strokeWidth="2" />
+            <line x1="728" y1="99" x2="728" y2="369" stroke="#282828" strokeWidth="2" />
           </g>
 
           {/* White Screen-Surface Rect (Unrolls from top) */}
@@ -379,7 +379,7 @@ export const PitchDeckAnimation: React.FC<AnimationComponentProps> = ({
             width="454"
             height="11"
             rx="2"
-            fill="#0d0e15"
+            fill="#282828"
           />
 
           {/* ── 8. SVG-RECREATED PPT CONTENT (Clipped within screen bounds) ── */}
@@ -419,7 +419,7 @@ export const PitchDeckAnimation: React.FC<AnimationComponentProps> = ({
 
             <g ref={taglineBlockRef}>
               {/* Blue accent bar */}
-              <rect x="316" y="238" width="34" height="3" fill="#1B5FD6" rx="1.5" />
+              <rect x="316" y="238" width="34" height="3" fill="#2074D5" rx="1.5" />
               {/* Tagline */}
               <text x="316" y="260" className={styles.taglineText} fontSize="10.5">
                 IDEAS TODAY
@@ -472,7 +472,7 @@ export const PitchDeckAnimation: React.FC<AnimationComponentProps> = ({
                   width="15"
                   height={bar.h}
                   rx="2"
-                  fill="#1B5FD6"
+                  fill="#2074D5"
                   fillOpacity={bar.op}
                 />
               ))}
@@ -482,7 +482,7 @@ export const PitchDeckAnimation: React.FC<AnimationComponentProps> = ({
             <path
               ref={chartArrowRef}
               d="M530,172 L558,152 L582,136 L606,122 L636,104 L662,99"
-              stroke="#1B5FD6"
+              stroke="#2074D5"
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -492,13 +492,13 @@ export const PitchDeckAnimation: React.FC<AnimationComponentProps> = ({
             <polygon
               ref={chartArrowHeadRef}
               points="662,99 650,95 655,107"
-              fill="#1B5FD6"
+              fill="#2074D5"
             />
 
             {/* Growth badge "+84%" */}
             <g ref={chartBadgeRef}>
               <rect x="664" y="106" width="38" height="15" rx="3" fill="#eff6ff" stroke="#bfdbfe" strokeWidth="1" />
-              <text x="683" y="117" textAnchor="middle" fill="#1B5FD6" fontSize="8.5" fontWeight="900" fontFamily="var(--font-mono), monospace">
+              <text x="683" y="117" textAnchor="middle" fill="#2074D5" fontSize="8.5" fontWeight="900" fontFamily="var(--font-mono), monospace">
                 +84%
               </text>
             </g>
@@ -509,8 +509,8 @@ export const PitchDeckAnimation: React.FC<AnimationComponentProps> = ({
               {/* Icon badge */}
               <rect width="24" height="24" rx="5" fill="#eff6ff" stroke="#bfdbfe" strokeWidth="1" />
               {/* People silhouette icon */}
-              <circle cx="10" cy="9" r="3" fill="#1B5FD6" />
-              <path d="M5,19 C5,15 8,14 10,14 C12,14 15,15 15,19 Z" fill="#1B5FD6" />
+              <circle cx="10" cy="9" r="3" fill="#2074D5" />
+              <path d="M5,19 C5,15 8,14 10,14 C12,14 15,15 15,19 Z" fill="#2074D5" />
               <circle cx="16" cy="9.5" r="2.2" fill="#3577EC" />
               <path d="M14,19 C14,16 16,15.5 18,15.5 C19.5,15.5 21,16 21,19 Z" fill="#3577EC" />
               {/* Labels */}
@@ -529,9 +529,9 @@ export const PitchDeckAnimation: React.FC<AnimationComponentProps> = ({
               {/* Lightbulb icon */}
               <path
                 d="M12,5 C9.5,5 7.5,7 7.5,9.5 C7.5,11.2 8.7,12.6 9.5,13.8 L9.5,15 C9.5,15.5 10,16 10.5,16 L13.5,16 C14,16 14.5,15.5 14.5,15 L14.5,13.8 C15.3,12.6 16.5,11.2 16.5,9.5 C16.5,7 14.5,5 12,5 Z"
-                fill="#1B5FD6"
+                fill="#2074D5"
               />
-              <line x1="10.5" y1="18" x2="13.5" y2="18" stroke="#1B5FD6" strokeWidth="1.2" strokeLinecap="round" />
+              <line x1="10.5" y1="18" x2="13.5" y2="18" stroke="#2074D5" strokeWidth="1.2" strokeLinecap="round" />
               {/* Labels */}
               <text x="32" y="11" className={styles.iconLabelTitle} fontSize="9.5">
                 MENTORS
@@ -546,7 +546,7 @@ export const PitchDeckAnimation: React.FC<AnimationComponentProps> = ({
               {/* Icon badge */}
               <rect width="24" height="24" rx="5" fill="#eff6ff" stroke="#bfdbfe" strokeWidth="1" />
               {/* Star / Impact diamond icon */}
-              <polygon points="12,5 14,10 19,12 14,14 12,19 10,14 5,12 10,10" fill="#1B5FD6" />
+              <polygon points="12,5 14,10 19,12 14,14 12,19 10,14 5,12 10,10" fill="#2074D5" />
               <circle cx="12" cy="12" r="1.5" fill="#ffffff" />
               {/* Labels */}
               <text x="32" y="11" className={styles.iconLabelTitle} fontSize="9.5">

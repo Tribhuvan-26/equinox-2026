@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function EventsPage() {
   return (
     <PageTransition>
-      <main className="riso-texture brochure-grid min-h-screen bg-[#1B5FD6] text-white selection:bg-[#F7CA50] selection:text-[#0d0e15]">
+      <main className="riso-texture brochure-grid min-h-screen bg-[#2074D5] text-white selection:bg-[#F9D47B] selection:text-[#282828]">
         <section className="mx-auto max-w-[1400px] px-4 pt-40 pb-24 sm:px-8">
           <SectionHeading
             eyebrow="Brochure Pages 05 & 06"
