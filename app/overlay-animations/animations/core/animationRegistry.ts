@@ -8,6 +8,8 @@ import { IplAuctionAnimation } from "../events/IplAuction/IplAuctionAnimation";
 import { HustleManiaAnimation } from "../events/HustleMania/HustleManiaAnimation";
 import { CrossroadsAnimation } from "../events/Crossroads/CrossroadsAnimation";
 import { PitchDeckAnimation } from "../events/PitchDeck/PitchDeckAnimation";
+import { StartupExpoAnimation } from "../events/StartupExpo/StartupExpoAnimation";
+import { BrandBattlesAnimation } from "../events/BrandBattles/BrandBattlesAnimation";
 import { createPlaceholderAnimation } from "../events/Placeholder/PlaceholderAnimation";
 import type {
   AnimationRegistry,
@@ -51,12 +53,12 @@ export const animationRegistry: AnimationRegistry = {
     title: "Pitch Deck",
   },
   "startup-expo": {
-    Component: createPlaceholderAnimation("Startup Expo", "startup-expo"),
+    Component: StartupExpoAnimation,
     id: "startup-expo",
     title: "Startup Expo",
   },
   "brand-battles": {
-    Component: createPlaceholderAnimation("Brand Battles", "brand-battles"),
+    Component: BrandBattlesAnimation,
     id: "brand-battles",
     title: "Brand Battles",
   },

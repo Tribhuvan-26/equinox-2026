@@ -1,280 +1,429 @@
 // app/overlay-animations/animations/events/HustleMania/hustleManiaTimeline.ts
 import gsap from "gsap";
 
-export interface HustleManiaSceneTargets {
-  container: HTMLElement | null;
-  stageFrame: HTMLElement | null;
-  baseImage: HTMLElement | null;
-  skipButton: HTMLElement | null;
-
-  // Header & branding
-  brandingLeft: SVGElement | null;
-  brandingRight: SVGElement | null;
-  topTagline: SVGElement | null;
-
-  // Scene accents
-  signBoard: SVGElement | null;
-  hangingTagGroup: SVGElement | null;
-  hangingTag: SVGElement | null; // inner tag for swinging rotation
-  dealBubbleGroup: SVGElement | null;
-
-  // Title elements
-  titleBlock: SVGElement | null;
-  titleHustle: SVGElement | null;
-  titleMania: SVGElement | null;
-  motionLinesLeft: SVGElement | null;
-  motionLinesRight: SVGElement | null;
-
-  // Slanted callout
-  sameGameDreams: SVGElement | null;
+export interface HustleManiaTimelineTargets {
+  container: HTMLDivElement | null;
+  backgroundScene: SVGElement | null;
+  sideBanners: SVGElement | null;
+  bannerLeftBody?: SVGElement | null;
+  bannerLeftLine?: SVGLineElement | null;
+  bannerLeftText?: SVGElement | null;
+  bannerRightBody?: SVGElement | null;
+  bannerRightLine?: SVGLineElement | null;
+  bannerRightText?: SVGElement | null;
+  signPanel: SVGElement | null;
+  boothGlowLeft: SVGElement | null;
+  boothGlowCenter: SVGElement | null;
+  boothGlowRight: SVGElement | null;
+  speechBubbleLeft: SVGElement | null;
+  speechBubbleCenter: SVGElement | null;
+  speechBubbleRight: SVGElement | null;
+  titleClipStartup: SVGRectElement | null;
+  titleClipExpo: SVGRectElement | null;
+  titleStartupText: SVGTextElement | null;
+  titleExpoText: SVGTextElement | null;
+  titleCaption: SVGElement | null;
+  titleUnderline: SVGLineElement | null;
+  skipButton?: HTMLButtonElement | null;
 }
 
 export interface HustleManiaTimelineOptions {
-  onEntranceComplete?: () => void;
   onComplete?: () => void;
 }
 
-export function createHustleManiaMasterTl(
-  t: HustleManiaSceneTargets,
+/**
+ * Creates and returns the official 6-phase GSAP timeline for Hustle Mania.
+ *
+ * 1. ENTRANCE (0 → ~0.5s): Overlay fades in, base scene scales/fades in.
+ * 2. MAIN IDEA (~0.5s → ~1.7s): Banners execute 3-beat unfurl (Expand -> Drop/Settle ->
+ *    line-by-line staggered Text reveal) with 0.12s left/right offset; sign panel pops in.
+ * 3. INTERACTION (~1.7s → ~2.2s): All three booths animate simultaneously with
+ *    soft glow-pulse overlays and speech bubbles popping in directly beside each figure's head.
+ * 4. TITLE REVEAL (~2.2s → ~2.9s): "HUSTLE" wipes in, "MANIA" wipes in ~0.1s after
+ *    from same origin, caption fades in alongside with blue accent underline.
+ * 5. RESOLUTION / HOLD (~2.9s → ~3.6s): Everything settles, idle state holds.
+ * 6. EXIT (~3.6s → ~4.2s): Clean staged exit.
+ */
+export function createHustleManiaTimeline(
+  targets: HustleManiaTimelineTargets,
   options: HustleManiaTimelineOptions = {}
 ): gsap.core.Timeline {
-  const { onEntranceComplete, onComplete } = options;
+  const {
+    container,
+    backgroundScene,
+    sideBanners,
+    bannerLeftBody,
+    bannerLeftLine,
+    bannerLeftText,
+    bannerRightBody,
+    bannerRightLine,
+    bannerRightText,
+    signPanel,
+    boothGlowLeft,
+    boothGlowCenter,
+    boothGlowRight,
+    speechBubbleLeft,
+    speechBubbleCenter,
+    speechBubbleRight,
+    titleClipStartup,
+    titleClipExpo,
+    titleCaption,
+    titleUnderline,
+    skipButton,
+  } = targets;
 
-  // ── Initial Setup ──────────────────────────────────────────────────────────
-  if (t.container) gsap.set(t.container, { opacity: 0 });
-  if (t.stageFrame) gsap.set(t.stageFrame, { opacity: 0, scale: 0.96 });
-  if (t.baseImage) gsap.set(t.baseImage, { opacity: 0, scale: 0.97 });
-  if (t.skipButton) gsap.set(t.skipButton, { opacity: 0, pointerEvents: "none" });
-
-  // Branding & taglines
-  if (t.brandingLeft) gsap.set(t.brandingLeft, { opacity: 0, y: -10 });
-  if (t.brandingRight) gsap.set(t.brandingRight, { opacity: 0, y: -10 });
-  if (t.topTagline) gsap.set(t.topTagline, { opacity: 0, y: -8 });
-
-  // Main props
-  if (t.signBoard) gsap.set(t.signBoard, { opacity: 0, scale: 0.85, transformOrigin: "256px 540px" });
-  if (t.hangingTagGroup) gsap.set(t.hangingTagGroup, { opacity: 0, y: -15 });
-  if (t.hangingTag) gsap.set(t.hangingTag, { transformOrigin: "765px 282px" });
-
-  // Interaction bubble
-  if (t.dealBubbleGroup) gsap.set(t.dealBubbleGroup, { opacity: 0, scale: 0.5, transformOrigin: "530px 355px" });
-
-  // Title & motion lines
-  if (t.titleHustle) gsap.set(t.titleHustle, { opacity: 0, y: -20, scaleY: 0.8, transformOrigin: "505px 145px" });
-  if (t.titleMania) gsap.set(t.titleMania, { opacity: 0, scale: 0.82, transformOrigin: "505px 245px" });
-  if (t.motionLinesLeft) gsap.set(t.motionLinesLeft, { opacity: 0, x: 15 });
-  if (t.motionLinesRight) gsap.set(t.motionLinesRight, { opacity: 0, x: -15 });
-
-  // Slanted callout
-  if (t.sameGameDreams) gsap.set(t.sameGameDreams, { opacity: 0, scale: 0.88, transformOrigin: "900px 150px" });
-
-  // ── Master Timeline ────────────────────────────────────────────────────────
   const tl = gsap.timeline({
-    paused: true,
+    defaults: { ease: "power2.out" },
     onComplete: () => {
-      onComplete?.();
+      options.onComplete?.();
     },
   });
 
-  // 1. ENTRANCE (~0.5s): Overlay fades in, base stall image scales/fades in centered
-  tl.to(t.container, { opacity: 1, duration: 0.35, ease: "power1.out" }, 0);
-  tl.to(t.stageFrame, { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" }, 0.05);
-  tl.to(t.baseImage, { opacity: 1, scale: 1, duration: 0.55, ease: "power2.out" }, 0.08);
-  tl.to(t.skipButton, { opacity: 1, pointerEvents: "auto", duration: 0.25 }, 0.25);
-
-  // 2. MAIN IDEA (~0.5s → ~1.3s): Sign board and hanging tag pop in around the stall image
-  if (t.signBoard) {
-    tl.to(
-      t.signBoard,
-      {
-        opacity: 1,
-        scale: 1,
-        duration: 0.45,
-        ease: "back.out(1.4)",
-      },
-      0.55
-    );
+  // ── Initial State Setup ───────────────────────────────────────────────────
+  if (container) {
+    gsap.set(container, { opacity: 0 });
   }
 
-  if (t.hangingTagGroup) {
-    tl.to(
-      t.hangingTagGroup,
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.48,
-        ease: "back.out(1.3)",
-      },
-      0.72
-    );
+  if (skipButton) {
+    gsap.set(skipButton, { opacity: 0 });
   }
 
-  // 3. INTERACTION (~1.3s → ~1.9s): "DEAL?" speech bubble pops in near the figures
-  if (t.dealBubbleGroup) {
-    tl.to(
-      t.dealBubbleGroup,
-      {
-        opacity: 1,
-        scale: 1,
-        duration: 0.35,
-        ease: "back.out(1.8)",
-      },
-      1.35
-    );
-  }
-
-  // 4. TITLE REVEAL (~1.9s → ~2.6s): "HUSTLE" wipes in, "MANIA" wipes in beneath ~0.1s after
-  if (t.titleHustle) {
-    tl.to(
-      t.titleHustle,
-      {
-        opacity: 1,
-        y: 0,
-        scaleY: 1,
-        duration: 0.35,
-        ease: "back.out(1.5)",
-      },
-      1.9
-    );
-  }
-
-  if (t.titleMania) {
-    tl.to(
-      t.titleMania,
-      {
-        opacity: 1,
-        scale: 1,
-        duration: 0.38,
-        ease: "back.out(1.6)",
-      },
-      2.05
-    );
-  }
-
-  // 5. RESOLUTION / HOLD (~2.6s → ~3.3s): Tagline, "SAME GAME BIGGER DREAMS", motion lines
-  if (t.topTagline) {
-    tl.to(t.topTagline, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 2.5);
-  }
-
-  if (t.brandingLeft) {
-    tl.to(t.brandingLeft, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 2.55);
-  }
-
-  if (t.brandingRight) {
-    tl.to(t.brandingRight, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 2.55);
-  }
-
-  if (t.sameGameDreams) {
-    tl.to(
-      t.sameGameDreams,
-      {
-        opacity: 1,
-        scale: 1,
-        duration: 0.35,
-        ease: "back.out(1.4)",
-      },
-      2.6
-    );
-  }
-
-  if (t.motionLinesLeft) {
-    tl.to(t.motionLinesLeft, { opacity: 1, x: 0, duration: 0.25, ease: "power2.out" }, 2.65);
-  }
-
-  if (t.motionLinesRight) {
-    tl.to(t.motionLinesRight, { opacity: 1, x: 0, duration: 0.25, ease: "power2.out" }, 2.65);
-  }
-
-  tl.call(() => {
-    onEntranceComplete?.();
-  }, undefined, 2.7);
-
-  // 6. EXIT (~3.3s → ~3.9s): Everything fades out fast, base image fades/scales out last
-  tl.to(
-    [
-      t.titleHustle,
-      t.titleMania,
-      t.topTagline,
-      t.sameGameDreams,
-      t.motionLinesLeft,
-      t.motionLinesRight,
-      t.dealBubbleGroup,
-      t.signBoard,
-      t.hangingTagGroup,
-      t.brandingLeft,
-      t.brandingRight,
-      t.skipButton,
-    ],
-    {
-      opacity: 0,
-      duration: 0.28,
-      ease: "power2.in",
-    },
-    3.3
-  );
-
-  tl.to(
-    t.baseImage,
-    {
+  if (backgroundScene) {
+    gsap.set(backgroundScene, {
       opacity: 0,
       scale: 0.96,
-      duration: 0.35,
-      ease: "power2.in",
-    },
-    3.45
-  );
+      transformOrigin: "768px 512px",
+    });
+  }
 
-  tl.to(
-    t.container,
-    {
+  // Side banners container: keep visible so hanging lines are anchored
+  if (sideBanners) {
+    gsap.set(sideBanners, { opacity: 1, y: 0 });
+  }
+
+  // Banner bodies: start collapsed at top hanging point (scaleY: 0)
+  if (bannerLeftBody) {
+    gsap.set(bannerLeftBody, {
+      scaleY: 0,
+      y: 0,
+      transformOrigin: "140px 45px",
+    });
+  }
+
+  if (bannerRightBody) {
+    gsap.set(bannerRightBody, {
+      scaleY: 0,
+      y: 0,
+      transformOrigin: "1396px 45px",
+    });
+  }
+
+  if (bannerLeftLine) {
+    gsap.set(bannerLeftLine, { opacity: 0 });
+  }
+
+  if (bannerRightLine) {
+    gsap.set(bannerRightLine, { opacity: 0 });
+  }
+
+  if (bannerLeftText) {
+    const tspans = bannerLeftText.querySelectorAll("tspan");
+    if (tspans.length > 0) {
+      gsap.set(tspans, { opacity: 0 });
+    }
+  }
+
+  if (bannerRightText) {
+    const tspans = bannerRightText.querySelectorAll("tspan");
+    if (tspans.length > 0) {
+      gsap.set(tspans, { opacity: 0 });
+    }
+  }
+
+  if (signPanel) {
+    gsap.set(signPanel, {
       opacity: 0,
-      duration: 0.3,
-      ease: "power2.in",
-    },
-    3.6
-  );
+      scale: 0.94,
+      transformOrigin: "768px 132px",
+    });
+  }
 
-  return tl;
-}
+  const boothGlows = [boothGlowLeft, boothGlowCenter, boothGlowRight].filter(Boolean);
+  if (boothGlows.length > 0) {
+    gsap.set(boothGlows, { opacity: 0, scale: 1 });
+  }
 
-export function startHustleManiaIdleLoops(targets: {
-  hangingTag: SVGElement | null;
-}): gsap.core.Tween[] {
-  const loops: gsap.core.Tween[] = [];
+  const speechBubbles = [speechBubbleLeft, speechBubbleCenter, speechBubbleRight].filter(Boolean);
+  if (speechBubbles.length > 0) {
+    gsap.set(speechBubbles, { opacity: 0, scale: 0 });
+  }
 
-  if (targets.hangingTag) {
-    loops.push(
-      gsap.to(targets.hangingTag, {
-        rotation: 4.5,
-        duration: 1.4,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-        transformOrigin: "765px 282px",
-      })
+  if (titleClipStartup) {
+    gsap.set(titleClipStartup, { attr: { width: 0 } });
+  }
+
+  if (titleClipExpo) {
+    gsap.set(titleClipExpo, { attr: { width: 0 } });
+  }
+
+  if (titleCaption) {
+    gsap.set(titleCaption, { opacity: 0, y: 8 });
+  }
+
+  if (titleUnderline) {
+    gsap.set(titleUnderline, {
+      strokeDasharray: 75,
+      strokeDashoffset: 75,
+      opacity: 0,
+    });
+  }
+
+  // ── PHASE 1: ENTRANCE (0.0s → ~0.5s) ──────────────────────────────────────
+  if (container) {
+    tl.to(container, { opacity: 1, duration: 0.4, ease: "power1.out" }, 0);
+  }
+
+  if (backgroundScene) {
+    tl.to(
+      backgroundScene,
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 0.5,
+        ease: "power2.out",
+      },
+      0.05
     );
   }
 
-  return loops;
-}
-
-export function runHustleManiaExit(
-  container: HTMLElement | null,
-  idleTweens: gsap.core.Tween[],
-  onComplete?: () => void
-): void {
-  idleTweens.forEach((tw) => tw.kill());
-  if (!container) {
-    onComplete?.();
-    return;
+  if (skipButton) {
+    tl.to(skipButton, { opacity: 1, duration: 0.3 }, 0.2);
   }
-  gsap.killTweensOf(container);
-  gsap.to(container, {
-    opacity: 0,
-    duration: 0.25,
-    ease: "power2.in",
-    onComplete: () => {
-      onComplete?.();
-    },
-  });
+
+  // ── PHASE 2: BANNER ANIMATION (3-BEAT SEQUENCE) & SIGN PANEL (~0.5s → ~1.7s) ──
+
+  // Left Banner: starts at t = 0.50s
+  // Beat A (EXPAND): blue body scales up/unfurls from collapsed state (scaleY: 0 -> 1)
+  if (bannerLeftBody) {
+    tl.to(
+      bannerLeftBody,
+      {
+        scaleY: 1,
+        duration: 0.34,
+        ease: "power2.in",
+      },
+      0.50
+    );
+
+    // Beat B (DROP / SETTLE): once fully expanded at 0.84s, settles with slight bounce/overshoot
+    tl.fromTo(
+      bannerLeftBody,
+      { y: -10 },
+      {
+        y: 0,
+        duration: 0.24,
+        ease: "back.out(2.4)",
+      },
+      0.84
+    );
+  }
+
+  // Beat C (TEXT FORMS): only after banner has fully expanded and settled (t >= 1.08s),
+  // reveal text line-by-line staggered ~0.08s apart
+  if (bannerLeftText) {
+    const leftTspans = bannerLeftText.querySelectorAll("tspan");
+    if (leftTspans.length > 0) {
+      tl.to(
+        leftTspans,
+        {
+          opacity: 1,
+          duration: 0.12,
+          stagger: 0.08,
+          ease: "power1.out",
+        },
+        1.10
+      );
+    }
+  }
+
+  if (bannerLeftLine) {
+    tl.to(bannerLeftLine, { opacity: 1, duration: 0.15 }, 1.44);
+  }
+
+  // Right Banner: starts with ~0.12s stagger offset at t = 0.62s
+  // Beat A (EXPAND): blue body scales up/unfurls from collapsed state (scaleY: 0 -> 1)
+  if (bannerRightBody) {
+    tl.to(
+      bannerRightBody,
+      {
+        scaleY: 1,
+        duration: 0.34,
+        ease: "power2.in",
+      },
+      0.62
+    );
+
+    // Beat B (DROP / SETTLE): once fully expanded at 0.96s, settles with slight bounce/overshoot
+    tl.fromTo(
+      bannerRightBody,
+      { y: -10 },
+      {
+        y: 0,
+        duration: 0.24,
+        ease: "back.out(2.4)",
+      },
+      0.96
+    );
+  }
+
+  // Beat C (TEXT FORMS): only after right banner has fully expanded and settled (t >= 1.20s),
+  // reveal text line-by-line staggered ~0.08s apart
+  if (bannerRightText) {
+    const rightTspans = bannerRightText.querySelectorAll("tspan");
+    if (rightTspans.length > 0) {
+      tl.to(
+        rightTspans,
+        {
+          opacity: 1,
+          duration: 0.12,
+          stagger: 0.08,
+          ease: "power1.out",
+        },
+        1.22
+      );
+    }
+  }
+
+  if (bannerRightLine) {
+    tl.to(bannerRightLine, { opacity: 1, duration: 0.15 }, 1.64);
+  }
+
+  // Center Sign Panel entrance
+  if (signPanel) {
+    tl.to(
+      signPanel,
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 0.5,
+        ease: "back.out(1.2)",
+      },
+      0.70
+    );
+  }
+
+  // ── PHASE 3: INTERACTION (~1.7s → ~2.2s) ──────────────────────────────────
+  // All three booths animate simultaneously
+  if (boothGlows.length > 0) {
+    tl.fromTo(
+      boothGlows,
+      { opacity: 0, scale: 0.98 },
+      {
+        opacity: 0.85,
+        scale: 1.02,
+        duration: 0.3,
+        yoyo: true,
+        repeat: 1,
+        ease: "power2.inOut",
+      },
+      1.70
+    );
+  }
+
+  // Speech bubbles pop in directly beside each figure's head
+  if (speechBubbles.length > 0) {
+    tl.to(
+      speechBubbles,
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 0.35,
+        ease: "back.out(1.7)",
+      },
+      1.78
+    );
+  }
+
+  // ── PHASE 4: TITLE REVEAL (~2.2s → ~2.9s) ─────────────────────────────────
+  // Single text run, both words wiping in from same origin, staggered ~0.1s
+  if (titleClipStartup) {
+    tl.to(
+      titleClipStartup,
+      {
+        attr: { width: 480 },
+        duration: 0.45,
+        ease: "power2.out",
+      },
+      2.20
+    );
+  }
+
+  if (titleClipExpo) {
+    tl.to(
+      titleClipExpo,
+      {
+        attr: { width: 480 },
+        duration: 0.45,
+        ease: "power2.out",
+      },
+      2.30
+    );
+  }
+
+  // Caption lines beside title
+  if (titleCaption) {
+    tl.to(
+      titleCaption,
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: "power2.out",
+      },
+      2.45
+    );
+  }
+
+  // Blue underline accent under caption
+  if (titleUnderline) {
+    tl.to(
+      titleUnderline,
+      {
+        opacity: 1,
+        strokeDashoffset: 0,
+        duration: 0.35,
+        ease: "power2.out",
+      },
+      2.60
+    );
+  }
+
+  // ── PHASE 5: RESOLUTION / HOLD (~2.9s → ~3.6s) ────────────────────────────
+  tl.to({}, { duration: 0.7 }, 2.90);
+
+  // ── PHASE 6: EXIT (~3.6s → ~4.2s) ─────────────────────────────────────────
+  // Fast fade for title, caption, and speech bubbles
+  const quickExitItems = [titleCaption, ...speechBubbles].filter(Boolean);
+  if (quickExitItems.length > 0) {
+    tl.to(quickExitItems, { opacity: 0, duration: 0.22, ease: "power2.in" }, 3.60);
+  }
+
+  // Banners and sign panel retract slightly
+  const headerItems = [
+    bannerLeftBody,
+    bannerRightBody,
+    bannerLeftText,
+    bannerRightText,
+    signPanel,
+  ].filter(Boolean);
+  if (headerItems.length > 0) {
+    tl.to(headerItems, { opacity: 0, y: -15, duration: 0.3, ease: "power2.in" }, 3.68);
+  }
+
+  // Rest of scene / container fades out cleanly
+  if (container) {
+    tl.to(container, { opacity: 0, duration: 0.35, ease: "power2.in" }, 3.80);
+  }
+
+  return tl;
 }

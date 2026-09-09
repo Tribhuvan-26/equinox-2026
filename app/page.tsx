@@ -44,8 +44,8 @@ export default function HomePage() {
     activeSubEventTab === "05"
       ? page05Events
       : activeSubEventTab === "06"
-      ? page06Events
-      : subEvents;
+        ? page06Events
+        : subEvents;
 
   return (
     <div className="riso-texture brochure-grid min-h-screen overflow-x-hidden text-white selection:bg-[#F7CA50] selection:text-[#0d0e15]">
@@ -145,13 +145,13 @@ export default function HomePage() {
 
           {/* Vector Pop-Up Book Editorial Art — offset into its own column, overlapping on desktop */}
           <motion.div
-            className="mt-6 w-full max-w-2xl px-2 sm:mt-8 lg:col-span-5 lg:mt-20 lg:max-w-none lg:translate-x-6 lg:px-0"
+            className="mt-6 w-full max-w-2xl px-2 sm:mt-8 lg:col-span-5 lg:mt-24 lg:max-w-none lg:translate-x-6 lg:px-0"
             initial={{ opacity: 0, scale: 0.94, y: 24 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
           >
-            <div className="animate-float">
+            <div>
               <CoverPopUpArt />
             </div>
           </motion.div>
@@ -308,31 +308,28 @@ export default function HomePage() {
           <div className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 p-1.5 backdrop-blur-xs">
             <button
               onClick={() => setActiveSubEventTab("all")}
-              className={`rounded-full px-5 py-2 text-xs font-bold transition ${
-                activeSubEventTab === "all"
+              className={`rounded-full px-5 py-2 text-xs font-bold transition ${activeSubEventTab === "all"
                   ? "bg-[#F7CA50] text-[#0d0e15] shadow-sm"
                   : "text-white hover:bg-white/10"
-              }`}
+                }`}
             >
               All 10 Events
             </button>
             <button
               onClick={() => setActiveSubEventTab("05")}
-              className={`rounded-full px-5 py-2 text-xs font-bold transition ${
-                activeSubEventTab === "05"
+              className={`rounded-full px-5 py-2 text-xs font-bold transition ${activeSubEventTab === "05"
                   ? "bg-[#F7CA50] text-[#0d0e15] shadow-sm"
                   : "text-white hover:bg-white/10"
-              }`}
+                }`}
             >
               Page 05 Events
             </button>
             <button
               onClick={() => setActiveSubEventTab("06")}
-              className={`rounded-full px-5 py-2 text-xs font-bold transition ${
-                activeSubEventTab === "06"
+              className={`rounded-full px-5 py-2 text-xs font-bold transition ${activeSubEventTab === "06"
                   ? "bg-[#F7CA50] text-[#0d0e15] shadow-sm"
                   : "text-white hover:bg-white/10"
-              }`}
+                }`}
             >
               Page 06 Events
             </button>

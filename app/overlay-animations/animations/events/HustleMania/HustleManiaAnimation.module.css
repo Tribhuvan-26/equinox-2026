@@ -1,131 +1,58 @@
 /* app/overlay-animations/animations/events/HustleMania/HustleManiaAnimation.module.css */
-
 .overlayContainer {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 99999;
-  background-color: #0d0e15;
+  z-index: 9999;
+  background-color: #FAF0DE;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  user-select: none;
-  pointer-events: auto;
-  opacity: 0;
+  border: none;
+  box-shadow: none;
+  outline: none;
 }
 
-/* 16:9 aspect-ratio responsive stage frame (contain-fit within viewport) */
-.stageFrame {
-  position: relative;
-  width: 100vw;
-  height: calc(100vw * (9 / 16));
-  max-width: calc(100vh * (16 / 9));
-  max-height: 100vh;
-  aspect-ratio: 16 / 9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6);
-}
-
-.baseImage {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  pointer-events: none;
-}
-
-.stageSvg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-/* Skip button */
 .skipButton {
   position: absolute;
-  top: 20px;
-  right: 24px;
-  z-index: 20;
-  display: inline-flex;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 50;
+  display: flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(17, 17, 17, 0.75);
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
-  color: #ffffff;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  background: rgba(20, 20, 21, 0.85);
+  color: #FAF0DE;
   font-family: var(--font-mono, monospace);
-  font-size: 11px;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 6px 14px;
+  letter-spacing: 0.1em;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 9999px;
   cursor: pointer;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
   transition: all 0.2s ease;
-  pointer-events: auto;
-  opacity: 0;
 }
 
 .skipButton:hover {
-  background: rgba(24, 86, 243, 0.85);
-  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(20, 20, 21, 1);
+  border-color: rgba(255, 255, 255, 0.3);
   transform: translateY(-1px);
 }
 
-/* Title & typography */
-.hustleText {
-  font-family: Impact, "Arial Black", var(--font-syne), sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  fill: #0d0e15;
-}
-
-.maniaText {
-  font-family: Impact, "Arial Black", var(--font-syne), sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  fill: #1B5FD6;
-}
-
-.taglineText {
-  font-family: var(--font-mono), monospace;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.28em;
-  fill: #0d0e15;
-}
-
-.dreamsText {
-  font-family: Impact, "Arial Black", var(--font-syne), sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  fill: #1B5FD6;
-}
-
-.signBoardText {
-  font-family: var(--font-syne), Impact, "Arial Black", sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  fill: #ffffff;
-}
-
-.priceTagText {
-  font-family: var(--font-mono), monospace;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  fill: #ffffff;
+.stageFrame {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  max-width: 1536px;
+  max-height: 1024px;
+  aspect-ratio: 1536 / 1024;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #FAF0DE;
+  border: none;
+  box-shadow: none;
+  outline: none;
 }

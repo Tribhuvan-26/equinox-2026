@@ -1,0 +1,92 @@
+/* app/overlay-animations/animations/events/BrandBattles/BrandBattlesAnimation.module.css */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap');
+
+.overlayContainer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  background-color: #FAF6EE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+  pointer-events: auto;
+}
+
+/* 1460:822 aspect-ratio responsive stage frame matching brand-battles-scene.svg */
+.stageFrame {
+  position: relative;
+  width: 100vw;
+  height: calc(100vw * (822 / 1460));
+  max-width: calc(100vh * (1460 / 822));
+  max-height: 100vh;
+  aspect-ratio: 1460 / 822;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #FAF6EE;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+.stageFrame svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background-color: #FAF6EE;
+  border: none;
+}
+
+.stageFrame text {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.bannerLine {
+  font-family: 'Space Grotesk', var(--font-space, system-ui), sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  fill: #FFFFFF;
+  transform-box: fill-box;
+}
+
+/* Skip button matching Equinox overlay standard */
+.skipButton {
+  position: absolute;
+  top: 14px;
+  right: 20px;
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(11, 13, 15, 0.88);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.skipButton:hover {
+  background: rgba(1, 78, 252, 0.95);
+  border-color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.skipButton:active {
+  transform: translateY(0);
+}
