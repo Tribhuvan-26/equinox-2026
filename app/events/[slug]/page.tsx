@@ -32,7 +32,7 @@ export default async function EventPage({ params }: PageProps) {
   if (!item) notFound();
 
   return (
-    <main className="riso-texture paper-grain min-h-screen bg-[#174ae8] px-4 pt-32 pb-20 text-white sm:px-8 md:pt-36">
+    <main className="riso-texture brochure-grid min-h-screen bg-[#2074D5] px-4 pt-32 pb-20 text-white sm:px-8 md:pt-36 selection:bg-[#F9D47B] selection:text-[#282828]">
       <AutoPlayAnimation slug={slug} />
 
       <div className="mx-auto max-w-[1200px]">
@@ -40,14 +40,14 @@ export default async function EventPage({ params }: PageProps) {
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/30 pb-5">
           <Link
             href="/events"
-            className="inline-flex items-center gap-2 border-2 border-white bg-white px-4 py-1.5 font-mono text-xs font-black uppercase tracking-wider text-[#174ae8] transition hover:bg-transparent hover:text-white"
+            className="inline-flex items-center gap-2 border-2 border-white bg-[#F9D47B] px-4 py-1.5 font-mono text-xs font-black uppercase tracking-wider text-[#282828] shadow-[2px_2px_0px_#282828] transition hover:bg-white hover:text-[#2074D5]"
           >
             <span>&larr;</span>
             <span>All Sub-Events</span>
           </Link>
 
           <div className="flex items-center gap-3">
-            <span className="font-mono text-xs font-bold tracking-widest text-[#0d0e15] bg-white px-2 py-0.5 uppercase">
+            <span className="font-mono text-xs font-bold tracking-widest text-[#282828] bg-[#F9D47B] px-2 py-0.5 uppercase">
               Page {item.pageNumber}
             </span>
             <span className="font-mono text-xs font-bold uppercase tracking-wider text-white/90">
@@ -59,22 +59,22 @@ export default async function EventPage({ params }: PageProps) {
         {/* Hero Section: Headline with Word-Pair Contrast & Official Badge */}
         <div className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0">
-            <span className="inline-block border border-white/40 bg-[#0d0e15] px-3.5 py-1 font-mono text-xs font-black uppercase tracking-widest text-white shadow-[2px_2px_0px_#ffffff]">
+            <span className="inline-block border border-white/40 bg-[#0B2D6D] px-3.5 py-1 font-mono text-xs font-black uppercase tracking-widest text-[#F9D47B] shadow-[2px_2px_0px_#ffffff]">
               Official Equinox Sub-Event · {item.category}
             </span>
 
-            {/* Headline with Word-Pair Styling (Black + White Contrast) */}
+            {/* Headline with Word-Pair Styling (Golden Yellow + White Contrast) */}
             <h1 className="mt-4 font-display-title text-4xl font-black uppercase tracking-tight break-words sm:text-6xl lg:text-7xl">
-              <span className="mr-2 inline-block bg-white px-2.5 py-0.5 text-[#0d0e15] shadow-[3px_3px_0px_#0d0e15] sm:mr-3 sm:px-3 sm:shadow-[4px_4px_0px_#0d0e15]">
+              <span className="mr-2 inline-block bg-[#F9D47B] px-2.5 py-0.5 text-[#282828] shadow-[3px_3px_0px_#282828] sm:mr-3 sm:px-3 sm:shadow-[4px_4px_0px_#282828]">
                 {item.headlineWordPair.blackWord}
               </span>
               <span className="break-words text-white">{item.headlineWordPair.whiteWord}</span>
             </h1>
           </div>
 
-          {/* Authentic Rounded Badge Card from Pages 05 & 06 */}
+          {/* Authentic Coral Rounded Badge Card from Brochure Pages 05 & 06 */}
           <div className="shrink-0">
-            <div className="flex h-[88px] min-w-[200px] items-center justify-center rounded-2xl border-2 border-white bg-white/10 px-6 py-4 shadow-[4px_4px_0px_rgba(0,0,0,0.25)] sm:min-w-[220px] sm:px-8">
+            <div className="flex h-[88px] min-w-[200px] items-center justify-center rounded-2xl border-2 border-white bg-[#EB547C] px-6 py-4 shadow-[4px_4px_0px_rgba(0,0,0,0.25)] sm:min-w-[220px] sm:px-8">
               <SubEventBadge slug={item.slug} />
             </div>
           </div>
@@ -87,10 +87,10 @@ export default async function EventPage({ params }: PageProps) {
           <div className="absolute -top-1.5 right-0 h-3 w-[2px] bg-white" />
         </div>
 
-        {/* Main Event Overview: Solid Black Contrast Block matching Program Sections */}
-        <section className="border-2 border-white/40 bg-[#0d0e15] p-6 text-white shadow-[6px_6px_0px_#000000] sm:p-10">
-          <div className="flex items-center gap-2 font-mono text-xs font-black uppercase tracking-wider text-white/70">
-            <span className="inline-block h-2.5 w-2.5 bg-white" />
+        {/* Main Event Overview: Royal Deep Block matching Brochure Sections */}
+        <section className="rounded-3xl border-2 border-white/40 bg-[#0B2D6D]/80 p-6 text-white shadow-[6px_6px_0px_rgba(0,0,0,0.25)] backdrop-blur-xs sm:p-10">
+          <div className="flex items-center gap-2 font-mono text-xs font-black uppercase tracking-wider text-[#F9D47B]">
+            <span className="inline-block h-2.5 w-2.5 bg-[#EB547C]" />
             <span>Official Event Description · Source of Truth</span>
           </div>
           <p className="mt-5 text-xl font-medium leading-relaxed text-white sm:text-2xl">
@@ -118,12 +118,12 @@ export default async function EventPage({ params }: PageProps) {
 
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {/* Date & Timing Placeholder */}
-            <div className="border-2 border-white/40 bg-[#0d0e15] p-6 shadow-[5px_5px_0px_#000000]">
+            <div className="rounded-2xl border-2 border-white/40 bg-[#0B2D6D]/80 p-6 shadow-[4px_4px_0px_rgba(0,0,0,0.25)] backdrop-blur-xs">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-xs font-bold uppercase tracking-wider text-white/70">
+                <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#F9D47B]">
                   01 · Schedule
                 </span>
-                <span className="border border-white/60 bg-white/15 px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-white">
+                <span className="border border-white/60 bg-[#EB547C] px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-white">
                   TODO
                 </span>
               </div>
@@ -136,12 +136,12 @@ export default async function EventPage({ params }: PageProps) {
             </div>
 
             {/* Venue Placeholder */}
-            <div className="border-2 border-white/40 bg-[#0d0e15] p-6 shadow-[5px_5px_0px_#000000]">
+            <div className="rounded-2xl border-2 border-white/40 bg-[#0B2D6D]/80 p-6 shadow-[4px_4px_0px_rgba(0,0,0,0.25)] backdrop-blur-xs">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-xs font-bold uppercase tracking-wider text-white/70">
+                <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#F9D47B]">
                   02 · Location
                 </span>
-                <span className="border border-white/60 bg-white/15 px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-white">
+                <span className="border border-white/60 bg-[#EB547C] px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-white">
                   TODO
                 </span>
               </div>
@@ -154,12 +154,12 @@ export default async function EventPage({ params }: PageProps) {
             </div>
 
             {/* Rules & Guidelines Placeholder */}
-            <div className="border-2 border-white/40 bg-[#0d0e15] p-6 shadow-[5px_5px_0px_#000000] sm:col-span-2 lg:col-span-1">
+            <div className="rounded-2xl border-2 border-white/40 bg-[#0B2D6D]/80 p-6 shadow-[4px_4px_0px_rgba(0,0,0,0.25)] backdrop-blur-xs sm:col-span-2 lg:col-span-1">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-xs font-bold uppercase tracking-wider text-white/70">
+                <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#F9D47B]">
                   03 · Regulations
                 </span>
-                <span className="border border-white/60 bg-white/15 px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-white">
+                <span className="border border-white/60 bg-[#EB547C] px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-white">
                   TODO
                 </span>
               </div>
@@ -182,7 +182,7 @@ export default async function EventPage({ params }: PageProps) {
           <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
             <Link
               href="/events"
-              className="inline-flex items-center gap-3 border-2 border-white bg-white px-6 py-3 font-mono text-xs font-black uppercase tracking-wider text-[#174ae8] transition hover:bg-transparent hover:text-white"
+              className="inline-flex items-center gap-3 border-2 border-white bg-[#F9D47B] px-6 py-3 font-mono text-xs font-black uppercase tracking-wider text-[#282828] shadow-[3px_3px_0px_#282828] transition hover:bg-white hover:text-[#2074D5]"
             >
               <span>&larr;</span>
               <span>Back to All Events</span>
@@ -191,10 +191,10 @@ export default async function EventPage({ params }: PageProps) {
             {/* Page Marker */}
             <div className="flex items-center gap-4">
               <div className="leading-none text-right">
-                <span className="block text-[10px] font-black tracking-widest uppercase text-white/70">
+                <span className="block text-[10px] font-black tracking-widest uppercase text-[#EB547C]">
                   The
                 </span>
-                <span className="block text-base font-black tracking-tighter uppercase text-white">
+                <span className="block text-base font-black tracking-tighter uppercase text-[#F9D47B]">
                   Equinox 2.0
                 </span>
               </div>

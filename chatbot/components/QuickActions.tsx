@@ -52,7 +52,7 @@ export function QuickActions({
             key={idx}
             onClick={() => onSelect(action)}
             disabled={disabled}
-            className="flex items-center gap-1.5 rounded-full border border-white/35 bg-white/10 px-2.5 py-1 font-mono text-[11px] font-medium text-white transition hover:border-white hover:bg-white hover:text-[#174ae8] disabled:pointer-events-none disabled:opacity-40"
+            className="flex items-center gap-1.5 rounded-full border border-white/35 bg-white/10 px-2.5 py-1 font-mono text-[11px] font-medium text-white transition hover:border-white hover:bg-white hover:text-[#2074d5] disabled:pointer-events-none disabled:opacity-40"
           >
             <Icon className="h-3 w-3" />
             {action}

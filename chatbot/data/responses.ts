@@ -1,5 +1,7 @@
 // chatbot/data/responses.ts
-// Offline mock intelligence engine grounded exclusively in the Equinox program
+// [DEPRECATED] Offline mock intelligence engine grounded in the Equinox program.
+// The primary source of truth for chat responses is now the RAG backend at /api/chat.
+// This file is retained exclusively as an emergency client-side fallback.
 
 import { EQUINOX_SUB_EVENTS, SubEventInfo, EQUINOX_INFO, OFFICIAL_COORDINATORS } from "./events";
 
@@ -9,6 +11,9 @@ export interface BotReply {
   suggestions: string[];
 }
 
+/**
+ * @deprecated Use `/api/chat` RAG backend instead. Retained for offline fallback.
+ */
 export function getBotResponse(userQuery: string): BotReply {
   const q = userQuery.toLowerCase().trim();
 

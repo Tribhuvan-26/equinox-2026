@@ -6,7 +6,7 @@
   width: 100vw;
   height: 100vh;
   z-index: 99999;
-  background-color: #050505;
+  background-color: #282828;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -105,20 +105,20 @@
 }
 
 .titleSpot {
-  fill: #f5f1e6;
-  filter: drop-shadow(0 4px 20px rgba(245, 241, 230, 0.25));
+  fill: #ffffff;
+  filter: drop-shadow(0 4px 20px rgba(255, 255, 255, 0.25));
 }
 
 .titleLight {
-  fill: #3b6cfa;
-  filter: drop-shadow(0 4px 25px rgba(59, 108, 250, 0.65));
+  fill: #2074D5;
+  filter: drop-shadow(0 4px 25px rgba(27, 95, 214, 0.65));
 }
 
 .titleStreak {
-  stroke: #3b6cfa;
+  stroke: #2074D5;
   stroke-width: 6;
   stroke-linecap: round;
-  filter: drop-shadow(0 0 10px rgba(59, 108, 250, 0.8));
+  filter: drop-shadow(0 0 10px rgba(27, 95, 214, 0.8));
 }
 
 /* Skip / Close indicator button */

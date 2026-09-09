@@ -64,7 +64,7 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
     });
   }, [messages, isTyping, isEventListOpen]);
 
-  const handleSendMessage = (text: string) => {
+  const handleSendMessage = async (text: string) => {
     const userMsg: MessageData = {
       id: `usr-${Date.now()}`,
       sender: "user",
@@ -75,8 +75,31 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
     setMessages((prev) => [...prev, userMsg]);
     setIsTyping(true);
 
-    // Realistic processing delay for polished UI feel
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Chat API responded with status ${res.status}`);
+      }
+
+      const data = await res.json();
+      const botMsg: MessageData = {
+        id: `bot-${Date.now()}`,
+        sender: "bot",
+        text: data.answer || "I received an empty response. Please try again.",
+        eventCard: data.eventCard,
+        suggestions: data.suggestions,
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+
+      setMessages((prev) => [...prev, botMsg]);
+    } catch (err) {
+      console.warn("ChatWindow backend fetch failed, using fallback:", err);
+      // Deprecated fallback to local responses if network/server is unreachable
       const reply = getBotResponse(text);
       const botMsg: MessageData = {
         id: `bot-${Date.now()}`,
@@ -86,10 +109,10 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
         suggestions: reply.suggestions,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
-
       setMessages((prev) => [...prev, botMsg]);
+    } finally {
       setIsTyping(false);
-    }, 450);
+    }
   };
 
   const handleSuggestionSelect = (suggestion: string) => {
@@ -115,11 +138,11 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
   };
 
   return (
-    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-3xl border-2 border-white/60 bg-[#174ae8] text-white shadow-[0_25px_60px_-15px_rgba(0,0,0,0.6)]">
+    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-3xl border-2 border-white/60 bg-[#2074d5] text-white shadow-[0_25px_60px_-15px_rgba(0,0,0,0.6)]">
       {/* Header */}
       <div className="chatbot-riso-bg flex items-center justify-between border-b border-white/20 px-4 py-3.5 sm:px-5">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/40 bg-white text-[#174ae8] shadow-sm">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/40 bg-white text-[#2074d5] shadow-sm">
             <Bot className="h-5 w-5" />
           </div>
           <div>
@@ -127,7 +150,7 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
               <span className="font-mono text-sm font-black tracking-wider uppercase text-white">
                 EQUINOX AI
               </span>
-              <span className="rounded bg-white px-1 py-0.2 font-mono text-[9px] font-black text-[#0d0e15]">
+              <span className="rounded bg-white px-1 py-0.2 font-mono text-[9px] font-black text-[#282828]">
                 2.0
               </span>
             </div>
@@ -204,7 +227,7 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
                   key={evt.slug}
                   type="button"
                   onClick={() => handleEventClick(evt.slug)}
-                  className="rounded-full border border-white/40 bg-white/10 px-2.5 py-1 font-mono text-[11px] font-medium text-white transition hover:border-white hover:bg-white hover:text-[#174ae8] active:scale-95"
+                  className="rounded-full border border-white/40 bg-white/10 px-2.5 py-1 font-mono text-[11px] font-medium text-white transition hover:border-white hover:bg-white hover:text-[#2074d5] active:scale-95"
                 >
                   {evt.name}
                 </button>
@@ -217,7 +240,7 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
             <button
               type="button"
               onClick={() => setIsEventListOpen(true)}
-              className="flex items-center gap-1 rounded-full border border-white bg-white/20 px-2.5 py-1 font-mono text-[11px] font-black text-white shadow-xs transition hover:bg-white hover:text-[#174ae8] active:scale-95"
+              className="flex items-center gap-1 rounded-full border border-white bg-white/20 px-2.5 py-1 font-mono text-[11px] font-black text-white shadow-xs transition hover:bg-white hover:text-[#2074d5] active:scale-95"
             >
               <Calendar className="h-3 w-3" />
               Events
@@ -227,7 +250,7 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
                 key={idx}
                 type="button"
                 onClick={() => handleSendMessage(action)}
-                className="rounded-full border border-white/35 bg-white/10 px-2.5 py-1 font-mono text-[11px] font-medium text-white transition hover:border-white hover:bg-white hover:text-[#174ae8] active:scale-95"
+                className="rounded-full border border-white/35 bg-white/10 px-2.5 py-1 font-mono text-[11px] font-medium text-white transition hover:border-white hover:bg-white hover:text-[#2074d5] active:scale-95"
               >
                 {action}
               </button>

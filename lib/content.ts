@@ -75,11 +75,11 @@ export const about = {
   eyebrow: "E-Summit 2.0",
   heading: "Where Passion Meets Perseverance",
   whoAreWe:
-    "The Centre for Innovation and Entrepreneurship (CIE) at MLR Institute of Technology is dedicated to nurturing student innovators, startup founders, and forward-thinking leaders through hands-on entrepreneurship.",
+    "Established in 2015, MLRIT-CIE is an entrepreneurship development cell dedicated to nurturing young innovators and supporting early-stage startups. We focus on building a strong and thriving ecosystem that encourages growth, collaboration, and innovation. By inspiring creativity and entrepreneurial spirit among students, alumni, faculty, and industry partners, we create opportunities for learning, development, and success. Through continuous support and guidance, we aim to drive innovation and turn ideas into reality.",
   whatWeDo:
-    "CIE MLRIT creates an ecosystem where ambitious students transform theoretical ideas into viable ventures through mentorship, seed support, hackathons, and industry networking.",
+    "We host high-impact hackathons, from MetaLoop, our biggest national-level AR/VR hackathon, to Inventron, our flagship 36-hour build challenge.",
   whatIsEquinox:
-    "The Equinox is the flagship annual entrepreneurship summit organized by CIE MLRIT. A powerhouse two-day confluence uniting ambitious students, early-stage founders, angel investors, and tech pioneers across India.",
+    "Equinox is a 2-day E Summit at MLR Institute of Technology, Hyderabad. It pictures a vibrant and engaging environment where students come together to take on real-world challenges and explore entrepreneurship through events like Spotlight, Case-Study Competitions, Brand Battles, IPL Auction, Startup Expo, Pitch Deck, and E-Cell Meet, ensuring participants learn, compete, connect, and gain valuable experience.",
   body: [
     "The Equinox is designed to test grit, sharp business acumen, street hustle, and visionary thinking. Across two high-voltage days on 30 - 31 October at MLRIT Hyderabad, participants dive into 10 premier sub-events ranging from simulated live cricket bidding and Monopoly-style business conquer to high-stakes investor pitch decks.",
     "Whether you're marketing products on campus in Hustle Mania, dissecting corporate dilemmas in Crossroads, or defending your favourite enterprise in Brand Battles, Equinox is where collegiate passion transforms into real-world perseverance.",
@@ -88,10 +88,10 @@ export const about = {
 
 // Official Student Coordinators from Page 12
 export const studentCoordinators = [
-  { name: "Shyam", phone: "+91 93900 06806", phoneRaw: "+919390006806", role: "Student Coordinator" },
-  { name: "Mahima", phone: "+91 94933 62006", phoneRaw: "+919493362006", role: "Student Coordinator" },
   { name: "Sanjana", phone: "+91 82084 99746", phoneRaw: "+918208499746", role: "Student Coordinator" },
   { name: "Adithya", phone: "+91 91822 40970", phoneRaw: "+919182240970", role: "Student Coordinator" },
+  { name: "Mahith", phone: "+91 95421 30703", phoneRaw: "+919542130703", role: "Student Coordinator" },
+  { name: "Yashashri", phone: "+91 99590 62396", phoneRaw: "+919959062396", role: "Student Coordinator" },
 ];
 
 // The 10 Official Sub-Events from Pages 05 & 06 of the Program
@@ -105,7 +105,7 @@ export const subEvents: SubEvent[] = [
     tagline: "Visionary Keynotes & Emerging Tech Insights",
     category: "Keynote & Insights",
     description:
-      "Spotlight features presentations from industry experts on technology, entrepreneurship, and startups. It gives students valuable insights into emerging technologies, industry trends, and the future of entrepreneurship.",
+      "Spotlight features talk sessions by industry experts covering the latest trends across various fields. It gives students valuable insights into emerging ideas, industry developments, and new opportunities.",
     skills: ["Tech Trends Analysis", "Strategic Foresight", "Startup Insights", "Networking"],
     format: "Expert keynote presentations followed by interactive audience Q&A",
     timing: "30 - 31 Oct (Session slots releasing soon)",
@@ -119,7 +119,7 @@ export const subEvents: SubEvent[] = [
     fee: "Free with summit pass",
     prize: "Exclusive mentor connections",
     about: [
-      "Spotlight features presentations from industry experts on technology, entrepreneurship, and startups. It gives students valuable insights into emerging technologies, industry trends, and the future of entrepreneurship.",
+      "Spotlight features talk sessions by industry experts covering the latest trends across various fields. It gives students valuable insights into emerging ideas, industry developments, and new opportunities.",
       "Get up close with industry founders sharing real-world playbooks, lessons learned from scaling companies, and what technologies will dominate the next decade.",
     ],
     rules: [
@@ -127,7 +127,7 @@ export const subEvents: SubEvent[] = [
       "Audience Q&A follows each keynote session",
       "Priority seating for early arrivals",
     ],
-    spoc: { name: "Shyam", phone: "+91 93900 06806", email: "cie@mlrinstitutions.ac.in" },
+    spoc: { name: "Sanjana", phone: "+91 82084 99746", email: "cie@mlrinstitutions.ac.in" },
   },
   {
     id: "crossroads",
@@ -160,7 +160,7 @@ export const subEvents: SubEvent[] = [
       "Presentation deck submission within 3 hours",
       "7-min presentation + 3-min judge questions",
     ],
-    spoc: { name: "Mahima", phone: "+91 94933 62006", email: "cie@mlrinstitutions.ac.in" },
+    spoc: { name: "Adithya", phone: "+91 91822 40970", email: "cie@mlrinstitutions.ac.in" },
   },
   {
     id: "startup-expo",
@@ -192,7 +192,7 @@ export const subEvents: SubEvent[] = [
       "Each venture receives a dedicated exhibition booth",
       "Founders must be present during expo hours",
     ],
-    spoc: { name: "Adithya", phone: "+91 91822 40970", email: "cie@mlrinstitutions.ac.in" },
+    spoc: { name: "Mahith", phone: "+91 95421 30703", email: "cie@mlrinstitutions.ac.in" },
   },
   {
     id: "brand-battles",
@@ -225,7 +225,7 @@ export const subEvents: SubEvent[] = [
       "Strict timekeeping for arguments, cross-examination, and closing statements",
       "Scoring based on data backing, poise, and logical rebuttals",
     ],
-    spoc: { name: "Sanjana", phone: "+91 82084 99746", email: "cie@mlrinstitutions.ac.in" },
+    spoc: { name: "Yashashri", phone: "+91 99590 62396", email: "cie@mlrinstitutions.ac.in" },
   },
   {
     id: "ipl-auction",
@@ -258,7 +258,7 @@ export const subEvents: SubEvent[] = [
       "Mandatory player category quotas (batsmen, bowlers, all-rounders, wicketkeepers)",
       "Final team score calculated using official performance ratings",
     ],
-    spoc: { name: "Shyam", phone: "+91 93900 06806", email: "cie@mlrinstitutions.ac.in" },
+    spoc: { name: "Sanjana", phone: "+91 82084 99746", email: "cie@mlrinstitutions.ac.in" },
   },
 
   // Page 06
@@ -270,7 +270,7 @@ export const subEvents: SubEvent[] = [
     tagline: "On-Ground Marketing, Selling & Negotiation",
     category: "Marketing & Sales",
     description:
-      "Hustle Mania gives students an opportunity to showcase their marketing and negotiation skills by selling products of their choice. Participants compete with others while developing their communication, persuasion, and business skills.",
+      "Hustle Mania is a student-organized stall event where students sell products of their choice. Participants compete with others while developing their communication, persuasion, and business skills.",
     skills: ["Direct Selling", "Persuasion & Pitching", "Product Margins", "Customer Psychology"],
     format: "Live on-campus selling showdown with allocated seed stock or chosen products",
     timing: "30 Oct (Running throughout Day 1)",
@@ -284,7 +284,7 @@ export const subEvents: SubEvent[] = [
     fee: "Announcing soon",
     prize: "Retain profits + Winner Trophy",
     about: [
-      "Hustle Mania gives students an opportunity to showcase their marketing and negotiation skills by selling products of their choice. Participants compete with others while developing their communication, persuasion, and business skills.",
+      "Hustle Mania is a student-organized stall event where students sell products of their choice. Participants compete with others while developing their communication, persuasion, and business skills.",
       "Get out on the floor and prove your selling chops. Strategize product pricing, invent guerrilla marketing hooks, and maximize revenue before the closing bell.",
     ],
     rules: [
@@ -293,7 +293,7 @@ export const subEvents: SubEvent[] = [
       "Strict ethical marketing and accounting practices enforced",
       "Winner decided by net margin, sales volume, and customer feedback",
     ],
-    spoc: { name: "Mahima", phone: "+91 94933 62006", email: "cie@mlrinstitutions.ac.in" },
+    spoc: { name: "Adithya", phone: "+91 91822 40970", email: "cie@mlrinstitutions.ac.in" },
   },
   {
     id: "internship-drive",
@@ -325,7 +325,7 @@ export const subEvents: SubEvent[] = [
       "Dress code: Smart casual / formal",
       "Attend pre-screening briefing at 09:30 AM",
     ],
-    spoc: { name: "Adithya", phone: "+91 91822 40970", email: "cie@mlrinstitutions.ac.in" },
+    spoc: { name: "Mahith", phone: "+91 95421 30703", email: "cie@mlrinstitutions.ac.in" },
   },
   {
     id: "startup-poly",
@@ -357,7 +357,7 @@ export const subEvents: SubEvent[] = [
       "Shock cards introduce unpredictable market events every round",
       "Highest venture enterprise valuation after 10 rounds advances to finals",
     ],
-    spoc: { name: "Sanjana", phone: "+91 82084 99746", email: "cie@mlrinstitutions.ac.in" },
+    spoc: { name: "Yashashri", phone: "+91 99590 62396", email: "cie@mlrinstitutions.ac.in" },
   },
   {
     id: "e-cell-meet",
@@ -389,7 +389,7 @@ export const subEvents: SubEvent[] = [
       "Participating teams present a 3-minute campus ecosystem snapshot",
       "Collaborative policy resolution drafted at conclave close",
     ],
-    spoc: { name: "Shyam", phone: "+91 93900 06806", email: "cie@mlrinstitutions.ac.in" },
+    spoc: { name: "Sanjana", phone: "+91 82084 99746", email: "cie@mlrinstitutions.ac.in" },
   },
   {
     id: "pitch-deck",
@@ -421,7 +421,7 @@ export const subEvents: SubEvent[] = [
       "Strict 5 minutes pitch window followed by 5 minutes jury interrogation",
       "Evaluated on problem severity, market size, unfair advantage, and execution clarity",
     ],
-    spoc: { name: "Mahima", phone: "+91 94933 62006", email: "cie@mlrinstitutions.ac.in" },
+    spoc: { name: "Mahith", phone: "+91 95421 30703", email: "cie@mlrinstitutions.ac.in" },
   },
 ];
 
@@ -430,10 +430,10 @@ export const events = subEvents;
 
 // Summit Highlights (Grounded in official program scope)
 export const highlights = [
+  { value: "2,000+", label: "Students", detail: "Builders, founders, and leaders across campuses" },
+  { value: "15+", label: "Startups", detail: "Exhibiting and networking across the two days" },
   { value: "10", label: "Official Sub-Events", detail: "Across strategy, auctions, debates, and pitching" },
   { value: "2", label: "Action-Packed Days", detail: "30 & 31 October at MLRIT Hyderabad" },
-  { value: "1,000+", label: "Student Innovators", detail: "Builders, founders, and leaders across campuses" },
-  { value: "50+", label: "College E-Cells", detail: "Represented in the national E-Cell conclave" },
 ];
 
 // Official Contact Information from Page 12
@@ -533,7 +533,7 @@ export const faqs = [
   },
   {
     q: "How can I contact the event coordinators?",
-    a: "You can reach student coordinators Shyam (+91 93900 06806), Mahima (+91 94933 62006), Sanjana (+91 82084 99746), or Adithya (+91 91822 40970), or email cie@mlrinstitutions.ac.in.",
+    a: "You can reach student coordinators Sanjana (+91 82084 99746), Adithya (+91 91822 40970), Mahith (+91 95421 30703), or Yashashri (+91 99590 62396), or email cie@mlrinstitutions.ac.in.",
   },
 ];
 

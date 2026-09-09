@@ -2,17 +2,20 @@
 
 /* ---------------------------------------------------------------------------
    THE EQUINOX 2.0 — Official Design System
-   Color Ground: Electric Royal Cobalt Blue (#174ae8)
-   Accents: Stark White (#ffffff), Bold Editorial Black (#0d0e15)
+   Color Ground: Electric Royal Cobalt Blue (#2074d5)
+   Accents: Stark White (#ffffff), Bold Editorial Black (#282828)
    Textures: Risograph paper grain, blueprint grid lines, page timelines
 --------------------------------------------------------------------------- */
 
 @theme {
-  --color-equinox-blue: #174ae8;
-  --color-equinox-blue-dark: #0f35b5;
-  --color-equinox-blue-deep: #081a63;
-  --color-equinox-blue-light: #3b6cfa;
-  --color-equinox-black: #0d0e15;
+  --color-equinox-blue: #2074D5;
+  --color-equinox-blue-dark: #16529E;
+  --color-equinox-blue-deep: #0B2D6D;
+  --color-equinox-blue-light: #3577EC;
+  --color-equinox-yellow: #F9D47B;
+  --color-equinox-coral: #EB547C;
+  --color-equinox-coral-dark: #C93D62;
+  --color-equinox-black: #282828;
   --color-equinox-charcoal: #1f222e;
   --color-equinox-white: #ffffff;
   --color-equinox-card: rgba(255, 255, 255, 0.08);
@@ -23,25 +26,39 @@
 }
 
 :root {
-  --bg-cobalt: #174ae8;
-  --bg-cobalt-dark: #1038ba;
+  --equinox-blue: #2074D5;
+  --equinox-blue-dark: #16529E;
+  --equinox-blue-deep: #0B2D6D;
+  --equinox-yellow: #F9D47B;
+  --equinox-coral: #EB547C;
+  --equinox-white: #ffffff;
+  --equinox-black: #282828;
+
+  /* Legacy & compatibility variables */
+  --bg-cobalt: var(--equinox-blue);
+  --bg-cobalt-dark: var(--equinox-blue-dark);
   --fg-white: #ffffff;
-  --fg-black: #0d0e15;
+  --fg-black: #282828;
+  --ground: var(--equinox-blue);
+  --surface: rgba(255, 255, 255, 0.1);
+  --surface-2: rgba(255, 255, 255, 0.18);
+  --fg: #ffffff;
+  --accent: var(--equinox-yellow);
 }
 
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
-  background-color: #174ae8;
+  background-color: #2074D5;
   color: #ffffff;
 }
 
 body {
-  background-color: #174ae8;
+  background-color: #2074D5;
   color: #ffffff;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Risograph / fine paper grain overlay */
@@ -60,13 +77,22 @@ body {
   z-index: 1;
 }
 
-/* Subtle print noise effect */
-.riso-texture {
-  background-color: #174ae8;
+/* Graph paper grid line pattern from the brochure overlaid on bright royal blue */
+.riso-texture,
+.brochure-grid {
+  background-color: var(--equinox-blue);
   background-image: 
-    radial-gradient(at 10% 20%, rgba(35, 95, 255, 0.6) 0px, transparent 50%),
-    radial-gradient(at 90% 80%, rgba(12, 45, 175, 0.5) 0px, transparent 50%),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 4px);
+    linear-gradient(to right, rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+  background-size: 34px 34px;
+}
+
+.brochure-grid-dense {
+  background-color: var(--equinox-blue);
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 
 /* Typography styles matching the official design system */
@@ -83,14 +109,32 @@ body {
   text-transform: uppercase;
 }
 
-/* The Equinox Cover Drop Shadow Effect */
+/* The Equinox Cover Drop Shadow Effect (Dark drop shadow behind golden yellow EQUINOX) */
 .display-title-shadow {
   text-shadow: 
-    -2px -2px 0 #0d0e15,  
-     2px -2px 0 #0d0e15,
-    -2px  2px 0 #0d0e15,
-     2px  2px 0 #0d0e15,
-     4px  5px 0 #0d0e15;
+    3px 3px 0 #282828,
+    5px 5px 0 #282828,
+    6px 7px 0 rgba(11, 45, 109, 0.95);
+}
+
+/* Gentle up-down float, e.g. the cover pop-up book illustration */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float {
+    animation: none;
+  }
 }
 
 /* Hanging tag physics bounce */
@@ -120,16 +164,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #1038ba;
+  background: var(--equinox-blue-deep);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.35);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--equinox-yellow);
 }
 
 /* White outline pill badge */
@@ -148,7 +192,7 @@ body {
 
 .badge-pill-white:hover {
   background-color: #ffffff;
-  color: #174ae8;
+  color: #2074d5;
   transform: translateY(-2px);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 }

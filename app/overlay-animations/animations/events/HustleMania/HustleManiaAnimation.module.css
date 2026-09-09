@@ -1,0 +1,131 @@
+/* app/overlay-animations/animations/events/HustleMania/HustleManiaAnimation.module.css */
+
+.overlayContainer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  background-color: #282828;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+  pointer-events: auto;
+  opacity: 0;
+}
+
+/* 16:9 aspect-ratio responsive stage frame (contain-fit within viewport) */
+.stageFrame {
+  position: relative;
+  width: 100vw;
+  height: calc(100vw * (9 / 16));
+  max-width: calc(100vh * (16 / 9));
+  max-height: 100vh;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6);
+}
+
+.baseImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+
+.stageSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Skip button */
+.skipButton {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(17, 17, 17, 0.75);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
+  pointer-events: auto;
+  opacity: 0;
+}
+
+.skipButton:hover {
+  background: rgba(24, 86, 243, 0.85);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-1px);
+}
+
+/* Title & typography */
+.hustleText {
+  font-family: Impact, "Arial Black", var(--font-syne), sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  fill: #282828;
+}
+
+.maniaText {
+  font-family: Impact, "Arial Black", var(--font-syne), sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  fill: #2074D5;
+}
+
+.taglineText {
+  font-family: var(--font-mono), monospace;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  fill: #282828;
+}
+
+.dreamsText {
+  font-family: Impact, "Arial Black", var(--font-syne), sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  fill: #2074D5;
+}
+
+.signBoardText {
+  font-family: var(--font-syne), Impact, "Arial Black", sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  fill: #ffffff;
+}
+
+.priceTagText {
+  font-family: var(--font-mono), monospace;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  fill: #ffffff;
+}

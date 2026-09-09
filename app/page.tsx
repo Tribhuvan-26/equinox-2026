@@ -1,7 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion, type Variants } from "framer-motion";
+import { useRef, useState } from "react";
+import {
+  motion,
+  useMotionValueEvent,
+  useScroll,
+  useSpring,
+  type Variants,
+} from "framer-motion";
 import Link from "next/link";
 import {
   event,
@@ -18,6 +24,7 @@ import {
   PageFooterTimeline,
   SubEventBadge,
 } from "./EventGraphics";
+import AccordionGallery from "./components/AccordionGallery";
 import {
   ArrowRight,
   Mail,
@@ -36,19 +43,29 @@ const heroFadeUp: Variants = {
 };
 
 export default function HomePage() {
-  const [activeSubEventTab, setActiveSubEventTab] = useState<"all" | "05" | "06">("all");
+  const [activeEventIndex, setActiveEventIndex] = useState(0);
+  const eventsScrollRef = useRef<HTMLDivElement>(null);
 
-  const page05Events = subEvents.filter((e) => e.pageNumber === "05");
-  const page06Events = subEvents.filter((e) => e.pageNumber === "06");
-  const displayedEvents =
-    activeSubEventTab === "05"
-      ? page05Events
-      : activeSubEventTab === "06"
-      ? page06Events
-      : subEvents;
+  // Scroll progress across the pinned fan, eased with a spring so the active
+  // panel settles into place instead of snapping frame-to-frame with raw scroll.
+  const { scrollYProgress } = useScroll({
+    target: eventsScrollRef,
+    offset: ["start start", "end end"],
+  });
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 260,
+    damping: 34,
+    mass: 0.6,
+  });
+
+  useMotionValueEvent(smoothProgress, "change", (p) => {
+    const n = subEvents.length;
+    const idx = Math.min(n - 1, Math.max(0, Math.round(p * n - 0.5)));
+    setActiveEventIndex((prev) => (prev === idx ? prev : idx));
+  });
 
   return (
-    <div className="riso-texture min-h-screen text-white selection:bg-white selection:text-[#174ae8]">
+    <div className="riso-texture brochure-grid min-h-screen overflow-x-clip text-white selection:bg-[#F9D47B] selection:text-[#282828]">
       {/* =========================================================================
           SECTION 1: HERO / COVER (Page 01)
           ========================================================================= */}
@@ -77,37 +94,42 @@ export default function HomePage() {
                 E-SUMMIT
               </span>
               <div className="flex items-center gap-2 rounded-full border-2 border-white bg-white/10 px-4 py-1.5 backdrop-blur-xs">
-                <Calendar className="h-4 w-4 text-white" />
-                <span className="font-mono text-xs font-black tracking-wider uppercase sm:text-sm">
+                <Calendar className="h-4 w-4 text-[#F9D47B]" />
+                <span className="font-mono text-xs font-black tracking-wider uppercase sm:text-sm text-white">
                   {event.date}
                 </span>
               </div>
             </motion.div>
 
             {/* Massive "THE EQUINOX" Title Lockup with Hanging "2.0" */}
-            <motion.div variants={heroFadeUp} className="relative mt-4 flex items-end justify-center lg:justify-start">
+            <motion.div variants={heroFadeUp} className="mt-4 flex justify-center lg:justify-start">
               <div className="leading-none">
-                <span className="block font-mono text-2xl font-black tracking-widest text-white sm:text-4xl lg:text-5xl">
+                <span className="block font-mono text-2xl font-black tracking-widest text-[#EB547C] sm:text-4xl lg:text-5xl">
                   THE
                 </span>
-                <h1 className="font-display-title display-title-shadow text-6xl tracking-tighter text-white sm:text-8xl md:text-9xl lg:text-[11rem]">
-                  EQUINOX
-                </h1>
-              </div>
-
-              {/* Hanging "2.0" Tag from the Cover */}
-              <div className="absolute -right-2 top-8 sm:-right-8 sm:top-10 md:-right-12 md:top-14 lg:right-auto lg:left-[92%]">
-                <HangingTag />
+                {/* Wrapping the word in its own relative box (sized to the text itself,
+                    not the full row) lets the tag anchor to the actual top-right corner
+                    of "EQUINOX" at any size, instead of a viewport-relative guess. */}
+                <div className="relative inline-block">
+                  <h1 className="font-display-title display-title-shadow text-6xl tracking-tighter text-[#F9D47B] sm:text-8xl md:text-9xl lg:text-[clamp(4rem,10vw,12rem)]">
+                    EQUINOX
+                  </h1>
+                  {/* Left is a % of the word's own box, so it tracks the "I/N" boundary
+                      at any text size instead of a viewport-relative guess. */}
+                  <div className="absolute top-full left-[57%] -mt-4 sm:-mt-6 lg:-mt-10">
+                    <HangingTag />
+                  </div>
+                </div>
               </div>
             </motion.div>
 
             {/* Hashtag Tagline Badge */}
             <motion.div variants={heroFadeUp} className="mt-4 flex justify-center sm:mt-6 lg:justify-start">
-              <div className="inline-flex items-center gap-2 rounded-md border-2 border-[#0d0e15] bg-white px-4 py-2 shadow-[4px_4px_0px_#0d0e15] sm:px-6 sm:py-2.5">
-                <span className="font-mono text-sm font-black text-[#0d0e15] sm:text-base">
+              <div className="inline-flex items-center gap-2 rounded-md border-2 border-[#282828] bg-[#F9D47B] px-4 py-2 shadow-[4px_4px_0px_#282828] sm:px-6 sm:py-2.5">
+                <span className="font-mono text-sm font-black text-[#282828] sm:text-base">
                   #
                 </span>
-                <span className="font-mono text-xs font-black tracking-wider uppercase text-[#0d0e15] sm:text-sm md:text-base">
+                <span className="font-mono text-xs font-black tracking-wider uppercase text-[#282828] sm:text-sm md:text-base">
                   WHERE PASSION MEETS PERSEVERANCE
                 </span>
               </div>
@@ -124,14 +146,14 @@ export default function HomePage() {
             <motion.div variants={heroFadeUp} className="mt-8 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
               <a
                 href="#events"
-                className="flex items-center gap-2 rounded-full border-2 border-white bg-white px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-[#174ae8] shadow-lg transition hover:scale-105 hover:bg-white/95"
+                className="flex items-center gap-2 rounded-full border-2 border-[#282828] bg-[#F9D47B] px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-[#282828] shadow-[4px_4px_0px_#282828] transition hover:scale-105 hover:bg-[#ffe17d]"
               >
                 Explore 10 Sub-Events
                 <ArrowRight className="h-4 w-4" />
               </a>
               <a
                 href="#about"
-                className="flex items-center gap-2 rounded-full border-2 border-white/60 bg-white/10 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-xs transition hover:bg-white hover:text-[#174ae8]"
+                className="flex items-center gap-2 rounded-full border-2 border-white bg-white/10 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-xs transition hover:bg-white hover:text-[#2074D5]"
               >
                 About Equinox
               </a>
@@ -140,13 +162,15 @@ export default function HomePage() {
 
           {/* Vector Pop-Up Book Editorial Art — offset into its own column, overlapping on desktop */}
           <motion.div
-            className="mt-6 w-full max-w-2xl px-2 sm:mt-8 lg:col-span-5 lg:mt-0 lg:max-w-none lg:translate-x-6 lg:px-0"
+            className="mt-6 w-full max-w-2xl px-2 sm:mt-8 lg:col-span-5 lg:mt-20 lg:max-w-none lg:translate-x-6 lg:px-0"
             initial={{ opacity: 0, scale: 0.94, y: 24 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
           >
-            <CoverPopUpArt />
+            <div className="animate-float">
+              <CoverPopUpArt />
+            </div>
           </motion.div>
         </div>
 
@@ -163,76 +187,113 @@ export default function HomePage() {
       >
         <div className="max-w-4xl">
           <span className="rounded-full border border-white/40 bg-white/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-white">
-            {about.eyebrow}
+            Page 01 · {about.eyebrow}
           </span>
           <h2 className="mt-4 font-display-title text-4xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">
             {about.heading}
           </h2>
-          <p className="mt-6 text-xl leading-relaxed text-white/90 sm:text-2xl font-medium">
+          <p className="mt-6 text-xl leading-relaxed text-white/95 sm:text-2xl font-medium">
             {about.whatIsEquinox}
           </p>
         </div>
 
-        {/* Editorial Pair: Who Are We / What We Do — an intentional 2-up, not a padded 3rd column */}
+        {/* Editorial Pair: who are we? / what we do — matching brochure casing */}
         <div className="mt-16 grid gap-8 md:grid-cols-2">
-          {/* Who Are We */}
+          {/* who are we? (lowercase bold matching Brochure Page 01) */}
           <div className="program-card rounded-3xl border-2 border-white/40 bg-white/10 p-8 backdrop-blur-xs">
-            <span className="font-mono text-xs font-black tracking-wider text-white/70 uppercase">
+            <span className="font-mono text-xs font-black tracking-wider text-[#F9D47B] uppercase">
               01 · Vision
             </span>
-            <h3 className="mt-2 text-2xl font-black text-white">Who Are We?</h3>
-            <p className="mt-4 text-sm leading-relaxed text-white/85">
-              {about.whoAreWe}
+            <h3 className="mt-2 text-3xl font-black lowercase text-white sm:text-4xl">
+              who <span className="text-[#F9D47B]">are we?</span>
+            </h3>
+            <p className="mt-2 font-mono text-xs font-bold uppercase tracking-wider text-white/80">
+              Centre for Innovation &amp; Entrepreneurship @MLRIT
+            </p>
+            <p className="mt-4 text-sm leading-relaxed text-white/90">
+              Established in 2015, MLRIT-CIE is an <span className="font-bold text-[#F9D47B]">entrepreneurship development cell</span> dedicated to nurturing young innovators and supporting <span className="font-bold text-[#F9D47B]">early-stage startups</span>. We focus on building a strong and thriving ecosystem that encourages growth, collaboration, and innovation.
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-white/90">
+              By inspiring <span className="font-bold text-[#F9D47B]">creativity</span> and <span className="font-bold text-[#F9D47B]">entrepreneurial spirit</span> among students, alumni, faculty, and industry partners, we create opportunities for <span className="font-bold text-[#F9D47B]">learning, development</span>, and success. Through continuous support and guidance, we aim to drive innovation and turn <span className="font-bold text-[#F9D47B]">ideas into reality</span>.
             </p>
           </div>
 
-          {/* What We Do */}
-          <div className="program-card rounded-3xl border-2 border-white/40 bg-white/10 p-8 backdrop-blur-xs">
-            <span className="font-mono text-xs font-black tracking-wider text-white/70 uppercase">
-              02 · Mission
-            </span>
-            <h3 className="mt-2 text-2xl font-black text-white">What We Do</h3>
-            <p className="mt-4 text-sm leading-relaxed text-white/85">
-              {about.whatWeDo}
-            </p>
+          {/* what we do (lowercase bold matching brochure treatment) */}
+          <div className="program-card rounded-3xl border-2 border-white/40 bg-white/10 p-8 backdrop-blur-xs flex flex-col justify-between">
+            <div>
+              <span className="font-mono text-xs font-black tracking-wider text-[#F9D47B] uppercase">
+                02 · Mission
+              </span>
+              <h3 className="mt-2 text-3xl font-black lowercase text-white sm:text-4xl">
+                what <span className="text-[#F9D47B]">we do</span>
+              </h3>
+              <p className="mt-4 text-base leading-relaxed text-white/95 sm:text-lg">
+                We host high-impact hackathons, from MetaLoop, our biggest national-level AR/VR hackathon, to Inventron, our flagship 36-hour build challenge.
+              </p>
+              <p className="mt-4 text-sm leading-relaxed text-white/85">
+                CIE MLRIT creates an ecosystem where ambitious students transform theoretical ideas into viable ventures through hands-on mentorship, seed funding, prototype support, and direct access to angel investors.
+              </p>
+            </div>
+
+            <div className="mt-6 rounded-2xl border border-white/20 bg-white/5 p-4">
+              <span className="font-mono text-xs font-black text-[#F9D47B] uppercase">
+                Flagship Hackathon Series
+              </span>
+              <p className="mt-1 font-bold text-white text-sm">
+                MetaLoop (National AR/VR) &amp; Inventron (36-Hour Build Challenge)
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* What Is Equinox — a wide banner, not a forced third equal card */}
-        <div className="program-card mt-8 flex flex-col gap-8 rounded-3xl border-2 border-white bg-white p-8 text-[#0d0e15] shadow-xl sm:p-10 lg:flex-row lg:items-center lg:justify-between">
+        {/* what is THE EQUINOX 2.0 — Banner matching Brochure Page 03 */}
+        <div className="program-card mt-8 flex flex-col gap-8 rounded-3xl border-2 border-white bg-white p-8 text-[#282828] shadow-xl sm:p-10 lg:flex-row lg:items-center lg:justify-between">
           <div className="lg:max-w-xl">
-            <span className="font-mono text-xs font-black tracking-wider text-[#174ae8] uppercase">
-              03 · The Summit
+            <span className="font-mono text-xs font-black tracking-wider text-[#2074D5] uppercase">
+              03 · The Summit (Page 03)
             </span>
-            <h3 className="mt-2 text-3xl font-black text-[#0d0e15] sm:text-4xl">What Is Equinox?</h3>
-            <p className="mt-4 max-w-md text-sm leading-relaxed text-[#1f222e]">
-              A flagship two-day festival of ideas, hustle, investment, and cross-campus collaboration held annually at MLRIT Hyderabad.
+            <h3 className="mt-2 text-3xl font-black text-[#282828] sm:text-4xl">
+              what is <span className="text-[#EB547C]">THE</span> <span className="text-[#2074D5]">EQUINOX</span> <span className="text-[#EB547C]">2.0</span>
+            </h3>
+            <p className="mt-4 text-sm leading-relaxed text-[#1f222e]">
+              Equinox is a 2-day E Summit at MLR Institute of Technology, Hyderabad. It pictures a vibrant and engaging environment where students come together to take on real-world challenges and explore entrepreneurship through events like Spotlight, Case-Study Competitions, Brand Battles, IPL Auction, Startup Expo, Pitch Deck, and E-Cell Meet.
             </p>
           </div>
-          <div className="flex items-center gap-2 font-mono text-xs font-black text-[#174ae8] lg:shrink-0">
+          <div className="flex items-center gap-2 font-mono text-xs font-black text-[#2074D5] lg:shrink-0">
             <span>30 - 31 OCTOBER 2026</span>
             <ArrowRight className="h-4 w-4" />
           </div>
         </div>
 
-        {/* Highlights Row */}
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {highlights.map((item) => (
-            <div
-              key={item.label}
-              className="rounded-2xl border border-white/25 bg-white/5 p-6 backdrop-blur-xs"
-            >
-              <p className="font-mono text-4xl font-black text-white sm:text-5xl">
-                {item.value}
-              </p>
-              <p className="mt-2 font-bold text-white text-base">
-                {item.label}
-              </p>
-              <p className="mt-1 text-xs text-white/70">
-                {item.detail}
-              </p>
-            </div>
-          ))}
+        {/* Highlights Row (What's In Store stats) */}
+        <div className="mt-16">
+          <div className="mb-6 flex items-center justify-between">
+            <span className="font-mono text-xs font-black uppercase tracking-widest text-white/80">
+              What&apos;s In Store · Summit Scale
+            </span>
+            <span className="font-mono text-xs font-bold text-[#F9D47B] uppercase">
+              Page 04
+            </span>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {highlights.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-2xl border-2 border-white/30 bg-white/10 p-6 backdrop-blur-xs transition hover:border-white hover:bg-white/15"
+              >
+                <p className="font-mono text-4xl font-black text-[#F9D47B] sm:text-5xl">
+                  {item.value}
+                </p>
+                <p className="mt-2 font-bold text-white text-base">
+                  {item.label}
+                </p>
+                <p className="mt-1 text-xs text-white/80">
+                  {item.detail}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Page Footer Timeline */}
@@ -247,134 +308,128 @@ export default function HomePage() {
         className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
       >
         {/* Section Header */}
-        <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
-          <div>
-            <span className="rounded-full border border-white/40 bg-white/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-white">
-              Pages 05 &amp; 06
-            </span>
-            <h2 className="mt-3 font-display-title text-5xl font-black tracking-tight text-white sm:text-7xl lg:text-8xl">
-              SUB-EVENTS
-            </h2>
-            <p className="mt-3 max-w-xl text-base text-white/85 sm:text-lg">
-              Official sub-events straight from Equinox 2.0&apos;s program. Click any event badge to open full format, venue details, and registration criteria.
-            </p>
-          </div>
-
-          {/* Page Filter Tabs */}
-          <div className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 p-1.5 backdrop-blur-xs">
-            <button
-              onClick={() => setActiveSubEventTab("all")}
-              className={`rounded-full px-5 py-2 text-xs font-bold transition ${
-                activeSubEventTab === "all"
-                  ? "bg-white text-[#174ae8] shadow-sm"
-                  : "text-white hover:bg-white/10"
-              }`}
-            >
-              All 10 Events
-            </button>
-            <button
-              onClick={() => setActiveSubEventTab("05")}
-              className={`rounded-full px-5 py-2 text-xs font-bold transition ${
-                activeSubEventTab === "05"
-                  ? "bg-white text-[#174ae8] shadow-sm"
-                  : "text-white hover:bg-white/10"
-              }`}
-            >
-              Page 05 Events
-            </button>
-            <button
-              onClick={() => setActiveSubEventTab("06")}
-              className={`rounded-full px-5 py-2 text-xs font-bold transition ${
-                activeSubEventTab === "06"
-                  ? "bg-white text-[#174ae8] shadow-sm"
-                  : "text-white hover:bg-white/10"
-              }`}
-            >
-              Page 06 Events
-            </button>
-          </div>
+        <div>
+          <span className="rounded-full border border-white/40 bg-white/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-white">
+            Pages 05 &amp; 06
+          </span>
+          <h2 className="mt-3 font-display-title text-5xl font-black tracking-tight text-white sm:text-7xl lg:text-8xl">
+            SUB-EVENTS
+          </h2>
+          <p className="mt-3 max-w-xl text-base text-white/90 sm:text-lg">
+            All 10 official sub-events, locked in one after another. Keep scrolling to step through every one, then hit Register on the one you want.
+          </p>
         </div>
+      </section>
 
-        {/* Vertical Timeline Layout Recreating Pages 05 & 06 */}
-        <div className="relative mt-16 pl-6 sm:pl-10 md:pl-16">
-          {/* Vertical White Timeline Rule */}
-          <div className="absolute top-4 bottom-4 left-2 sm:left-4 md:left-6 w-[2px] bg-white/40" />
+      {/* Scroll-Locked Fan — this wrapper is tall (10 viewport-heights), and
+          the fan pins in place (position: sticky) while it scrolls past, so
+          every event has to be stepped through before the page moves on to
+          the next section below. */}
+      <div ref={eventsScrollRef} style={{ height: `${subEvents.length * 70}vh` }} className="relative">
+        <div className="sticky top-0 flex h-screen items-center px-4 sm:px-8">
+          <div className="mx-auto w-full max-w-[1400px]">
+            <div className="mb-6 text-center font-mono text-xs font-bold uppercase tracking-wider text-white/70">
+              Keep scrolling to move through all {subEvents.length} events
+            </div>
 
-          <div className="space-y-12 sm:space-y-16">
-            {displayedEvents.map((item, idx) => (
-              <Link
-                key={item.id}
-                href={`/events/${item.slug}`}
-                className="group relative block"
-              >
-                {/* Timeline Tick / Marker */}
-                <div className="absolute -left-[23px] sm:-left-[31px] md:-left-[47px] top-6 flex h-6 w-6 items-center justify-center">
-                  <div className="h-3.5 w-3.5 rounded-full border-2 border-[#174ae8] bg-white shadow-[0_0_0_4px_rgba(255,255,255,0.3)] transition-transform group-hover:scale-125" />
-                </div>
-
-                {/* Event Card Row */}
-                <div className="program-card grid gap-6 rounded-3xl border-2 border-white/30 bg-white/5 p-6 backdrop-blur-xs transition hover:border-white hover:bg-white/15 sm:p-8 lg:grid-cols-12 lg:gap-10">
-                  {/* Left Column: White Outline Badge Pill */}
-                  <div className="lg:col-span-5 flex flex-col justify-center">
-                    <div className="flex items-center justify-between gap-3 mb-3">
-                      <span className="font-mono text-xs font-black tracking-widest text-white/70">
-                        EVENT {String(idx + 1).padStart(2, "0")} · PAGE {item.pageNumber}
-                      </span>
-                      <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
-                        {item.category}
-                      </span>
-                    </div>
-
-                    {/* Official Custom Typographic Badge in White Rounded Card */}
-                    <div className="flex min-h-[96px] w-full items-center justify-center rounded-2xl border-2 border-white bg-[#174ae8] p-4 text-center shadow-md transition-transform group-hover:scale-[1.02] group-hover:bg-[#1f54fa]">
-                      <SubEventBadge slug={item.slug} />
-                    </div>
-                  </div>
-
-                  {/* Right Column: Exact Program Text Description */}
-                  <div className="lg:col-span-7 flex flex-col justify-between">
-                    <div>
-                      <p className="text-base leading-relaxed text-white sm:text-lg">
-                        {item.description}
-                      </p>
-
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {item.skills.map((skill) => (
-                          <span
-                            key={skill}
-                            className="rounded-full border border-white/25 bg-white/10 px-3 py-0.5 text-xs text-white/90"
-                          >
-                            {skill}
+            <div className="h-[520px] lg:h-[560px]">
+              <AccordionGallery
+                activeIndex={activeEventIndex}
+                onSelect={setActiveEventIndex}
+                className="h-full flex-col lg:flex-row"
+                items={subEvents.map((item, idx) => {
+                  const isActive = idx === activeEventIndex;
+                  return {
+                    content: (
+                      <div
+                        className={`h-full w-full border-2 transition-colors duration-300 ${
+                          isActive
+                            ? "border-white bg-[#EB547C]"
+                            : "border-white/30 bg-white/5 hover:border-white/70 hover:bg-white/10"
+                        }`}
+                      >
+                        {isActive ? (
+                          /* Expanded content */
+                          <div className="flex h-full flex-col p-6 sm:p-8">
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="font-mono text-xs font-black tracking-widest text-[#282828]">
+                            PAGE {item.pageNumber} · {item.category}
                           </span>
-                        ))}
-                      </div>
-                    </div>
+                          <span className="font-mono text-xs font-bold text-[#282828]/70">
+                            Event {String(idx + 1).padStart(2, "0")} of {subEvents.length}
+                          </span>
+                        </div>
 
-                    <div className="mt-6 flex items-center justify-between border-t border-white/20 pt-4 text-xs font-semibold text-white/80">
-                      <span className="flex items-center gap-1.5">
-                        <Calendar className="h-3.5 w-3.5" />
-                        {item.timing}
-                      </span>
-                      <span className="flex items-center gap-1 font-bold text-white group-hover:underline">
-                        View Event Details &amp; Rules
-                        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
+                        <div className="mt-4 flex min-h-[88px] w-full items-center justify-center rounded-2xl border-2 border-[#282828] bg-[#2074D5] p-4 text-center">
+                          <SubEventBadge slug={item.slug} />
+                        </div>
+
+                        <p className="mt-5 text-base leading-relaxed text-[#282828] sm:text-lg">
+                          {item.description}
+                        </p>
+
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {item.skills.map((skill) => (
+                            <span
+                              key={skill}
+                              className="rounded-full border border-[#282828]/20 bg-white/60 px-3 py-0.5 text-xs text-[#282828]"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className="mt-auto flex flex-col gap-3 border-t border-[#282828]/20 pt-4 sm:flex-row sm:items-center sm:justify-between">
+                          <span className="flex items-center gap-1.5 text-xs font-semibold text-[#282828]/80">
+                            <Calendar className="h-3.5 w-3.5" />
+                            {item.timing}
+                          </span>
+                          <div className="flex flex-wrap items-center gap-3">
+                            <Link
+                              href={`/events/${item.slug}`}
+                              className="group/link flex shrink-0 items-center gap-1 text-xs font-bold text-[#282828] hover:underline"
+                            >
+                              View Details &amp; Rules
+                              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-1" />
+                            </Link>
+                            <Link
+                              href="/register"
+                              className="flex shrink-0 items-center gap-2 rounded-full border-2 border-[#282828] bg-[#F9D47B] px-5 py-2 text-xs font-bold uppercase tracking-wider text-[#282828] shadow-[3px_3px_0px_#282828] transition hover:scale-105 hover:bg-[#ffe17d]"
+                            >
+                              Register Now
+                              <ArrowRight className="h-3.5 w-3.5" />
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      /* Collapsed spine: just the number + name, legible at any size */
+                      <div className="flex h-full w-full items-center gap-3 px-5 lg:flex-col lg:justify-between lg:gap-4 lg:px-0 lg:py-6">
+                        <span className="font-mono text-xs font-black text-[#F9D47B]">
+                          {String(idx + 1).padStart(2, "0")}
+                        </span>
+                        <span className="font-display-title text-base font-black uppercase tracking-tight text-white lg:[writing-mode:vertical-rl]">
+                          {item.name}
+                        </span>
+                      </div>
+                    )}
+                      </div>
+                    ),
+                  };
+                })}
+              />
+            </div>
           </div>
         </div>
+      </div>
 
+      <section className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 pt-4 pb-4 sm:px-8">
         {/* Page Footer Markers */}
-        <PageFooterTimeline
-          pageNumber={activeSubEventTab === "06" ? "06" : "05"}
-        />
+        <PageFooterTimeline pageNumber={subEvents[activeEventIndex].pageNumber} />
       </section>
 
       {/* =========================================================================
-          SECTION 5: SUMMIT HIGHLIGHTS & IMPACT
+          SECTION 5: SUMMIT HIGHLIGHTS & OUR IMPACT (Why Sponsor Us)
           ========================================================================= */}
       <section
         id="impact"
@@ -382,57 +437,62 @@ export default function HomePage() {
       >
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           <div>
-            <span className="rounded-full border border-white/40 bg-white/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-white">
-              Why Sponsor &amp; Partner
-            </span>
-            <h2 className="mt-4 font-display-title text-4xl font-black tracking-tight text-white sm:text-6xl">
-              Our Impact &amp; Footprint
+            <div className="flex items-center gap-2">
+              <span className="rounded-full border border-white/40 bg-white/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-white">
+                Brochure Page 07 · Impact
+              </span>
+              <span className="font-mono text-sm font-bold text-[#EB547C] italic">
+                Why Sponsor Us
+              </span>
+            </div>
+            <h2 className="mt-4 font-display-title text-4xl font-black tracking-tight text-white sm:text-6xl uppercase">
+              OUR IMPACT
             </h2>
-            <p className="mt-4 text-lg leading-relaxed text-white/85">
+            <p className="mt-4 text-lg leading-relaxed text-white/90">
               The Equinox connects the brightest engineering and business minds with early-stage venture ecosystems. Sponsoring Equinox places your brand at the epicentre of student entrepreneurship across southern India.
             </p>
 
             <div className="mt-8 space-y-4">
               <div className="rounded-2xl border border-white/25 bg-white/10 p-5">
-                <h4 className="font-bold text-white text-lg">Direct Campus Engagement</h4>
-                <p className="mt-1 text-sm text-white/80">
-                  Direct visibility before 1,000+ top engineering and MBA students, coders, and startup innovators.
+                <h4 className="font-bold text-[#F9D47B] text-lg">Direct Campus Engagement</h4>
+                <p className="mt-1 text-sm text-white/85">
+                  Direct visibility before 2,000+ top engineering and MBA students, coders, and startup innovators.
                 </p>
               </div>
 
               <div className="rounded-2xl border border-white/25 bg-white/10 p-5">
-                <h4 className="font-bold text-white text-lg">Talent &amp; Startup Scouting</h4>
-                <p className="mt-1 text-sm text-white/80">
+                <h4 className="font-bold text-[#F9D47B] text-lg">Talent &amp; Startup Scouting</h4>
+                <p className="mt-1 text-sm text-white/85">
                   Immediate access to hiring pipelines via Internship Drive and pre-screened student ventures in Pitch Deck and Startup Expo.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Big Number Editorial Blocks */}
+          {/* Distinct "Why Sponsor Us" Stats (2,000+ Footfall, 600+ Participants distinct) */}
           <div className="grid grid-cols-2 gap-4 sm:gap-6">
-            <div className="rounded-3xl border-2 border-white bg-white p-8 text-[#0d0e15] shadow-xl">
-              <span className="font-mono text-xs font-bold uppercase text-[#174ae8]">Official</span>
-              <p className="mt-2 font-mono text-5xl font-black sm:text-6xl">10</p>
-              <p className="mt-2 font-bold text-base">Flagship Sub-Events</p>
+            <div className="rounded-3xl border-2 border-white bg-white p-8 text-[#282828] shadow-xl">
+              <span className="font-mono text-xs font-black uppercase text-[#2074D5]">Audience Reach</span>
+              <p className="mt-2 font-mono text-5xl font-black text-[#2074D5] sm:text-6xl">2,000+</p>
+              <p className="mt-2 font-bold text-base text-[#282828]">Footfall</p>
             </div>
 
             <div className="rounded-3xl border-2 border-white/60 bg-white/10 p-8 backdrop-blur-xs">
-              <span className="font-mono text-xs font-bold uppercase text-white/70">Duration</span>
-              <p className="mt-2 font-mono text-5xl font-black text-white sm:text-6xl">2</p>
-              <p className="mt-2 font-bold text-white text-base">Full Summit Days</p>
+              <span className="font-mono text-xs font-black uppercase text-[#F9D47B]">Active Delegates</span>
+              <p className="mt-2 font-mono text-5xl font-black text-[#F9D47B] sm:text-6xl">600+</p>
+              <p className="mt-2 font-bold text-white text-base">Participants</p>
             </div>
 
             <div className="rounded-3xl border-2 border-white/60 bg-white/10 p-8 backdrop-blur-xs">
-              <span className="font-mono text-xs font-bold uppercase text-white/70">Scale</span>
-              <p className="mt-2 font-mono text-5xl font-black text-white sm:text-6xl">1K+</p>
-              <p className="mt-2 font-bold text-white text-base">Attendees &amp; Builders</p>
+              <span className="font-mono text-xs font-black uppercase text-[#F9D47B]">Ecosystem</span>
+              <p className="mt-2 font-mono text-5xl font-black text-[#F9D47B] sm:text-6xl">15+</p>
+              <p className="mt-2 font-bold text-white text-base">Startups</p>
             </div>
 
-            <div className="rounded-3xl border-2 border-white bg-white p-8 text-[#0d0e15] shadow-xl">
-              <span className="font-mono text-xs font-bold uppercase text-[#174ae8]">Network</span>
-              <p className="mt-2 font-mono text-5xl font-black sm:text-6xl">50+</p>
-              <p className="mt-2 font-bold text-base">Partner E-Cells</p>
+            <div className="rounded-3xl border-2 border-white bg-white p-8 text-[#282828] shadow-xl">
+              <span className="font-mono text-xs font-black uppercase text-[#EB547C]">Competitions</span>
+              <p className="mt-2 font-mono text-5xl font-black text-[#EB547C] sm:text-6xl">10</p>
+              <p className="mt-2 font-bold text-base text-[#282828]">Sub-Events</p>
             </div>
           </div>
         </div>
@@ -450,7 +510,7 @@ export default function HomePage() {
       >
         {/* Dark Editorial Heading Replicating Page 12 */}
         <div className="max-w-3xl">
-          <h2 className="font-display-title text-6xl font-black tracking-tighter text-[#0d0e15] drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)] sm:text-7xl lg:text-8xl">
+          <h2 className="font-display-title text-6xl font-black tracking-tighter text-[#282828] drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)] sm:text-7xl lg:text-8xl">
             Contact Us
           </h2>
           <p className="mt-6 text-lg leading-relaxed text-white/95 sm:text-xl font-medium">
@@ -458,9 +518,9 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* Student Coordinators from Page 12 */}
+        {/* Student Coordinators from Page 12 (Updated: Sanjana, Adithya, Mahith, Yashashri) */}
         <div className="mt-12">
-          <h3 className="font-mono text-sm font-black uppercase tracking-wider text-white/80">
+          <h3 className="font-mono text-sm font-black uppercase tracking-wider text-[#F9D47B]">
             {contact.subheading}
           </h3>
           <p className="mt-1 font-bold text-xl text-white">Student Coordinators</p>
@@ -470,17 +530,17 @@ export default function HomePage() {
               <a
                 key={coordinator.name}
                 href={`tel:${coordinator.phoneRaw}`}
-                className="program-card group flex items-center justify-between rounded-2xl border-2 border-white/40 bg-white/10 p-5 backdrop-blur-xs transition hover:border-white hover:bg-white hover:text-[#174ae8]"
+                className="program-card group flex items-center justify-between rounded-2xl border-2 border-white/40 bg-white/10 p-5 backdrop-blur-xs transition hover:border-[#F9D47B] hover:bg-white hover:text-[#2074D5]"
               >
                 <div>
-                  <p className="font-bold text-lg text-white group-hover:text-[#174ae8]">
+                  <p className="font-bold text-lg text-white group-hover:text-[#2074D5]">
                     {coordinator.name}
                   </p>
-                  <p className="font-mono text-sm text-white/80 group-hover:text-[#0d0e15]">
+                  <p className="font-mono text-sm text-[#F9D47B] group-hover:text-[#282828] font-semibold">
                     {coordinator.phone}
                   </p>
                 </div>
-                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-current">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-current text-[#F9D47B] group-hover:text-[#2074D5]">
                   <Phone className="h-4 w-4" />
                 </div>
               </a>
@@ -494,7 +554,7 @@ export default function HomePage() {
             {/* Email & Website */}
             <div className="space-y-6">
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#174ae8]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#2074D5]">
                   <Mail className="h-5 w-5" />
                 </div>
                 <div>
@@ -511,7 +571,7 @@ export default function HomePage() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#174ae8]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#2074D5]">
                   <Globe className="h-5 w-5" />
                 </div>
                 <div>
@@ -532,7 +592,7 @@ export default function HomePage() {
 
             {/* Address */}
             <div className="flex items-start gap-4 border-t border-white/20 pt-6 lg:border-t-0 lg:border-l lg:pl-8 lg:pt-0">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#174ae8]">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#2074D5]">
                 <MapPin className="h-5 w-5" />
               </div>
               <div>
@@ -557,7 +617,7 @@ export default function HomePage() {
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-xs font-bold text-white transition hover:bg-white hover:text-[#174ae8]"
+                  className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-xs font-bold text-white transition hover:bg-white hover:text-[#2074D5]"
                 >
                   {social.platform === "Instagram" && (
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">

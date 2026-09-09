@@ -68,7 +68,7 @@ export function ChatInput({
           ref={buttonRef}
           type="submit"
           disabled={!text.trim() || disabled}
-          className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-[#174ae8] shadow-md transition hover:bg-white/90 disabled:opacity-40 disabled:hover:bg-white"
+          className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-[#2074d5] shadow-md transition hover:bg-white/90 disabled:opacity-40 disabled:hover:bg-white"
           aria-label="Send query"
         >
           <Send className="h-4 w-4" />

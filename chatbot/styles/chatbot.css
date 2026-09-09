@@ -2,11 +2,11 @@
 /* Scoped styles for the Equinox 2026 self-contained chatbot overlay */
 
 .equinox-chatbot-root {
-  --eq-blue: #174ae8;
+  --eq-blue: #2074d5;
   --eq-blue-hover: #1f54fa;
   --eq-blue-deep: #0c2b94;
   --eq-blue-dark: #071a5c;
-  --eq-black: #0d0e15;
+  --eq-black: #282828;
   --eq-white: #ffffff;
   --eq-border: rgba(255, 255, 255, 0.35);
   --eq-glass: rgba(23, 74, 232, 0.94);
