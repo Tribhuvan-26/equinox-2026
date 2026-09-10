@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { SubEventInfo, OFFICIAL_COORDINATORS } from "../data/events";
-import { X, Calendar, MapPin, Award, Users, Phone, ArrowLeft } from "lucide-react";
+import { X, Calendar, MapPin, Award, Users, Phone, ArrowLeft, ArrowRight } from "lucide-react";
 
 interface EventDetailProps {
   event: SubEventInfo | null;
@@ -135,13 +136,20 @@ export function EventDetail({ event, onClose }: EventDetailProps) {
       </div>
 
       {/* Footer */}
-      <div className="border-t border-white/20 bg-[#0c2b94] p-3 text-center">
+      <div className="border-t border-white/20 bg-[#0c2b94] p-3 space-y-2 text-center">
+        <Link
+          href={`/events/${event.slug}`}
+          onClick={onClose}
+          className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-white bg-white py-2 text-xs font-bold text-[#174ae8] shadow-md transition hover:bg-white/90"
+        >
+          <span>Open {event.name} Page &amp; Experience Animation</span>
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
         <a
           href="#contact"
-          onClick={onClose}
-          className="inline-flex w-full items-center justify-center rounded-xl border-2 border-white bg-white py-2 text-xs font-bold text-[#2074d5] shadow-md transition hover:bg-white/90"
+          className="inline-flex w-full items-center justify-center rounded-xl border border-white/40 bg-white/10 py-1.5 text-[11px] font-medium text-white/90 transition hover:bg-white/20"
         >
-          Enquire / Hold Slot for {event.name}
+          Enquire / Hold Slot
         </a>
       </div>
     </div>

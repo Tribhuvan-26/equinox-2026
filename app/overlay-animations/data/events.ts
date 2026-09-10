@@ -38,12 +38,12 @@ export const OVERLAY_EVENTS: Record<string, OverlayEventMetadata> = {
     id: "brand-battles",
     title: "Brand Battles",
   },
-  "internship-drive": {
-    id: "internship-drive",
-    title: "Internship Drive",
-  },
   "e-cell-meet": {
     id: "e-cell-meet",
     title: "E-Cell Meet",
+  },
+  "internship-drive": {
+    id: "internship-drive",
+    title: "Internship Drive",
   },
 };

@@ -28,6 +28,7 @@ export const SUB_EVENTS = [
 ] as const;
 
 const DEFAULT_QUICK_ACTIONS = [
+  "E-Cell Meet",
   "Hustle Mania",
   "Startup Poly",
   "IPL Auction",
@@ -41,6 +42,7 @@ const INITIAL_MESSAGE: MessageData = {
   text: "Welcome to **The Equinox 2.0**!\n\nI am your interactive event assistant, grounded directly in the official event program. Ask me about any of our **10 sub-events**, confirmed dates (**30 - 31 OCT**), MLRIT venue, or coordinators!",
   suggestions: [
     "Events",
+    "E-Cell Meet",
     "Tell me about Hustle Mania",
     "What is Startup Poly?",
     "How does IPL Auction work?",
