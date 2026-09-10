@@ -1,0 +1,243 @@
+<svg viewBox="0 0 1024 576" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Internship Drive Poster - The Equinox 2026">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Syne:wght@800;900&amp;family=Space+Grotesk:wght@700;800;900&amp;display=swap');
+
+      * { box-sizing: border-box; }
+      .font-display {
+        font-family: 'Syne', 'Arial Black', Impact, sans-serif;
+        text-transform: uppercase;
+      }
+      .font-mono-bold {
+        font-family: 'Space Grotesk', 'Courier New', monospace;
+        text-transform: uppercase;
+      }
+      .font-sans-bold {
+        font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+    </style>
+  </defs>
+
+  <!-- Static Solid Cream / Beige Background (#F5ECD9) -->
+  <rect width="1024" height="576" fill="#F5ECD9" />
+
+  <!-- Background Accent Dots -->
+  <circle id="dotPink" cx="95" cy="55" r="14" fill="#EC1E79" />
+  <circle id="dotYellow" cx="960" cy="75" r="14" fill="#F5A623" />
+
+  <!-- 1. Top Badge: Yellow Dot & Meta Info -->
+  <g id="topBadgeGroup">
+    <circle cx="70" cy="80" r="14" fill="#E9B74B" />
+    <text
+      x="96"
+      y="86"
+      class="font-mono-bold"
+      font-weight="900"
+      font-size="15"
+      letter-spacing="0.12em"
+      fill="#111A35"
+    >THE EQUINOX 2.0 &#183; 30-31 OCT &#183; MLRIT</text>
+  </g>
+
+  <!-- 2. Hero Headline -->
+  <g id="headlineGroup">
+    <text
+      id="headlineInternship"
+      x="60"
+      y="195"
+      class="font-display"
+      font-weight="900"
+      font-size="96"
+      letter-spacing="-0.02em"
+      fill="#121315"
+    >INTERNSHIP</text>
+
+    <text
+      id="headlineDrive"
+      x="60"
+      y="305"
+      class="font-display"
+      font-weight="900"
+      font-size="98"
+      letter-spacing="-0.02em"
+      fill="#1255DB"
+    >DRIVE</text>
+
+    <text
+      id="headlineSubtitle"
+      x="60"
+      y="346"
+      class="font-sans-bold"
+      font-weight="800"
+      font-size="24"
+      letter-spacing="0.02em"
+      fill="#121315"
+    >Connect. Intern. Grow.</text>
+  </g>
+
+  <!-- 3. Icon Sequence with Connector Lines -->
+  <g id="iconProcessSequence">
+    <!-- Connector Lines -->
+    <line
+      x1="128"
+      y1="402"
+      x2="190"
+      y2="402"
+      stroke="#0A1839"
+      stroke-width="2.5"
+      stroke-dasharray="6 4"
+    />
+    <line
+      x1="262"
+      y1="402"
+      x2="324"
+      y2="402"
+      stroke="#0A1839"
+      stroke-width="2.5"
+      stroke-dasharray="6 4"
+    />
+
+    <!-- Connect -->
+    <g id="iconGroupConnect">
+      <circle cx="92" cy="402" r="34" fill="#165AE3" />
+      <g transform="translate(92, 402)">
+        <path d="M -16 -4 L -4 -14 L 10 -2 L 16 4 L 8 12 L -2 2 L -10 8 Z" fill="#FFFFFF" />
+        <path d="M -12 2 L -2 -8 L 6 -8 L 16 2 L 10 8 L 2 0 L -6 8 Z" fill="#FFFFFF" />
+      </g>
+    </g>
+    <text
+      x="92"
+      y="455"
+      text-anchor="middle"
+      class="font-mono-bold"
+      font-weight="900"
+      font-size="15"
+      letter-spacing="0.1em"
+      fill="#0A1839"
+    >CONNECT</text>
+
+    <!-- Intern -->
+    <g id="iconGroupIntern">
+      <circle cx="226" cy="402" r="34" fill="#F5A623" />
+      <g transform="translate(226, 402)">
+        <rect x="-16" y="-6" width="32" height="22" rx="4" fill="#0A1839" />
+        <rect x="-8" y="-14" width="16" height="10" rx="3" fill="none" stroke="#0A1839" stroke-width="3.5" />
+        <rect x="-4" y="-3" width="8" height="6" rx="1.5" fill="#F5A623" />
+        <line x1="-16" y1="0" x2="16" y2="0" stroke="#0A1839" stroke-width="1.5" />
+      </g>
+    </g>
+    <text
+      x="226"
+      y="455"
+      text-anchor="middle"
+      class="font-mono-bold"
+      font-weight="900"
+      font-size="15"
+      letter-spacing="0.1em"
+      fill="#0A1839"
+    >INTERN</text>
+
+    <!-- Grow -->
+    <g id="iconGroupGrow">
+      <circle cx="360" cy="402" r="34" fill="#EC4577" />
+      <g transform="translate(360, 402)">
+        <polyline
+          points="-16,10 -4,-2 4,6 18,-10"
+          fill="none"
+          stroke="#FFFFFF"
+          stroke-width="5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <polygon points="18,-10 6,-10 18,2" fill="#FFFFFF" />
+      </g>
+    </g>
+    <text
+      x="360"
+      y="455"
+      text-anchor="middle"
+      class="font-mono-bold"
+      font-weight="900"
+      font-size="15"
+      letter-spacing="0.1em"
+      fill="#0A1839"
+    >GROW</text>
+  </g>
+
+  <!-- 4. Ground Line & Characters -->
+  <line x1="515" y1="470" x2="975" y2="470" stroke="#0D1A3B" stroke-width="2.5" />
+
+  <!-- Businessman -->
+  <g id="businessmanGroup">
+    <path d="M 590 170 Q 645 150 675 170 L 710 240 L 665 345 L 575 345 L 560 240 Z" fill="#0A1839" />
+    <polygon points="636,155 645,180 655,155" fill="#FFFFFF" />
+    <polygon points="643,165 647,165 649,205 641,205" fill="#060E21" />
+
+    <circle cx="645" cy="148" r="22" fill="#F8EDDA" />
+    <path
+      d="M 625 145 C 610 115 635 90 670 90 C 700 90 710 110 705 138 C 700 128 680 122 665 128 C 640 138 635 170 625 145 Z"
+      fill="#0A1839"
+    />
+
+    <path d="M 575 180 Q 560 230 575 280" fill="none" stroke="#0A1839" stroke-width="26" stroke-linecap="round" />
+    <rect x="560" y="275" width="46" height="52" rx="6" fill="#060E21" />
+    <path d="M 575 275 L 575 264 Q 575 260 583 260 L 591 260 Q 599 260 599 264 L 599 275" fill="none" stroke="#060E21" stroke-width="4" />
+    <ellipse cx="587" cy="275" rx="8" ry="6" fill="#F8EDDA" />
+
+    <path d="M 655 180 Q 695 210 725 235" fill="none" stroke="#0A1839" stroke-width="28" stroke-linecap="round" />
+    <path d="M 720 228 Q 732 225 740 232 Q 745 237 738 244 Q 726 244 720 238 Z" fill="#F8EDDA" />
+
+    <path d="M 575 345 L 615 345 L 585 455 L 550 455 Z" fill="#0A1839" />
+    <path d="M 545 455 L 595 455 L 605 470 L 545 470 Z" fill="#0A1839" />
+    <path d="M 625 345 L 665 345 L 690 455 L 650 455 Z" fill="#0A1839" />
+    <path d="M 645 455 L 695 455 L 705 470 L 645 470 Z" fill="#0A1839" />
+  </g>
+
+  <!-- Student -->
+  <g id="studentGroup">
+    <path d="M 855 175 C 895 175 905 210 905 250 C 905 285 885 295 860 295 L 855 175 Z" fill="#F5A623" />
+    <circle cx="875" cy="190" r="14" fill="#E9B74B" />
+
+    <path d="M 780 185 Q 825 170 860 185 L 875 255 L 850 345 L 775 345 L 760 255 Z" fill="#165AE3" />
+
+    <circle cx="820" cy="155" r="22" fill="#F8EDDA" />
+    <path
+      d="M 840 150 C 855 120 830 95 795 95 C 765 95 755 115 760 142 C 765 132 785 126 800 132 C 825 142 830 175 840 150 Z"
+      fill="#0A1839"
+    />
+
+    <path d="M 855 195 Q 875 240 855 285" fill="none" stroke="#165AE3" stroke-width="24" stroke-linecap="round" />
+    <polygon points="825,235 880,225 870,295 815,305" fill="#FFFFFF" stroke="#DFE6F2" stroke-width="1.5" />
+    <ellipse cx="835" cy="285" rx="8" ry="6" fill="#F8EDDA" />
+
+    <path d="M 785 195 Q 755 220 735 235" fill="none" stroke="#165AE3" stroke-width="26" stroke-linecap="round" />
+    <path d="M 742 230 Q 732 225 726 232 Q 722 238 728 244 Q 738 244 744 238 Z" fill="#F8EDDA" />
+
+    <path d="M 775 345 L 815 345 L 805 450 L 765 450 Z" fill="#165AE3" />
+    <path d="M 760 450 L 800 450 L 800 464 L 755 464 Z" fill="#165AE3" />
+    <rect x="750" y="464" width="55" height="6" rx="2" fill="#FFFFFF" stroke="#0D1A3B" stroke-width="1.5" />
+
+    <path d="M 825 345 L 860 345 L 905 445 L 870 445 Z" fill="#165AE3" />
+    <path d="M 870 445 L 905 445 L 920 464 L 880 464 Z" fill="#165AE3" />
+    <rect x="880" y="464" width="45" height="6" rx="2" fill="#FFFFFF" stroke="#0D1A3B" stroke-width="1.5" />
+  </g>
+
+  <!-- Handshake Clasp -->
+  <g id="handshakeClasp">
+    <path d="M 720 228 Q 735 220 746 232 Q 748 238 740 245 Q 728 246 720 238 Z" fill="#F8EDDA" stroke="#0A1839" stroke-width="1.5" />
+    <path d="M 730 228 L 736 242 M 735 229 L 741 241" stroke="#0A1839" stroke-width="1.5" stroke-linecap="round" />
+  </g>
+
+  <!-- 5. Bottom Stats Bar -->
+  <g id="statsBarGroup">
+    <rect x="14" y="495" width="996" height="48" rx="24" fill="#131314" />
+    <g class="font-sans-bold" font-weight="900" font-size="18" fill="#FFFFFF">
+      <text x="285" y="526" text-anchor="middle">50+ Companies</text>
+      <circle cx="395" cy="519" r="4" fill="#FFFFFF" />
+      <text x="505" y="526" text-anchor="middle">500+ Students</text>
+      <circle cx="615" cy="519" r="4" fill="#FFFFFF" />
+      <text x="735" y="526" text-anchor="middle">Free Registration</text>
+    </g>
+    <circle id="statsDotPink" cx="975" cy="519" r="9" fill="#EA3F74" />
+  </g>
+</svg>
