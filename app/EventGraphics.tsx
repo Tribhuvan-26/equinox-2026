@@ -110,10 +110,10 @@ export function CoverPopUpArt({ className = "" }: { className?: string }) {
             <polygon points="410,190 310,195 310,400 430,390" fill="#ffffff" stroke="#282828" strokeWidth="4" strokeLinejoin="round" />
 
             {/* Center Spine Vertical Banner: E-SUMMIT */}
-            <rect x="235" y="180" width="65" height="215" fill="#7484FE" stroke="#282828" strokeWidth="4" />
+            <rect x="235" y="180" width="58" height="215" fill="#7484FE" stroke="#282828" strokeWidth="4" />
             <text
-              x="-375"
-              y="280"
+              x="-390"
+              y="278"
               transform="rotate(-90)"
               fill="#282828"
               fontFamily="system-ui, sans-serif"

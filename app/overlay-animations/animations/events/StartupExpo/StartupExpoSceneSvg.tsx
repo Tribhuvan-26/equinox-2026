@@ -45,7 +45,7 @@ export const StartupExpoSceneSvg = React.forwardRef<SVGSVGElement, StartupExpoSc
 
         {/* BASE BACKGROUND */}
         <g id="background-base">
-          <rect width="1672" height="941" fill="var(--equinox-dark)" />
+          <rect width="1672" height="941" fill="none" />
         </g>
 
         {/* SIDE BANNERS (Right Column banner asset matching left date-tag column) */}
