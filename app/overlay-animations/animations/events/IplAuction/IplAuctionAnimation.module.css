@@ -1,4 +1,5 @@
 /* app/overlay-animations/animations/events/IplAuction/IplAuctionAnimation.module.css */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&display=swap');
 
 .overlayContainer {
   position: fixed;
@@ -6,9 +7,144 @@
   width: 100vw;
   height: 100vh;
   z-index: 99999;
-  background-color: #2074D5;
+  background: rgba(10, 16, 30, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
   overflow: hidden;
   user-select: none;
   pointer-events: auto;
-  opacity: 0;
+}
+
+/* 16:9 aspect-ratio responsive stage frame */
+.stageFrame {
+  position: relative;
+  width: 100%;
+  max-width: 1400px;
+  max-height: 88vh;
+  aspect-ratio: 16 / 9;
+  border-radius: 18px;
+  overflow: hidden;
+  background-color: #F5EFE3;
+  box-shadow:
+    0 25px 60px -15px rgba(0, 0, 0, 0.6),
+    0 0 0 1.5px rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sceneSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background-color: #F5EFE3;
+}
+
+.sceneSvg text {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* =========================================================================
+   BUDGET BADGE (Pure HTML rounded pill)
+   "BUDGET ₹120 CR PER TEAM"
+   ========================================================================= */
+.budgetBadge {
+  position: absolute;
+  top: 22.8%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1A5FE0;
+  border-radius: 9999px;
+  padding: 0.45rem 1.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  font-weight: 800;
+  font-size: clamp(0.72rem, 1.45vw, 1.25rem);
+  letter-spacing: 0.07em;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(26, 95, 224, 0.32);
+  pointer-events: none;
+  z-index: 20;
+}
+
+.badgeWhite {
+  color: #FFFFFF;
+}
+
+.badgeGold {
+  color: #F5C863;
+  font-weight: 900;
+}
+
+/* =========================================================================
+   SKIP BUTTON
+   ========================================================================= */
+.skipButton {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(17, 24, 39, 0.9);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-family: 'Space Grotesk', monospace, sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.skipButton:hover {
+  background: #1A5FE0;
+  border-color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.skipButton:active {
+  transform: translateY(0);
+}
+
+/* =========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================= */
+@media (max-width: 768px) {
+  .overlayContainer {
+    padding: 0.75rem;
+  }
+
+  .stageFrame {
+    border-radius: 12px;
+    max-height: 92vh;
+  }
+
+  .budgetBadge {
+    top: 23%;
+    padding: 0.3rem 1rem;
+    font-size: 0.65rem;
+  }
+
+  .skipButton {
+    top: 12px;
+    right: 14px;
+    padding: 6px 12px;
+    font-size: 10px;
+  }
 }

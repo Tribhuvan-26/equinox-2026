@@ -1,0 +1,139 @@
+/* app/overlay-animations/animations/events/ECellMeet/ECellMeetAnimation.module.css */
+
+.overlayContainer {
+  --cream: #F5ECD9;
+  --navy: #0A1F44;
+  --blue: #2354E6;
+  --gold: #F2B338;
+  --pink: #E8447A;
+  --black: #111111;
+  --white: #FFFFFF;
+
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  background-color: var(--cream, #F5ECD9);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  pointer-events: auto;
+  opacity: 0;
+}
+
+.stageSvg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Subtle paper texture overlay */
+.paperNoise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.12;
+  mix-blend-mode: multiply;
+}
+
+/* Skip button */
+.skipButton {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--navy, #0A1F44);
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 2px solid var(--navy, #0A1F44);
+  border-radius: 9999px;
+  cursor: pointer;
+  box-shadow: 2px 2px 0px var(--navy, #0A1F44);
+  backdrop-filter: blur(8px);
+  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  pointer-events: auto;
+}
+
+.skipButton:hover {
+  background-color: var(--white, #ffffff);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px var(--navy, #0A1F44);
+}
+
+.skipButton:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px var(--navy, #0A1F44);
+}
+
+/* Transform Origins for physical believable motion in 1024x576 coordinates */
+.leftBannerStand {
+  transform-origin: 127px 25px;
+}
+
+.rightIdBadge {
+  transform-origin: 935px 0px;
+}
+
+.chalkboardEasel {
+  transform-origin: 900px 520px;
+}
+
+.mainTitleGroup {
+  transform-origin: 512px 100px;
+}
+
+.studentLeftGroup {
+  transform-origin: 390px 576px;
+}
+
+.studentRightGroup {
+  transform-origin: 640px 576px;
+}
+
+.cardInteractionGroup {
+  transform-origin: 530px 390px;
+}
+
+.cardFocusSparks {
+  transform-origin: 528px 360px;
+}
+
+.megaphoneGroup {
+  transform-origin: 74px 450px;
+}
+
+.megaphoneSoundRays {
+  transform-origin: 155px 395px;
+}
+
+.boothGroup {
+  transform-origin: 232px 360px;
+}
+
+.rightBoardGroup {
+  transform-origin: 850px 310px;
+}
+
+.decorationsGroup {
+  transform-origin: 512px 400px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlayContainer {
+    transition: opacity 0.2s ease-in-out;
+  }
+}
