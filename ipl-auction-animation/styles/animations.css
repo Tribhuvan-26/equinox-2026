@@ -1,0 +1,143 @@
+/* ==========================================================================
+   IPL Auction Animation Keyframes & Bindings
+   All timing, easing, and keyframes are isolated here.
+   ========================================================================== */
+
+/* 1. Hanging Pennants Sway */
+@keyframes sway {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(1.5deg);
+  }
+}
+
+#banner-left {
+  transform-origin: 100px 30px;
+  animation: sway 4s ease-in-out infinite;
+}
+
+#banner-right {
+  transform-origin: 1100px 30px;
+  animation: sway 4s ease-in-out infinite reverse;
+}
+
+/* 2. Team Slots Sequential Pop-In */
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.team-slot {
+  transform-origin: center;
+  animation: popIn 0.5s ease-out both;
+}
+
+.team-slot:nth-child(1),
+.team-slot-pos:nth-child(1) .team-slot,
+.team-slot[data-team="1"] {
+  animation-delay: 0.05s;
+}
+
+.team-slot:nth-child(2),
+.team-slot-pos:nth-child(2) .team-slot,
+.team-slot[data-team="2"] {
+  animation-delay: 0.10s;
+}
+
+.team-slot:nth-child(3),
+.team-slot-pos:nth-child(3) .team-slot,
+.team-slot[data-team="3"] {
+  animation-delay: 0.15s;
+}
+
+.team-slot:nth-child(4),
+.team-slot-pos:nth-child(4) .team-slot,
+.team-slot[data-team="4"] {
+  animation-delay: 0.20s;
+}
+
+.team-slot:nth-child(5),
+.team-slot-pos:nth-child(5) .team-slot,
+.team-slot[data-team="5"] {
+  animation-delay: 0.25s;
+}
+
+.team-slot:nth-child(6),
+.team-slot-pos:nth-child(6) .team-slot,
+.team-slot[data-team="6"] {
+  animation-delay: 0.30s;
+}
+
+.team-slot:nth-child(7),
+.team-slot-pos:nth-child(7) .team-slot,
+.team-slot[data-team="7"] {
+  animation-delay: 0.35s;
+}
+
+.team-slot:nth-child(8),
+.team-slot-pos:nth-child(8) .team-slot,
+.team-slot[data-team="8"] {
+  animation-delay: 0.40s;
+}
+
+.team-slot:nth-child(9),
+.team-slot-pos:nth-child(9) .team-slot,
+.team-slot[data-team="9"] {
+  animation-delay: 0.45s;
+}
+
+.team-slot:nth-child(10),
+.team-slot-pos:nth-child(10) .team-slot,
+.team-slot[data-team="10"] {
+  animation-delay: 0.50s;
+}
+
+/* 3. Stage People Vertical Floating Bob */
+@keyframes bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+#stage-people {
+  animation: bob 3.2s ease-in-out infinite;
+}
+
+/* 4. Stage People Subtle Looping Drop-Shadow Elevation Pulse */
+@keyframes stageShadowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 4px 8px rgba(13, 27, 62, 0.15));
+  }
+  50% {
+    filter: drop-shadow(0 12px 18px rgba(13, 27, 62, 0.34));
+  }
+}
+
+#stage-people image {
+  animation: stageShadowPulse 3.2s ease-in-out infinite;
+}
+
+/* 5. Headline Breathing Opacity Pulse */
+@keyframes headlinePulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+#headline {
+  animation: headlinePulse 3s ease-in-out infinite;
+}

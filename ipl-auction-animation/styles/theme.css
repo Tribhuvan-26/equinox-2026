@@ -1,0 +1,18 @@
+/* ==========================================================================
+   IPL Auction Animation Theme Tokens
+   ========================================================================== */
+:root {
+  --bg: #faf3e3;
+  --navy: #0d1b3e;
+  --blue: #2450d8;
+  --gold: #f2b73a;
+  --pink: #e0357a;
+  --white: #ffffff;
+}
+
+.bg { fill: var(--bg); }
+.navy { fill: var(--navy); }
+.blue { fill: var(--blue); }
+.gold { fill: var(--gold); }
+.pink { fill: var(--pink); }
+.white { fill: var(--white); }
