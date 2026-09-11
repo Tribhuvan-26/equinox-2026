@@ -56,10 +56,10 @@ export function HangingTag({ className = "" }: { className?: string }) {
         <div className="h-6 w-[2px] bg-white/80" />
       </div>
       {/* Coral Card matching Brochure Accent 2 */}
-      <div className="relative rounded-md border-[3px] border-[#282828] bg-[#EB547C] px-3 py-1 text-center shadow-[4px_4px_0px_#282828]">
-        <div className="absolute top-1 left-2 h-1.5 w-1.5 rounded-full bg-[#282828]" />
-        <div className="absolute top-1 right-2 h-1.5 w-1.5 rounded-full bg-[#282828]" />
-        <span className="font-mono text-2xl font-black tracking-tighter text-white sm:text-3xl">
+      <div className="relative rounded-md border-[3px] border-[#2A2A2A] bg-gradient-to-r from-[#7484FE] to-[#33FF67] px-3 py-1 text-center shadow-[4px_4px_0px_#2A2A2A]">
+        <div className="absolute top-1 left-2 h-1.5 w-1.5 rounded-full bg-[#2A2A2A]" />
+        <div className="absolute top-1 right-2 h-1.5 w-1.5 rounded-full bg-[#2A2A2A]" />
+        <span className="font-mono text-2xl font-black tracking-tighter text-[#2A2A2A] sm:text-3xl">
           2.0
         </span>
       </div>
@@ -78,7 +78,7 @@ export function CoverPopUpArt({ className = "" }: { className?: string }) {
         className="w-full max-w-[540px] drop-shadow-2xl"
       >
         {/* Background Graphic Shadow — static ground element */}
-        <ellipse cx="300" cy="455" rx="230" ry="18" fill="#0B2D6D" opacity="0.9" />
+        <ellipse cx="300" cy="455" rx="230" ry="18" fill="#1A1A1A" opacity="0.9" />
 
         {/* Floating Illustration Content — offset upwards for natural gap and animated independently */}
         <g transform="translate(0, -28)">
@@ -88,11 +88,11 @@ export function CoverPopUpArt({ className = "" }: { className?: string }) {
             <polygon points="480,240 420,180 300,200 300,420 480,380" fill="#f8fafc" stroke="#282828" strokeWidth="4" />
 
             {/* Diagonal folder tab / index markers */}
-            <path d="M70,220 L130,220 L130,260 L70,260 Z" fill="#F9D47B" stroke="#282828" strokeWidth="3" />
+            <path d="M70,220 L130,220 L130,260 L70,260 Z" fill="#7484FE" stroke="#282828" strokeWidth="3" />
             <path d="M60,240 L120,240 L120,340 L60,340 Z" fill="#ffffff" stroke="#282828" strokeWidth="3" />
 
             {/* Left Side: Editorial Block & Striped Texture */}
-            <rect x="140" y="270" width="40" height="90" fill="#2074D5" stroke="#282828" strokeWidth="3" />
+            <rect x="140" y="270" width="40" height="90" fill="#7484FE" stroke="#282828" strokeWidth="3" />
             <path d="M80,310 C80,290 130,290 130,340" fill="none" stroke="#282828" strokeWidth="3" strokeDasharray="3 3" />
             {/* Vertical stripes pattern box */}
             <g stroke="#282828" strokeWidth="2.5">
@@ -110,10 +110,10 @@ export function CoverPopUpArt({ className = "" }: { className?: string }) {
             <polygon points="410,190 310,195 310,400 430,390" fill="#ffffff" stroke="#282828" strokeWidth="4" strokeLinejoin="round" />
 
             {/* Center Spine Vertical Banner: E-SUMMIT */}
-            <rect x="235" y="180" width="65" height="215" fill="#F9D47B" stroke="#282828" strokeWidth="4" />
+            <rect x="235" y="180" width="58" height="215" fill="#7484FE" stroke="#282828" strokeWidth="4" />
             <text
-              x="-375"
-              y="280"
+              x="-390"
+              y="278"
               transform="rotate(-90)"
               fill="#282828"
               fontFamily="system-ui, sans-serif"
@@ -129,8 +129,8 @@ export function CoverPopUpArt({ className = "" }: { className?: string }) {
               {/* Character Head & Cap */}
               <ellipse cx="60" cy="50" rx="18" ry="14" fill="#ffffff" stroke="#282828" strokeWidth="3" />
               {/* Beanie / Cap */}
-              <path d="M42,46 C42,34 78,34 78,46 Z" fill="#EB547C" stroke="#282828" strokeWidth="3" />
-              <ellipse cx="60" cy="34" rx="5" ry="4" fill="#F9D47B" stroke="#282828" strokeWidth="2" />
+              <path d="M42,46 C42,34 78,34 78,46 Z" fill="#33FF67" stroke="#282828" strokeWidth="3" />
+              <ellipse cx="60" cy="34" rx="5" ry="4" fill="#7484FE" stroke="#282828" strokeWidth="2" />
               {/* Eyes & Nose */}
               <circle cx="53" cy="50" r="2" fill="#282828" />
               <path d="M48,53 Q44,55 48,57" fill="none" stroke="#282828" strokeWidth="2" strokeLinecap="round" />
@@ -139,7 +139,7 @@ export function CoverPopUpArt({ className = "" }: { className?: string }) {
               {/* Blue Body / Sleeve */}
               <path
                 d="M28,68 C28,110 50,130 90,120 C100,105 100,85 85,80 C60,82 50,75 50,68 Z"
-                fill="#2074D5"
+                fill="#7484FE"
                 stroke="#282828"
                 strokeWidth="3.5"
                 strokeLinejoin="round"
@@ -148,7 +148,7 @@ export function CoverPopUpArt({ className = "" }: { className?: string }) {
 
             {/* Right side capsule with halftone dots */}
             <g transform="translate(420, 250)">
-              <path d="M0,0 C25,0 40,20 40,50 C40,80 25,100 0,100 Z" fill="#EB547C" stroke="#282828" strokeWidth="3" />
+              <path d="M0,0 C25,0 40,20 40,50 C40,80 25,100 0,100 Z" fill="#33FF67" stroke="#282828" strokeWidth="3" />
               <path d="M0,50 C20,50 30,70 30,95 L0,95 Z" fill="#ffffff" stroke="#282828" strokeWidth="3" />
               {/* Dot pattern */}
               <circle cx="8" cy="65" r="2.5" fill="#282828" />
@@ -161,7 +161,7 @@ export function CoverPopUpArt({ className = "" }: { className?: string }) {
             </g>
 
             {/* Blue Half-Moon graphic behind right page */}
-            <path d="M460,230 C490,240 500,280 480,305 Z" fill="#2074D5" stroke="#282828" strokeWidth="3" />
+            <path d="M460,230 C490,240 500,280 480,305 Z" fill="#7484FE" stroke="#282828" strokeWidth="3" />
 
             {/* Flying Currency Notes (Cash bills) */}
             {/* Note 1 (Left floating) */}
@@ -173,21 +173,22 @@ export function CoverPopUpArt({ className = "" }: { className?: string }) {
             </g>
 
             {/* Note 2 (Left falling) */}
-            <g transform="translate(195, 395) rotate(15)">
+            <g transform="translate(200, 420) rotate(15)">
               <rect x="0" y="0" width="35" height="20" rx="2" fill="#ffffff" stroke="#282828" strokeWidth="2.5" />
               <circle cx="17.5" cy="10" r="4" stroke="#282828" strokeWidth="2" />
               <line x1="4" y1="5" x2="4" y2="15" stroke="#282828" strokeWidth="2" />
               <line x1="31" y1="5" x2="31" y2="15" stroke="#282828" strokeWidth="2" />
             </g>
 
-            {/* Cash fan at bottom right */}
-            <g transform="translate(370, 345) rotate(12)">
+            {/* Note 3 (Right center) */}
+            <g transform="translate(430, 385) rotate(-10)">
               <rect x="0" y="0" width="45" height="26" rx="2" fill="#ffffff" stroke="#282828" strokeWidth="3" />
               <circle cx="22.5" cy="13" r="5" stroke="#282828" strokeWidth="2" />
               <line x1="6" y1="6" x2="6" y2="20" stroke="#282828" strokeWidth="2" />
               <line x1="39" y1="6" x2="39" y2="20" stroke="#282828" strokeWidth="2" />
             </g>
-            <g transform="translate(390, 360) rotate(28)">
+            {/* Note 4 (Right base) */}
+            <g transform="translate(370, 430) rotate(5)">
               <rect x="0" y="0" width="45" height="26" rx="2" fill="#ffffff" stroke="#282828" strokeWidth="3" />
               <circle cx="22.5" cy="13" r="5" stroke="#282828" strokeWidth="2" />
               <line x1="6" y1="6" x2="6" y2="20" stroke="#282828" strokeWidth="2" />
@@ -200,7 +201,23 @@ export function CoverPopUpArt({ className = "" }: { className?: string }) {
   );
 }
 
-// 4. Wireframe 3D Torus Graphic (Page 02 Contents)
+// 4. Subtle Vector Background Grid Overlay (Matching Riso Brochure Ground)
+export function BrochureVectorMesh({ className = "" }: { className?: string }) {
+  return (
+    <div className={`pointer-events-none absolute inset-0 overflow-hidden opacity-30 ${className}`}>
+      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="mesh-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" strokeOpacity="0.15" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#mesh-grid)" />
+      </svg>
+    </div>
+  );
+}
+
+// Wireframe 3D Torus Graphic (Page 02 Contents)
 export function WireframeTorus({ className = "" }: { className?: string }) {
   return (
     <div className={`relative flex items-center justify-center ${className}`}>
@@ -251,10 +268,10 @@ export function PageFooterTimeline({
       {/* Brand Badge */}
       <div className="flex items-center gap-2">
         <div className="leading-none">
-          <span className="block text-[10px] font-black tracking-widest uppercase text-[#EB547C]">THE</span>
-          <span className="block text-base font-black tracking-tighter uppercase text-[#F9D47B] sm:text-lg">EQUINOX</span>
+          <span className="block text-[10px] font-black tracking-widest uppercase text-[#7484FE]">THE</span>
+          <span className="block text-base font-black tracking-tighter uppercase text-[#F7F2F6] sm:text-lg">EQUINOX</span>
         </div>
-        <div className="rounded border border-white/60 bg-[#EB547C] px-1.5 py-0.5 text-[9px] font-black text-white">
+        <div className="rounded bg-gradient-to-r from-[#7484FE] to-[#33FF67] px-1.5 py-0.5 text-[9px] font-black text-[#2A2A2A]">
           2.0
         </div>
       </div>
