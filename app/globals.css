@@ -2,23 +2,26 @@
 
 /* ---------------------------------------------------------------------------
    THE EQUINOX 2.0 — Official Design System
-   Color Ground: Electric Royal Cobalt Blue (#2074d5)
-   Accents: Stark White (#ffffff), Bold Editorial Black (#282828)
+   Palette:
+     Dark Background: #2A2A2A
+     Periwinkle (Primary Accent): #7484FE
+     Green (Secondary Accent): #33FF67
+     Off-White (Primary Text/Wordmark): #F7F2F6
    Textures: Risograph paper grain, blueprint grid lines, page timelines
 --------------------------------------------------------------------------- */
 
 @theme {
-  --color-equinox-blue: #2074D5;
-  --color-equinox-blue-dark: #16529E;
-  --color-equinox-blue-deep: #0B2D6D;
-  --color-equinox-blue-light: #3577EC;
-  --color-equinox-yellow: #F9D47B;
-  --color-equinox-coral: #EB547C;
-  --color-equinox-coral-dark: #C93D62;
-  --color-equinox-black: #282828;
-  --color-equinox-charcoal: #1f222e;
-  --color-equinox-white: #ffffff;
-  --color-equinox-card: rgba(255, 255, 255, 0.08);
+  --color-equinox-blue: #7484FE;
+  --color-equinox-blue-dark: #5868DF;
+  --color-equinox-blue-deep: #2A2A2A;
+  --color-equinox-blue-light: #8E9CFF;
+  --color-equinox-yellow: #F7F2F6;
+  --color-equinox-coral: #33FF67;
+  --color-equinox-coral-dark: #22CC50;
+  --color-equinox-black: #2A2A2A;
+  --color-equinox-charcoal: #202020;
+  --color-equinox-white: #F7F2F6;
+  --color-equinox-card: rgba(247, 242, 246, 0.08);
 
   --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
@@ -26,36 +29,42 @@
 }
 
 :root {
-  --equinox-blue: #2074D5;
-  --equinox-blue-dark: #16529E;
-  --equinox-blue-deep: #0B2D6D;
-  --equinox-yellow: #F9D47B;
-  --equinox-coral: #EB547C;
-  --equinox-white: #ffffff;
-  --equinox-black: #282828;
+  --equinox-dark: #2A2A2A;
+  --equinox-periwinkle: #7484FE;
+  --equinox-green: #33FF67;
+  --equinox-offwhite: #F7F2F6;
+
+  /* Aliases mapped to confirmed new palette */
+  --equinox-blue: #7484FE;
+  --equinox-blue-dark: #5868DF;
+  --equinox-blue-deep: #2A2A2A;
+  --equinox-yellow: #F7F2F6;
+  --equinox-coral: #33FF67;
+  --equinox-white: #F7F2F6;
+  --equinox-black: #2A2A2A;
 
   /* Legacy & compatibility variables */
-  --bg-cobalt: var(--equinox-blue);
-  --bg-cobalt-dark: var(--equinox-blue-dark);
-  --fg-white: #ffffff;
-  --fg-black: #282828;
-  --ground: var(--equinox-blue);
-  --surface: rgba(255, 255, 255, 0.1);
-  --surface-2: rgba(255, 255, 255, 0.18);
-  --fg: #ffffff;
-  --accent: var(--equinox-yellow);
+  --bg-cobalt: #7484FE;
+  --bg-cobalt-dark: #5868DF;
+  --fg-white: #F7F2F6;
+  --fg-black: #2A2A2A;
+  --ground: #2A2A2A;
+  --surface: rgba(247, 242, 246, 0.08);
+  --surface-2: rgba(247, 242, 246, 0.16);
+  --fg: #F7F2F6;
+  --accent: #33FF67;
 }
 
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
-  background-color: #2074D5;
-  color: #ffffff;
+  background-color: #2A2A2A;
+  color: #F7F2F6;
 }
 
 body {
-  background-color: #2074D5;
-  color: #ffffff;
+  background-color: #2A2A2A;
+  color: #F7F2F6;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
@@ -77,21 +86,21 @@ body {
   z-index: 1;
 }
 
-/* Graph paper grid line pattern from the brochure overlaid on bright royal blue */
+/* Graph paper grid line pattern recolored to new dark palette */
 .riso-texture,
 .brochure-grid {
-  background-color: var(--equinox-blue);
+  background-color: var(--equinox-dark);
   background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.12) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+    linear-gradient(to right, rgba(247, 242, 246, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(247, 242, 246, 0.07) 1px, transparent 1px);
   background-size: 34px 34px;
 }
 
 .brochure-grid-dense {
-  background-color: var(--equinox-blue);
+  background-color: var(--equinox-dark);
   background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+    linear-gradient(to right, rgba(247, 242, 246, 0.09) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(247, 242, 246, 0.09) 1px, transparent 1px);
   background-size: 22px 22px;
 }
 
@@ -109,12 +118,12 @@ body {
   text-transform: uppercase;
 }
 
-/* The Equinox Cover Drop Shadow Effect (Dark drop shadow behind golden yellow EQUINOX) */
+/* The Equinox Cover Drop Shadow Effect */
 .display-title-shadow {
   text-shadow: 
-    3px 3px 0 #282828,
-    5px 5px 0 #282828,
-    6px 7px 0 rgba(11, 45, 109, 0.95);
+    3px 3px 0 #2A2A2A,
+    5px 5px 0 #2A2A2A,
+    6px 7px 0 rgba(0, 0, 0, 0.6);
 }
 
 /* Gentle up-down float, e.g. the cover pop-up book illustration */
@@ -164,16 +173,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--equinox-blue-deep);
+  background: var(--equinox-dark);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(247, 242, 246, 0.35);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--equinox-yellow);
+  background: var(--equinox-periwinkle);
 }
 
 /* White outline pill badge */
@@ -183,16 +192,16 @@ body {
   justify-content: center;
   padding: 0.75rem 1.5rem;
   background-color: transparent;
-  border: 1.5px solid #ffffff;
+  border: 1.5px solid #F7F2F6;
   border-radius: 9999px;
-  color: #ffffff;
+  color: #F7F2F6;
   font-weight: 600;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .badge-pill-white:hover {
-  background-color: #ffffff;
-  color: #2074d5;
+  background-color: #F7F2F6;
+  color: #2A2A2A;
   transform: translateY(-2px);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 }
