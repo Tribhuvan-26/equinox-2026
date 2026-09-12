@@ -90,29 +90,71 @@ export async function embedQuery(query: string): Promise<number[]> {
 }
 
 /**
+ * Fallback token-based similarity score if embedding is unavailable
+ */
+function computeKeywordScore(query: string, chunk: any, preferredSlug?: string): number {
+  const qTokens = query.toLowerCase().split(/\s+/).filter((t) => t.length > 2);
+  const contentLower = (chunk.title + " " + chunk.content).toLowerCase();
+  let matches = 0;
+  for (const token of qTokens) {
+    if (contentLower.includes(token)) {
+      matches++;
+    }
+  }
+  let score = qTokens.length > 0 ? matches / qTokens.length : 0;
+  if (preferredSlug && chunk.metadata?.slug === preferredSlug) {
+    score += 0.5;
+  }
+  return score;
+}
+
+/**
  * Scans the in-memory knowledge base, computes cosine similarities,
  * and returns the top K most semantically relevant chunks.
  */
 export async function retrieveRelevantChunks(
   query: string,
-  topK: number = 4
+  topK: number = 4,
+  preferredSlug?: string
 ): Promise<RetrievalResult> {
-  const queryEmbedding = await embedQuery(query);
+  let scoredChunks: RetrievedChunk[] = [];
 
-  const scoredChunks: RetrievedChunk[] = (knowledgeBaseData as any[]).map((item) => {
-    const similarity = cosineSimilarity(queryEmbedding, item.embedding);
-    return {
-      id: item.id,
-      title: item.title,
-      source: item.source,
-      category: item.category,
-      metadata: item.metadata,
-      content: item.content,
-      score: similarity,
-    };
-  });
+  try {
+    const queryEmbedding = await embedQuery(query);
 
-  // Sort descending by cosine similarity score
+    scoredChunks = (knowledgeBaseData as any[]).map((item) => {
+      let similarity = cosineSimilarity(queryEmbedding, item.embedding);
+      // Boost preferred slug if explicitly resolved
+      if (preferredSlug && item.metadata?.slug === preferredSlug) {
+        similarity = Math.min(1.0, similarity + 0.25);
+      }
+      return {
+        id: item.id,
+        title: item.title,
+        source: item.source,
+        category: item.category,
+        metadata: item.metadata,
+        content: item.content,
+        score: similarity,
+      };
+    });
+  } catch (err) {
+    console.warn("Embedding generation failed, using keyword fallback for retrieval:", err);
+    scoredChunks = (knowledgeBaseData as any[]).map((item) => {
+      const score = computeKeywordScore(query, item, preferredSlug);
+      return {
+        id: item.id,
+        title: item.title,
+        source: item.source,
+        category: item.category,
+        metadata: item.metadata,
+        content: item.content,
+        score,
+      };
+    });
+  }
+
+  // Sort descending by similarity score
   scoredChunks.sort((a, b) => b.score - a.score);
 
   const topChunks = scoredChunks.slice(0, topK);

@@ -44,6 +44,7 @@ kb = KnowledgeBase()
 client = genai.Client(api_key=API_KEY) if API_KEY else None
 
 GENERATION_MODELS = [
+    "gemini-3.6-flash",
     "gemini-3.5-flash",
     "gemini-3.7-flash",
     "gemini-flash-latest",
@@ -52,6 +53,7 @@ GENERATION_MODELS = [
 
 class ChatRequest(BaseModel):
     message: str
+    history: Optional[List[Dict[str, str]]] = []
 
 class SourceItem(BaseModel):
     title: str

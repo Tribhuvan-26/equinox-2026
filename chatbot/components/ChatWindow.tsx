@@ -75,11 +75,16 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
     setMessages((prev) => [...prev, userMsg]);
     setIsTyping(true);
 
+    const historyPayload = messages.slice(-8).map((m) => ({
+      role: m.sender === "user" ? "user" : "assistant",
+      content: m.text,
+    }));
+
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text }),
+        body: JSON.stringify({ message: text, history: historyPayload }),
       });
 
       if (!res.ok) {
@@ -99,8 +104,7 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
       setMessages((prev) => [...prev, botMsg]);
     } catch (err) {
       console.warn("ChatWindow backend fetch failed, using fallback:", err);
-      // Deprecated fallback to local responses if network/server is unreachable
-      const reply = getBotResponse(text);
+      const reply = getBotResponse(text, historyPayload as any);
       const botMsg: MessageData = {
         id: `bot-${Date.now()}`,
         sender: "bot",
