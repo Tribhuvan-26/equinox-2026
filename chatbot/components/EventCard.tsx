@@ -20,25 +20,25 @@ export function EventCard({ event, onSelect }: EventCardProps) {
   }, [event]);
 
   return (
-    <div className="event-card-container mt-2.5 overflow-hidden rounded-2xl border-2 border-white/50 bg-[#0d2d99] text-white shadow-lg">
+    <div className="event-card-container mt-2 overflow-hidden rounded-xl border border-white/40 bg-[#0d2d99] text-white shadow-md">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-white/20 bg-[#0a2377] px-3.5 py-2">
-        <span className="font-mono text-[10px] font-black uppercase tracking-wider text-white/80">
+      <div className="flex items-center justify-between border-b border-white/20 bg-[#0a2377] px-3 py-1.5">
+        <span className="font-mono text-[9.5px] font-black uppercase tracking-wider text-white/80">
           PAGE {event.pageNumber} · {event.category}
         </span>
-        <span className="rounded bg-white px-1.5 py-0.5 font-mono text-[9px] font-black text-[#282828]">
+        <span className="rounded bg-white px-1 py-0.2 font-mono text-[8.5px] font-black text-[#282828]">
           EQUINOX 2.0
         </span>
       </div>
 
       {/* Main Card Content */}
-      <div className="p-3.5">
+      <div className="p-3">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <h4 className="font-mono text-base font-black tracking-tight text-white uppercase sm:text-lg">
+            <h4 className="font-mono text-sm font-black tracking-tight text-white uppercase sm:text-base">
               {event.name}
             </h4>
-            <p className="mt-0.5 text-xs text-white/80 font-medium line-clamp-2">
+            <p className="mt-0.5 text-[11.5px] text-white/80 font-medium line-clamp-2">
               {event.tagline}
             </p>
           </div>

@@ -14,6 +14,7 @@ import {
   resolveSubEvent,
   detectAttributeIntent,
   normalizeQueryString,
+  detectFalsePremise,
   ResolvedEntity,
 } from "./rag/entityResolution";
 import { evaluateGuardrails } from "./rag/guardrails";
@@ -27,12 +28,12 @@ export interface ChatbotResponse {
   grounded?: boolean;
 }
 
-const OFFICIAL_CONTACTS_TEXT = `You can reach out to our official student coordinators:
+const OFFICIAL_CONTACTS_TEXT = `Official Student Coordinators:
 • **Shyam**: +91 93900 06806
 • **Mahima**: +91 94933 62006
 • **Sanjana**: +91 82084 99746
 • **Adithya**: +91 91822 40970
-Or email: **cie@mlrinstitutions.ac.in**`;
+Email: **cie@mlrinstitutions.ac.in**`;
 
 /**
  * Generates an accurate, grounded answer for a specific sub-event based on requested attribute
@@ -47,73 +48,86 @@ function generateSubEventAttributeAnswer(
   const q = normalizeQueryString(query);
   const attribute = detectAttributeIntent(query);
 
-  // Suggestions tailored to the event
-  const defaultSuggestions = [
-    `Who can participate in ${info.name}?`,
-    `When is ${info.name}?`,
-    "Browse all 10 events",
-  ];
-
-  // 1. Timing / Schedule
-  if (attribute === "timing" || q.includes("time") || q.includes("when")) {
-    const timeDetail = content?.time || info.timing;
-    const dayDetail = content?.day || "";
+  // 1. Check for false premises first
+  const fp = detectFalsePremise(query);
+  if (fp.isFalsePremise && fp.correction) {
     return {
-      answer: `**${info.name}** Timing & Schedule:\n\n• **Date/Day**: ${dayDetail || "30–31 October 2026"}\n• **Time**: ${timeDetail}\n• **Venue**: ${info.venueRoom}`,
-      eventCard: isFollowUp ? undefined : info,
+      answer: fp.correction,
+      eventCard: undefined,
       suggestions: [`Rules for ${info.name}`, `Who can participate?`, "Dates & Venue"],
       links: [{ label: "View Sub-Events", url: "#events" }],
       grounded: true,
     };
   }
 
-  // 2. Venue / Location
-  if (attribute === "venue" || q.includes("where") || q.includes("room") || q.includes("hall")) {
-    const venue = content?.venue || info.venueRoom;
+  // 2. Timing / Schedule
+  if (
+    attribute === "timing" ||
+    q.includes("what time") ||
+    q.includes("start time") ||
+    q.includes("timing") ||
+    q.includes("when does") ||
+    q.includes("when is")
+  ) {
+    const timeDetail = content?.time || info.timing;
+    const dayDetail = content?.day || "30–31 October 2026";
     return {
-      answer: `**${info.name}** Venue:\n\n• **Location**: ${venue}\n• **Campus**: MLR Institute of Technology, Hyderabad`,
-      eventCard: isFollowUp ? undefined : info,
-      suggestions: [`When does ${info.name} start?`, `Who can participate?`, "Summit Venue"],
+      answer: `**${info.name}** Timing & Schedule:\n\n• **Date**: ${dayDetail}\n• **Time**: ${timeDetail}\n• **Venue**: ${info.venueRoom}`,
+      eventCard: undefined, // Do not attach cards on specific attribute queries
+      suggestions: [`Who can participate in ${info.name}?`, `Rules for ${info.name}`, "Dates & Venue"],
       links: [{ label: "View Sub-Events", url: "#events" }],
       grounded: true,
     };
   }
 
-  // 3. Eligibility / Team size / Who can participate
+  // 3. Venue / Location
+  if (attribute === "venue" || q.includes("where is") || q.includes("room") || q.includes("hall")) {
+    const venue = content?.venue || info.venueRoom;
+    return {
+      answer: `**${info.name}** Venue:\n\n• **Location**: ${venue}\n• **Campus**: MLR Institute of Technology, Dundigal, Hyderabad`,
+      eventCard: undefined,
+      suggestions: [`When is ${info.name}?`, `Who can participate?`, "View Sub-Events"],
+      links: [{ label: "View Sub-Events", url: "#events" }],
+      grounded: true,
+    };
+  }
+
+  // 4. Eligibility / Team size
   if (
     attribute === "eligibility" ||
     q.includes("participate") ||
     q.includes("eligibility") ||
     q.includes("eligible") ||
-    q.includes("team")
+    q.includes("team") ||
+    q.includes("solo")
   ) {
     const elig = content?.eligibility || info.eligibility;
     const teamSize = content?.teamSize ? ` (Team Size: ${content.teamSize})` : "";
     return {
-      answer: `**${info.name}** Participation & Eligibility:\n\n• **Eligibility**: ${elig}${teamSize}\n• **Format**: ${info.format}`,
-      eventCard: isFollowUp ? undefined : info,
-      suggestions: [`What are the rules for ${info.name}?`, `When is it?`, "How to register?"],
+      answer: `**${info.name}** Eligibility & Team Size:\n\n• **Eligibility**: ${elig}${teamSize}\n• **Format**: ${info.format}`,
+      eventCard: undefined,
+      suggestions: [`What are the rules for ${info.name}?`, `When is it?`, "Registration status"],
       links: [{ label: "View Sub-Events", url: "#events" }],
       grounded: true,
     };
   }
 
-  // 4. Rules & Format
+  // 5. Rules & Format
   if (attribute === "rules" || q.includes("rule") || q.includes("guideline") || q.includes("format")) {
     const rulesList = content?.rules && content.rules.length > 0
       ? content.rules.map((r: string) => `• ${r}`).join("\n")
       : `• Format: ${info.format}`;
 
     return {
-      answer: `**${info.name}** Rules & Guidelines:\n\n${rulesList}\n\n• **Skills Evaluated**: ${info.skills.join(", ")}`,
-      eventCard: isFollowUp ? undefined : info,
-      suggestions: [`Who can participate?`, `When is it?`, "Register Now"],
+      answer: `**${info.name}** Rules & Guidelines:\n\n${rulesList}\n\n• **Key Skills**: ${info.skills.join(", ")}`,
+      eventCard: undefined,
+      suggestions: [`Who can participate?`, `When is it?`, "How to register?"],
       links: [{ label: "View Sub-Events", url: "#events" }],
       grounded: true,
     };
   }
 
-  // 5. Registration / Fees / Tickets
+  // 6. Registration & Fees
   if (
     attribute === "registration" ||
     q.includes("register") ||
@@ -121,46 +135,46 @@ function generateSubEventAttributeAnswer(
     q.includes("fee") ||
     q.includes("ticket")
   ) {
-    const feeDetail = content?.fee || "Summit Delegate Pass";
+    const feeDetail = content?.fee || "Included in Summit Pass / Free for participants";
     return {
-      answer: `**${info.name}** Registration & Fees:\n\n• **Registration Status**: ${info.registrationStatus}\n• **Fee**: ${feeDetail}\n• Registration will be processed online through the official Equinox portal.`,
-      eventCard: isFollowUp ? undefined : info,
+      answer: `**${info.name}** Registration & Details:\n\n• **Status**: ${info.registrationStatus}\n• **Fee**: ${feeDetail}\n• Registration will be available online through the official Equinox portal.`,
+      eventCard: undefined,
       suggestions: [`Tell me about ${info.name}`, `Dates & Venue`, "Contact coordinators"],
       links: [{ label: "Register on Website", url: "#events" }],
       grounded: true,
     };
   }
 
-  // 6. Prize & Awards
+  // 7. Prize & Awards
   if (attribute === "prize" || q.includes("prize") || q.includes("award") || q.includes("cash")) {
-    const prizeDetail = content?.prize || "Exclusive awards, recognition, and certificates";
+    const prizeDetail = content?.prize || "Exclusive awards, certificates, and recognition";
     return {
-      answer: `**${info.name}** Prizes & Rewards:\n\n• **Prize/Incentive**: ${prizeDetail}`,
-      eventCard: isFollowUp ? undefined : info,
+      answer: `**${info.name}** Prizes & Awards:\n\n• **Prize**: ${prizeDetail}`,
+      eventCard: undefined,
       suggestions: [`Rules for ${info.name}`, `Who can participate?`, "View all events"],
       links: [{ label: "View Sub-Events", url: "#events" }],
       grounded: true,
     };
   }
 
-  // 7. Coordinator / Contact
-  if (attribute === "contact" || q.includes("contact") || q.includes("coordinator") || q.includes("spoc")) {
+  // 8. Coordinator / Contact
+  if (attribute === "contact" || q.includes("coordinator") || q.includes("spoc")) {
     const spoc = content?.spoc;
     const spocText = spoc
       ? `• **Event SPOC**: ${spoc.name} (${spoc.phone}) - ${spoc.email || "cie@mlrinstitutions.ac.in"}\n\n`
       : "";
     return {
-      answer: `**${info.name}** Coordinator & Contact:\n\n${spocText}${OFFICIAL_CONTACTS_TEXT}`,
-      eventCard: isFollowUp ? undefined : info,
-      suggestions: [`Tell me about ${info.name}`, `When is it?`, "Main Venue"],
+      answer: `**${info.name}** Coordinator Contact:\n\n${spocText}${OFFICIAL_CONTACTS_TEXT}`,
+      eventCard: undefined,
+      suggestions: [`Tell me about ${info.name}`, `When is it?`, "Venue details"],
       links: [{ label: "Contact Us", url: "#contact" }],
       grounded: true,
     };
   }
 
-  // Default: Event Overview
+  // Default: Event Overview (ONLY place where eventCard is attached for this event)
   return {
-    answer: `**${info.name}** (Page ${info.pageNumber})\n\n${info.description}\n\n• **Category**: ${info.category}\n• **Key Skills**: ${info.skills.join(", ")}\n• **Format**: ${info.format}`,
+    answer: `**${info.name}** (Page ${info.pageNumber})\n\n${info.description}\n\n• **Category**: ${info.category}\n• **Skills Evaluated**: ${info.skills.join(", ")}\n• **Format**: ${info.format}`,
     eventCard: info,
     suggestions: [
       `Who can participate in ${info.name}?`,
@@ -186,7 +200,7 @@ export function getMockEquinoxResponse(
   if (guard.type === "injection") {
     return {
       answer: guard.response,
-      suggestions: ["List all 10 Sub-Events", "Dates & Venue", "Contact details"],
+      suggestions: ["Explore Sub-Events", "Dates & Venue", "Registration"],
       grounded: true,
     };
   }
@@ -194,7 +208,7 @@ export function getMockEquinoxResponse(
   if (guard.type === "garbage") {
     return {
       answer: guard.response,
-      suggestions: ["List all 10 Sub-Events", "Dates & Venue", "Student Coordinators"],
+      suggestions: ["Explore Sub-Events", "Dates & Venue", "Registration"],
       grounded: true,
     };
   }
@@ -202,16 +216,26 @@ export function getMockEquinoxResponse(
   if (guard.type === "off_topic") {
     return {
       answer: guard.response,
-      suggestions: ["List all 10 Sub-Events", "When & Where?", "How to register?"],
+      suggestions: ["Explore Sub-Events", "Dates & Venue", "Registration"],
       grounded: true,
     };
   }
 
-  // 2. Conversation Context & Coreference Resolution
+  // 2. Check for false premise before context resolution
+  const fp = detectFalsePremise(trimmed);
+  if (fp.isFalsePremise && fp.correction) {
+    return {
+      answer: fp.correction,
+      suggestions: ["Explore Sub-Events", "Dates & Venue", "Registration"],
+      grounded: true,
+    };
+  }
+
+  // 3. Conversation Context & Coreference Resolution
   const context = resolveConversationContext(trimmed, history);
   const q = normalizeQueryString(trimmed);
 
-  // 3. If an active entity is identified (either in current query or from previous turn)
+  // 4. If an active entity is identified
   if (context.resolvedEntity) {
     return generateSubEventAttributeAnswer(
       context.resolvedEntity,
@@ -220,132 +244,159 @@ export function getMockEquinoxResponse(
     );
   }
 
-  // 4. Check for ungrounded Equinox-related questions (Case B)
-  // Check for queries asking for information not present in the program
+  // 5. UNGROUNDED / UNAVAILABLE TOPICS (Case B)
+  // Check for questions asking for information not present in the official brochure
   if (
     q.includes("who won") ||
     q.includes("winner") ||
     q.includes("last year") ||
+    q.includes("2025") ||
     q.includes("previous edition") ||
+    q.includes("previous winner") ||
     q.includes("past winners") ||
+    q.includes("which college won") ||
+    q.includes("who came second") ||
+    q.includes("how many people attended last year") ||
     q.includes("how many teams participated last year")
   ) {
     return {
-      answer: `I don't have that information in the official Equinox 2.0 program.\n\n${OFFICIAL_CONTACTS_TEXT}`,
-      suggestions: ["List all 10 Sub-Events", "When is Equinox 2.0?", "About CIE MLRIT"],
-      grounded: true,
-    };
-  }
-
-  if (q.includes("wifi") || q.includes("wi-fi") || q.includes("password")) {
-    return {
-      answer: `I don't have that information in the official Equinox 2.0 program.\n\nCampus network access and WiFi details will be provided at the registration desk during event check-in.`,
-      suggestions: ["Dates & Venue", "List all 10 Sub-Events", "Contact coordinators"],
+      answer:
+        "I don't have information about past editions or last year's winners in the official Equinox 2.0 program. You can contact the organizers for more information.",
+      suggestions: ["What is Equinox 2.0?", "Dates & Venue", "Explore Sub-Events"],
       grounded: true,
     };
   }
 
   if (q.includes("judge") || q.includes("judges") || q.includes("jury")) {
     return {
-      answer: `I don't have that information in the official Equinox 2.0 program.\n\nJury panels and guest judges are announced closer to the event days.\n\n${OFFICIAL_CONTACTS_TEXT}`,
-      suggestions: ["List all 10 Sub-Events", "Who are the coordinators?", "Dates & Venue"],
+      answer:
+        "I don't have information about the judges in the official Equinox 2.0 program. Jury panels and evaluators are announced closer to the event days.",
+      suggestions: ["Explore Sub-Events", "Dates & Venue", "Registration"],
       grounded: true,
     };
   }
 
   if (q.includes("chief guest") || q.includes("guest of honour") || q.includes("dignitary")) {
     return {
-      answer: `I don't have that information in the official Equinox 2.0 program.\n\nKeynote speakers and dignitaries will be announced on official social channels and the summit website.\n\n${OFFICIAL_CONTACTS_TEXT}`,
-      suggestions: ["Spotlight Keynotes", "Dates & Venue", "Contact coordinators"],
+      answer:
+        "I don't have information about the chief guest in the official Equinox 2.0 program. Dignitaries and keynote speakers will be announced on the official summit website.",
+      suggestions: ["Spotlight Keynotes", "Dates & Venue", "Explore Sub-Events"],
       grounded: true,
     };
   }
 
-  if (q.includes("prize pool") || q.includes("total prize") || (q.includes("prize") && !context.resolvedEntity)) {
+  if (
+    q.includes("total prize pool") ||
+    q.includes("overall prize money") ||
+    q.includes("how much money can i win") ||
+    (q.includes("prize pool") && !context.resolvedEntity)
+  ) {
     return {
-      answer: `I don't have the overall summit prize pool figure in the official Equinox 2.0 program.\n\nHowever, individual sub-events feature dedicated awards, including:\n• **Pitch Deck**: Seed funding & incubation support\n• **Hustle Mania**: Retain sales profits + Winner Trophy\n• **IPL Auction**: Champion purse & team medals\n• **Startup Poly**: Equinox Board Champion Shield\n• **Cross Roads**: Strategy trophies & certificates\n\n${OFFICIAL_CONTACTS_TEXT}`,
-      suggestions: ["Pitch Deck prizes", "Hustle Mania details", "Explore Sub-Events"],
+      answer:
+        "I don't have information about an overall summit prize pool in the official Equinox 2.0 program. Individual sub-events feature dedicated prizes such as seed funding and incubation (Pitch Deck), winner trophies and retaining sales profits (Hustle Mania), and champion purses and medals (IPL Auction).",
+      suggestions: ["Pitch Deck prizes", "Hustle Mania prizes", "Explore Sub-Events"],
       links: [{ label: "Explore Sub-Events", url: "#events" }],
       grounded: true,
     };
   }
 
-  // 5. Summit Dates, Timing & Schedule
+  if (q.includes("registration fee") || q.includes("cost to attend") || q.includes("ticket price")) {
+    return {
+      answer:
+        "I don't have information about the exact registration fee in the official Equinox 2.0 program. Delegate pass registration and pricing will be announced soon on the official summit website.",
+      suggestions: ["Explore Sub-Events", "Dates & Venue", "About CIE"],
+      grounded: true,
+    };
+  }
+
+  if (q.includes("wifi") || q.includes("wi fi") || q.includes("password")) {
+    return {
+      answer:
+        "I don't have the WiFi password in the official Equinox 2.0 program. Campus network access details will be provided at the registration desk during check-in.",
+      suggestions: ["Dates & Venue", "Explore Sub-Events", "Registration"],
+      grounded: true,
+    };
+  }
+
   if (
-    q.includes("when") ||
-    q.includes("date") ||
-    q.includes("dates") ||
-    q.includes("october") ||
-    q.includes("schedule") ||
-    q.includes("day")
+    q.includes("food") ||
+    q.includes("lunch") ||
+    q.includes("accommodation") ||
+    q.includes("stay") ||
+    q.includes("hotel") ||
+    q.includes("transport") ||
+    q.includes("bus") ||
+    q.includes("cab")
   ) {
     return {
-      answer: `**The Equinox 2.0** is confirmed for **${event.date}** (30th & 31st October 2026).\n\n• **Day 1 (30 Oct)**: Crossroads, Startup Expo, Hustle Mania, Startup Poly, Spotlight sessions\n• **Day 2 (31 Oct)**: Brand Battles, IPL Auction, Internship Drive, E-Cell Meet, Pitch Deck Grand Finale\n\nTagline: *"${event.tagline}"* (# WHERE PASSION MEETS PERSEVERANCE).`,
-      suggestions: ["Where is the venue?", "List the 10 sub-events", "How to register?"],
+      answer:
+        "I don't have information about food, accommodation, or transport arrangements in the official Equinox 2.0 program. You can contact the organizers at cie@mlrinstitutions.ac.in for more information.",
+      suggestions: ["Dates & Venue", "Explore Sub-Events", "Registration"],
+      grounded: true,
+    };
+  }
+
+  // 6. Summit Dates & Timing
+  if (
+    q.includes("when is equinox") ||
+    q.includes("summit dates") ||
+    q.includes("when is the summit") ||
+    q.includes("dates") ||
+    (q.includes("when") && !context.resolvedEntity)
+  ) {
+    return {
+      answer: `**The Equinox 2.0** is confirmed for **${event.date}** (30th & 31st October 2026) at **MLRIT Hyderabad**.\n\n• **Day 1 (30 Oct)**: Crossroads, Startup Expo, Hustle Mania, Startup Poly, Spotlight sessions\n• **Day 2 (31 Oct)**: Brand Battles, IPL Auction, Internship Drive, E-Cell Meet, Pitch Deck Grand Finale`,
+      suggestions: ["Where is the venue?", "Explore Sub-Events", "How to register?"],
       links: [{ label: "View Overview", url: "#top" }],
       grounded: true,
     };
   }
 
-  // 6. Summit Venue & Location
+  // 7. Summit Venue & Location
   if (
-    q.includes("where") ||
+    q.includes("where is equinox") ||
+    q.includes("where is the summit") ||
     q.includes("venue") ||
     q.includes("location") ||
     q.includes("mlrit") ||
-    q.includes("hyderabad") ||
-    q.includes("address") ||
-    q.includes("reach")
+    q.includes("address")
   ) {
     return {
       answer: `The summit will be hosted at:\n\n**${event.venueFull}**\n\nOrganized by the **Centre for Innovation & Entrepreneurship (CIE), MLRIT**.`,
-      suggestions: ["Dates & Schedule", "List all 10 sub-events", "Coordinator contacts"],
+      suggestions: ["Dates & Schedule", "Explore Sub-Events", "Contact details"],
       links: [{ label: "Contact & Location", url: "#contact" }],
-      grounded: true,
-    };
-  }
-
-  // 7. General Registration
-  if (q.includes("register") || q.includes("registration") || q.includes("pass") || q.includes("ticket") || q.includes("fee")) {
-    return {
-      answer: `Registration for **The Equinox 2.0** is opening soon! Delegates can register through the official summit portal to gain access to sub-events, keynote talks, the startup expo floor, and internship drives.\n\nFor queries regarding registrations or bulk college passes, contact:\n${OFFICIAL_CONTACTS_TEXT}`,
-      suggestions: ["List all 10 sub-events", "Dates & Venue", "Student Coordinators"],
-      links: [{ label: "Register on Website", url: "#events" }],
       grounded: true,
     };
   }
 
   // 8. Coordinators & Contact Info
   if (
-    q.includes("contact") ||
     q.includes("coordinator") ||
     q.includes("coordinators") ||
+    q.includes("contact") ||
     q.includes("phone") ||
     q.includes("email") ||
     q.includes("shyam") ||
-    q.includes("mahima") ||
-    q.includes("sanjana") ||
-    q.includes("adithya")
+    q.includes("mahima")
   ) {
     return {
-      answer: `Official Equinox 2.0 Student Coordinators:\n\n${OFFICIAL_CONTACTS_TEXT}`,
-      suggestions: ["Where is the venue?", "Explore 10 Sub-Events", "When is the summit?"],
+      answer: OFFICIAL_CONTACTS_TEXT,
+      suggestions: ["Where is the venue?", "Explore Sub-Events", "When is the summit?"],
       links: [{ label: "Contact Us Section", url: "#contact" }],
       grounded: true,
     };
   }
 
-  // 9. Sub-events List / Overview
+  // 9. Sub-events List
   if (
-    q.includes("event") ||
-    q.includes("sub-event") ||
-    q.includes("sub event") ||
-    q.includes("competition") ||
-    q.includes("list") ||
-    q.includes("all events")
+    q.includes("list all events") ||
+    q.includes("list of events") ||
+    q.includes("what are the 10 events") ||
+    q.includes("all 10 sub events") ||
+    q.includes("what are the sub events")
   ) {
     return {
-      answer: `The Equinox 2.0 features **10 official sub-events** from the program:\n\n**Page 05:**\n1. **Spotlight**: Keynotes from tech & startup leaders\n2. **Cross Roads**: Business case-study challenge\n3. **Startup Expo**: Live product & venture exhibition\n4. **Brand Battles**: Head-to-head brand defense debate\n5. **IPL Auction**: Simulated cricket bidding & squad strategy\n\n**Page 06:**\n6. **Hustle Mania**: On-campus product selling showdown\n7. **Internship Drive**: Direct recruitment with startups\n8. **Startup Poly**: Monopoly-inspired business board game\n9. **E-Cell Meet**: Inter-college entrepreneurship leaders conclave\n10. **Pitch Deck**: Live investor pitch for student startups\n\nAsk about any event for rules, timing, and eligibility!`,
+      answer: `The Equinox 2.0 features **10 official sub-events** from the program:\n\n**Page 05:**\n1. **Spotlight**: Visionary keynotes from tech & startup leaders\n2. **Cross Roads**: Business case-study strategy challenge\n3. **Startup Expo**: Live product & venture exhibition\n4. **Brand Battles**: Rival brand defense debate\n5. **IPL Auction**: Simulated cricket bidding & squad valuation\n\n**Page 06:**\n6. **Hustle Mania**: On-campus product selling & negotiation\n7. **Internship Drive**: Direct recruitment with startups\n8. **Startup Poly**: Monopoly-inspired business board game\n9. **E-Cell Meet**: Inter-college entrepreneurship leaders conclave\n10. **Pitch Deck**: Live investor pitch for student ventures`,
       suggestions: ["Tell me about Hustle Mania", "What is Startup Poly?", "IPL Auction details"],
       links: [{ label: "Explore Sub-Events", url: "#events" }],
       grounded: true,
@@ -353,24 +404,20 @@ export function getMockEquinoxResponse(
   }
 
   // 10. About CIE / Equinox
-  if (q.includes("about") || q.includes("cie") || q.includes("who are we") || q.includes("what is equinox")) {
+  if (q.includes("about equinox") || q.includes("what is equinox") || q.includes("who are we") || q.includes("about cie")) {
     return {
       answer: `**The Equinox 2.0** is the flagship entrepreneurship summit of **MLR CIE** (Centre for Innovation & Entrepreneurship, MLRIT). Its mission is to bridge passionate student builders with persevering startup founders and investors under the motto: *"# WHERE PASSION MEETS PERSEVERANCE"*.\n\nDates: **30 - 31 October 2026** at MLRIT Hyderabad.`,
-      suggestions: ["What are the 10 sub-events?", "When is the summit?", "Contact coordinators"],
+      suggestions: ["Explore Sub-Events", "When is the summit?", "Venue details"],
       links: [{ label: "About Section", url: "#about" }],
       grounded: true,
     };
   }
 
-  // Case B Fallback for any unknown query:
-  // Do NOT dump the full introduction. Explicitly state the information is not in the program.
+  // Clean Case B Fallback for any unknown query:
   return {
-    answer: `I don't have that information in the official Equinox 2.0 program.\n\n${OFFICIAL_CONTACTS_TEXT}`,
-    suggestions: [
-      "List all 10 Sub-Events",
-      "Dates & Venue",
-      "Student Coordinators",
-    ],
+    answer:
+      "I don't have that information in the official Equinox 2.0 program. You can contact the organizers for more information.",
+    suggestions: ["Explore Sub-Events", "Dates & Venue", "Registration details"],
     links: [{ label: "Browse Sub-Events", url: "#events" }],
     grounded: true,
   };

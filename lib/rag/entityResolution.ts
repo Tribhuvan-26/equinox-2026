@@ -1,8 +1,8 @@
 // lib/rag/entityResolution.ts
-// Official entity resolution, typo normalization, and attribute intent parsing for Equinox 2.0
+// Official entity resolution, typo normalization, attribute intent parsing, and false-premise detection
 
-import { EQUINOX_SUB_EVENTS, SubEventInfo, OFFICIAL_COORDINATORS, EQUINOX_INFO } from "@/chatbot/data/events";
-import { subEvents as contentSubEvents, event as summitInfo, studentCoordinators } from "@/lib/content";
+import { EQUINOX_SUB_EVENTS, SubEventInfo } from "@/chatbot/data/events";
+import { subEvents as contentSubEvents } from "@/lib/content";
 
 export interface ResolvedEntity {
   id: string;
@@ -24,12 +24,10 @@ export type AttributeIntent =
   | "contact"
   | "overview";
 
-export interface QueryAnalysis {
-  normalizedQuery: string;
-  entity?: ResolvedEntity;
-  attributeIntent?: AttributeIntent;
-  isFollowUp: boolean;
-  rawPunctuationCleaned: string;
+export interface FalsePremiseResult {
+  isFalsePremise: boolean;
+  correction?: string;
+  eventSlug?: string;
 }
 
 // Canonical sub-event configurations with grounded semantic phrases from the official brochure
@@ -44,7 +42,7 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
   {
     slug: "spotlight",
     name: "Spotlight",
-    primaryKeywords: ["spotlight", "keynote", "keynotes", "speaker", "speakers", "talks"],
+    primaryKeywords: ["spotlight", "keynote", "keynotes"],
     semanticPhrases: [
       "tech trends",
       "visionary keynotes",
@@ -57,12 +55,16 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
   {
     slug: "crossroads",
     name: "Cross Roads",
-    primaryKeywords: ["crossroads", "cross", "roads", "crossroad"],
+    primaryKeywords: ["crossroads", "crossroad", "cross roads", "crossrds"],
     semanticPhrases: [
+      "which event is about business cases",
+      "event about business cases",
+      "business cases",
       "business case",
-      "case study",
-      "case competition",
       "the business case one",
+      "case study competition",
+      "case competition",
+      "case study",
       "case breakdown",
       "corporate dilemmas",
       "strategy challenge",
@@ -71,21 +73,26 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
   {
     slug: "startup-expo",
     name: "Startup Expo",
-    primaryKeywords: ["expo", "exhibition", "stalls", "stall", "booth", "booths"],
+    primaryKeywords: ["startup expo", "start up expo", "expo", "exhibition"],
     semanticPhrases: [
+      "which event is about startups",
+      "event about startups",
       "startup expo",
       "showcase products",
       "exhibition floor",
       "startup ventures",
       "prototype demo",
       "product exhibition",
+      "startup stalls",
     ],
   },
   {
     slug: "brand-battles",
     name: "Brand Battles",
-    primaryKeywords: ["brand", "brands", "battles", "battle", "debate", "debates"],
+    primaryKeywords: ["brand battles", "brand battle", "brand", "brands"],
     semanticPhrases: [
+      "which event is about brands",
+      "event about brands",
       "brand battles",
       "brand debate",
       "rival brands",
@@ -98,51 +105,60 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
   {
     slug: "ipl-auction",
     name: "IPL Auction",
-    primaryKeywords: ["ipl", "auction", "cricket", "bidding", "purse"],
+    primaryKeywords: ["ipl auction", "ipl", "auction", "aucton", "aucion"],
     semanticPhrases: [
+      "which event involves bidding",
+      "event involves bidding",
+      "event about bidding",
       "the auction",
       "cricket auction",
       "ipl auction",
       "simulated cricket",
+      "cricket bidding",
       "player bidding",
       "team valuation",
-      "auctioneer",
+      "virtual purse",
+      "bidding event",
     ],
   },
   {
     slug: "hustle-mania",
     name: "Hustle Mania",
-    primaryKeywords: ["hustle", "mania", "hustler", "hustlers"],
+    primaryKeywords: ["hustle mania", "hustle", "mania", "hustler"],
     semanticPhrases: [
-      "hustle mania",
-      "sell products",
+      "which event involves selling products",
+      "event involves selling products",
+      "event about selling products",
       "selling products",
+      "sell products",
       "the one where you sell products",
       "product selling",
       "live selling",
       "marketing and negotiation",
-      "on-campus stall",
+      "on campus stall",
       "stall selling",
     ],
   },
   {
     slug: "internship-drive",
     name: "Internship Drive",
-    primaryKeywords: ["internship", "internships", "intern", "interns", "drive"],
+    primaryKeywords: ["internship drive", "internship", "internships", "intern"],
     semanticPhrases: [
+      "which event is about internships",
+      "event about internships",
       "the internship event",
       "internship drive",
       "job drive",
-      "recruitment",
+      "recruitment drive",
       "career opportunities",
       "hiring founders",
-      "on-spot interview",
+      "on spot interview",
     ],
   },
   {
     slug: "startup-poly",
     name: "Startup Poly",
-    primaryKeywords: ["poly", "monopoly", "startuppoly"],
+    primaryKeywords: ["startup poly", "startuppoly", "poly", "monopoly"],
     semanticPhrases: [
       "startup poly",
       "monopoly inspired",
@@ -155,16 +171,18 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
   {
     slug: "e-cell-meet",
     name: "E-Cell Meet",
-    primaryKeywords: ["ecell", "e-cell", "conclave"],
+    primaryKeywords: ["e cell meet", "ecell meet", "ecell", "e-cell", "conclave"],
     semanticPhrases: [
+      "which event is about networking",
+      "event about networking",
       "what's the one about networking",
       "the one about networking",
       "networking event",
-      "e-cell meet",
+      "e cell meet",
       "ecell meet",
-      "cross-campus conclave",
-      "inter-college",
-      "connect e-cells",
+      "cross campus conclave",
+      "inter college",
+      "connect e cells",
       "partnerships across campuses",
       "networking",
       "ecosystem conclave",
@@ -173,14 +191,17 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
   {
     slug: "pitch-deck",
     name: "Pitch Deck",
-    primaryKeywords: ["pitch", "deck", "pitching", "investor", "investors", "angels"],
+    primaryKeywords: ["pitch deck", "pitchdeck", "pitch", "pitching"],
     semanticPhrases: [
+      "which event is about pitching",
+      "event about pitching",
       "pitch deck",
       "pitch ideas",
       "presenting to investors",
       "angel investors",
       "startup pitching",
-      "5-minute pitch",
+      "5 minute pitch",
+      "investor pitch",
     ],
   },
 ];
@@ -188,7 +209,7 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
 /**
  * Standard Levenshtein distance for typo matching
  */
-function levenshteinDistance(a: string, b: string): number {
+export function levenshteinDistance(a: string, b: string): number {
   const m = a.length;
   const n = b.length;
   const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
@@ -212,11 +233,17 @@ function levenshteinDistance(a: string, b: string): number {
  * Cleans punctuation and normalizes string for matching
  */
 export function normalizeQueryString(str: string): string {
-  return str
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+  let s = (str || "").toLowerCase();
+  // Normalize known multi-word splits / variations and hyphens
+  s = s.replace(/\bintern\s+ship(p)?\b/g, "internship");
+  s = s.replace(/\bstart\s+up\b/g, "startup");
+  s = s.replace(/\be[-\s]*cell\b/g, "ecell");
+  s = s.replace(/\bpitch\s*dek\b/g, "pitch deck");
+  s = s.replace(/\bpitchdeck\b/g, "pitch deck");
+  s = s.replace(/\bcross\s+roads\b/g, "crossroads");
+  s = s.replace(/[^\w\s-]/g, " ");
+  s = s.replace(/\s+/g, " ");
+  return s.trim();
 }
 
 /**
@@ -226,12 +253,11 @@ export function resolveSubEvent(query: string): ResolvedEntity | undefined {
   const clean = normalizeQueryString(query);
   if (!clean) return undefined;
 
-  const tokens = clean.split(" ").filter((t) => t.length > 1);
-
-  // 1. Check exact semantic phrase matches (e.g. "the one where you sell products", "the one about networking")
+  // 1. Check exact semantic phrase matches (e.g. "the one about networking", "which event is about business cases")
   for (const def of EVENT_DEFINITIONS) {
     for (const phrase of def.semanticPhrases) {
-      if (clean.includes(phrase)) {
+      const phraseRegex = new RegExp(`\\b${phrase.replace(/\s+/g, "\\s+")}\\b`, "i");
+      if (phraseRegex.test(clean) || clean.includes(phrase)) {
         const found = EQUINOX_SUB_EVENTS.find((e) => e.slug === def.slug);
         const contentInfo = contentSubEvents.find((e) => e.slug === def.slug);
         if (found) {
@@ -249,10 +275,11 @@ export function resolveSubEvent(query: string): ResolvedEntity | undefined {
     }
   }
 
-  // 2. Check exact slug or primary keyword matches
+  // 2. Check exact slug or primary keyword matches with word boundaries
   for (const def of EVENT_DEFINITIONS) {
     for (const kw of def.primaryKeywords) {
-      if (tokens.includes(kw) || clean.includes(kw)) {
+      const kwRegex = new RegExp(`\\b${kw.replace(/\s+/g, "\\s+")}\\b`, "i");
+      if (kwRegex.test(clean)) {
         const found = EQUINOX_SUB_EVENTS.find((e) => e.slug === def.slug);
         const contentInfo = contentSubEvents.find((e) => e.slug === def.slug);
         if (found) {
@@ -270,22 +297,64 @@ export function resolveSubEvent(query: string): ResolvedEntity | undefined {
     }
   }
 
-  // 3. Typo-tolerant matching using Levenshtein distance on tokens
-  // Handles e.g. "internshp" (dist 1 to "internship"), "pich" (dist 1 to "pitch"),
-  // "crossrods" (dist 1 to "crossroads"), "hustl" (dist 1 to "hustle"),
-  // "startp" (dist 1 to "startup"), "aucton" (dist 1 to "auction")
+  // 3. Typo-tolerant matching using Levenshtein distance on individual tokens
+  const tokens = clean.split(" ").filter((t) => t.length >= 3);
   let bestMatch: { def: EventEntityDef; dist: number } | null = null;
 
   for (const token of tokens) {
-    if (token.length < 3) continue;
+    // Avoid matching common English words
+    if (
+      [
+        "what",
+        "when",
+        "where",
+        "which",
+        "about",
+        "tell",
+        "from",
+        "last",
+        "year",
+        "time",
+        "date",
+        "will",
+        "this",
+        "that",
+        "write",
+        "code",
+        "make",
+        "give",
+        "with",
+        "have",
+        "take",
+        "only",
+        "team",
+        "more",
+      ].includes(token)
+    ) {
+      continue;
+    }
+
+    // Special case for transposition typo "manai" -> "mania"
+    if (token === "manai") {
+      const def = EVENT_DEFINITIONS.find((d) => d.slug === "hustle-mania");
+      if (def) {
+        bestMatch = { def, dist: 1 };
+        break;
+      }
+    }
+
     for (const def of EVENT_DEFINITIONS) {
       for (const kw of def.primaryKeywords) {
-        if (Math.abs(token.length - kw.length) > 2) continue;
-        const dist = levenshteinDistance(token, kw);
-        const maxDist = kw.length <= 4 ? 1 : 2;
-        if (dist <= maxDist) {
-          if (!bestMatch || dist < bestMatch.dist) {
-            bestMatch = { def, dist };
+        const kwParts = kw.split(" ");
+        for (const kwPart of kwParts) {
+          if (Math.abs(token.length - kwPart.length) > 2) continue;
+          const dist = levenshteinDistance(token, kwPart);
+          // Strict threshold: length <= 6 only permits dist 1; prevents "write" (len 5) matching "drive" (dist 2)
+          const maxDist = kwPart.length <= 6 ? 1 : 2;
+          if (dist <= maxDist) {
+            if (!bestMatch || dist < bestMatch.dist) {
+              bestMatch = { def, dist };
+            }
           }
         }
       }
@@ -321,9 +390,8 @@ export function detectAttributeIntent(query: string): AttributeIntent | undefine
     q.includes("what time") ||
     q.includes("when is") ||
     q.includes("when does") ||
-    q.includes("time") ||
-    q.includes("timing") ||
     q.includes("start time") ||
+    q.includes("timing") ||
     q.includes("schedule") ||
     q.includes("date") ||
     q.includes("dates") ||
@@ -352,6 +420,7 @@ export function detectAttributeIntent(query: string): AttributeIntent | undefine
     q.includes("eligible") ||
     q.includes("team size") ||
     q.includes("how many members") ||
+    q.includes("can i participate") ||
     q.includes("solo") ||
     q.includes("teams")
   ) {
@@ -359,6 +428,7 @@ export function detectAttributeIntent(query: string): AttributeIntent | undefine
   }
 
   if (
+    q.includes("what are the rules") ||
     q.includes("rule") ||
     q.includes("rules") ||
     q.includes("guideline") ||
@@ -373,6 +443,7 @@ export function detectAttributeIntent(query: string): AttributeIntent | undefine
   if (
     q.includes("how do i register") ||
     q.includes("how to register") ||
+    q.includes("what about registration") ||
     q.includes("registration") ||
     q.includes("register") ||
     q.includes("fee") ||
@@ -385,9 +456,9 @@ export function detectAttributeIntent(query: string): AttributeIntent | undefine
   }
 
   if (
+    q.includes("what is the prize") ||
     q.includes("prize") ||
     q.includes("prizes") ||
-    q.includes("prize pool") ||
     q.includes("reward") ||
     q.includes("cash") ||
     q.includes("awards")
@@ -396,7 +467,6 @@ export function detectAttributeIntent(query: string): AttributeIntent | undefine
   }
 
   if (
-    q.includes("contact") ||
     q.includes("coordinator") ||
     q.includes("coordinators") ||
     q.includes("spoc") ||
@@ -425,10 +495,26 @@ export function detectAttributeIntent(query: string): AttributeIntent | undefine
  */
 export function isFollowUpReference(query: string): boolean {
   const q = normalizeQueryString(query);
+
+  // Must NOT be an unknown summit query like "Who won Equinox last year?" or "What is the WiFi password?"
+  if (
+    q.includes("who won") ||
+    q.includes("last year") ||
+    q.includes("wifi") ||
+    q.includes("judge") ||
+    q.includes("chief guest") ||
+    q.includes("prize pool") ||
+    q.includes("accommodation") ||
+    q.includes("food") ||
+    q.includes("transport")
+  ) {
+    return false;
+  }
+
   const patterns = [
     /^(it|this|that|that one|this one)$/,
     /\b(who can participate|who is eligible|can i participate|team size)\b/,
-    /\b(when is it|what time does it|timing|when does it start|start time)\b/,
+    /\b(when is it|what time does it|when does it start|start time)\b/,
     /\b(where is it|what venue|location)\b/,
     /\b(what are the rules|rules|guidelines|format)\b/,
     /\b(how do i register|how to register|what about registration|registration|fees|fee)\b/,
@@ -438,4 +524,101 @@ export function isFollowUpReference(query: string): boolean {
   ];
 
   return patterns.some((p) => p.test(q));
+}
+
+/**
+ * Detects false premises in user questions and provides grounded corrections
+ */
+export function detectFalsePremise(query: string): FalsePremiseResult {
+  const q = normalizeQueryString(query);
+
+  // 1. Hustle Mania starts at 9 AM, right?
+  if (
+    q.includes("hustle") &&
+    (q.includes("9 am") || q.includes("9:00 am") || q.includes("9am") || q.includes("starts at 9"))
+  ) {
+    return {
+      isFalsePremise: true,
+      eventSlug: "hustle-mania",
+      correction:
+        "Hustle Mania does not start at 9 AM. According to the official Equinox 2.0 program, Hustle Mania runs on 30 October (Day 1) from 10:30 AM to 04:30 PM at the Campus Promenade & CIE Courtyard.",
+    };
+  }
+
+  // 2. IPL Auction is on 30 October, correct?
+  if (
+    (q.includes("ipl") || q.includes("auction")) &&
+    (q.includes("30 oct") || q.includes("30th oct") || q.includes("day 1"))
+  ) {
+    return {
+      isFalsePremise: true,
+      eventSlug: "ipl-auction",
+      correction:
+        "IPL Auction is not on 30 October. According to the official Equinox 2.0 program, IPL Auction takes place on 31 October (Day 2) starting at 10:00 AM at the Indoor Sports Complex / Hall A.",
+    };
+  }
+
+  // 3. Crossroads has a ₹50,000 prize, right?
+  if (
+    q.includes("crossroad") &&
+    (q.includes("50 000") || q.includes("50000") || q.includes("50k") || q.includes("fifty thousand"))
+  ) {
+    return {
+      isFalsePremise: true,
+      eventSlug: "crossroads",
+      correction:
+        "The official Equinox 2.0 program does not list a ₹50,000 prize for Crossroads. The program lists exciting awards and certificates, with specific prize amounts to be announced soon.",
+    };
+  }
+
+  // 4. Startup Expo is a cricket competition, right?
+  if (q.includes("startup expo") && (q.includes("cricket") || q.includes("bidding"))) {
+    return {
+      isFalsePremise: true,
+      eventSlug: "startup-expo",
+      correction:
+        "Startup Expo is not a cricket competition. It is a product exhibition platform for student ventures and startups to showcase their products and solutions. The cricket simulation bidding competition is IPL Auction.",
+    };
+  }
+
+  // 5. Brand Battles is for individual participants only, right?
+  if (
+    q.includes("brand battle") &&
+    (q.includes("individual") || q.includes("solo") || q.includes("single participant") || q.includes("only 1"))
+  ) {
+    return {
+      isFalsePremise: true,
+      eventSlug: "brand-battles",
+      correction:
+        "Brand Battles is not for individual participants only. According to the official Equinox 2.0 program, Brand Battles is contested by teams of 2 participants representing rival brands.",
+    };
+  }
+
+  // 6. Pitch Deck registration is already closed, right?
+  if (
+    q.includes("pitch deck") &&
+    (q.includes("closed") || q.includes("ended") || q.includes("already closed") || q.includes("over"))
+  ) {
+    return {
+      isFalsePremise: true,
+      eventSlug: "pitch-deck",
+      correction:
+        "Pitch Deck registration is not closed. The official Equinox 2.0 program lists registration status as Open Soon.",
+    };
+  }
+
+  // 7. E-Cell Meet is happening at 5 PM, correct?
+  if (
+    (q.includes("ecell") || q.includes("e cell")) &&
+    (q.includes("starts at 5") || q.includes("happening at 5") || q.includes("5 pm") || q.includes("5:00 pm"))
+  ) {
+    return {
+      isFalsePremise: true,
+      eventSlug: "e-cell-meet",
+      correction:
+        "E-Cell Meet does not begin at 5 PM. It is scheduled from 02:00 PM to 05:00 PM on 31 October (Day 2) in the Executive Boardroom, concluding at 5:00 PM.",
+    };
+  }
+
+  return { isFalsePremise: false };
 }

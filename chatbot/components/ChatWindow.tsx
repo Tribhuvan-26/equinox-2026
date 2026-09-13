@@ -142,43 +142,43 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
   };
 
   return (
-    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-3xl border-2 border-white/60 bg-[#2074d5] text-white shadow-[0_25px_60px_-15px_rgba(0,0,0,0.6)]">
+    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl sm:rounded-3xl border border-white/50 bg-[#2074d5] text-white shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_25px_rgba(32,116,213,0.35)]">
       {/* Header */}
-      <div className="chatbot-riso-bg flex items-center justify-between border-b border-white/20 px-4 py-3.5 sm:px-5">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/40 bg-white text-[#2074d5] shadow-sm">
-            <Bot className="h-5 w-5" />
+      <div className="chatbot-riso-bg flex items-center justify-between border-b border-white/20 px-3.5 py-2.5 sm:px-4 sm:py-3">
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/40 bg-white text-[#2074d5] shadow-xs">
+            <Bot className="h-4.5 w-4.5" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-mono text-sm font-black tracking-wider uppercase text-white">
+              <span className="font-mono text-xs font-black tracking-wider uppercase text-white sm:text-sm">
                 EQUINOX AI
               </span>
-              <span className="rounded bg-white px-1 py-0.2 font-mono text-[9px] font-black text-[#282828]">
+              <span className="rounded bg-white px-1 py-0.2 font-mono text-[8.5px] font-black text-[#282828]">
                 2.0
               </span>
             </div>
-            <p className="text-[10px] text-white/75 font-mono">
+            <p className="text-[9.5px] text-white/75 font-mono">
               Grounded In Official Details
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           <button
             onClick={handleReset}
-            className="rounded-full p-1.5 text-white/70 transition hover:bg-white/10 hover:text-white"
+            className="rounded-full p-1.5 text-white/70 transition hover:bg-white/15 hover:text-white"
             title="Reset conversation"
             aria-label="Reset chat"
           >
-            <RotateCcw className="h-4 w-4" />
+            <RotateCcw className="h-3.5 w-3.5" />
           </button>
           <button
             onClick={onClose}
-            className="rounded-full p-1.5 text-white/70 transition hover:bg-white/10 hover:text-white"
+            className="rounded-full p-1.5 text-white/70 transition hover:bg-white/15 hover:text-white"
             aria-label="Close chat window"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4.5 w-4.5" />
           </button>
         </div>
       </div>
@@ -186,7 +186,7 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
       {/* Message History Scroller */}
       <div
         ref={scrollRef}
-        className="chatbot-scrollbar flex-1 overflow-y-auto p-4 space-y-4"
+        className="chatbot-scrollbar flex-1 overflow-y-auto p-3 sm:p-3.5 space-y-3"
       >
         {messages.map((msg, idx) => (
           <ChatMessage
@@ -200,7 +200,7 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
 
         {/* Typing Loading State */}
         {isTyping && (
-          <div className="flex items-center gap-1.5 rounded-2xl border border-white/30 bg-[#0c2b94]/80 px-4 py-2.5 text-white/80 max-w-[90px]">
+          <div className="flex items-center gap-1.5 rounded-2xl border border-white/30 bg-[#0c2b94]/80 px-3.5 py-2 text-white/80 max-w-[80px]">
             <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white [animation-delay:-0.3s]" />
             <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white [animation-delay:-0.15s]" />
             <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white" />
@@ -209,29 +209,29 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
       </div>
 
       {/* Quick Action Bar / Sub-Events Expansion Row */}
-      <div className="border-t border-white/20 bg-[#0c2b94]/90 px-3 py-2 text-white">
+      <div className="border-t border-white/15 bg-[#0c2b94]/95 px-2.5 py-1.5 text-white">
         {isEventListOpen ? (
           <div>
-            <div className="mb-1.5 flex items-center justify-between font-mono text-[11px] text-white/90">
-              <span className="font-bold tracking-wider uppercase text-white flex items-center gap-1.5">
+            <div className="mb-1 flex items-center justify-between font-mono text-[10px] text-white/90">
+              <span className="font-bold tracking-wider uppercase text-white flex items-center gap-1">
                 <Calendar className="h-3 w-3" />
                 <span>Select Sub-Event:</span>
               </span>
               <button
                 type="button"
                 onClick={() => setIsEventListOpen(false)}
-                className="text-[10px] font-mono text-white/75 hover:text-white underline transition"
+                className="text-[9.5px] font-mono text-white/75 hover:text-white underline transition"
               >
                 ← Back
               </button>
             </div>
-            <div className="flex flex-wrap gap-1.5 max-h-[105px] overflow-y-auto chatbot-scrollbar pt-0.5">
+            <div className="flex flex-wrap gap-1 max-h-[88px] overflow-y-auto chatbot-scrollbar pt-0.5">
               {SUB_EVENTS.map((evt) => (
                 <button
                   key={evt.slug}
                   type="button"
                   onClick={() => handleEventClick(evt.slug)}
-                  className="rounded-full border border-white/40 bg-white/10 px-2.5 py-1 font-mono text-[11px] font-medium text-white transition hover:border-white hover:bg-white hover:text-[#2074d5] active:scale-95"
+                  className="rounded-full border border-white/30 bg-white/10 px-2 py-0.5 font-mono text-[10px] font-medium text-white transition hover:border-white hover:bg-white hover:text-[#2074d5] active:scale-95"
                 >
                   {evt.name}
                 </button>
@@ -239,14 +239,14 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
             </div>
           </div>
         ) : (
-          <div className="flex flex-wrap items-center gap-1.5 max-h-[64px] overflow-y-auto chatbot-scrollbar">
+          <div className="flex flex-wrap items-center gap-1 max-h-[56px] overflow-y-auto chatbot-scrollbar">
             {/* Events Quick-Action Button */}
             <button
               type="button"
               onClick={() => setIsEventListOpen(true)}
-              className="flex items-center gap-1 rounded-full border border-white bg-white/20 px-2.5 py-1 font-mono text-[11px] font-black text-white shadow-xs transition hover:bg-white hover:text-[#2074d5] active:scale-95"
+              className="flex items-center gap-1 rounded-full border border-white bg-white/20 px-2 py-0.5 font-mono text-[10px] font-black text-white shadow-xs transition hover:bg-white hover:text-[#2074d5] active:scale-95"
             >
-              <Calendar className="h-3 w-3" />
+              <Calendar className="h-2.5 w-2.5" />
               Events
             </button>
             {DEFAULT_QUICK_ACTIONS.map((action, idx) => (
@@ -254,7 +254,7 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
                 key={idx}
                 type="button"
                 onClick={() => handleSendMessage(action)}
-                className="rounded-full border border-white/35 bg-white/10 px-2.5 py-1 font-mono text-[11px] font-medium text-white transition hover:border-white hover:bg-white hover:text-[#2074d5] active:scale-95"
+                className="rounded-full border border-white/30 bg-white/10 px-2 py-0.5 font-mono text-[10px] font-medium text-white transition hover:border-white hover:bg-white hover:text-[#2074d5] active:scale-95"
               >
                 {action}
               </button>
