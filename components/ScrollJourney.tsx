@@ -7,7 +7,7 @@ import Lenis from "lenis";
 import Link from "next/link";
 import { ArrowRight, Mouse } from "lucide-react";
 import Globe from "./Globe";
-import { HangingTag, InstitutionalHeader } from "../app/EventGraphics";
+import { InstitutionalHeader } from "../app/EventGraphics";
 import { subEvents } from "@/lib/content";
 import {
   PLANET_LAYOUTS,
@@ -32,8 +32,8 @@ export default function ScrollJourney() {
   const heroSubtitleRef = useRef<HTMLDivElement>(null);   // tag + subtitle
   const exploreRef      = useRef<HTMLDivElement>(null);   // CTA button
 
-  // ── PERSISTENT HEADER WRAPPER ──────────────────────────────────────────────
   const persistentHeaderRef = useRef<HTMLDivElement>(null);
+  const navbarWrapperRef    = useRef<HTMLDivElement>(null);
 
   // ── JOURNEY LAYER ────────────────────────────────────────────────────────────
   const journeyLayerRef   = useRef<HTMLDivElement>(null);
@@ -102,8 +102,14 @@ export default function ScrollJourney() {
 
       rocketRef.current.setAttribute("transform", `translate(${pt.x}, ${pt.y}) rotate(${angle})`);
 
+      // Calculate translation considering the dynamic scale
+      const currentScaleStr = getComputedStyle(document.documentElement).getPropertyValue('--journey-scale');
+      const currentScale = currentScaleStr ? parseFloat(currentScaleStr) : 0.65;
+      
       const targetScreenX = Math.min(window.innerWidth * 0.28, 420);
-      const worldX = pt.x > targetScreenX ? -(pt.x - targetScreenX) : 0;
+      const unscaledTargetScreenX = targetScreenX / currentScale;
+      
+      const worldX = pt.x > unscaledTargetScreenX ? -(pt.x - unscaledTargetScreenX) : 0;
       worldRef.current.style.transform = `translate3d(${worldX}px, 0, 0)`;
 
       let currentEventTitle = "";
@@ -114,7 +120,7 @@ export default function ScrollJourney() {
         if (dist < 480) {
           const t = Math.max(0, 1 - dist / 420);
           cardEl.style.opacity = `${t}`;
-          cardEl.style.transform = `translateY(${(1 - t) * 20}px)`;
+          cardEl.style.transform = `translateY(${(1 - t) * 20}px) scale(calc(1 / var(--journey-scale, 0.65)))`;
           cardEl.style.pointerEvents = t > 0.4 ? "auto" : "none";
           if (t > 0.3) currentEventTitle = `${layout.badge} · ${subEvents[idx]?.name || ""}`;
         } else {
@@ -127,7 +133,7 @@ export default function ScrollJourney() {
         if (pt.x > 14600) {
           const t = Math.min(1, Math.max(0, (pt.x - 14600) / 600));
           completionCardRef.current.style.opacity = `${t}`;
-          completionCardRef.current.style.transform = `translateY(${(1 - t) * 20}px)`;
+          completionCardRef.current.style.transform = `translateY(${(1 - t) * 20}px) scale(calc(1 / var(--journey-scale, 0.65)))`;
           completionCardRef.current.style.pointerEvents = t > 0.4 ? "auto" : "none";
           if (t > 0.3) currentEventTitle = "Expedition Complete · All 10 Explored";
         } else {
@@ -188,8 +194,32 @@ export default function ScrollJourney() {
 
       // --- PHASE 2 (10%–15%): Move Wordmark UP to Sticky Header ---
       mainTl.to(persistentHeaderRef.current, { 
-        y: "-42vh", // Moves from center of screen up to underneath navbar
-        scale: 0.35, 
+        y: () => {
+          if (!navbarWrapperRef.current || !heroWordmarkRef.current) return 0;
+          const navRect = navbarWrapperRef.current.getBoundingClientRect();
+          const wordmarkRect = heroWordmarkRef.current.getBoundingClientRect();
+          
+          // Target scale for the container
+          const targetScale = window.innerWidth < 768 ? 0.22 : window.innerWidth < 1280 ? 0.28 : 0.35;
+          
+          // The visual height of the text after scaling the container
+          const scaledWordmarkHeight = wordmarkRect.height * targetScale;
+          
+          // We want the TOP of the scaled text to sit just below the navbar + some padding (e.g. 16px)
+          const targetWordmarkTop = navRect.bottom + 16; 
+          
+          // The container (persistentHeaderRef) scales from its center (50% 50%).
+          // So the text (which is in the center) will also scale down around its center.
+          // Its visual center doesn't change relative to the screen before translation.
+          const wordmarkCenterY = wordmarkRect.top + wordmarkRect.height / 2;
+          
+          // Its un-translated scaled top would be:
+          const scaledWordmarkTopBeforeTranslate = wordmarkCenterY - (scaledWordmarkHeight / 2);
+          
+          // The translation needed is the difference:
+          return targetWordmarkTop - scaledWordmarkTopBeforeTranslate;
+        },
+        scale: () => window.innerWidth < 768 ? 0.22 : window.innerWidth < 1280 ? 0.28 : 0.35, 
         duration: 0.05,
         ease: "power2.inOut" 
       }, 0.1);
@@ -210,9 +240,40 @@ export default function ScrollJourney() {
       }, 0.2);
 
       updateJourneyProgress(0);
+
+      // Store header space in CSS variable for journey centering
+      const updateHeaderSpace = () => {
+        if (!navbarWrapperRef.current || !heroWordmarkRef.current) return;
+        const navRect = navbarWrapperRef.current.getBoundingClientRect();
+        const wordmarkRect = heroWordmarkRef.current.getBoundingClientRect();
+        const targetScale = window.innerWidth < 768 ? 0.22 : window.innerWidth < 1280 ? 0.28 : 0.35;
+        const scaledWordmarkHeight = wordmarkRect.height * targetScale;
+        const headerSpace = navRect.bottom + 16 + scaledWordmarkHeight + 32; // 32px padding below wordmark
+        document.documentElement.style.setProperty('--header-space', `${headerSpace}px`);
+
+        // Dynamically scale the horizontal journey to fit the remaining viewport
+        const availableHeight = window.innerHeight - headerSpace;
+        // Active journey content spans roughly from Y=150 to Y=970 (820px tall)
+        const activeHeight = 820;
+        const journeyScale = Math.min(availableHeight / activeHeight, 0.65);
+        document.documentElement.style.setProperty('--journey-scale', `${journeyScale}`);
+      };
+      updateHeaderSpace();
+      window.addEventListener('resize', updateHeaderSpace);
+      return () => {
+        window.removeEventListener("resize", updateHeaderSpace);
+      };
     }, containerRef);
 
     return () => ctx.revert();
+  }, [subEvents]);
+
+  // Force a ScrollTrigger refresh after a short delay to handle font loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      window.dispatchEvent(new Event("resize"));
+    }, 500);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -239,6 +300,7 @@ export default function ScrollJourney() {
             INSTITUTIONAL HEADER (NavBar area) — always fixed on top
             ================================================================ */}
         <div
+          ref={navbarWrapperRef}
           className="fixed top-0 left-0 w-full px-4 pt-4 sm:px-8 sm:pt-6 pointer-events-auto"
           style={{ zIndex: 50 }}
         >
@@ -260,8 +322,8 @@ export default function ScrollJourney() {
             ref={globeHeroRef}
             className="absolute flex items-center justify-center will-change-transform pointer-events-none"
             style={{
-              width: "min(85vw, 85vh)",
-              height: "min(85vw, 85vh)",
+              width: "min(120vw, 120vh)",
+              height: "min(120vw, 120vh)",
               borderRadius: "50%",
               overflow: "hidden",
               zIndex: 3, // Sit alongside the text, not behind it
@@ -310,7 +372,6 @@ export default function ScrollJourney() {
             className="relative flex flex-col items-center gap-4 pointer-events-none"
             style={{ zIndex: 2 }}
           >
-            <HangingTag />
             <p
               className="font-mono font-black uppercase tracking-[0.22em] text-[#F7F2F6]/70"
               style={{ fontSize: "clamp(0.6rem, 1.1vw, 0.85rem)" }}
@@ -336,8 +397,8 @@ export default function ScrollJourney() {
             ================================================================ */}
         <div
           ref={journeyLayerRef}
-          className="absolute inset-0 pointer-events-none"
-          style={{ opacity: 0, zIndex: 10 }}
+          className="absolute left-0 right-0 bottom-0 pointer-events-none"
+          style={{ top: "var(--header-space, 200px)", opacity: 0, zIndex: 10, overflow: "hidden" }}
         >
           {/* Side scroll indicator */}
           <div
@@ -355,14 +416,16 @@ export default function ScrollJourney() {
             </div>
           </div>
 
-          {/* Horizontal world */}
-          <div
-            ref={worldRef}
-            className="absolute top-1/2 left-0 will-change-transform"
-            style={{ width: `${TOTAL_WORLD_WIDTH}px`, height: "1080px", marginTop: "-540px" }}
-          >
-            <svg
-              viewBox={`0 0 ${TOTAL_WORLD_WIDTH} 1080`}
+          {/* Scaler Wrapper: dynamically shrinks world to fit available height */}
+          <div className="absolute inset-0" style={{ transform: "scale(var(--journey-scale, 0.65))", transformOrigin: "0% 0%" }}>
+            {/* Horizontal world */}
+            <div
+              ref={worldRef}
+              className="absolute left-0 will-change-transform"
+              style={{ width: `${TOTAL_WORLD_WIDTH}px`, height: "1080px", top: "0%", marginTop: "-80px" }}
+            >
+              <svg
+                viewBox={`0 0 ${TOTAL_WORLD_WIDTH} 1080`}
               className="absolute inset-0 w-full h-full pointer-events-none"
               style={{ overflow: "visible" }}
             >
@@ -447,32 +510,81 @@ export default function ScrollJourney() {
             {PLANET_LAYOUTS.map((layout, idx) => {
               const ev = subEvents[idx];
               if (!ev) return null;
+              const isEven = idx % 2 === 0;
               return (
                 <div
                   key={ev.id}
                   ref={(el) => { cardRefs.current[idx] = el; }}
-                  className="absolute opacity-0 rounded-3xl border border-white/10 bg-[#2A2A2A]/85 p-7 sm:p-8 backdrop-blur-md shadow-[0_10px_40px_rgba(0,0,0,0.55)] pointer-events-none"
-                  style={{ left: `${layout.x + 220}px`, top: `${layout.cardTop}px`, width: "420px" }}
+                  className="absolute opacity-0 rounded-[28px] p-1.5 bg-white/[0.04] border border-white/[0.08] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_35px_rgba(0,0,0,0.5)] pointer-events-none transition-[opacity,transform] duration-300"
+                  style={{ 
+                    left: `${layout.x + 250}px`, 
+                    top: `${layout.cardTop}px`, 
+                    width: "460px",
+                    transform: "scale(calc(1 / var(--journey-scale, 0.65)))",
+                    transformOrigin: "left center"
+                  }}
                 >
-                  <div className="flex flex-col items-start text-left">
-                    <span className={`font-mono text-xs font-black tracking-widest uppercase px-3 py-1 rounded-md border ${idx % 2 === 0 ? "text-[#7484FE] bg-[#7484FE]/10 border-[#7484FE]/30" : "text-[#33FF67] bg-[#33FF67]/10 border-[#33FF67]/30"}`}>
-                      {String(idx + 1).padStart(2, "0")} / 10 · {ev.category}
-                    </span>
-                    <div className="mt-5 mb-2 relative h-10 sm:h-12 w-full flex justify-start">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img 
-                        src={`/logos/${ev.slug}.png`}
-                        alt={ev.name} 
-                        className="h-full w-auto object-contain object-left drop-shadow-md" 
-                        draggable={false}
-                      />
-                    </div>
-                    <p className="mt-2 font-mono text-xs font-bold uppercase tracking-wider text-[#7484FE]">{ev.tagline}</p>
-                    <p className="mt-4 text-sm text-[#F7F2F6]/90 leading-relaxed font-sans line-clamp-3">{ev.description}</p>
-                    <div className="mt-6 flex items-center gap-4">
-                      <Link href={`/events/${ev.slug}`} className="inline-flex items-center gap-2 rounded-full bg-[#33FF67] px-7 py-3 text-sm font-bold uppercase tracking-wider text-[#2A2A2A] shadow-[0px_0px_25px_rgba(51,255,103,0.35)] transition hover:scale-105 hover:bg-[#F7F2F6]">
-                        Explore Event <ArrowRight className="h-4 w-4" />
-                      </Link>
+                  {/* Inner Machined Core with Glass & Ambient Glow */}
+                  <div className="relative rounded-[22px] bg-[#1a1a1a]/95 backdrop-blur-xl p-7 border border-white/[0.06] shadow-[inset_0_1px_1px_rgba(255,255,255,0.12)] overflow-hidden">
+                    {/* Ambient Corner Aura Glow matching accent */}
+                    <div 
+                      className={`pointer-events-none absolute -top-16 -right-16 w-44 h-44 rounded-full blur-3xl opacity-20 ${
+                        isEven ? "bg-[#7484FE]" : "bg-[#33FF67]"
+                      }`} 
+                    />
+                    {/* Subtle background blueprint grid accent */}
+                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:16px_16px] opacity-25" />
+
+                    <div className="relative z-10 flex flex-col items-start text-left">
+                      {/* Eyebrow Pill Tag */}
+                      <div className="flex items-center justify-between w-full">
+                        <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-mono font-bold tracking-[0.16em] uppercase border ${
+                          isEven 
+                            ? "text-[#7484FE] bg-[#7484FE]/10 border-[#7484FE]/30 shadow-[0_0_15px_rgba(116,132,254,0.15)]" 
+                            : "text-[#33FF67] bg-[#33FF67]/10 border-[#33FF67]/30 shadow-[0_0_15px_rgba(51,255,103,0.15)]"
+                        }`}>
+                          <span className={`h-1.5 w-1.5 rounded-full ${isEven ? "bg-[#7484FE]" : "bg-[#33FF67]"}`} />
+                          <span>{String(idx + 1).padStart(2, "0")} / 10 · {ev.category}</span>
+                        </div>
+                        
+                        <span className="font-mono text-[10px] tracking-widest text-[#F7F2F6]/40 uppercase">
+                          STAGE {String(idx + 1).padStart(2, "0")}
+                        </span>
+                      </div>
+
+                      {/* Event Logo Header */}
+                      <div className="mt-5 mb-3 relative min-h-[72px] w-full flex items-center justify-start border-b border-white/[0.08] pb-4">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img 
+                          src={`/logos/${ev.slug}.png`}
+                          alt={ev.name} 
+                          className="h-16 sm:h-20 w-auto max-w-[300px] object-contain object-left drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]" 
+                          draggable={false}
+                        />
+                      </div>
+
+                      {/* Tagline */}
+                      <p className="mt-2 font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-[#7484FE]">
+                        {ev.tagline}
+                      </p>
+
+                      {/* Description */}
+                      <p className="mt-3 text-[13px] leading-relaxed text-[#F7F2F6]/75 font-sans line-clamp-3 font-normal">
+                        {ev.description}
+                      </p>
+
+                      {/* Nested CTA & "Button-in-Button" Trailing Icon Architecture */}
+                      <div className="mt-6 flex items-center w-full">
+                        <Link 
+                          href={`/events/${ev.slug}`} 
+                          className="group relative inline-flex items-center justify-between gap-4 rounded-full pl-6 pr-2 py-2 text-xs font-mono font-bold uppercase tracking-[0.12em] text-[#161616] bg-[#33FF67] shadow-[0_0_20px_rgba(51,255,103,0.3),inset_0_1px_0_rgba(255,255,255,0.4)] transition-all duration-300 hover:shadow-[0_0_30px_rgba(51,255,103,0.55)] hover:bg-[#45ff75] hover:scale-[1.02] active:scale-[0.98]"
+                        >
+                          <span>Explore Event</span>
+                          <span className="w-7 h-7 rounded-full bg-[#181818]/15 flex items-center justify-center text-[#161616] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                            <ArrowRight className="h-3.5 w-3.5" />
+                          </span>
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -482,21 +594,48 @@ export default function ScrollJourney() {
             {/* Expedition completion card */}
             <div
               ref={completionCardRef}
-              className="absolute opacity-0 rounded-3xl border border-[#33FF67]/30 bg-[#2A2A2A]/90 p-8 backdrop-blur-md shadow-[0_10px_40px_rgba(0,0,0,0.6)] pointer-events-none"
-              style={{ left: "15200px", top: "280px", width: "440px" }}
+              className="absolute opacity-0 rounded-[28px] p-1.5 bg-white/[0.04] border border-[#33FF67]/30 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_40px_rgba(51,255,103,0.15)] pointer-events-none transition-[opacity,transform] duration-300"
+              style={{ 
+                left: "15200px", 
+                top: "280px", 
+                width: "450px",
+                transform: "scale(calc(1 / var(--journey-scale, 0.65)))",
+                transformOrigin: "left center"
+              }}
             >
-              <div className="flex flex-col items-start text-left">
-                <span className="font-mono text-xs font-black tracking-widest text-[#33FF67] uppercase bg-[#33FF67]/10 px-3 py-1 rounded-md border border-[#33FF67]/30">Mission Accomplished · 10/10</span>
-                <h3 className="mt-3 font-display-title text-4xl font-black uppercase text-[#F7F2F6] leading-none tracking-tight">Summit Gateway</h3>
-                <p className="mt-2 font-mono text-xs font-bold uppercase tracking-wider text-[#7484FE]">The Equinox 2.0 Awaits</p>
-                <p className="mt-4 text-sm text-[#F7F2F6]/90 leading-relaxed font-sans">You have charted every event across the Equinox cosmos. Scroll down to enter the summit story, keynote schedule, venue guides, and registrations.</p>
-                <div className="mt-6">
-                  <a href="#about" className="inline-flex items-center gap-2 rounded-full bg-[#7484FE] px-7 py-3 text-sm font-bold uppercase tracking-wider text-[#F7F2F6] shadow-[0px_0px_25px_rgba(116,132,254,0.35)] transition hover:scale-105 hover:bg-[#F7F2F6] hover:text-[#2A2A2A]">
-                    Enter Summit Below <ArrowRight className="h-4 w-4" />
-                  </a>
+              <div className="relative rounded-[22px] bg-[#1a1a1a]/95 backdrop-blur-xl p-8 border border-white/[0.08] shadow-[inset_0_1px_1px_rgba(255,255,255,0.12)] overflow-hidden">
+                {/* Ambient glow */}
+                <div className="pointer-events-none absolute -top-20 -right-20 w-48 h-48 rounded-full bg-[#33FF67]/20 blur-3xl" />
+                
+                <div className="relative z-10 flex flex-col items-start text-left">
+                  <div className="inline-flex items-center gap-2 font-mono text-[10px] font-black tracking-[0.18em] text-[#33FF67] uppercase bg-[#33FF67]/10 px-3 py-1 rounded-full border border-[#33FF67]/30 shadow-[0_0_15px_rgba(51,255,103,0.15)]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#33FF67]" />
+                    Mission Accomplished · 10/10
+                  </div>
+                  <h3 className="mt-4 font-display text-3xl font-black uppercase text-[#F7F2F6] leading-none tracking-tight">
+                    Summit Gateway
+                  </h3>
+                  <p className="mt-2 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[#7484FE]">
+                    The Equinox 2.0 Awaits
+                  </p>
+                  <p className="mt-3.5 text-[13px] text-[#F7F2F6]/75 leading-relaxed font-sans font-normal">
+                    You have charted every event across the Equinox cosmos. Scroll down to enter the summit story, keynote schedule, venue guides, and registrations.
+                  </p>
+                  <div className="mt-6">
+                    <a 
+                      href="#about" 
+                      className="group relative inline-flex items-center justify-between gap-4 rounded-full pl-6 pr-2 py-2 text-xs font-mono font-bold uppercase tracking-[0.12em] text-[#F7F2F6] bg-[#7484FE] shadow-[0_0_25px_rgba(116,132,254,0.35),inset_0_1px_0_rgba(255,255,255,0.3)] transition-all duration-300 hover:shadow-[0_0_35px_rgba(116,132,254,0.6)] hover:bg-[#8594ff] hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                      <span>Enter Summit Below</span>
+                      <span className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-[#F7F2F6] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </span>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
+          </div>
           </div>
         </div>
 

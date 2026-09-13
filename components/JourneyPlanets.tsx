@@ -60,10 +60,14 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
   return (
     <g
       transform={`translate(${x}, ${y})`}
-      className="cursor-pointer transition-transform duration-300 hover:scale-105"
       id={`planet-node-${index}`}
     >
-      <Link href={`/events/${event.slug}`} className="pointer-events-auto">
+      <Link href={`/events/${event.slug}`} className="group pointer-events-auto cursor-pointer">
+        <g
+          transform="scale(1.45)"
+          className="transition-transform duration-300 ease-out group-hover:scale-105"
+          style={{ transformOrigin: "0px 0px" }}
+        >
         {/* ========================================================
             01. SPOTLIGHT — Visionary Keynotes & Beams
             ======================================================== */}
@@ -376,6 +380,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
           >
             {badge}
           </text>
+        </g>
         </g>
       </Link>
     </g>
