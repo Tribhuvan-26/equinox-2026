@@ -1,0 +1,65 @@
+[
+  {
+    "StartLine": 84,
+    "EndLine": 84,
+    "TargetContent": "href=\"/spotlight-planet.svg\"",
+    "ReplacementContent": "href={`/planets/${event.slug}.svg`}",
+    "AllowMultiple": false
+  },
+  {
+    "StartLine": 105,
+    "EndLine": 111,
+    "TargetContent": "<circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"url(#p02-grad)\" filter=\"drop-shadow(0 0 30px rgba(116,132,254,0.3))\" />\n            {/* Grid Pattern Coordinates */}\n            <line x1=\"-80\" y1=\"0\" x2=\"80\" y2=\"0\" stroke=\"#F7F2F6\" strokeWidth=\"0.8\" opacity=\"0.4\" />\n            <line x1=\"0\" y1=\"-80\" x2=\"0\" y2=\"80\" stroke=\"#F7F2F6\" strokeWidth=\"0.8\" opacity=\"0.4\" />\n            <circle cx=\"0\" cy=\"0\" r=\"45\" fill=\"none\" stroke=\"#F7F2F6\" strokeWidth=\"1\" strokeDasharray=\"2 4\" opacity=\"0.5\" />\n            <rect x=\"-10\" y=\"-10\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"#33FF67\" strokeWidth=\"1.5\" transform=\"rotate(45)\" />\n          ",
+    "ReplacementContent": "<defs>\n              <clipPath id={`planet-clip-${index}`}>\n                <circle cx=\"0\" cy=\"0\" r=\"85\" />\n              </clipPath>\n            </defs>\n            <g filter=\"drop-shadow(0 0 30px rgba(116,132,254,0.3))\">\n              <circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"#0A0A0A\" />\n              <image \n                href={`/planets/${event.slug}.svg`}\n                x=\"-125\"\n                y=\"-125\"\n                width=\"250\"\n                height=\"250\"\n                clipPath={`url(#planet-clip-${index})`}\n                preserveAspectRatio=\"xMidYMid slice\"\n              />\n              <circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"none\" stroke=\"#7484FE\" strokeWidth=\"1.5\" opacity=\"0.8\" />\n            </g>",
+    "AllowMultiple": false
+  },
+  {
+    "StartLine": 122,
+    "EndLine": 128,
+    "TargetContent": "<circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"url(#p03-grad)\" filter=\"drop-shadow(0 0 35px rgba(51,255,103,0.35))\" />\n            {/* Satellite Pods */}\n            <circle cx=\"115\" cy=\"-35\" r=\"5\" fill=\"#33FF67\" />\n            <circle cx=\"-115\" cy=\"35\" r=\"4\" fill=\"#F7F2F6\" />\n            <rect x=\"70\" y=\"65\" width=\"8\" height=\"8\" fill=\"#7484FE\" transform=\"rotate(25 74 69)\" />\n            <circle cx=\"0\" cy=\"0\" r=\"30\" fill=\"none\" stroke=\"#7484FE\" strokeWidth=\"1.5\" opacity=\"0.6\" />\n          ",
+    "ReplacementContent": "<defs>\n              <clipPath id={`planet-clip-${index}`}>\n                <circle cx=\"0\" cy=\"0\" r=\"85\" />\n              </clipPath>\n            </defs>\n            <g filter=\"drop-shadow(0 0 35px rgba(51,255,103,0.35))\">\n              <circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"#0A0A0A\" />\n              <image \n                href={`/planets/${event.slug}.svg`}\n                x=\"-125\"\n                y=\"-125\"\n                width=\"250\"\n                height=\"250\"\n                clipPath={`url(#planet-clip-${index})`}\n                preserveAspectRatio=\"xMidYMid slice\"\n              />\n              <circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"none\" stroke=\"#33FF67\" strokeWidth=\"1.5\" opacity=\"0.8\" />\n            </g>",
+    "AllowMultiple": false
+  },
+  {
+    "StartLine": 138,
+    "EndLine": 144,
+    "TargetContent": "<circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"url(#p04-grad)\" filter=\"drop-shadow(0 0 45px rgba(51,255,103,0.45))\" />\n            {/* Atmospheric Bands */}\n            <path d=\"M -75,-25 Q 0,-45 75,-25\" fill=\"none\" stroke=\"#2A2A2A\" strokeWidth=\"4\" opacity=\"0.4\" />\n            <path d=\"M -83,5 Q 0,-15 83,5\" fill=\"none\" stroke=\"#2A2A2A\" strokeWidth=\"5\" opacity=\"0.4\" />\n            <path d=\"M -75,35 Q 0,15 75,35\" fill=\"none\" stroke=\"#2A2A2A\" strokeWidth=\"4\" opacity=\"0.4\" />\n            <ellipse cx=\"0\" cy=\"0\" rx=\"135\" ry=\"40\" fill=\"none\" stroke=\"#F7F2F6\" strokeWidth=\"1.2\" opacity=\"0.4\" transform=\"rotate(-18)\" />\n          ",
+    "ReplacementContent": "<defs>\n              <clipPath id={`planet-clip-${index}`}>\n                <circle cx=\"0\" cy=\"0\" r=\"85\" />\n              </clipPath>\n            </defs>\n            <g filter=\"drop-shadow(0 0 45px rgba(51,255,103,0.45))\">\n              <circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"#0A0A0A\" />\n              <image \n                href={`/planets/${event.slug}.svg`}\n                x=\"-125\"\n                y=\"-125\"\n                width=\"250\"\n                height=\"250\"\n                clipPath={`url(#planet-clip-${index})`}\n                preserveAspectRatio=\"xMidYMid slice\"\n              />\n              <circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"none\" stroke=\"#33FF67\" strokeWidth=\"1.5\" opacity=\"0.8\" />\n            </g>",
+    "AllowMultiple": false
+  },
+  {
+    "StartLine": 154,
+    "EndLine": 160,
+    "TargetContent": "<circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"url(#p05-grad)\" filter=\"drop-shadow(0 0 40px rgba(255,184,0,0.4))\" />\n            {/* Stadium Rings */}\n            <circle cx=\"0\" cy=\"0\" r=\"60\" fill=\"none\" stroke=\"#F7F2F6\" strokeWidth=\"1\" strokeDasharray=\"3 5\" opacity=\"0.5\" />\n            <circle cx=\"0\" cy=\"0\" r=\"35\" fill=\"none\" stroke=\"#FFB800\" strokeWidth=\"1.5\" opacity=\"0.7\" />\n            <circle cx=\"0\" cy=\"0\" r=\"14\" fill=\"#FFB800\" />\n            <circle cx=\"0\" cy=\"0\" r=\"6\" fill=\"#F7F2F6\" />\n          ",
+    "ReplacementContent": "<defs>\n              <clipPath id={`planet-clip-${index}`}>\n                <circle cx=\"0\" cy=\"0\" r=\"85\" />\n              </clipPath>\n            </defs>\n            <g filter=\"drop-shadow(0 0 40px rgba(255,184,0,0.4))\">\n              <circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"#0A0A0A\" />\n              <image \n                href={`/planets/${event.slug}.svg`}\n                x=\"-125\"\n                y=\"-125\"\n                width=\"250\"\n                height=\"250\"\n                clipPath={`url(#planet-clip-${index})`}\n                preserveAspectRatio=\"xMidYMid slice\"\n              />\n              <circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"none\" stroke=\"#FFB800\" strokeWidth=\"1.5\" opacity=\"0.8\" />\n            </g>",
+    "AllowMultiple": false
+  },
+  {
+    "StartLine": 170,
+    "EndLine": 176,
+    "TargetContent": "<circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"url(#p06-grad)\" filter=\"drop-shadow(0 0 35px rgba(51,255,103,0.35))\" />\n            {/* Dynamic Diagonal Chevrons */}\n            <path d=\"M -50,-60 L -10,-20 L -50,20\" fill=\"none\" stroke=\"#33FF67\" strokeWidth=\"3\" opacity=\"0.6\" />\n            <path d=\"M -10,-60 L 30,-20 L -10,20\" fill=\"none\" stroke=\"#F7F2F6\" strokeWidth=\"3\" opacity=\"0.5\" />\n            <path d=\"M 30,-60 L 70,-20 L 30,20\" fill=\"none\" stroke=\"#7484FE\" strokeWidth=\"3\" opacity=\"0.6\" />\n            <ellipse cx=\"0\" cy=\"0\" rx=\"125\" ry=\"32\" fill=\"none\" stroke=\"#33FF67\" strokeWidth=\"1\" strokeDasharray=\"3 6\" transform=\"rotate(-30)\" />\n          ",
+    "ReplacementContent": "<defs>\n              <clipPath id={`planet-clip-${index}`}>\n                <circle cx=\"0\" cy=\"0\" r=\"85\" />\n              </clipPath>\n            </defs>\n            <g filter=\"drop-shadow(0 0 35px rgba(51,255,103,0.35))\">\n              <circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"#0A0A0A\" />\n              <image \n                href={`/planets/${event.slug}.svg`}\n                x=\"-125\"\n                y=\"-125\"\n                width=\"250\"\n                height=\"250\"\n                clipPath={`url(#planet-clip-${index})`}\n                preserveAspectRatio=\"xMidYMid slice\"\n              />\n              <circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"none\" stroke=\"#33FF67\" strokeWidth=\"1.5\" opacity=\"0.8\" />\n            </g>",
+    "AllowMultiple": false
+  },
+  {
+    "StartLine": 186,
+    "EndLine": 194,
+    "TargetContent": "<circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"url(#p07-grad)\" filter=\"drop-shadow(0 0 30px rgba(116,132,254,0.35))\" />\n            {/* Latitude / Longitude Matrix */}\n            <line x1=\"-80\" y1=\"-25\" x2=\"80\" y2=\"-25\" stroke=\"#7484FE\" strokeWidth=\"1\" opacity=\"0.4\" />\n            <line x1=\"-85\" y1=\"0\" x2=\"85\" y2=\"0\" stroke=\"#F7F2F6\" strokeWidth=\"1.2\" opacity=\"0.6\" />\n            <line x1=\"-80\" y1=\"25\" x2=\"80\" y2=\"25\" stroke=\"#7484FE\" strokeWidth=\"1\" opacity=\"0.4\" />\n            <ellipse cx=\"0\" cy=\"0\" rx=\"40\" ry=\"85\" fill=\"none\" stroke=\"#7484FE\" strokeWidth=\"1\" opacity=\"0.4\" />\n            {/* Arrow Vectors */}\n            <polygon points=\"0,-85 -7,-70 7,-70\" fill=\"#33FF67\" />\n          ",
+    "ReplacementContent": "<defs>\n              <clipPath id={`planet-clip-${index}`}>\n                <circle cx=\"0\" cy=\"0\" r=\"85\" />\n              </clipPath>\n            </defs>\n            <g filter=\"drop-shadow(0 0 30px rgba(116,132,254,0.35))\">\n              <circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"#0A0A0A\" />\n              <image \n                href={`/planets/${event.slug}.svg`}\n                x=\"-125\"\n                y=\"-125\"\n                width=\"250\"\n                height=\"250\"\n                clipPath={`url(#planet-clip-${index})`}\n                preserveAspectRatio=\"xMidYMid slice\"\n              />\n              <circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"none\" stroke=\"#7484FE\" strokeWidth=\"1.5\" opacity=\"0.8\" />\n            </g>",
+    "AllowMultiple": false
+  },
+  {
+    "StartLine": 205,
+    "EndLine": 212,
+    "TargetContent": "<circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"url(#p08-grad)\" filter=\"drop-shadow(0 0 35px rgba(255,112,67,0.35))\" />\n            {/* Quadrant Board Tiles */}\n            <path d=\"M -60,0 L 60,0 M 0,-60 L 0,60\" stroke=\"#2A2A2A\" strokeWidth=\"3\" opacity=\"0.6\" />\n            <circle cx=\"-30\" cy=\"-30\" r=\"8\" fill=\"#33FF67\" />\n            <circle cx=\"30\" cy=\"-30\" r=\"8\" fill=\"#FF7043\" />\n            <circle cx=\"-30\" cy=\"30\" r=\"8\" fill=\"#7484FE\" />\n            <circle cx=\"30\" cy=\"30\" r=\"8\" fill=\"#F7F2F6\" />\n          ",
+    "ReplacementContent": "<defs>\n              <clipPath id={`planet-clip-${index}`}>\n                <circle cx=\"0\" cy=\"0\" r=\"85\" />\n              </clipPath>\n            </defs>\n            <g filter=\"drop-shadow(0 0 35px rgba(255,112,67,0.35))\">\n              <circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"#0A0A0A\" />\n              <image \n                href={`/planets/${event.slug}.svg`}\n                x=\"-125\"\n                y=\"-125\"\n                width=\"250\"\n                height=\"250\"\n                clipPath={`url(#planet-clip-${index})`}\n                preserveAspectRatio=\"xMidYMid slice\"\n              />\n              <circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"none\" stroke=\"#FF7043\" strokeWidth=\"1.5\" opacity=\"0.8\" />\n            </g>",
+    "AllowMultiple": false
+  },
+  {
+    "StartLine": 222,
+    "EndLine": 235,
+    "TargetContent": "<circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"url(#p09-grad)\" filter=\"drop-shadow(0 0 35px rgba(167,139,250,0.35))\" />\n            {/* Constellation Network Nodes */}\n            <line x1=\"-50\" y1=\"-30\" x2=\"0\" y2=\"-50\" stroke=\"#F7F2F6\" strokeWidth=\"1\" opacity=\"0.5\" />\n            <line x1=\"0\" y1=\"-50\" x2=\"50\" y2=\"-20\" stroke=\"#F7F2F6\" strokeWidth=\"1\" opacity=\"0.5\" />\n            <line x1=\"50\" y1=\"-20\" x2=\"30\" y2=\"40\" stroke=\"#F7F2F6\" strokeWidth=\"1\" opacity=\"0.5\" />\n            <line x1=\"30\" y1=\"40\" x2=\"-40\" y2=\"30\" stroke=\"#F7F2F6\" strokeWidth=\"1\" opacity=\"0.5\" />\n            <line x1=\"-40\" y1=\"30\" x2=\"-50\" y2=\"-30\" stroke=\"#F7F2F6\" strokeWidth=\"1\" opacity=\"0.5\" />\n            <circle cx=\"-50\" cy=\"-30\" r=\"4\" fill=\"#33FF67\" />\n            <circle cx=\"0\" cy=\"-50\" r=\"4\" fill=\"#F7F2F6\" />\n            <circle cx=\"50\" cy=\"-20\" r=\"4\" fill=\"#7484FE\" />\n            <circle cx=\"30\" cy=\"40\" r=\"4\" fill=\"#A78BFA\" />\n            <circle cx=\"-40\" cy=\"30\" r=\"4\" fill=\"#F7F2F6\" />\n            <circle cx=\"0\" cy=\"0\" r=\"12\" fill=\"#7484FE\" />\n          ",
+    "ReplacementContent": "<defs>\n              <clipPath id={`planet-clip-${index}`}>\n                <circle cx=\"0\" cy=\"0\" r=\"85\" />\n              </clipPath>\n            </defs>\n            <g filter=\"drop-shadow(0 0 35px rgba(167,139,250,0.35))\">\n              <circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"#0A0A0A\" />\n              <image \n                href={`/planets/${event.slug}.svg`}\n                x=\"-125\"\n                y=\"-125\"\n                width=\"250\"\n                height=\"250\"\n                clipPath={`url(#planet-clip-${index})`}\n                preserveAspectRatio=\"xMidYMid slice\"\n              />\n              <circle cx=\"0\" cy=\"0\" r=\"85\" fill=\"none\" stroke=\"#A78BFA\" strokeWidth=\"1.5\" opacity=\"0.8\" />\n            </g>",
+    "AllowMultiple": false
+  }
+]

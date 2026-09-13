@@ -3,9 +3,6 @@
 import { useRef, useState } from "react";
 import {
   motion,
-  useMotionValueEvent,
-  useScroll,
-  useSpring,
   type Variants,
 } from "framer-motion";
 import Link from "next/link";
@@ -18,13 +15,8 @@ import {
   contact,
 } from "@/lib/content";
 import {
-  InstitutionalHeader,
-  HangingTag,
-  CoverPopUpArt,
   PageFooterTimeline,
-  SubEventBadge,
 } from "./EventGraphics";
-import AccordionGallery from "./components/AccordionGallery";
 import {
   ArrowRight,
   Mail,
@@ -36,6 +28,7 @@ import {
   Layers,
   ExternalLink,
 } from "lucide-react";
+import ScrollJourney from "../components/ScrollJourney";
 
 const heroFadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -43,137 +36,9 @@ const heroFadeUp: Variants = {
 };
 
 export default function HomePage() {
-  const [activeEventIndex, setActiveEventIndex] = useState(0);
-  const eventsScrollRef = useRef<HTMLDivElement>(null);
-
-  // Scroll progress across the pinned fan, eased with a spring so the active
-  // panel settles into place instead of snapping frame-to-frame with raw scroll.
-  const { scrollYProgress } = useScroll({
-    target: eventsScrollRef,
-    offset: ["start start", "end end"],
-  });
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 260,
-    damping: 34,
-    mass: 0.6,
-  });
-
-  useMotionValueEvent(smoothProgress, "change", (p) => {
-    const n = subEvents.length;
-    const idx = Math.min(n - 1, Math.max(0, Math.round(p * n - 0.5)));
-    setActiveEventIndex((prev) => (prev === idx ? prev : idx));
-  });
-
   return (
     <div className="riso-texture brochure-grid min-h-screen overflow-x-clip text-[#F7F2F6] selection:bg-[#7484FE] selection:text-[#2A2A2A]">
-      {/* =========================================================================
-          SECTION 1: HERO / COVER (Page 01)
-          ========================================================================= */}
-      <section
-        id="top"
-        className="relative mx-auto flex min-h-screen max-w-[1400px] flex-col justify-between px-4 pt-4 pb-12 sm:px-8 sm:pt-6"
-      >
-        {/* Institutional Header */}
-        <InstitutionalHeader />
-
-        {/* Cover Title Area — asymmetric on desktop: copy left, pop-up art offset right */}
-        <div className="relative my-auto flex flex-col items-center text-center lg:grid lg:grid-cols-12 lg:items-center lg:gap-10 lg:text-left">
-          <motion.div
-            className="lg:col-span-7"
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.4 }}
-            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12 } } }}
-          >
-            {/* Top Row: Date Pill and Edition */}
-            <motion.div
-              variants={heroFadeUp}
-              className="flex w-full max-w-4xl items-center justify-between px-2 sm:px-4 lg:max-w-none lg:justify-start lg:gap-6 lg:px-0"
-            >
-              <span className="font-mono text-xs font-black tracking-widest uppercase text-[#F7F2F6]/90 sm:text-sm">
-                E-SUMMIT
-              </span>
-              <div className="flex items-center gap-2 rounded-full border-2 border-white/40 bg-white/10 px-4 py-1.5 backdrop-blur-xs">
-                <Calendar className="h-4 w-4 text-[#33FF67]" />
-                <span className="font-mono text-xs font-black tracking-wider uppercase sm:text-sm text-[#F7F2F6]">
-                  {event.date}
-                </span>
-              </div>
-            </motion.div>
-
-            {/* Massive "THE EQUINOX" Title Lockup with Hanging "2.0" */}
-            <motion.div variants={heroFadeUp} className="mt-4 flex justify-center lg:justify-start">
-              <div className="leading-none">
-                <span className="block font-mono text-2xl font-black tracking-widest bg-gradient-to-r from-[#7484FE] to-[#33FF67] bg-clip-text text-transparent sm:text-4xl lg:text-5xl">
-                  THE
-                </span>
-                {/* Wrapping the word in its own relative box */}
-                <div className="relative inline-block">
-                  <h1 className="font-display-title display-title-shadow text-6xl tracking-tighter text-[#F7F2F6] sm:text-8xl md:text-9xl lg:text-[clamp(4rem,10vw,12rem)]">
-                    EQUINOX
-                  </h1>
-                  <div className="absolute top-full left-[57%] -mt-4 sm:-mt-6 lg:-mt-10">
-                    <HangingTag />
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Hashtag Tagline Badge */}
-            <motion.div variants={heroFadeUp} className="mt-4 flex justify-center sm:mt-6 lg:justify-start">
-              <div className="inline-flex items-center gap-2 rounded-md border-2 border-[#33FF67] bg-[#33FF67] px-4 py-2 shadow-[4px_4px_0px_#2A2A2A] sm:px-6 sm:py-2.5">
-                <span className="font-mono text-sm font-black text-[#2A2A2A] sm:text-base">
-                  #
-                </span>
-                <span className="font-mono text-xs font-black tracking-wider uppercase text-[#2A2A2A] sm:text-sm md:text-base">
-                  WHERE PASSION MEETS PERSEVERANCE
-                </span>
-              </div>
-            </motion.div>
-
-            {/* Spaced OVERVIEW Typography */}
-            <motion.div variants={heroFadeUp} className="mt-4 w-full">
-              <h2 className="font-mono text-3xl font-black tracking-[0.28em] text-[#F7F2F6] uppercase sm:text-5xl md:text-6xl lg:text-7xl">
-                OVERVIEW
-              </h2>
-            </motion.div>
-
-            {/* CTA & Quick Actions */}
-            <motion.div variants={heroFadeUp} className="mt-8 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
-              <a
-                href="#events"
-                className="flex items-center gap-2 rounded-full border-2 border-[#2A2A2A] bg-[#7484FE] px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-[#F7F2F6] shadow-[4px_4px_0px_#2A2A2A] transition hover:scale-105 hover:bg-[#5868DF]"
-              >
-                Explore 10 Sub-Events
-                <ArrowRight className="h-4 w-4" />
-              </a>
-              <a
-                href="#about"
-                className="flex items-center gap-2 rounded-full border-2 border-white/80 bg-white/10 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-[#F7F2F6] backdrop-blur-xs transition hover:bg-[#7484FE] hover:border-[#7484FE] hover:text-[#F7F2F6]"
-              >
-                About Equinox
-              </a>
-            </motion.div>
-          </motion.div>
-
-          {/* Vector Pop-Up Book Editorial Art — offset into its own column, overlapping on desktop */}
-          <motion.div
-            className="mt-6 w-full max-w-2xl px-2 sm:mt-8 lg:col-span-5 lg:mt-20 lg:max-w-none lg:translate-x-6 lg:px-0"
-            initial={{ opacity: 0, scale: 0.94, y: 24 }}
-            whileInView={{ opacity: 1, scale: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
-          >
-            <div className="animate-float">
-              <CoverPopUpArt />
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Cover Page Footer Timeline */}
-        <PageFooterTimeline pageNumber="01" />
-      </section>
-
+      <ScrollJourney />
       {/* =========================================================================
           SECTION 2: ABOUT EQUINOX (Who Are We / What We Do / What Is Equinox)
           ========================================================================= */}
@@ -296,133 +161,6 @@ export default function HomePage() {
         <PageFooterTimeline pageNumber="03" />
       </section>
 
-      {/* =========================================================================
-          SECTION 4: SUB-EVENTS (Pages 05 & 06)
-          ========================================================================= */}
-      <section
-        id="events"
-        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
-      >
-        {/* Section Header */}
-        <div>
-          <span className="rounded-full border border-white/40 bg-white/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-white">
-            Pages 05 &amp; 06
-          </span>
-          <h2 className="mt-3 font-display-title text-5xl font-black tracking-tight text-white sm:text-7xl lg:text-8xl">
-            SUB-EVENTS
-          </h2>
-          <p className="mt-3 max-w-xl text-base text-white/90 sm:text-lg">
-            All 10 official sub-events, locked in one after another. Keep scrolling to step through every one, then hit Register on the one you want.
-          </p>
-        </div>
-      </section>
-
-      {/* Scroll-Locked Fan — this wrapper is tall (10 viewport-heights), and
-          the fan pins in place (position: sticky) while it scrolls past, so
-          every event has to be stepped through before the page moves on to
-          the next section below. */}
-      <div ref={eventsScrollRef} style={{ height: `${subEvents.length * 70}vh` }} className="relative">
-        <div className="sticky top-0 flex h-screen items-center px-4 sm:px-8">
-          <div className="mx-auto w-full max-w-[1400px]">
-            <div className="mb-6 text-center font-mono text-xs font-bold uppercase tracking-wider text-white/70">
-              Keep scrolling to move through all {subEvents.length} events
-            </div>
-
-            <div className="h-[520px] lg:h-[560px]">
-              <AccordionGallery
-                activeIndex={activeEventIndex}
-                onSelect={setActiveEventIndex}
-                className="h-full flex-col lg:flex-row"
-                items={subEvents.map((item, idx) => {
-                  const isActive = idx === activeEventIndex;
-                  return {
-                    content: (
-                      <div
-                        className={`h-full w-full border-2 transition-colors duration-300 ${
-                          isActive
-                            ? "border-[#7484FE] bg-[#2A2A2A]"
-                            : "border-white/20 bg-white/5 hover:border-white/40 hover:bg-white/10"
-                        }`}
-                      >
-                        {isActive ? (
-                          /* Expanded content */
-                          <div className="flex h-full flex-col p-6 sm:p-8">
-                        <div className="flex items-center justify-between gap-3">
-                          <span className="font-mono text-xs font-black tracking-widest text-[#7484FE]">
-                            PAGE {item.pageNumber} · {item.category}
-                          </span>
-                          <span className="font-mono text-xs font-bold text-[#F7F2F6]/70">
-                            Event {String(idx + 1).padStart(2, "0")} of {subEvents.length}
-                          </span>
-                        </div>
-
-                        <div className="mt-4 flex min-h-[88px] w-full items-center justify-center rounded-2xl border-2 border-white/20 bg-[#1E1E1E] p-4 text-center">
-                          <SubEventBadge slug={item.slug} />
-                        </div>
-
-                        <p className="mt-5 text-base leading-relaxed text-[#F7F2F6] sm:text-lg">
-                          {item.description}
-                        </p>
-
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          {item.skills.map((skill) => (
-                            <span
-                              key={skill}
-                              className="rounded-full border border-white/20 bg-white/10 px-3 py-0.5 text-xs text-[#F7F2F6]"
-                            >
-                              {skill}
-                            </span>
-                          ))}
-                        </div>
-
-                        <div className="mt-auto flex flex-col gap-3 border-t border-white/20 pt-4 sm:flex-row sm:items-center sm:justify-between">
-                          <span className="flex items-center gap-1.5 text-xs font-semibold text-[#F7F2F6]/80">
-                            <Calendar className="h-3.5 w-3.5 text-[#33FF67]" />
-                            {item.timing}
-                          </span>
-                          <div className="flex flex-wrap items-center gap-3">
-                            <Link
-                              href={`/events/${item.slug}`}
-                              className="group/link flex shrink-0 items-center gap-1 text-xs font-bold text-[#F7F2F6] hover:text-[#7484FE] hover:underline"
-                            >
-                              View Details &amp; Rules
-                              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-1" />
-                            </Link>
-                            <Link
-                              href="/register"
-                              className="flex shrink-0 items-center gap-2 rounded-full border-2 border-[#2A2A2A] bg-[#7484FE] px-5 py-2 text-xs font-bold uppercase tracking-wider text-[#F7F2F6] shadow-[3px_3px_0px_#2A2A2A] transition hover:scale-105 hover:bg-[#5868DF]"
-                            >
-                              Register Now
-                              <ArrowRight className="h-3.5 w-3.5" />
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      /* Collapsed spine: just the number + name */
-                      <div className="flex h-full w-full items-center gap-3 px-5 lg:flex-col lg:justify-between lg:gap-4 lg:px-0 lg:py-6">
-                        <span className="font-mono text-xs font-black text-[#33FF67]">
-                          {String(idx + 1).padStart(2, "0")}
-                        </span>
-                        <span className="font-display-title text-base font-black uppercase tracking-tight text-[#F7F2F6] lg:[writing-mode:vertical-rl]">
-                          {item.name}
-                        </span>
-                      </div>
-                    )}
-                      </div>
-                    ),
-                  };
-                })}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <section className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 pt-4 pb-4 sm:px-8">
-        {/* Page Footer Markers */}
-        <PageFooterTimeline pageNumber={subEvents[activeEventIndex].pageNumber} />
-      </section>
 
       {/* =========================================================================
           SECTION 5: SUMMIT HIGHLIGHTS & OUR IMPACT (Why Sponsor Us)
