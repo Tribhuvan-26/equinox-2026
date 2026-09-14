@@ -74,14 +74,7 @@ export const StartupExpoAnimation: React.FC<AnimationComponentProps> = ({
 
       masterTlRef.current = tl;
       if (typeof window !== "undefined") {
-        (window as any).__startupExpoTl = tl;
-        const pauseTarget = (window as any).__startupExpoPauseAt;
-        if (pauseTarget !== undefined && pauseTarget !== null) {
-          const pauseSec = typeof pauseTarget === "number" ? pauseTarget : 3.0;
-          tl.seek(pauseSec);
-          tl.pause();
-          return;
-        }
+        (window as unknown as { __startupExpoTl?: gsap.core.Timeline }).__startupExpoTl = tl;
       }
     },
     { scope: containerRef }

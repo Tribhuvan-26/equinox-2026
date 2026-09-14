@@ -133,9 +133,6 @@ export const PitchDeckAnimation: React.FC<AnimationComponentProps> = ({
       );
 
       masterTlRef.current = tl;
-      if (typeof window !== "undefined") {
-        (window as unknown as { __pitchDeckTl?: gsap.core.Timeline }).__pitchDeckTl = tl;
-      }
       tl.play();
     }, containerRef);
 
@@ -144,9 +141,6 @@ export const PitchDeckAnimation: React.FC<AnimationComponentProps> = ({
       idleLoopsRef.current = [];
       ctx.revert();
       masterTlRef.current = null;
-      if (typeof window !== "undefined") {
-        delete (window as unknown as { __pitchDeckTl?: gsap.core.Timeline }).__pitchDeckTl;
-      }
     };
   }, [onComplete]);
 

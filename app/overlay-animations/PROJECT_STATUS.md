@@ -39,11 +39,12 @@ Last updated: 2026-09-09 — Startup Expo scene alignment, anatomy, and layout c
 | Pitch Deck | Unassigned | Done | Pitch presentation deck motif, chart bars, slide transitions |
 | Startup Expo | Teammate | Done | Stairs-build concept (step 1-5), authentic vector person+flag, flush riser banners, restored dual side columns |
 | Brand Battles | Teammate | Done | Mirrored podiums/speakers (#scene-base static), dual banner unfold, Space Grotesk text lines top-to-bottom, central lightning+VS pop with 6 impact lines, BRAND (black) + BATTLES (blue) upward punch, stamps & mini graphs, 0.8s hold |
-| IPL Auction | Teammate | Done | Gavel strike, bidding paddle raise, player card reveal |
+| IPL Auction | Teammate | Done | 4.5s motion video, 26 pixel-identical extracted layers, 6-phase choreography, gavel strike + paddle wave + team logo stagger, standalone HTML/SVG player + Next.js GSAP overlay |
 | Internship Drive | Teammate | Not Started | Currently mapped to placeholder animation |
 | E-Cell Meet | Teammate | Not Started | Currently mapped to placeholder animation |
 
 ## Known Bugs Fixed (so we don't repeat them)
+- [2026-09-11] IPL Auction 4.5s Motion Video & Pixel-Identical Artwork Animation — Extracted 26 isolated transparent PNG layers directly from 1024x346 source image (`media 2`) using `sharp` coordinate slicing (`title.png`, `swoosh.png`, `budget_pill.png`, 10 team circles, 10 price capsules, waves, podium, auctioneer arm/gavel, bidder arm/paddle) preserving 100% pixel-identity at rest on `#F7F1E5` solid cream background. Implemented strict 6-phase CSS & GSAP choreography (0.0s–0.8s title pop with overshoot, 0.8s–1.5s swoosh clip-path draw & budget pill slide, 1.5s–2.8s sequential 0.1s staggered team logo scale & price slide up, 2.8s–3.3s wave ripple, 3.3s–4.2s auctioneer gavel strike down with podium bounce and bidder paddle wave, 4.2s–4.5s freeze-frame hold). Rendered deterministic 46-frame motion video artifacts (`.webp` and `.gif`) via headless Chrome CDP and built standalone interactive player with real-time scrubber in `ipl-auction-animation/index.html`.
 - [2026-09-06] Two-tone title text overlap — caused by hardcoded x-coordinates on separate text elements instead of a single text run with tspans. Fixed by using `text-anchor="middle"` + `getBBox()` for clip-path sizing.
 - [2026-09-06] Animation not playing when triggered from event page — overlay host wasn't mounted globally in layout.tsx. Fixed by moving host to root layout.
 - [2026-09-07] Double-vision text ghosting on auto-traced SVGs — auto-vectorizer generated duplicate anti-aliased edge paths. Fixed by cleaning duplicate ghost paths and enforcing spacing in asset generation.

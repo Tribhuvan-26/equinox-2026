@@ -6,7 +6,9 @@ import path from 'path';
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const targetHtmlUrl = 'file:///c:/Users/nithy/OneDrive/Desktop/testing/equinox-2026/ipl-auction-animation/index.html';
 const targetSvgUrl = 'file:///c:/Users/nithy/OneDrive/Desktop/testing/equinox-2026/ipl-auction-animation/scene.svg';
-const artifactsDir = 'C:\\Users\\nithy\\.gemini\\antigravity-ide\\brain\\53ac7f3f-50e7-47a0-94e9-a60cd723b0b2';
+const artifactsDir = 'C:\\Users\\nithy\\.gemini\\antigravity-ide\\brain\\65dea150-622d-4148-ba51-2b3e21d5e452';
+
+if (!fs.existsSync(artifactsDir)) fs.mkdirSync(artifactsDir, { recursive: true });
 
 async function fetchJson(url) {
   return new Promise((resolve, reject) => {
@@ -104,10 +106,9 @@ async function testPage(url, label) {
       }
     });
 
-    // Wait for initial render
-    await sleep(600);
+    // Initial inspection
+    await sleep(300);
 
-    // Evaluate animations and styles in the live DOM
     const evalScript = `
       (() => {
         const getStyle = (sel) => {
@@ -119,16 +120,14 @@ async function testPage(url, label) {
             tagName: el.tagName,
             animationName: cs.animationName,
             animationDuration: cs.animationDuration,
-            animationTimingFunction: cs.animationTimingFunction,
-            animationIterationCount: cs.animationIterationCount,
             animationDelay: cs.animationDelay,
             transform: cs.transform,
             opacity: cs.opacity,
-            filter: cs.filter
+            clipPath: cs.clipPath
           };
         };
 
-        const slots = Array.from(document.querySelectorAll('.team-slot')).map((el, i) => {
+        const teams = Array.from(document.querySelectorAll('.team-logo-group')).map((el, i) => {
           const cs = window.getComputedStyle(el);
           return {
             index: i + 1,
@@ -140,22 +139,28 @@ async function testPage(url, label) {
           };
         });
 
-        const imageEl = document.querySelector('#stage-people image');
-        const imgLoaded = imageEl ? (imageEl.getAttribute('href') || imageEl.getAttribute('xlink:href') || '').substring(0, 30) : null;
+        const prices = Array.from(document.querySelectorAll('.team-price-group')).map((el, i) => {
+          const cs = window.getComputedStyle(el);
+          return {
+            index: i + 1,
+            animationDelay: cs.animationDelay,
+            opacity: cs.opacity
+          };
+        });
 
         return {
-          bannerLeft: getStyle('#banner-left'),
-          bannerRight: getStyle('#banner-right'),
-          headline: getStyle('#headline'),
-          budgetPill: getStyle('#budget-pill'),
-          stagePeople: getStyle('#stage-people'),
-          stagePeopleImage: getStyle('#stage-people image'),
-          audience: getStyle('#audience'),
-          slotsCount: slots.length,
-          slotsSummary: slots,
-          imageSnippet: imgLoaded,
-          url: window.location.href,
-          title: document.title
+          title: getStyle('#layer-title'),
+          swoosh: getStyle('#layer-swoosh'),
+          budgetPill: getStyle('#layer-budget-pill'),
+          wavesLeft: getStyle('#layer-waves-left'),
+          wavesRight: getStyle('#layer-waves-right'),
+          gavelArm: getStyle('#layer-auctioneer-arm-gavel'),
+          podium: getStyle('#layer-podium'),
+          paddleArm: getStyle('#layer-bidder-arm-paddle'),
+          teamsCount: teams.length,
+          pricesCount: prices.length,
+          teamsSummary: teams,
+          pricesSummary: prices
         };
       })()
     `;
@@ -165,60 +170,54 @@ async function testPage(url, label) {
       returnByValue: true
     });
 
-    console.log('\n--- LIVE COMPUTED STYLE INSPECTION IN CHROME ---');
     const data = evalResult.result.value;
-    console.log('1. #banner-left sway animation:');
-    console.log('   - Name:', data.bannerLeft.animationName);
-    console.log('   - Duration:', data.bannerLeft.animationDuration);
-    console.log('   - Current transform:', data.bannerLeft.transform);
+    console.log('\n--- LIVE COMPUTED STYLE INSPECTION IN CHROME ---');
+    console.log('1. #layer-title:', data.title.animationName, 'duration:', data.title.animationDuration);
+    console.log('2. #layer-swoosh:', data.swoosh.animationName, 'clipPath:', data.swoosh.clipPath);
+    console.log('3. #layer-budget-pill:', data.budgetPill.animationName, 'delay:', data.budgetPill.animationDelay);
+    console.log('4. Team Logos count:', data.teamsCount, 'stagger check:', data.teamsSummary.map(t => t.animationDelay).join(', '));
+    console.log('5. Price Tags count:', data.pricesCount, 'stagger check:', data.pricesSummary.map(p => p.animationDelay).join(', '));
+    console.log('6. #layer-waves-left:', data.wavesLeft.animationName, '#layer-waves-right:', data.wavesRight.animationName);
+    console.log('7. #layer-auctioneer-arm-gavel:', data.gavelArm.animationName, 'delay:', data.gavelArm.animationDelay);
+    console.log('8. #layer-podium:', data.podium.animationName);
+    console.log('9. #layer-bidder-arm-paddle:', data.paddleArm.animationName, 'delay:', data.paddleArm.animationDelay);
 
-    console.log('2. #banner-right sway animation:');
-    console.log('   - Name:', data.bannerRight.animationName);
-    console.log('   - Duration:', data.bannerRight.animationDuration);
-    console.log('   - Current transform:', data.bannerRight.transform);
+    // Capture screenshots across the timeline
+    // t=0.4s: Title pop
+    console.log('\nCapturing timeline verification screenshots...');
+    const ss1 = await sendCommand(ws, 'Page.captureScreenshot', { format: 'png' });
+    fs.writeFileSync(path.join(artifactsDir, `${label}_t0_4s.png`), Buffer.from(ss1.data, 'base64'));
+    console.log(`Saved screenshot: ${label}_t0_4s.png`);
 
-    console.log('3. .team-slot popIn stagger animation:');
-    console.log('   - Slots found:', data.slotsCount);
-    data.slotsSummary.forEach(s => {
-      console.log(`     Slot ${s.index} (data-team="${s.dataTeam}"): name=${s.animationName}, delay=${s.animationDelay}, opacity=${s.opacity}`);
-    });
+    // Wait to t=1.1s (swoosh & budget pill)
+    await sleep(700);
+    const ss2 = await sendCommand(ws, 'Page.captureScreenshot', { format: 'png' });
+    fs.writeFileSync(path.join(artifactsDir, `${label}_t1_1s.png`), Buffer.from(ss2.data, 'base64'));
+    console.log(`Saved screenshot: ${label}_t1_1s.png`);
 
-    console.log('4. #stage-people bob animation:');
-    console.log('   - Name:', data.stagePeople.animationName);
-    console.log('   - Duration:', data.stagePeople.animationDuration);
-    console.log('   - Current transform:', data.stagePeople.transform);
+    // Wait to t=2.1s (team logo circles & price tags)
+    await sleep(1000);
+    const ss3 = await sendCommand(ws, 'Page.captureScreenshot', { format: 'png' });
+    fs.writeFileSync(path.join(artifactsDir, `${label}_t2_1s.png`), Buffer.from(ss3.data, 'base64'));
+    console.log(`Saved screenshot: ${label}_t2_1s.png`);
 
-    console.log('5. #stage-people image subtle drop-shadow pulse:');
-    console.log('   - Name:', data.stagePeopleImage.animationName);
-    console.log('   - Duration:', data.stagePeopleImage.animationDuration);
-    console.log('   - Filter:', data.stagePeopleImage.filter);
+    // Wait to t=3.0s (wave ripple)
+    await sleep(900);
+    const ss4 = await sendCommand(ws, 'Page.captureScreenshot', { format: 'png' });
+    fs.writeFileSync(path.join(artifactsDir, `${label}_t3_0s.png`), Buffer.from(ss4.data, 'base64'));
+    console.log(`Saved screenshot: ${label}_t3_0s.png`);
 
-    console.log('6. #headline pulse animation:');
-    console.log('   - Name:', data.headline.animationName);
-    console.log('   - Duration:', data.headline.animationDuration);
-    console.log('   - Current opacity:', data.headline.opacity);
+    // Wait to t=3.75s (gavel strike & paddle wave)
+    await sleep(750);
+    const ss5 = await sendCommand(ws, 'Page.captureScreenshot', { format: 'png' });
+    fs.writeFileSync(path.join(artifactsDir, `${label}_t3_75s.png`), Buffer.from(ss5.data, 'base64'));
+    console.log(`Saved screenshot: ${label}_t3_75s.png`);
 
-    console.log('7. Base64 illustration image:');
-    console.log('   - Loaded in DOM:', !!data.imageSnippet);
-    console.log('   - Snippet:', data.imageSnippet);
-
-    console.log('8. Console errors count:', consoleLogs.length);
-    if (consoleLogs.length > 0) {
-      console.log('Console logs:', JSON.stringify(consoleLogs, null, 2));
-    }
-
-    // Capture screenshot at t=1s
-    const screenshot1 = await sendCommand(ws, 'Page.captureScreenshot', { format: 'png' });
-    const img1Path = path.join(artifactsDir, `${label}_t1.png`);
-    fs.writeFileSync(img1Path, Buffer.from(screenshot1.data, 'base64'));
-    console.log(`Captured live Chrome screenshot: ${img1Path}`);
-
-    // Wait 1.5s and take second screenshot to verify frame changes
-    await sleep(1500);
-    const screenshot2 = await sendCommand(ws, 'Page.captureScreenshot', { format: 'png' });
-    const img2Path = path.join(artifactsDir, `${label}_t2.png`);
-    fs.writeFileSync(img2Path, Buffer.from(screenshot2.data, 'base64'));
-    console.log(`Captured live Chrome screenshot (motion check): ${img2Path}`);
+    // Wait to t=4.4s (clean freeze frame ending)
+    await sleep(650);
+    const ss6 = await sendCommand(ws, 'Page.captureScreenshot', { format: 'png' });
+    fs.writeFileSync(path.join(artifactsDir, `${label}_t4_4s_freeze.png`), Buffer.from(ss6.data, 'base64'));
+    console.log(`Saved screenshot: ${label}_t4_4s_freeze.png`);
 
     ws.close();
   } finally {
@@ -227,11 +226,11 @@ async function testPage(url, label) {
 }
 
 async function main() {
-  await testPage(targetHtmlUrl, 'index_html');
-  await testPage(targetSvgUrl, 'scene_svg');
+  await testPage(targetHtmlUrl, 'ipl_auction_player');
+  console.log('\nAll timeline screenshots and computed style inspections complete!');
 }
 
 main().catch(err => {
-  console.error('Test execution failed:', err);
+  console.error('CDP test failed:', err);
   process.exit(1);
 });
