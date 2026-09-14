@@ -15,8 +15,8 @@ export interface IplAuctionTimelineOptions {
 
 /**
  * Creates the master GSAP lifecycle timeline for the IPL Auction overlay.
- * Controls container backdrop blur/fade, stage scale-in, active scene duration,
- * and clean outro transition.
+ * Controls container backdrop fade, stage entrance, exact 5.00s choreographed
+ * vector animation sequence, clean freeze-frame hold through 5.00s, and outro transition.
  */
 export function createIplAuctionTimeline(
   targets: IplAuctionTimelineTargets,
@@ -37,8 +37,8 @@ export function createIplAuctionTimeline(
 
   if (prefersReducedMotion) {
     if (targets.container) gsap.set(targets.container, { opacity: 1 });
-    if (targets.stageFrame) gsap.set(targets.stageFrame, { opacity: 1, scale: 1 });
-    tl.to({}, { duration: 1.5 });
+    if (targets.stageFrame) gsap.set(targets.stageFrame, { opacity: 1 });
+    tl.to({}, { duration: 2.0 });
     return tl;
   }
 
@@ -48,50 +48,49 @@ export function createIplAuctionTimeline(
   }
 
   if (targets.stageFrame) {
-    gsap.set(targets.stageFrame, { scale: 0.95, opacity: 0 });
+    gsap.set(targets.stageFrame, { opacity: 0 });
   }
 
   if (targets.skipButton) {
     gsap.set(targets.skipButton, { opacity: 0, y: -8 });
   }
 
-  // Entrance
+  // Container & Stage Entrance (0.0s)
   if (targets.container) {
-    tl.to(targets.container, { opacity: 1, duration: 0.35, ease: "power2.out" }, 0.0);
+    tl.to(targets.container, { opacity: 1, duration: 0.25, ease: "power2.out" }, 0.0);
   }
 
   if (targets.stageFrame) {
     tl.to(
       targets.stageFrame,
-      { scale: 1, opacity: 1, duration: 0.45, ease: "power3.out" },
-      0.05
+      { opacity: 1, duration: 0.35, ease: "power3.out" },
+      0.0
     );
   }
 
   if (targets.skipButton) {
     tl.to(
       targets.skipButton,
-      { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" },
-      0.2
+      { opacity: 1, y: 0, duration: 0.25, ease: "power2.out" },
+      0.15
     );
   }
 
-  // Hold phase: Allow the full choreographed SVG animation (up to ~3.1s for audience,
-  // plus looping gavel tap and paddle float) to be appreciated
-  // Outro initiates at 4.8s
+  // 4.6s - 5.00s: Clean completely static hold on the completed poster
+  // Outro initiates at 5.05s to allow the full 5.00s animation to complete
   if (targets.stageFrame) {
     tl.to(
       targets.stageFrame,
-      { scale: 0.97, opacity: 0, duration: 0.35, ease: "power2.in" },
-      4.8
+      { opacity: 0, duration: 0.35, ease: "power2.in" },
+      5.05
     );
   }
 
   if (targets.container) {
-    tl.to(targets.container, { opacity: 0, duration: 0.25, ease: "power2.in" }, 4.95);
+    tl.to(targets.container, { opacity: 0, duration: 0.25, ease: "power2.in" }, 5.2);
   }
 
-  tl.set({}, {}, 5.2);
+  tl.set({}, {}, 5.45);
 
   return tl;
 }

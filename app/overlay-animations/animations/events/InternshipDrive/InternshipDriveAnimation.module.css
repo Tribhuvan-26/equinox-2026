@@ -6,11 +6,7 @@
   width: 100vw;
   height: 100vh;
   z-index: 1000000;
-  background-color: var(--equinox-dark, #2A2A2A);
-  background-image: 
-    linear-gradient(to right, rgba(247, 242, 246, 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(247, 242, 246, 0.07) 1px, transparent 1px);
-  background-size: 34px 34px;
+  background-color: #000000;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -36,31 +32,35 @@
   z-index: 50;
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.4rem 0.75rem;
+  gap: 0.45rem;
+  padding: 0.5rem 1.15rem;
   font-family: var(--font-mono, monospace);
   font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-weight: 800;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: #F7F2F6;
-  background: rgba(20, 20, 21, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background-color: #000000;
+  border: 2px solid transparent;
+  background-image: linear-gradient(#000000, #000000), linear-gradient(135deg, #7484FE, #33FF67);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
   border-radius: 9999px;
   cursor: pointer;
+  box-shadow: 0 0 15px rgba(116, 132, 254, 0.25);
   backdrop-filter: blur(8px);
-  transition: all 0.2s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
   pointer-events: auto;
 }
 
 .skipButton:hover {
-  background: rgba(20, 20, 21, 1);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
+  transform: translate(-1px, -1px);
+  box-shadow: 0 0 22px rgba(51, 255, 103, 0.4);
 }
 
 .skipButton:active {
-  transform: translateY(0);
+  transform: translate(1px, 1px);
+  box-shadow: 0 0 8px rgba(116, 132, 254, 0.2);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -68,4 +68,3 @@
     transition: opacity 0.2s ease-in-out;
   }
 }
-

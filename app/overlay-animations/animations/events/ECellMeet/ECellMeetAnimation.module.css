@@ -1,44 +1,19 @@
 /* app/overlay-animations/animations/events/ECellMeet/ECellMeetAnimation.module.css */
 
 .overlayContainer {
-  --cream: #F5ECD9;
-  --navy: #0A1F44;
-  --blue: #2354E6;
-  --gold: #F2B338;
-  --pink: #E8447A;
-  --black: #111111;
-  --white: #FFFFFF;
-
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 99999;
-  background-color: var(--equinox-dark, #2A2A2A);
-  background-image: 
-    linear-gradient(to right, rgba(247, 242, 246, 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(247, 242, 246, 0.07) 1px, transparent 1px);
-  background-size: 34px 34px;
+  z-index: 1000000;
+  background-color: #202121;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
-  opacity: 0;
-}
-
-.stageFrame {
-  position: relative;
-  width: 100vw;
-  height: calc(100vw * (9 / 16));
-  max-width: calc(100vh * (16 / 9));
-  max-height: 100vh;
-  aspect-ratio: 16 / 9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background-color: transparent;
+  pointer-events: auto;
+  opacity: 1;
 }
 
 .stageSvg {
@@ -49,12 +24,17 @@
   pointer-events: none;
 }
 
-/* Subtle paper texture overlay */
+/* Subtle paper texture overlay (optional accent) */
 .paperNoise {
-  display: none;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.03;
+  mix-blend-mode: overlay;
 }
 
-/* Skip button */
+/* Skip / Dismiss button */
 .skipButton {
   position: absolute;
   top: 1.5rem;
@@ -63,83 +43,81 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.4rem 0.75rem;
+  padding: 0.5rem 1rem;
   font-family: var(--font-mono, monospace);
   font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-weight: 800;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: #F7F2F6;
-  background: rgba(20, 20, 21, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background-color: rgba(32, 33, 33, 0.85);
+  border: 1.5px solid rgba(247, 242, 246, 0.3);
   border-radius: 9999px;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(8px);
-  transition: all 0.2s ease;
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
   pointer-events: auto;
 }
 
 .skipButton:hover {
-  background: rgba(20, 20, 21, 1);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
+  background-color: rgba(42, 42, 42, 0.95);
+  border-color: #33FF67;
+  transform: translate(-1px, -1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
 }
 
 .skipButton:active {
-  transform: translateY(0);
+  transform: translate(1px, 1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* Transform Origins for physical believable motion in 1024x576 coordinates */
-.leftBannerStand {
-  transform-origin: 127px 25px;
+/* Transform Origins and GPU Acceleration for Animated SVG groups */
+#layer-base-scene {
+  pointer-events: none;
+  transform: none !important;
 }
 
-.rightIdBadge {
-  transform-origin: 935px 0px;
+#left-hanging-banner {
+  transform-origin: 192.5px 0px;
+  will-change: transform, opacity;
 }
 
-.chalkboardEasel {
-  transform-origin: 900px 520px;
+#ecell-title-wrapper {
+  will-change: transform, opacity;
 }
 
-.mainTitleGroup {
-  transform-origin: 512px 100px;
+#ecell-title-main {
+  transform-origin: 822.5px 247.5px;
+  will-change: transform, opacity;
 }
 
-.studentLeftGroup {
-  transform-origin: 390px 576px;
+#ecell-rocket-container {
+  transform-origin: 1150px 175px;
+  will-change: transform, opacity;
 }
 
-.studentRightGroup {
-  transform-origin: 640px 576px;
+#rocket-thrust-flame {
+  transform-origin: 1115px 210px;
+  will-change: transform, opacity;
 }
 
-.cardInteractionGroup {
-  transform-origin: 530px 390px;
+#right-banner-information {
+  will-change: transform, opacity;
 }
 
-.cardFocusSparks {
-  transform-origin: 528px 360px;
+#stall-information {
+  will-change: transform, opacity;
 }
 
-.megaphoneGroup {
-  transform-origin: 74px 450px;
+#stall-laptop-screen {
+  transform-origin: center bottom;
+  will-change: transform;
 }
 
-.megaphoneSoundRays {
-  transform-origin: 155px 395px;
-}
-
-.boothGroup {
-  transform-origin: 232px 360px;
-}
-
-.rightBoardGroup {
-  transform-origin: 850px 310px;
-}
-
-.decorationsGroup {
-  transform-origin: 512px 400px;
+#girl-id-tag {
+  transform-origin: center top;
+  will-change: transform;
 }
 
 @media (prefers-reduced-motion: reduce) {
