@@ -23,31 +23,31 @@ export default function ScrollJourney() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // ── HERO LAYER (initial state, fades out on scroll) ─────────────────────────
-  const heroBlockRef    = useRef<HTMLDivElement>(null);   // entire hero content
-  const globeHeroRef    = useRef<HTMLDivElement>(null);   // large background globe
+  const heroBlockRef = useRef<HTMLDivElement>(null);   // entire hero content
+  const globeHeroRef = useRef<HTMLDivElement>(null);   // large background globe
   const heroWordmarkRef = useRef<HTMLDivElement>(null);   // "EQUINOX"
-  const equinRef        = useRef<HTMLSpanElement>(null);  // "EQUIN" part
-  const oRef            = useRef<HTMLSpanElement>(null);  // "O" part
-  const xRef            = useRef<HTMLSpanElement>(null);  // "X" part
+  const equinRef = useRef<HTMLSpanElement>(null);  // "EQUIN" part
+  const oRef = useRef<HTMLSpanElement>(null);  // "O" part
+  const xRef = useRef<HTMLSpanElement>(null);  // "X" part
   const heroSubtitleRef = useRef<HTMLDivElement>(null);   // tag + subtitle
-  const exploreRef      = useRef<HTMLDivElement>(null);   // CTA button
+  const exploreRef = useRef<HTMLDivElement>(null);   // CTA button
 
   const persistentHeaderRef = useRef<HTMLDivElement>(null);
-  const navbarWrapperRef    = useRef<HTMLDivElement>(null);
+  const navbarWrapperRef = useRef<HTMLDivElement>(null);
 
   // ── JOURNEY LAYER ────────────────────────────────────────────────────────────
-  const journeyLayerRef   = useRef<HTMLDivElement>(null);
-  const worldRef          = useRef<HTMLDivElement>(null);
-  const rocketRef         = useRef<SVGGElement>(null);
-  const pathRef           = useRef<SVGPathElement>(null);
-  const cardRefs          = useRef<(HTMLDivElement | null)[]>([]);
+  const journeyLayerRef = useRef<HTMLDivElement>(null);
+  const worldRef = useRef<HTMLDivElement>(null);
+  const rocketRef = useRef<SVGGElement>(null);
+  const pathRef = useRef<SVGPathElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const completionCardRef = useRef<HTMLDivElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
-  const indicatorEventRef  = useRef<HTMLSpanElement>(null);
-  const lenisRef          = useRef<Lenis | null>(null);
+  const indicatorEventRef = useRef<HTMLSpanElement>(null);
+  const lenisRef = useRef<Lenis | null>(null);
 
   const [isGlobeReady, setIsGlobeReady] = useState(false);
-  const [showLoader, setShowLoader]     = useState(true);
+  const [showLoader, setShowLoader] = useState(true);
 
   const handleGlobeReady = useCallback(() => setIsGlobeReady(true), []);
 
@@ -96,19 +96,19 @@ export default function ScrollJourney() {
     const updateJourneyProgress = (p: number) => {
       if (!rocketRef.current || !worldRef.current || !pathRef.current) return;
       const curLen = p * totalPathLen;
-      const pt     = path.getPointAtLength(curLen);
+      const pt = path.getPointAtLength(curLen);
       const nextPt = path.getPointAtLength(Math.min(curLen + 4, totalPathLen));
-      const angle  = Math.atan2(nextPt.y - pt.y, nextPt.x - pt.x) * (180 / Math.PI);
+      const angle = Math.atan2(nextPt.y - pt.y, nextPt.x - pt.x) * (180 / Math.PI);
 
       rocketRef.current.setAttribute("transform", `translate(${pt.x}, ${pt.y}) rotate(${angle})`);
 
       // Calculate translation considering the dynamic scale
       const currentScaleStr = getComputedStyle(document.documentElement).getPropertyValue('--journey-scale');
       const currentScale = currentScaleStr ? parseFloat(currentScaleStr) : 0.65;
-      
+
       const targetScreenX = Math.min(window.innerWidth * 0.28, 420);
       const unscaledTargetScreenX = targetScreenX / currentScale;
-      
+
       const worldX = pt.x > unscaledTargetScreenX ? -(pt.x - unscaledTargetScreenX) : 0;
       worldRef.current.style.transform = `translate3d(${worldX}px, 0, 0)`;
 
@@ -160,23 +160,23 @@ export default function ScrollJourney() {
       });
 
       // --- PHASE 1 (0%–10%): Hero to Wordmark ---
-      mainTl.to([heroSubtitleRef.current, exploreRef.current], { 
-        opacity: 0, y: -20, duration: 0.1 
+      mainTl.to([heroSubtitleRef.current, exploreRef.current], {
+        opacity: 0, y: -20, duration: 0.1
       }, 0);
-      
-      mainTl.fromTo(equinRef.current, 
-        { opacity: 0, x: -60 }, 
-        { opacity: 1, x: 0, duration: 0.1 }, 
+
+      mainTl.fromTo(equinRef.current,
+        { opacity: 0, x: -60 },
+        { opacity: 1, x: 0, duration: 0.1 },
         0
       );
-      
-      mainTl.fromTo(xRef.current, 
-        { opacity: 0, x: 60 }, 
-        { opacity: 1, x: 0, duration: 0.1 }, 
+
+      mainTl.fromTo(xRef.current,
+        { opacity: 0, x: 60 },
+        { opacity: 1, x: 0, duration: 0.1 },
         0
       );
-      
-      mainTl.to(globeHeroRef.current, { 
+
+      mainTl.to(globeHeroRef.current, {
         scale: () => {
           if (!oRef.current || !globeHeroRef.current) return 0.22;
           const oHeight = oRef.current.getBoundingClientRect().height;
@@ -189,66 +189,96 @@ export default function ScrollJourney() {
           const windowCenterX = window.innerWidth / 2;
           return oCenterX - windowCenterX;
         },
-        duration: 0.1 
+        duration: 0.1
       }, 0);
 
       // --- PHASE 2 (10%–15%): Move Wordmark UP to Sticky Header ---
-      mainTl.to(persistentHeaderRef.current, { 
+      mainTl.to(persistentHeaderRef.current, {
         y: () => {
           if (!navbarWrapperRef.current || !heroWordmarkRef.current) return 0;
-          const navRect = navbarWrapperRef.current.getBoundingClientRect();
-          const wordmarkRect = heroWordmarkRef.current.getBoundingClientRect();
-          
+          const navBottom = navbarWrapperRef.current.offsetHeight || 80;
+          const unscaledWordmarkHeight = heroWordmarkRef.current.offsetHeight || 120;
+
           // Target scale for the container
           const targetScale = window.innerWidth < 768 ? 0.22 : window.innerWidth < 1280 ? 0.28 : 0.35;
-          
+
           // The visual height of the text after scaling the container
-          const scaledWordmarkHeight = wordmarkRect.height * targetScale;
-          
+          const scaledWordmarkHeight = unscaledWordmarkHeight * targetScale;
+
           // We want the TOP of the scaled text to sit just below the navbar + some padding (e.g. 16px)
-          const targetWordmarkTop = navRect.bottom + 16; 
-          
+          const targetWordmarkTop = navBottom + 16;
+
           // The container (persistentHeaderRef) scales from its center (50% 50%).
           // So the text (which is in the center) will also scale down around its center.
           // Its visual center doesn't change relative to the screen before translation.
-          const wordmarkCenterY = wordmarkRect.top + wordmarkRect.height / 2;
-          
-          // Its un-translated scaled top would be:
+          const wordmarkCenterY = window.innerHeight / 2;
+
+          // Its un-translated scaled top is:
           const scaledWordmarkTopBeforeTranslate = wordmarkCenterY - (scaledWordmarkHeight / 2);
-          
+
           // The translation needed is the difference:
           return targetWordmarkTop - scaledWordmarkTopBeforeTranslate;
         },
-        scale: () => window.innerWidth < 768 ? 0.22 : window.innerWidth < 1280 ? 0.28 : 0.35, 
+        scale: () => window.innerWidth < 768 ? 0.22 : window.innerWidth < 1280 ? 0.28 : 0.35,
+        autoAlpha: 1,
         duration: 0.05,
-        ease: "power2.inOut" 
+        ease: "power2.inOut"
       }, 0.1);
 
       // --- PHASE 3 (15%–20%): Journey layer fades in ---
-      mainTl.to(journeyLayerRef.current, { opacity: 1, duration: 0.05 }, 0.15);
-      mainTl.to(scrollIndicatorRef.current, { opacity: 1, duration: 0.05 }, 0.15);
+      mainTl.to(journeyLayerRef.current, { autoAlpha: 1, duration: 0.05 }, 0.15);
+      mainTl.to(scrollIndicatorRef.current, { autoAlpha: 1, duration: 0.05 }, 0.15);
 
-      // --- PHASE 4 (20%–100%): Horizontal journey ---
+      // --- PHASE 4 (20%–90%): Horizontal journey ---
       const journeyProxy = { progress: 0 };
       mainTl.to(journeyProxy, {
         progress: 1,
         ease: "none",
-        duration: 0.8,
-        onUpdate: function() {
+        duration: 0.70,
+        onUpdate: function () {
           updateJourneyProgress(this.targets()[0].progress);
         }
       }, 0.2);
+
+      // --- PHASE 5 (90%–100%): Clean exit as journey ends ---
+      // At the end of the scroll journey, the persistent EQUINOX title, institutional header,
+      // and scroll indicator completely disappear before the next section appears.
+      mainTl.to(persistentHeaderRef.current, {
+        autoAlpha: 0,
+        y: "-=40",
+        duration: 0.07,
+        ease: "power2.in"
+      }, 0.91);
+
+      mainTl.to(navbarWrapperRef.current, {
+        autoAlpha: 0,
+        y: "-=20",
+        duration: 0.07,
+        ease: "power2.in"
+      }, 0.91);
+
+      mainTl.to(scrollIndicatorRef.current, {
+        autoAlpha: 0,
+        duration: 0.05,
+        ease: "power2.in"
+      }, 0.89);
+
+      mainTl.to(journeyLayerRef.current, {
+        autoAlpha: 0,
+        duration: 0.07,
+        ease: "power2.in"
+      }, 0.91);
 
       updateJourneyProgress(0);
 
       // Store header space in CSS variable for journey centering
       const updateHeaderSpace = () => {
         if (!navbarWrapperRef.current || !heroWordmarkRef.current) return;
-        const navRect = navbarWrapperRef.current.getBoundingClientRect();
-        const wordmarkRect = heroWordmarkRef.current.getBoundingClientRect();
+        const navBottom = navbarWrapperRef.current.offsetHeight || 80;
+        const unscaledWordmarkHeight = heroWordmarkRef.current.offsetHeight || 120;
         const targetScale = window.innerWidth < 768 ? 0.22 : window.innerWidth < 1280 ? 0.28 : 0.35;
-        const scaledWordmarkHeight = wordmarkRect.height * targetScale;
-        const headerSpace = navRect.bottom + 16 + scaledWordmarkHeight + 32; // 32px padding below wordmark
+        const scaledWordmarkHeight = unscaledWordmarkHeight * targetScale;
+        const headerSpace = navBottom + 16 + scaledWordmarkHeight + 32; // 32px padding below wordmark
         document.documentElement.style.setProperty('--header-space', `${headerSpace}px`);
 
         // Dynamically scale the horizontal journey to fit the remaining viewport
@@ -284,24 +314,24 @@ export default function ScrollJourney() {
         <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 0 }}>
           <svg width="100%" height="100%">
             <pattern id="static-stars" x="0" y="0" width="160" height="160" patternUnits="userSpaceOnUse">
-              <circle fill="#F7F2F6" cx="28"  cy="22"  r="1.1" opacity="0.35" />
-              <circle fill="#F7F2F6" cx="115" cy="48"  r="1.4" opacity="0.55" />
-              <circle fill="#F7F2F6" cx="57"  cy="108" r="0.9" opacity="0.25" />
+              <circle fill="#F7F2F6" cx="28" cy="22" r="1.1" opacity="0.35" />
+              <circle fill="#F7F2F6" cx="115" cy="48" r="1.4" opacity="0.55" />
+              <circle fill="#F7F2F6" cx="57" cy="108" r="0.9" opacity="0.25" />
               <circle fill="#7484FE" cx="138" cy="125" r="1.6" opacity="0.45" />
-              <circle fill="#33FF67" cx="88"  cy="18"  r="0.9" opacity="0.35" />
-              <circle fill="#F7F2F6" cx="14"  cy="70"  r="1.0" opacity="0.30" />
-              <circle fill="#F7F2F6" cx="145" cy="78"  r="1.3" opacity="0.40" />
+              <circle fill="#33FF67" cx="88" cy="18" r="0.9" opacity="0.35" />
+              <circle fill="#F7F2F6" cx="14" cy="70" r="1.0" opacity="0.30" />
+              <circle fill="#F7F2F6" cx="145" cy="78" r="1.3" opacity="0.40" />
             </pattern>
             <rect x="0" y="0" width="100%" height="100%" fill="url(#static-stars)" />
           </svg>
         </div>
 
         {/* ================================================================
-            INSTITUTIONAL HEADER (NavBar area) — always fixed on top
+            INSTITUTIONAL HEADER (NavBar area) — sticky to journey section
             ================================================================ */}
         <div
           ref={navbarWrapperRef}
-          className="fixed top-0 left-0 w-full px-4 pt-4 sm:px-8 sm:pt-6 pointer-events-auto"
+          className="absolute top-0 left-0 w-full px-4 pt-4 sm:px-8 sm:pt-6 pointer-events-auto"
           style={{ zIndex: 50 }}
         >
           <InstitutionalHeader />
@@ -310,11 +340,11 @@ export default function ScrollJourney() {
         {/* ================================================================
             COMBINED PERSISTENT HEADER WRAPPER
             Holds the HTML EQUIN X and the Globe in the center initially.
-            Animates UP to navbar later.
+            Animates UP to navbar later. Scoped to journey section.
             ================================================================ */}
         <div
           ref={persistentHeaderRef}
-          className="fixed inset-0 flex flex-col items-center justify-center pointer-events-none"
+          className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
           style={{ zIndex: 40 }}
         >
           {/* Large Globe — starts huge in hero, shrinks and moves to act as the "O" */}
@@ -426,216 +456,261 @@ export default function ScrollJourney() {
             >
               <svg
                 viewBox={`0 0 ${TOTAL_WORLD_WIDTH} 1080`}
-              className="absolute inset-0 w-full h-full pointer-events-none"
-              style={{ overflow: "visible" }}
-            >
-              <defs>
-                <radialGradient id="flame-glow" cx="0%" cy="50%" r="50%">
-                  <stop offset="0%"   stopColor="#33FF67" stopOpacity="1" />
-                  <stop offset="60%"  stopColor="#33FF67" stopOpacity="0.4" />
-                  <stop offset="100%" stopColor="#33FF67" stopOpacity="0" />
-                </radialGradient>
-                <radialGradient id="earth-glow" cx="30%" cy="30%" r="70%">
-                  <stop offset="0%"   stopColor="#7484FE" stopOpacity="0.8" />
-                  <stop offset="70%"  stopColor="#2A2A2A" stopOpacity="1" />
-                  <stop offset="100%" stopColor="#1E1E1E" stopOpacity="1" />
-                </radialGradient>
-                <radialGradient id="portal-glow" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%"   stopColor="#33FF67" stopOpacity="0.9" />
-                  <stop offset="50%"  stopColor="#7484FE" stopOpacity="0.5" />
-                  <stop offset="100%" stopColor="#2A2A2A" stopOpacity="0" />
-                </radialGradient>
-                <PlanetGradients />
-              </defs>
+                className="absolute inset-0 w-full h-full pointer-events-none"
+                style={{ overflow: "visible" }}
+              >
+                <defs>
+                  <radialGradient id="flame-glow" cx="0%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#33FF67" stopOpacity="1" />
+                    <stop offset="60%" stopColor="#33FF67" stopOpacity="0.4" />
+                    <stop offset="100%" stopColor="#33FF67" stopOpacity="0" />
+                  </radialGradient>
+                  <clipPath id="earth-launch-clip">
+                    <circle cx="0" cy="0" r="140" />
+                  </clipPath>
+                  <radialGradient id="earth-launch-backing" cx="35%" cy="35%" r="65%">
+                    <stop offset="0%" stopColor="#FFFFFF" />
+                    <stop offset="30%" stopColor="#E0E7FF" />
+                    <stop offset="65%" stopColor="#818CF8" />
+                    <stop offset="90%" stopColor="#4338CA" />
+                    <stop offset="100%" stopColor="#1E1B4B" />
+                  </radialGradient>
+                  <radialGradient id="earth-glow" cx="35%" cy="35%" r="65%">
+                    <stop offset="0%" stopColor="#7484FE" stopOpacity="0.9" />
+                    <stop offset="40%" stopColor="#4154F5" stopOpacity="0.7" />
+                    <stop offset="70%" stopColor="#2A2A2A" stopOpacity="1" />
+                    <stop offset="100%" stopColor="#1E1E1E" stopOpacity="1" />
+                  </radialGradient>
+                  <radialGradient id="portal-glow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#33FF67" stopOpacity="0.9" />
+                    <stop offset="50%" stopColor="#7484FE" stopOpacity="0.5" />
+                    <stop offset="100%" stopColor="#2A2A2A" stopOpacity="0" />
+                  </radialGradient>
+                  <PlanetGradients />
+                </defs>
 
-              {/* Ambient stars */}
-              <g opacity="0.35">
-                {Array.from({ length: 75 }).map((_, i) => (
-                  <circle
-                    key={i}
-                    cx={(i * 240 + 180) % TOTAL_WORLD_WIDTH}
-                    cy={(i * 143 + 110) % 960}
-                    r={i % 3 === 0 ? 2 : 1.2}
-                    fill={i % 4 === 0 ? "#7484FE" : i % 5 === 0 ? "#33FF67" : "#F7F2F6"}
-                  />
-                ))}
-              </g>
+                {/* Ambient stars */}
+                <g opacity="0.35">
+                  {Array.from({ length: 75 }).map((_, i) => (
+                    <circle
+                      key={i}
+                      cx={(i * 240 + 180) % TOTAL_WORLD_WIDTH}
+                      cy={(i * 143 + 110) % 960}
+                      r={i % 3 === 0 ? 2 : 1.2}
+                      fill={i % 4 === 0 ? "#7484FE" : i % 5 === 0 ? "#33FF67" : "#F7F2F6"}
+                    />
+                  ))}
+                </g>
 
-              {/* Earth launch site */}
-              <g transform="translate(320, 800)">
-                <circle cx="0" cy="0" r="160" fill="none" stroke="#7484FE" strokeWidth="1" strokeDasharray="4 6" opacity="0.4" />
-                <circle cx="0" cy="0" r="140" fill="url(#earth-glow)" />
-                <circle cx="0" cy="0" r="140" fill="none" stroke="#7484FE" strokeWidth="2" opacity="0.4" />
-                <ellipse cx="0" cy="0" rx="155" ry="40" fill="none" stroke="#7484FE" strokeWidth="1.5" opacity="0.5" transform="rotate(-15)" />
-                <text x="0" y="5" textAnchor="middle" fill="#F7F2F6" fontFamily="monospace" fontSize="11" fontWeight="bold" letterSpacing="3">
-                  EARTH · MLRIT
-                </text>
-              </g>
+                {/* Earth launch site */}
+                <g transform="translate(320, 800)">
+                  <circle cx="0" cy="0" r="165" fill="none" stroke="#7484FE" strokeWidth="1" strokeDasharray="4 6" opacity="0.4" />
+                  <ellipse cx="0" cy="0" rx="170" ry="48" fill="none" stroke="#7484FE" strokeWidth="1.5" opacity="0.6" transform="rotate(-15)" />
+                  
+                  <g filter="drop-shadow(0 0 40px rgba(116,132,254,0.45))">
+                    <circle cx="0" cy="0" r="140" fill="url(#earth-launch-backing)" />
+                    <image
+                      href="/planets/Earth.svg"
+                      x="-155"
+                      y="-155"
+                      width="310"
+                      height="310"
+                      clipPath="url(#earth-launch-clip)"
+                      preserveAspectRatio="xMidYMid slice"
+                    />
+                    <circle cx="0" cy="0" r="140" fill="none" stroke="#7484FE" strokeWidth="2" opacity="0.85" />
+                  </g>
 
-              {/* 10 planets */}
+                  {/* Editorial Pill Tag Under Earth */}
+                  <g transform="translate(0, 165)">
+                    <rect
+                      x="-85"
+                      y="-12"
+                      width="170"
+                      height="24"
+                      rx="12"
+                      fill="#2A2A2A"
+                      stroke="#7484FE"
+                      strokeWidth="1.2"
+                      opacity="0.95"
+                    />
+                    <text
+                      x="0"
+                      y="4"
+                      textAnchor="middle"
+                      fill="#7484FE"
+                      fontFamily="monospace"
+                      fontSize="10"
+                      fontWeight="bold"
+                      letterSpacing="1.5"
+                    >
+                      EARTH · MLRIT
+                    </text>
+                  </g>
+                </g>
+
+                {/* 10 planets */}
+                {PLANET_LAYOUTS.map((layout, idx) => {
+                  const ev = subEvents[idx];
+                  if (!ev) return null;
+                  return <PlanetSVG key={ev.id} index={idx} event={ev} x={layout.x} y={layout.y} badge={layout.badge} />;
+                })}
+
+                {/* Summit gateway */}
+                <g transform="translate(15800, 540)">
+                  <circle cx="0" cy="0" r="180" fill="none" stroke="#7484FE" strokeWidth="1" strokeDasharray="6 6" opacity="0.4" />
+                  <circle cx="0" cy="0" r="145" fill="none" stroke="#33FF67" strokeWidth="1.5" strokeDasharray="4 8" opacity="0.6" />
+                  <circle cx="0" cy="0" r="105" fill="url(#portal-glow)" />
+                  <circle cx="0" cy="0" r="105" fill="none" stroke="#F7F2F6" strokeWidth="2" opacity="0.8" />
+                  <text x="0" y="4" textAnchor="middle" fill="#F7F2F6" fontFamily="monospace" fontSize="11" fontWeight="bold" letterSpacing="2">
+                    SUMMIT GATEWAY
+                  </text>
+                </g>
+
+                {/* Journey path */}
+                <path ref={pathRef} d={JOURNEY_SQUIGGLY_PATH} fill="none" stroke="#7484FE" strokeWidth="3.5" opacity="0.85" strokeLinecap="round" />
+                <path d={JOURNEY_SQUIGGLY_PATH} fill="none" stroke="#33FF67" strokeWidth="1.5" strokeDasharray="6 10" opacity="0.65" />
+
+                {/* Rocket */}
+                <g ref={rocketRef} style={{ willChange: "transform" }}>
+                  <path d="M -22,-5 L -38,0 L -22,5 Z" fill="url(#flame-glow)" className="animate-pulse" />
+                  <path d="M -20,-3 L -30,0 L -20,3 Z" fill="#33FF67" opacity="0.9" />
+                  <path d="M 28,0 Q 8,-12 -18,-10 L -22,-6 L -22,6 L -18,10 Q 8,12 28,0 Z" fill="#F7F2F6" stroke="#2A2A2A" strokeWidth="2" />
+                  <path d="M -8,-9 L -18,-18 L -14,-9 Z" fill="#7484FE" />
+                  <path d="M -8,9 L -18,18 L -14,9 Z" fill="#7484FE" />
+                  <circle cx="14" cy="0" r="5.5" fill="#2A2A2A" stroke="#7484FE" strokeWidth="1.5" />
+                  <circle cx="16" cy="-1.5" r="1.5" fill="#F7F2F6" opacity="0.8" />
+                </g>
+              </svg>
+
+              {/* Event detail cards */}
               {PLANET_LAYOUTS.map((layout, idx) => {
                 const ev = subEvents[idx];
                 if (!ev) return null;
-                return <PlanetSVG key={ev.id} index={idx} event={ev} x={layout.x} y={layout.y} badge={layout.badge} />;
-              })}
+                const isEven = idx % 2 === 0;
+                return (
+                  <div
+                    key={ev.id}
+                    ref={(el) => { cardRefs.current[idx] = el; }}
+                    className="absolute opacity-0 rounded-[28px] p-1.5 bg-white/[0.04] border border-white/[0.08] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_35px_rgba(0,0,0,0.5)] pointer-events-none transition-[opacity,transform] duration-300"
+                    style={{
+                      left: `${layout.x + 220}px`,
+                      top: `${layout.cardTop}px`,
+                      width: "430px",
+                      transform: "scale(calc(1 / var(--journey-scale, 0.65)))",
+                      transformOrigin: "left center"
+                    }}
+                  >
+                    {/* Inner Machined Core with Glass & Ambient Glow */}
+                    <div className="relative rounded-[22px] bg-[#1a1a1a]/95 backdrop-blur-xl p-7 border border-white/[0.06] shadow-[inset_0_1px_1px_rgba(255,255,255,0.12)] overflow-hidden">
+                      {/* Ambient Corner Aura Glow matching accent */}
+                      <div
+                        className={`pointer-events-none absolute -top-16 -right-16 w-44 h-44 rounded-full blur-3xl opacity-20 ${isEven ? "bg-[#7484FE]" : "bg-[#33FF67]"
+                          }`}
+                      />
+                      {/* Subtle background blueprint grid accent */}
+                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:16px_16px] opacity-25" />
 
-              {/* Summit gateway */}
-              <g transform="translate(15800, 540)">
-                <circle cx="0" cy="0" r="180" fill="none" stroke="#7484FE" strokeWidth="1" strokeDasharray="6 6" opacity="0.4" />
-                <circle cx="0" cy="0" r="145" fill="none" stroke="#33FF67" strokeWidth="1.5" strokeDasharray="4 8" opacity="0.6" />
-                <circle cx="0" cy="0" r="105" fill="url(#portal-glow)" />
-                <circle cx="0" cy="0" r="105" fill="none" stroke="#F7F2F6" strokeWidth="2" opacity="0.8" />
-                <text x="0" y="4" textAnchor="middle" fill="#F7F2F6" fontFamily="monospace" fontSize="11" fontWeight="bold" letterSpacing="2">
-                  SUMMIT GATEWAY
-                </text>
-              </g>
+                      <div className="relative z-10 flex flex-col items-start text-left">
+                        {/* Eyebrow Pill Tag */}
+                        <div className="flex items-center justify-between w-full">
+                          <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-mono font-bold tracking-[0.16em] uppercase border ${isEven
+                              ? "text-[#7484FE] bg-[#7484FE]/10 border-[#7484FE]/30 shadow-[0_0_15px_rgba(116,132,254,0.15)]"
+                              : "text-[#33FF67] bg-[#33FF67]/10 border-[#33FF67]/30 shadow-[0_0_15px_rgba(51,255,103,0.15)]"
+                            }`}>
+                            <span className={`h-1.5 w-1.5 rounded-full ${isEven ? "bg-[#7484FE]" : "bg-[#33FF67]"}`} />
+                            <span>{String(idx + 1).padStart(2, "0")} / 10 · {ev.category}</span>
+                          </div>
 
-              {/* Journey path */}
-              <path ref={pathRef} d={JOURNEY_SQUIGGLY_PATH} fill="none" stroke="#7484FE" strokeWidth="3.5" opacity="0.85" strokeLinecap="round" />
-              <path d={JOURNEY_SQUIGGLY_PATH} fill="none" stroke="#33FF67" strokeWidth="1.5" strokeDasharray="6 10" opacity="0.65" />
-
-              {/* Rocket */}
-              <g ref={rocketRef} style={{ willChange: "transform" }}>
-                <path d="M -22,-5 L -38,0 L -22,5 Z" fill="url(#flame-glow)" className="animate-pulse" />
-                <path d="M -20,-3 L -30,0 L -20,3 Z" fill="#33FF67" opacity="0.9" />
-                <path d="M 28,0 Q 8,-12 -18,-10 L -22,-6 L -22,6 L -18,10 Q 8,12 28,0 Z" fill="#F7F2F6" stroke="#2A2A2A" strokeWidth="2" />
-                <path d="M -8,-9 L -18,-18 L -14,-9 Z" fill="#7484FE" />
-                <path d="M -8,9 L -18,18 L -14,9 Z" fill="#7484FE" />
-                <circle cx="14" cy="0" r="5.5" fill="#2A2A2A" stroke="#7484FE" strokeWidth="1.5" />
-                <circle cx="16" cy="-1.5" r="1.5" fill="#F7F2F6" opacity="0.8" />
-              </g>
-            </svg>
-
-            {/* Event detail cards */}
-            {PLANET_LAYOUTS.map((layout, idx) => {
-              const ev = subEvents[idx];
-              if (!ev) return null;
-              const isEven = idx % 2 === 0;
-              return (
-                <div
-                  key={ev.id}
-                  ref={(el) => { cardRefs.current[idx] = el; }}
-                  className="absolute opacity-0 rounded-[28px] p-1.5 bg-white/[0.04] border border-white/[0.08] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_35px_rgba(0,0,0,0.5)] pointer-events-none transition-[opacity,transform] duration-300"
-                  style={{ 
-                    left: `${layout.x + 250}px`, 
-                    top: `${layout.cardTop}px`, 
-                    width: "460px",
-                    transform: "scale(calc(1 / var(--journey-scale, 0.65)))",
-                    transformOrigin: "left center"
-                  }}
-                >
-                  {/* Inner Machined Core with Glass & Ambient Glow */}
-                  <div className="relative rounded-[22px] bg-[#1a1a1a]/95 backdrop-blur-xl p-7 border border-white/[0.06] shadow-[inset_0_1px_1px_rgba(255,255,255,0.12)] overflow-hidden">
-                    {/* Ambient Corner Aura Glow matching accent */}
-                    <div 
-                      className={`pointer-events-none absolute -top-16 -right-16 w-44 h-44 rounded-full blur-3xl opacity-20 ${
-                        isEven ? "bg-[#7484FE]" : "bg-[#33FF67]"
-                      }`} 
-                    />
-                    {/* Subtle background blueprint grid accent */}
-                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:16px_16px] opacity-25" />
-
-                    <div className="relative z-10 flex flex-col items-start text-left">
-                      {/* Eyebrow Pill Tag */}
-                      <div className="flex items-center justify-between w-full">
-                        <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-mono font-bold tracking-[0.16em] uppercase border ${
-                          isEven 
-                            ? "text-[#7484FE] bg-[#7484FE]/10 border-[#7484FE]/30 shadow-[0_0_15px_rgba(116,132,254,0.15)]" 
-                            : "text-[#33FF67] bg-[#33FF67]/10 border-[#33FF67]/30 shadow-[0_0_15px_rgba(51,255,103,0.15)]"
-                        }`}>
-                          <span className={`h-1.5 w-1.5 rounded-full ${isEven ? "bg-[#7484FE]" : "bg-[#33FF67]"}`} />
-                          <span>{String(idx + 1).padStart(2, "0")} / 10 · {ev.category}</span>
-                        </div>
-                        
-                        <span className="font-mono text-[10px] tracking-widest text-[#F7F2F6]/40 uppercase">
-                          STAGE {String(idx + 1).padStart(2, "0")}
-                        </span>
-                      </div>
-
-                      {/* Event Logo Header */}
-                      <div className="mt-5 mb-3 relative min-h-[72px] w-full flex items-center justify-start border-b border-white/[0.08] pb-4">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img 
-                          src={`/logos/${ev.slug}.png`}
-                          alt={ev.name} 
-                          className="h-16 sm:h-20 w-auto max-w-[300px] object-contain object-left drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]" 
-                          draggable={false}
-                        />
-                      </div>
-
-                      {/* Tagline */}
-                      <p className="mt-2 font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-[#7484FE]">
-                        {ev.tagline}
-                      </p>
-
-                      {/* Description */}
-                      <p className="mt-3 text-[13px] leading-relaxed text-[#F7F2F6]/75 font-sans line-clamp-3 font-normal">
-                        {ev.description}
-                      </p>
-
-                      {/* Nested CTA & "Button-in-Button" Trailing Icon Architecture */}
-                      <div className="mt-6 flex items-center w-full">
-                        <Link 
-                          href={`/events/${ev.slug}`} 
-                          className="group relative inline-flex items-center justify-between gap-4 rounded-full pl-6 pr-2 py-2 text-xs font-mono font-bold uppercase tracking-[0.12em] text-[#161616] bg-[#33FF67] shadow-[0_0_20px_rgba(51,255,103,0.3),inset_0_1px_0_rgba(255,255,255,0.4)] transition-all duration-300 hover:shadow-[0_0_30px_rgba(51,255,103,0.55)] hover:bg-[#45ff75] hover:scale-[1.02] active:scale-[0.98]"
-                        >
-                          <span>Explore Event</span>
-                          <span className="w-7 h-7 rounded-full bg-[#181818]/15 flex items-center justify-center text-[#161616] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                            <ArrowRight className="h-3.5 w-3.5" />
+                          <span className="font-mono text-[10px] tracking-widest text-[#F7F2F6]/40 uppercase">
+                            STAGE {String(idx + 1).padStart(2, "0")}
                           </span>
-                        </Link>
+                        </div>
+
+                        {/* Event Logo Header */}
+                        <div className="mt-5 mb-2 relative h-11 w-full flex items-center justify-start border-b border-white/[0.06] pb-4">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={`/logos/${ev.slug}.png`}
+                            alt={ev.name}
+                            className="h-full w-auto object-contain object-left drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
+                            draggable={false}
+                          />
+                        </div>
+
+                        {/* Tagline */}
+                        <p className="mt-2 font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-[#7484FE]">
+                          {ev.tagline}
+                        </p>
+
+                        {/* Description */}
+                        <p className="mt-3 text-[13px] leading-relaxed text-[#F7F2F6]/75 font-sans line-clamp-3 font-normal">
+                          {ev.description}
+                        </p>
+
+                        {/* Nested CTA & "Button-in-Button" Trailing Icon Architecture */}
+                        <div className="mt-6 flex items-center w-full">
+                          <Link
+                            href={`/events/${ev.slug}`}
+                            className="group relative inline-flex items-center justify-between gap-4 rounded-full pl-6 pr-2 py-2 text-xs font-mono font-bold uppercase tracking-[0.12em] text-[#161616] bg-[#33FF67] shadow-[0_0_20px_rgba(51,255,103,0.3),inset_0_1px_0_rgba(255,255,255,0.4)] transition-all duration-300 hover:shadow-[0_0_30px_rgba(51,255,103,0.55)] hover:bg-[#45ff75] hover:scale-[1.02] active:scale-[0.98]"
+                          >
+                            <span>Explore Event</span>
+                            <span className="w-7 h-7 rounded-full bg-[#181818]/15 flex items-center justify-center text-[#161616] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                              <ArrowRight className="h-3.5 w-3.5" />
+                            </span>
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
 
-            {/* Expedition completion card */}
-            <div
-              ref={completionCardRef}
-              className="absolute opacity-0 rounded-[28px] p-1.5 bg-white/[0.04] border border-[#33FF67]/30 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_40px_rgba(51,255,103,0.15)] pointer-events-none transition-[opacity,transform] duration-300"
-              style={{ 
-                left: "15200px", 
-                top: "280px", 
-                width: "450px",
-                transform: "scale(calc(1 / var(--journey-scale, 0.65)))",
-                transformOrigin: "left center"
-              }}
-            >
-              <div className="relative rounded-[22px] bg-[#1a1a1a]/95 backdrop-blur-xl p-8 border border-white/[0.08] shadow-[inset_0_1px_1px_rgba(255,255,255,0.12)] overflow-hidden">
-                {/* Ambient glow */}
-                <div className="pointer-events-none absolute -top-20 -right-20 w-48 h-48 rounded-full bg-[#33FF67]/20 blur-3xl" />
-                
-                <div className="relative z-10 flex flex-col items-start text-left">
-                  <div className="inline-flex items-center gap-2 font-mono text-[10px] font-black tracking-[0.18em] text-[#33FF67] uppercase bg-[#33FF67]/10 px-3 py-1 rounded-full border border-[#33FF67]/30 shadow-[0_0_15px_rgba(51,255,103,0.15)]">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#33FF67]" />
-                    Mission Accomplished · 10/10
-                  </div>
-                  <h3 className="mt-4 font-display text-3xl font-black uppercase text-[#F7F2F6] leading-none tracking-tight">
-                    Summit Gateway
-                  </h3>
-                  <p className="mt-2 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[#7484FE]">
-                    The Equinox 2.0 Awaits
-                  </p>
-                  <p className="mt-3.5 text-[13px] text-[#F7F2F6]/75 leading-relaxed font-sans font-normal">
-                    You have charted every event across the Equinox cosmos. Scroll down to enter the summit story, keynote schedule, venue guides, and registrations.
-                  </p>
-                  <div className="mt-6">
-                    <a 
-                      href="#about" 
-                      className="group relative inline-flex items-center justify-between gap-4 rounded-full pl-6 pr-2 py-2 text-xs font-mono font-bold uppercase tracking-[0.12em] text-[#F7F2F6] bg-[#7484FE] shadow-[0_0_25px_rgba(116,132,254,0.35),inset_0_1px_0_rgba(255,255,255,0.3)] transition-all duration-300 hover:shadow-[0_0_35px_rgba(116,132,254,0.6)] hover:bg-[#8594ff] hover:scale-[1.02] active:scale-[0.98]"
-                    >
-                      <span>Enter Summit Below</span>
-                      <span className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-[#F7F2F6] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                        <ArrowRight className="h-3.5 w-3.5" />
-                      </span>
-                    </a>
+              {/* Expedition completion card */}
+              <div
+                ref={completionCardRef}
+                className="absolute opacity-0 rounded-[28px] p-1.5 bg-white/[0.04] border border-[#33FF67]/30 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_40px_rgba(51,255,103,0.15)] pointer-events-none transition-[opacity,transform] duration-300"
+                style={{
+                  left: "15200px",
+                  top: "280px",
+                  width: "450px",
+                  transform: "scale(calc(1 / var(--journey-scale, 0.65)))",
+                  transformOrigin: "left center"
+                }}
+              >
+                <div className="relative rounded-[22px] bg-[#1a1a1a]/95 backdrop-blur-xl p-8 border border-white/[0.08] shadow-[inset_0_1px_1px_rgba(255,255,255,0.12)] overflow-hidden">
+                  {/* Ambient glow */}
+                  <div className="pointer-events-none absolute -top-20 -right-20 w-48 h-48 rounded-full bg-[#33FF67]/20 blur-3xl" />
+
+                  <div className="relative z-10 flex flex-col items-start text-left">
+                    <div className="inline-flex items-center gap-2 font-mono text-[10px] font-black tracking-[0.18em] text-[#33FF67] uppercase bg-[#33FF67]/10 px-3 py-1 rounded-full border border-[#33FF67]/30 shadow-[0_0_15px_rgba(51,255,103,0.15)]">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#33FF67]" />
+                      Mission Accomplished · 10/10
+                    </div>
+                    <h3 className="mt-4 font-display text-3xl font-black uppercase text-[#F7F2F6] leading-none tracking-tight">
+                      Summit Gateway
+                    </h3>
+                    <p className="mt-2 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[#7484FE]">
+                      The Equinox 2.0 Awaits
+                    </p>
+                    <p className="mt-3.5 text-[13px] text-[#F7F2F6]/75 leading-relaxed font-sans font-normal">
+                      You have charted every event across the Equinox cosmos. Scroll down to enter the summit story, keynote schedule, venue guides, and registrations.
+                    </p>
+                    <div className="mt-6">
+                      <a
+                        href="#about"
+                        className="group relative inline-flex items-center justify-between gap-4 rounded-full pl-6 pr-2 py-2 text-xs font-mono font-bold uppercase tracking-[0.12em] text-[#F7F2F6] bg-[#7484FE] shadow-[0_0_25px_rgba(116,132,254,0.35),inset_0_1px_0_rgba(255,255,255,0.3)] transition-all duration-300 hover:shadow-[0_0_35px_rgba(116,132,254,0.6)] hover:bg-[#8594ff] hover:scale-[1.02] active:scale-[0.98]"
+                      >
+                        <span>Enter Summit Below</span>
+                        <span className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-[#F7F2F6] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                          <ArrowRight className="h-3.5 w-3.5" />
+                        </span>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
           </div>
         </div>
 
