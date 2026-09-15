@@ -13,15 +13,15 @@ export interface PlanetLayout {
 }
 
 export const PLANET_LAYOUTS: PlanetLayout[] = [
-  { index: 0, x: 1600, y: 320, cardTop: 480, badge: "01 · SPOTLIGHT" },
+  { index: 0, x: 1600, y: 320, cardTop: 415, badge: "01 · SPOTLIGHT" },
   { index: 1, x: 3000, y: 760, cardTop: 160, badge: "02 · CROSS ROADS" },
-  { index: 2, x: 4400, y: 300, cardTop: 480, badge: "03 · STARTUP EXPO" },
+  { index: 2, x: 4400, y: 300, cardTop: 415, badge: "03 · STARTUP EXPO" },
   { index: 3, x: 5800, y: 740, cardTop: 160, badge: "04 · BRAND BATTLES" },
-  { index: 4, x: 7200, y: 320, cardTop: 480, badge: "05 · IPL AUCTION" },
+  { index: 4, x: 7200, y: 320, cardTop: 415, badge: "05 · IPL AUCTION" },
   { index: 5, x: 8600, y: 760, cardTop: 160, badge: "06 · HUSTLE MANIA" },
-  { index: 6, x: 10000, y: 300, cardTop: 480, badge: "07 · INTERNSHIP DRIVE" },
+  { index: 6, x: 10000, y: 300, cardTop: 415, badge: "07 · INTERNSHIP DRIVE" },
   { index: 7, x: 11400, y: 740, cardTop: 160, badge: "08 · STARTUP POLY" },
-  { index: 8, x: 12800, y: 320, cardTop: 480, badge: "09 · E-CELL MEET" },
+  { index: 8, x: 12800, y: 320, cardTop: 415, badge: "09 · E-CELL MEET" },
   { index: 9, x: 14200, y: 720, cardTop: 160, badge: "10 · PITCH DECK" },
 ];
 
@@ -85,7 +85,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 35px rgba(116,132,254,0.45))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.svg`}
+                  href={`/planets/${event.slug}.png`}
                   x="-125"
                   y="-125"
                   width="250"
@@ -114,7 +114,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 30px rgba(116,132,254,0.3))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.svg`}
+                  href={`/planets/${event.slug}.png`}
                   x="-125"
                   y="-125"
                   width="250"
@@ -143,7 +143,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 35px rgba(51,255,103,0.35))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.svg`}
+                  href={`/planets/${event.slug}.png`}
                   x="-125"
                   y="-125"
                   width="250"
@@ -171,7 +171,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 45px rgba(51,255,103,0.45))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.svg`}
+                  href={`/planets/${event.slug}.png`}
                   x="-125"
                   y="-125"
                   width="250"
@@ -199,7 +199,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 40px rgba(255,184,0,0.4))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.svg`}
+                  href={`/planets/${event.slug}.png`}
                   x="-125"
                   y="-125"
                   width="250"
@@ -227,7 +227,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 35px rgba(51,255,103,0.35))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.svg`}
+                  href={`/planets/${event.slug}.png`}
                   x="-125"
                   y="-125"
                   width="250"
@@ -255,7 +255,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 30px rgba(116,132,254,0.35))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.svg`}
+                  href={`/planets/${event.slug}.png`}
                   x="-125"
                   y="-125"
                   width="250"
@@ -284,7 +284,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 35px rgba(255,112,67,0.35))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.svg`}
+                  href={`/planets/${event.slug}.png`}
                   x="-125"
                   y="-125"
                   width="250"
@@ -312,7 +312,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 35px rgba(167,139,250,0.35))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.svg`}
+                  href={`/planets/${event.slug}.png`}
                   x="-125"
                   y="-125"
                   width="250"
@@ -342,7 +342,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 50px rgba(51,255,103,0.5))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.svg`}
+                  href={`/planets/${event.slug}.png`}
                   x="-125"
                   y="-125"
                   width="250"

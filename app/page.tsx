@@ -29,6 +29,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import ScrollJourney from "../components/ScrollJourney";
+import JourneyOutro from "../components/JourneyOutro";
 
 const heroFadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -39,18 +40,18 @@ export default function HomePage() {
   return (
     <div className="riso-texture brochure-grid min-h-screen overflow-x-clip text-[#F7F2F6] selection:bg-[#7484FE] selection:text-[#2A2A2A]">
       <ScrollJourney />
+
+      {/* Seam out of the journey: warp exit, then the summit chapters */}
+      <JourneyOutro line="Ten events charted. The summit begins." />
       {/* =========================================================================
           SECTION 2: ABOUT EQUINOX (Who Are We / What We Do / What Is Equinox)
           ========================================================================= */}
       <section
         id="about"
-        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
+        className="relative mx-auto max-w-[1400px] px-4 py-32 sm:px-8 md:py-48"
       >
-        <div className="max-w-4xl">
-          <span className="rounded-full border border-white/20 bg-white/10 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-[#F7F2F6]">
-            Page 01 · {about.eyebrow}
-          </span>
-          <h2 className="mt-4 font-display-title text-4xl font-black tracking-tight text-[#F7F2F6] sm:text-6xl lg:text-7xl">
+        <div className="max-w-5xl">
+          <h2 className="font-display-title text-4xl font-black tracking-tight text-[#F7F2F6] sm:text-6xl lg:text-7xl">
             {about.heading}
           </h2>
           <p className="mt-6 text-xl leading-relaxed text-[#F7F2F6]/95 sm:text-2xl font-medium">
@@ -167,7 +168,7 @@ export default function HomePage() {
           ========================================================================= */}
       <section
         id="impact"
-        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
+        className="relative mx-auto max-w-[1400px] px-4 py-32 sm:px-8 md:py-48"
       >
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           <div>
@@ -240,7 +241,7 @@ export default function HomePage() {
           ========================================================================= */}
       <section
         id="contact"
-        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
+        className="relative mx-auto max-w-[1400px] px-4 py-32 sm:px-8 md:py-48"
       >
         {/* Dark Editorial Heading Replicating Page 12 */}
         <div className="max-w-3xl">
