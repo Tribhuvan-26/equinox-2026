@@ -10,6 +10,7 @@ import Globe from "./Globe";
 import { InstitutionalHeader } from "../app/EventGraphics";
 import { subEvents } from "@/lib/content";
 import SpiderIntro from "./SpiderIntro";
+import GlitchWordmark from "./GlitchWordmark";
 import {
   PLANET_LAYOUTS,
   JOURNEY_SQUIGGLY_PATH,
@@ -27,9 +28,6 @@ export default function ScrollJourney() {
   const heroBlockRef = useRef<HTMLDivElement>(null);   // entire hero content
   const globeHeroRef = useRef<HTMLDivElement>(null);   // large background globe
   const heroWordmarkRef = useRef<HTMLDivElement>(null);   // "EQUINOX"
-  const equinRef = useRef<HTMLSpanElement>(null);  // "EQUIN" part
-  const oRef = useRef<HTMLSpanElement>(null);  // "O" part
-  const xRef = useRef<HTMLSpanElement>(null);  // "X" part
   const heroSubtitleRef = useRef<HTMLDivElement>(null);   // tag + subtitle
   const exploreRef = useRef<HTMLDivElement>(null);   // CTA button
 
@@ -161,32 +159,17 @@ export default function ScrollJourney() {
         opacity: 0, y: -20, duration: 0.1
       }, 0);
 
-      mainTl.fromTo(equinRef.current,
-        { opacity: 0, x: -60 },
-        { opacity: 1, x: 0, duration: 0.1 },
-        0
-      );
-
-      mainTl.fromTo(xRef.current,
-        { opacity: 0, x: 60 },
-        { opacity: 1, x: 0, duration: 0.1 },
+      // The lockup is on screen from the first frame; scroll only settles its scale.
+      mainTl.fromTo(heroWordmarkRef.current,
+        { scale: 1.06 },
+        { scale: 1, duration: 0.1 },
         0
       );
 
       mainTl.to(globeHeroRef.current, {
-        scale: () => {
-          if (!oRef.current || !globeHeroRef.current) return 0.22;
-          const oHeight = oRef.current.getBoundingClientRect().height;
-          return (oHeight * 1.1) / globeHeroRef.current.offsetHeight;
-        },
-        x: () => {
-          if (!oRef.current) return window.innerWidth * 0.16;
-          const oRect = oRef.current.getBoundingClientRect();
-          const oCenterX = oRect.left + oRect.width / 2;
-          const windowCenterX = window.innerWidth / 2;
-          return oCenterX - windowCenterX;
-        },
-        duration: 0.1
+        scale: 0.18,
+        autoAlpha: 0,
+        duration: 0.1,
       }, 0);
 
       // --- PHASE 2 (10%–15%): Move Wordmark UP to Sticky Header ---
@@ -401,16 +384,10 @@ export default function ScrollJourney() {
           {/* Massive "EQUINOX" HTML text split into parts */}
           <div
             ref={heroWordmarkRef}
-            className="absolute flex items-center justify-center font-display-title text-[#F7F2F6] leading-none tracking-tight select-none pointer-events-none"
-            style={{
-              fontSize: "clamp(3.5rem, 10.5vw, 11rem)",
-              zIndex: 3,
-              textShadow: "0 4px 32px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.75)",
-            }}
+            className="absolute flex items-center justify-center select-none pointer-events-none"
+            style={{ zIndex: 3 }}
           >
-            <span ref={equinRef} className="will-change-transform opacity-0">EQUIN</span>
-            <span ref={oRef} className="will-change-transform opacity-0">O</span>
-            <span ref={xRef} className="will-change-transform opacity-0">X</span>
+            <GlitchWordmark className="h-[34vh] w-[min(92vw,1100px)] will-change-transform" />
           </div>
         </div>
 
