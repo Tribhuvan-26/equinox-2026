@@ -367,3 +367,22 @@ body {
     @apply font-sans;
   }
 }
+/* Sub-event logo strip: the track carries two copies, so -50% lands seamlessly. */
+@keyframes marquee-shift {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+.marquee-track {
+  animation: marquee-shift 42s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
