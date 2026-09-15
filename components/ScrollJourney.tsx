@@ -9,6 +9,7 @@ import { ArrowRight, Mouse } from "lucide-react";
 import Globe from "./Globe";
 import { InstitutionalHeader } from "../app/EventGraphics";
 import { subEvents } from "@/lib/content";
+import SpiderIntro from "./SpiderIntro";
 import {
   PLANET_LAYOUTS,
   JOURNEY_SQUIGGLY_PATH,
@@ -79,12 +80,9 @@ export default function ScrollJourney() {
     return () => clearTimeout(t);
   }, []);
 
-  useEffect(() => {
-    if (isGlobeReady) {
-      const t = setTimeout(() => setShowLoader(false), 400);
-      return () => clearTimeout(t);
-    }
-  }, [isGlobeReady]);
+  // The opener plays for a fixed beat; it calls back when its last frame lands.
+  // The globe keeps loading underneath, so the two never wait on each other.
+  const handleIntroDone = useCallback(() => setShowLoader(false), []);
 
   useEffect(() => {
     document.body.style.overflow = showLoader ? "hidden" : "";
@@ -714,21 +712,8 @@ export default function ScrollJourney() {
           </div>
         </div>
 
-        {/* ================================================================
-            LOADING SCREEN
-            ================================================================ */}
-        <div
-          className={`fixed inset-0 flex flex-col items-center justify-center bg-[#2A2A2A] transition-opacity duration-700 ${showLoader ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
-          style={{ zIndex: 60 }}
-        >
-          <div className="flex flex-col items-center justify-center text-center px-4">
-            <h1 className="font-display-title text-4xl sm:text-6xl tracking-tighter text-[#F7F2F6] mb-6">EQUINOX</h1>
-            <span className="font-mono text-xs sm:text-sm font-black tracking-[0.25em] text-[#7484FE] uppercase mb-4">LOADING EXPERIENCE</span>
-            <div className="h-[2px] w-48 sm:w-64 bg-white/15 overflow-hidden relative">
-              <div className="absolute inset-0 bg-[#33FF67] w-1/3 animate-pulse" />
-            </div>
-          </div>
-        </div>
+        {/* Opening sequence: MLR CIE mark, glitch, EQUINOX lockup */}
+        {showLoader && <SpiderIntro onDone={handleIntroDone} />}
       </div>
     </div>
   );
