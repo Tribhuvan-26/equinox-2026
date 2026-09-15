@@ -1,12 +1,27 @@
 /* app/overlay-animations/animations/events/StartupPoly/StartupPolyAnimation.module.css */
 
 .overlayContainer {
+  --equinox-dark: #2A2A2A;
+  --equinox-periwinkle: #7484FE;
+  --equinox-green: #33FF67;
+  --equinox-offwhite: #F7F2F6;
+
+  /* Backward-compatible aliases */
+  --equinox-blue: var(--equinox-periwinkle);
+  --equinox-yellow: var(--equinox-green);
+  --equinox-coral: var(--equinox-green);
+  --equinox-white: var(--equinox-offwhite);
+
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
   z-index: 99999;
-  background-color: #ffffff;
+  background-color: var(--equinox-dark);
+  background-image: 
+    linear-gradient(to right, rgba(247, 242, 246, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(247, 242, 246, 0.07) 1px, transparent 1px);
+  background-size: 34px 34px;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -45,19 +60,19 @@
 }
 
 .tileBase {
-  fill: #ffffff;
-  stroke: #282828;
+  fill: var(--equinox-white);
+  stroke: var(--equinox-dark);
   stroke-width: 2.5;
 }
 
 .tileBlue {
-  fill: #2074D5;
-  stroke: #282828;
+  fill: var(--equinox-blue);
+  stroke: var(--equinox-dark);
   stroke-width: 2.5;
 }
 
 .tileStripeBlue {
-  fill: #2074D5;
+  fill: var(--equinox-blue);
 }
 
 .tileLabel {
@@ -65,7 +80,7 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  fill: #282828;
+  fill: var(--equinox-dark);
 }
 
 .tileLabelWhite {
@@ -73,7 +88,7 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  fill: #ffffff;
+  fill: var(--equinox-white);
 }
 
 /* Center Panel Typography */
@@ -82,7 +97,7 @@
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -0.02em;
-  fill: #282828;
+  fill: var(--equinox-dark);
 }
 
 .titlePolyText {
@@ -90,7 +105,7 @@
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.02em;
-  fill: #ffffff;
+  fill: var(--equinox-white);
 }
 
 .taglineText {
@@ -98,7 +113,7 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  fill: #282828;
+  fill: var(--equinox-dark);
 }
 
 /* Skip / Close indicator button styled for warm neutral backdrop */
@@ -110,9 +125,9 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(17, 17, 17, 0.06);
-  border: 1.5px solid rgba(17, 17, 17, 0.22);
-  color: #282828;
+  background: rgba(247, 242, 246, 0.08);
+  border: 1px solid rgba(247, 242, 246, 0.2);
+  color: var(--equinox-offwhite);
   font-family: var(--font-mono, monospace);
   font-size: 11px;
   font-weight: 700;
@@ -128,7 +143,7 @@
 }
 
 .skipButton:hover {
-  background: rgba(17, 17, 17, 0.12);
-  border-color: rgba(17, 17, 17, 0.45);
+  background: rgba(247, 242, 246, 0.18);
+  border-color: rgba(247, 242, 246, 0.45);
   transform: translateY(-1px);
 }

@@ -1,0 +1,394 @@
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Internship Drive - The Equinox 2026">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Syne:wght@800;900&amp;family=Space+Grotesk:wght@700;800;900&amp;display=swap');
+
+      * { box-sizing: border-box; }
+
+      .font-display {
+        font-family: 'Syne', 'Arial Black', Impact, sans-serif;
+        text-transform: uppercase;
+      }
+      .font-mono-bold {
+        font-family: 'Space Grotesk', 'Courier New', monospace;
+        text-transform: uppercase;
+      }
+      .font-sans-bold {
+        font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+
+      /* Root crossfade loop */
+      #animatedRoot {
+        animation: sceneFade 4.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        transform-origin: center center;
+      }
+      @keyframes sceneFade {
+        0%       { opacity: 0; }
+        5%       { opacity: 1; }
+        95%      { opacity: 1; }
+        100%     { opacity: 0; }
+      }
+
+      /* Top metadata */
+      #topMetadata {
+        animation: metaIn 4.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        transform-origin: 94px 80px;
+      }
+      @keyframes metaIn {
+        0%, 2%   { opacity: 0; transform: translateY(-15px); }
+        13%, 95% { opacity: 1; transform: translateY(0); }
+        100%     { opacity: 0; transform: translateY(-15px); }
+      }
+
+      /* Headline INTERNSHIP */
+      #headlineInternship {
+        animation: internIn 4.2s cubic-bezier(0.175, 0.885, 0.32, 1.15) infinite;
+        transform-origin: left center;
+      }
+      @keyframes internIn {
+        0%, 3%   { opacity: 0; transform: translateX(-60px); }
+        18%, 95% { opacity: 1; transform: translateX(0); }
+        100%     { opacity: 0; transform: translateX(-60px); }
+      }
+
+      /* Headline DRIVE */
+      #headlineDrive {
+        animation: driveIn 4.2s cubic-bezier(0.175, 0.885, 0.32, 1.15) infinite;
+        transform-origin: left center;
+      }
+      @keyframes driveIn {
+        0%, 7%   { opacity: 0; transform: translateX(-60px); }
+        22%, 95% { opacity: 1; transform: translateX(0); }
+        100%     { opacity: 0; transform: translateX(-60px); }
+      }
+
+      /* Tagline */
+      #headlineTagline {
+        animation: tagIn 4.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        transform-origin: left center;
+      }
+      @keyframes tagIn {
+        0%, 15%  { opacity: 0; transform: translateY(15px); }
+        26%, 95% { opacity: 1; transform: translateY(0); }
+        100%     { opacity: 0; transform: translateY(15px); }
+      }
+
+      /* Process Icons */
+      #iconGroupConnect {
+        animation: popConnect 4.2s cubic-bezier(0.175, 0.885, 0.32, 1.2) infinite;
+        transform-origin: 145px 625px;
+      }
+      @keyframes popConnect {
+        0%, 18%  { opacity: 0; transform: scale(0); }
+        28%, 95% { opacity: 1; transform: scale(1); }
+        100%     { opacity: 0; transform: scale(0); }
+      }
+
+      #iconGroupIntern {
+        animation: popIntern 4.2s cubic-bezier(0.175, 0.885, 0.32, 1.2) infinite;
+        transform-origin: 365px 625px;
+      }
+      @keyframes popIntern {
+        0%, 20%  { opacity: 0; transform: scale(0); }
+        31%, 95% { opacity: 1; transform: scale(1); }
+        100%     { opacity: 0; transform: scale(0); }
+      }
+
+      #iconGroupGrow {
+        animation: popGrow 4.2s cubic-bezier(0.175, 0.885, 0.32, 1.2) infinite;
+        transform-origin: 585px 625px;
+      }
+      @keyframes popGrow {
+        0%, 22%  { opacity: 0; transform: scale(0); }
+        33%, 95% { opacity: 1; transform: scale(1); }
+        100%     { opacity: 0; transform: scale(0); }
+      }
+
+      /* Dashed Connector Lines */
+      #connectorLine1 {
+        stroke-dasharray: 100;
+        animation: drawLine1 4.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      }
+      @keyframes drawLine1 {
+        0%, 24%  { opacity: 0; stroke-dashoffset: 100; }
+        34%, 95% { opacity: 1; stroke-dashoffset: 0; }
+        100%     { opacity: 0; stroke-dashoffset: 100; }
+      }
+
+      #connectorLine2 {
+        stroke-dasharray: 100;
+        animation: drawLine2 4.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      }
+      @keyframes drawLine2 {
+        0%, 27%  { opacity: 0; stroke-dashoffset: 100; }
+        37%, 95% { opacity: 1; stroke-dashoffset: 0; }
+        100%     { opacity: 0; stroke-dashoffset: 100; }
+      }
+
+      /* Businessman Approach and Handshake */
+      #businessman-animation {
+        animation: bmApproach 4.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+      }
+      @keyframes bmApproach {
+        0%, 6%   { opacity: 0; transform: translateX(-280px); }
+        8%       { opacity: 1; }
+        42%      { transform: translateX(-3px) translateY(0); }
+        48%      { transform: translateX(0) translateY(0); }
+        50%      { transform: translateX(0) translateY(2px); }
+        52%      { transform: translateX(0) translateY(-1.6px); }
+        54%      { transform: translateX(0) translateY(1.2px); }
+        56%, 95% { transform: translateX(0) translateY(0); opacity: 1; }
+        100%     { opacity: 0; transform: translateX(0); }
+      }
+
+      /* Student Approach and Handshake */
+      #student-animation {
+        animation: stApproach 4.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+      }
+      @keyframes stApproach {
+        0%, 8%   { opacity: 0; transform: translateX(280px); }
+        10%      { opacity: 1; }
+        44%      { transform: translateX(3px) translateY(0); }
+        48%      { transform: translateX(0) translateY(0); }
+        50%      { transform: translateX(0) translateY(2px); }
+        52%      { transform: translateX(0) translateY(-1.6px); }
+        54%      { transform: translateX(0) translateY(1.2px); }
+        56%, 95% { transform: translateX(0) translateY(0); opacity: 1; }
+        100%     { opacity: 0; transform: translateX(0); }
+      }
+
+      /* Stats Bar */
+      #statsBarGroup {
+        animation: barSlideIn 4.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        transform-origin: center bottom;
+      }
+      @keyframes barSlideIn {
+        0%, 63%  { opacity: 0; transform: translateY(70px); }
+        76%, 95% { opacity: 1; transform: translateY(0); }
+        100%     { opacity: 0; transform: translateY(70px); }
+      }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="#F5ECD9" />
+
+  <g id="animatedRoot">
+    <circle cx="95" cy="55" r="14" fill="#EC1E79" />
+    <circle cx="1505" cy="75" r="14" fill="#F5A623" />
+
+    <g id="topMetadata">
+      <circle cx="94" cy="80" r="14" fill="#E9B74B" />
+      <text
+        x="122"
+        y="86"
+        className="font-mono-bold"
+        fontWeight="900"
+        fontSize="16"
+        letterSpacing="0.12em"
+        fill="#111A35"
+      >
+        THE EQUINOX 2.0 &#183; 30-31 OCT &#183; MLRIT
+      </text>
+    </g>
+
+    <g id="headlineGroup">
+      <text
+        id="headlineInternship"
+        x="90"
+        y="275"
+        className="font-display"
+        fontWeight="900"
+        fontSize="160"
+        letterSpacing="-0.03em"
+        textLength="730"
+        lengthAdjust="spacingAndGlyphs"
+        fill="#111111"
+      >
+        INTERNSHIP
+      </text>
+
+      <text
+        id="headlineDrive"
+        x="90"
+        y="445"
+        className="font-display"
+        fontWeight="900"
+        fontSize="165"
+        letterSpacing="-0.03em"
+        textLength="420"
+        lengthAdjust="spacingAndGlyphs"
+        fill="#2354E6"
+      >
+        DRIVE
+      </text>
+
+      <text
+        id="headlineTagline"
+        x="90"
+        y="525"
+        className="font-sans-bold"
+        fontWeight="800"
+        fontSize="36"
+        letterSpacing="0.01em"
+        fill="#111111"
+      >
+        Connect. Intern. Grow.
+      </text>
+    </g>
+
+    <g id="iconProcessSequence">
+      <line
+        id="connectorLine1"
+        x1="205"
+        y1="625"
+        x2="305"
+        y2="625"
+        stroke="#111111"
+        strokeWidth="3.5"
+        strokeDasharray="8 6"
+      />
+      <line
+        id="connectorLine2"
+        x1="425"
+        y1="625"
+        x2="525"
+        y2="625"
+        stroke="#111111"
+        strokeWidth="3.5"
+        strokeDasharray="8 6"
+      />
+
+      <g id="iconGroupConnect">
+        <image
+          href="/internship-drive/icon_connect.png"
+          x="90"
+          y="570"
+          width="110"
+          height="110"
+          preserveAspectRatio="xMidYMid meet"
+        />
+        <text
+          id="labelConnect"
+          x="145"
+          y="705"
+          textAnchor="middle"
+          className="font-mono-bold"
+          fontWeight="900"
+          fontSize="18"
+          letterSpacing="0.08em"
+          fill="#111111"
+        >
+          CONNECT
+        </text>
+      </g>
+
+      <g id="iconGroupIntern">
+        <image
+          href="/internship-drive/icon_intern.png"
+          x="310"
+          y="570"
+          width="110"
+          height="110"
+          preserveAspectRatio="xMidYMid meet"
+        />
+        <text
+          id="labelIntern"
+          x="365"
+          y="705"
+          textAnchor="middle"
+          className="font-mono-bold"
+          fontWeight="900"
+          fontSize="18"
+          letterSpacing="0.08em"
+          fill="#111111"
+        >
+          INTERN
+        </text>
+      </g>
+
+      <g id="iconGroupGrow">
+        <image
+          href="/internship-drive/icon_grow.png"
+          x="530"
+          y="570"
+          width="110"
+          height="110"
+          preserveAspectRatio="xMidYMid meet"
+        />
+        <text
+          id="labelGrow"
+          x="585"
+          y="705"
+          textAnchor="middle"
+          className="font-mono-bold"
+          fontWeight="900"
+          fontSize="18"
+          letterSpacing="0.08em"
+          fill="#111111"
+        >
+          GROW
+        </text>
+      </g>
+    </g>
+
+    <line
+      id="groundLine"
+      x1="780"
+      y1="738"
+      x2="1520"
+      y2="738"
+      stroke="#111111"
+      strokeWidth="3.5"
+      strokeLinecap="round"
+    />
+
+    <g id="businessman-position" transform="translate(762, 131) scale(0.94)">
+      <g id="businessman-animation">
+        <image
+          id="businessman-image"
+          href="/internship-drive/businessman.png"
+          width="437"
+          height="669"
+          preserveAspectRatio="xMidYMid meet"
+        />
+      </g>
+    </g>
+
+    <g id="student-position" transform="translate(1104, 149) scale(0.94)">
+      <g id="student-animation">
+        <image
+          id="student-image"
+          href="/internship-drive/student.png"
+          width="456"
+          height="650"
+          preserveAspectRatio="xMidYMid meet"
+        />
+      </g>
+    </g>
+
+    <g id="statsBarGroup">
+      <rect x="40" y="775" width="1520" height="90" rx="45" fill="#111111" />
+      <g
+        id="statsBarContent"
+        className="font-sans-bold"
+        fill="#FFFFFF"
+        fontSize="28"
+        fontWeight="800"
+        letterSpacing="0.03em"
+      >
+        <text x="400" y="830" textAnchor="middle">
+          50+ Companies
+        </text>
+        <circle cx="600" cy="820" r="6" fill="#FFFFFF" />
+        <text x="790" y="830" textAnchor="middle">
+          500+ Students
+        </text>
+        <circle cx="980" cy="820" r="6" fill="#FFFFFF" />
+        <text x="1180" y="830" textAnchor="middle">
+          Free Registration
+        </text>
+      </g>
+      <circle id="statsDotPink" cx="1490" cy="820" r="14" fill="#E8447A" />
+    </g>
+  </g>
+</svg>

@@ -5,6 +5,8 @@ export type AnimationEventKey =
   | "spotlight"
   | "startup-poly"
   | "ipl-auction"
+  | "e-cell-meet"
+  | "internship-drive"
   | (string & {});
 
 export interface AnimationTriggerPayload {

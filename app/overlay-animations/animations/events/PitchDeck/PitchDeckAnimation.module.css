@@ -6,7 +6,11 @@
   width: 100vw;
   height: 100vh;
   z-index: 99999;
-  background-color: #282828;
+  background-color: var(--equinox-dark, #2A2A2A);
+  background-image: 
+    linear-gradient(to right, rgba(247, 242, 246, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(247, 242, 246, 0.07) 1px, transparent 1px);
+  background-size: 34px 34px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -28,125 +32,44 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6);
-}
-
-.baseImage {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  pointer-events: none;
+  background-color: transparent;
+  box-shadow: none;
 }
 
 .stageSvg {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
+  display: block;
   pointer-events: none;
 }
 
 /* Skip button */
 .skipButton {
   position: absolute;
-  top: 20px;
-  right: 24px;
-  z-index: 20;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 50;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(17, 17, 17, 0.75);
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
-  color: #ffffff;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
   font-family: var(--font-mono, monospace);
-  font-size: 11px;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 6px 14px;
+  color: #F7F2F6;
+  background: rgba(20, 20, 21, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 9999px;
   cursor: pointer;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
   transition: all 0.2s ease;
   pointer-events: auto;
-  opacity: 0;
 }
 
 .skipButton:hover {
-  background: rgba(24, 86, 243, 0.85);
-  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(20, 20, 21, 1);
+  border-color: rgba(255, 255, 255, 0.35);
   transform: translateY(-1px);
 }
-
-/* Screen content typography */
-.pitchText {
-  font-family: Impact, "Arial Black", var(--font-syne), sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  fill: #282828;
-}
-
-.deckText {
-  font-family: Impact, "Arial Black", var(--font-syne), sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  fill: #2074D5;
-}
-
-.taglineText {
-  font-family: var(--font-syne), "Arial Black", sans-serif;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  fill: #334155;
-}
-
-.taglineBlue {
-  fill: #2074D5;
-}
-
-.iconLabelTitle {
-  font-family: var(--font-syne), "Arial Black", sans-serif;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  fill: #282828;
-}
-
-.iconLabelSub {
-  font-family: var(--font-mono, monospace);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  fill: #2074D5;
-}
-
-.headerText {
-  font-family: var(--font-mono, monospace);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  fill: #282828;
-}
-
-.bannerWord {
-  font-family: Impact, "Arial Black", var(--font-syne), sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  fill: #ffffff;
-}
-
-.podiumWord {
-  font-family: var(--font-syne), "Arial Black", sans-serif;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  fill: #ffffff;
-}
-

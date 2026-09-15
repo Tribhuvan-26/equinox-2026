@@ -6,50 +6,31 @@ export interface PitchDeckSceneTargets {
   stageFrame: HTMLElement | null;
   skipButton: HTMLElement | null;
 
-  // Header & Venue branding
-  headerText: SVGElement | null;
-  dateVenueText: SVGElement | null;
-
-  // Ceiling lamps & beams
-  lampLeftGroup: SVGElement | null;
-  lampRightGroup: SVGElement | null;
+  // Scene layers & elements
+  baseLayer: SVGElement | null;
+  topLeftHeader: SVGElement | null;
+  topRightHeader: SVGElement | null;
+  lampLeft: SVGElement | null;
+  lampRight: SVGElement | null;
   lightBeamLeft: SVGElement | null;
   lightBeamRight: SVGElement | null;
-
-  // Side Banners
   leftBanner: SVGElement | null;
   rightBanner: SVGElement | null;
 
-  // Potted plants
-  plantLeft: SVGElement | null;
-  plantRight: SVGElement | null;
+  // Projector screen assembly
+  screenFrame: SVGElement | null;
+  screenCanvas: SVGElement | null;
+  screenContent: SVGElement | null;
 
-  // Podium text
-  podiumText: SVGElement | null;
-
-  // Projector screen structure
-  screenFrameGroup: SVGElement | null;
-  screenWeightBar: SVGElement | null;
-  screenSurface: SVGElement | null;
-  screenContentGroup: SVGElement | null;
-
-  // PPT elements (left side)
-  dividerLine: SVGLineElement | null;
-  pitchTitle: SVGTextElement | null;
-  deckTitle: SVGTextElement | null;
-  taglineBlock: SVGElement | null;
-
-  // Bar chart (right side top)
-  chartAxis: SVGLineElement | null;
-  chartBars: SVGElement[];
-  chartArrow: SVGPathElement | null;
-  chartArrowHead: SVGPolygonElement | null;
-  chartBadge: SVGElement | null;
-
-  // Icon rows (right side bottom)
+  // Presentation contents
+  heroTitle: SVGTextElement | null;
+  subtitle: SVGElement | null;
+  chartBars: (SVGElement | null)[];
+  chartArrow: SVGElement | null;
   iconRow1: SVGElement | null;
   iconRow2: SVGElement | null;
   iconRow3: SVGElement | null;
+  calloutBubble: SVGElement | null;
 }
 
 export interface PitchDeckTimelineOptions {
@@ -65,381 +46,260 @@ export function createPitchDeckMasterTl(
 
   // ── Initial setup ──────────────────────────────────────────────────────────
   if (t.container) gsap.set(t.container, { opacity: 0 });
-  if (t.stageFrame) gsap.set(t.stageFrame, { opacity: 0, scale: 0.97 });
+  if (t.stageFrame) gsap.set(t.stageFrame, { opacity: 0, scale: 0.98 });
   if (t.skipButton) gsap.set(t.skipButton, { opacity: 0, pointerEvents: "none" });
 
-  // Header & Date/Venue
-  if (t.headerText) gsap.set(t.headerText, { opacity: 0, y: -8 });
-  if (t.dateVenueText) gsap.set(t.dateVenueText, { opacity: 0, y: -8 });
+  // Base layer (presenter, podium, audience, chairs, plants, stage floor)
+  if (t.baseLayer) gsap.set(t.baseLayer, { opacity: 0 });
+
+  // Top headers
+  if (t.topLeftHeader) gsap.set(t.topLeftHeader, { opacity: 0, y: -20 });
+  if (t.topRightHeader) gsap.set(t.topRightHeader, { opacity: 0, y: -20 });
 
   // Ceiling lamps & light beams
-  if (t.lampLeftGroup) gsap.set(t.lampLeftGroup, { opacity: 0, y: -24 });
-  if (t.lampRightGroup) gsap.set(t.lampRightGroup, { opacity: 0, y: -24 });
+  if (t.lampLeft) gsap.set(t.lampLeft, { opacity: 0, y: -40, transformOrigin: "382px 0px" });
+  if (t.lampRight) gsap.set(t.lampRight, { opacity: 0, y: -40, transformOrigin: "1290px 0px" });
   if (t.lightBeamLeft) gsap.set(t.lightBeamLeft, { opacity: 0 });
   if (t.lightBeamRight) gsap.set(t.lightBeamRight, { opacity: 0 });
 
-  // Side banners & plants
-  if (t.leftBanner) gsap.set(t.leftBanner, { opacity: 0, scaleY: 0, transformOrigin: "top center" });
-  if (t.rightBanner) gsap.set(t.rightBanner, { opacity: 0, scaleY: 0, transformOrigin: "top center" });
-  if (t.plantLeft) gsap.set(t.plantLeft, { opacity: 0, scale: 0.85, transformOrigin: "center bottom" });
-  if (t.plantRight) gsap.set(t.plantRight, { opacity: 0, scale: 0.85, transformOrigin: "center bottom" });
+  // Side banners
+  if (t.leftBanner) gsap.set(t.leftBanner, { opacity: 0, scaleY: 0, transformOrigin: "123px 314px" });
+  if (t.rightBanner) gsap.set(t.rightBanner, { opacity: 0, scaleY: 0, transformOrigin: "1549px 312px" });
 
-  // Podium text
-  if (t.podiumText) gsap.set(t.podiumText, { opacity: 0, y: 6 });
-
-  // Screen frame and weight bar
-  if (t.screenFrameGroup) gsap.set(t.screenFrameGroup, { opacity: 0, y: -10 });
-  if (t.screenWeightBar) {
-    // Start retracted at top edge of screen (y = -270px relative to resting y=369px)
-    gsap.set(t.screenWeightBar, { y: -270, opacity: 0 });
-  }
-
-  // Screen surface starts collapsed at top edge (y = 99px in 1024x576)
-  if (t.screenSurface) {
-    gsap.set(t.screenSurface, {
+  // Projector screen structure
+  if (t.screenFrame) gsap.set(t.screenFrame, { opacity: 0, y: -15 });
+  if (t.screenCanvas) {
+    gsap.set(t.screenCanvas, {
       scaleY: 0,
-      transformOrigin: "296px 99px",
+      transformOrigin: "836px 128px",
       opacity: 0,
     });
   }
+  if (t.screenContent) gsap.set(t.screenContent, { opacity: 0 });
 
-  // Entire PPT content inside screen starts clipped / hidden
-  if (t.screenContentGroup) gsap.set(t.screenContentGroup, { opacity: 1 });
+  // Hero title & subtitle
+  if (t.heroTitle) gsap.set(t.heroTitle, { opacity: 0, scale: 0.85, transformOrigin: "709.5px 420px" });
+  if (t.subtitle) gsap.set(t.subtitle, { opacity: 0, y: 15 });
 
-  // Divider line initially hidden via strokeDashoffset
-  const dividerLen = 240;
-  if (t.dividerLine) {
-    gsap.set(t.dividerLine, {
-      strokeDasharray: dividerLen,
-      strokeDashoffset: dividerLen,
-    });
-  }
-
-  // Titles & tagline
-  if (t.pitchTitle) gsap.set(t.pitchTitle, { opacity: 0, y: -14 });
-  if (t.deckTitle) gsap.set(t.deckTitle, { opacity: 0, y: -14 });
-  if (t.taglineBlock) gsap.set(t.taglineBlock, { opacity: 0, x: -10 });
-
-  // Chart axis & bars
-  const axisLen = 200;
-  if (t.chartAxis) {
-    gsap.set(t.chartAxis, {
-      strokeDasharray: axisLen,
-      strokeDashoffset: axisLen,
-    });
-  }
-
+  // Chart bars (ordered 1 to 4: lowest to highest)
   t.chartBars.forEach((bar) => {
     if (bar) {
       gsap.set(bar, {
         scaleY: 0,
-        transformOrigin: "bottom",
+        transformOrigin: "bottom center",
       });
     }
   });
 
-  // Chart arrow & badge
-  const arrowLen = 180;
+  // Chart arrow
   if (t.chartArrow) {
     gsap.set(t.chartArrow, {
-      strokeDasharray: arrowLen,
-      strokeDashoffset: arrowLen,
+      opacity: 0,
+      scale: 0.75,
+      x: -25,
+      y: 15,
+      transformOrigin: "976px 318px",
     });
   }
-  if (t.chartArrowHead) gsap.set(t.chartArrowHead, { scale: 0, opacity: 0, transformOrigin: "662px 99px" });
-  if (t.chartBadge) gsap.set(t.chartBadge, { scale: 0, opacity: 0, transformOrigin: "683px 114px" });
 
   // 3 Icon rows
-  [t.iconRow1, t.iconRow2, t.iconRow3].forEach((row) => {
-    if (row) gsap.set(row, { opacity: 0, scale: 0.88, transformOrigin: "528px center" });
-  });
+  if (t.iconRow1) gsap.set(t.iconRow1, { opacity: 0, x: 25 });
+  if (t.iconRow2) gsap.set(t.iconRow2, { opacity: 0, x: 25 });
+  if (t.iconRow3) gsap.set(t.iconRow3, { opacity: 0, x: 25 });
 
-  // ── Build Timeline ─────────────────────────────────────────────────────────
+  // Presenter callout speech bubble
+  if (t.calloutBubble) {
+    gsap.set(t.calloutBubble, {
+      opacity: 0,
+      scale: 0.7,
+      transformOrigin: "142px 56px",
+    });
+  }
+
+  // ── Build Master Timeline ──────────────────────────────────────────────────
   const tl = gsap.timeline({
-    paused: true,
+    defaults: { ease: "power2.out" },
     onComplete: () => {
       onComplete?.();
     },
   });
 
-  // 1. ENTRANCE (0 → ~0.6s): Base scene reveals, surroundings build in
-  tl.to(t.container, { opacity: 1, duration: 0.35, ease: "power1.out" }, 0);
-  tl.to(t.stageFrame, { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" }, 0.05);
-  tl.to(t.skipButton, { opacity: 1, pointerEvents: "auto", duration: 0.25 }, 0.2);
+  // ── PHASE 1: Environment & Atmosphere Entrance (0.0s – 1.2s) ───────────────
+  tl.to(t.container, { opacity: 1, duration: 0.35, ease: "power1.out" }, 0.0)
+    .to(t.stageFrame, { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" }, 0.05)
+    .to(t.skipButton, { opacity: 1, pointerEvents: "auto", duration: 0.3 }, 0.4)
+    .to(t.baseLayer, { opacity: 1, duration: 0.55, ease: "power1.out" }, 0.1)
 
-  // Header and venue branding
-  if (t.headerText) tl.to(t.headerText, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 0.1);
-  if (t.dateVenueText) tl.to(t.dateVenueText, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 0.1);
+    // Top headers descend into place
+    .to([t.topLeftHeader, t.topRightHeader], {
+      opacity: 1,
+      y: 0,
+      duration: 0.45,
+      stagger: 0.08,
+      ease: "power2.out",
+    }, 0.25)
 
-  // Lamps drop from ceiling
-  if (t.lampLeftGroup) tl.to(t.lampLeftGroup, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out" }, 0.08);
-  if (t.lampRightGroup) tl.to(t.lampRightGroup, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out" }, 0.12);
-  if (t.lightBeamLeft) tl.to(t.lightBeamLeft, { opacity: 0.22, duration: 0.5 }, 0.2);
-  if (t.lightBeamRight) tl.to(t.lightBeamRight, { opacity: 0.22, duration: 0.5 }, 0.24);
+    // Hanging lamps drop in with smooth overshoot
+    .to([t.lampLeft, t.lampRight], {
+      opacity: 1,
+      y: 0,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: "back.out(1.4)",
+    }, 0.2)
 
-  // Side banners drop down
-  if (t.leftBanner) tl.to(t.leftBanner, { opacity: 1, scaleY: 1, duration: 0.45, ease: "power2.out" }, 0.14);
-  if (t.rightBanner) tl.to(t.rightBanner, { opacity: 1, scaleY: 1, duration: 0.45, ease: "power2.out" }, 0.18);
+    // Light beams glow
+    .to([t.lightBeamLeft, t.lightBeamRight], {
+      opacity: 0.85,
+      duration: 0.5,
+      ease: "power1.inOut",
+    }, 0.5)
 
-  // Plants & podium text pop in
-  if (t.plantLeft) tl.to(t.plantLeft, { opacity: 1, scale: 1, duration: 0.38, ease: "back.out(1.3)" }, 0.22);
-  if (t.plantRight) tl.to(t.plantRight, { opacity: 1, scale: 1, duration: 0.38, ease: "back.out(1.3)" }, 0.26);
-  if (t.podiumText) tl.to(t.podiumText, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 0.25);
+    // Side banners: 3-beat sequence (expand -> drop/settle -> reveal)
+    .to([t.leftBanner, t.rightBanner], {
+      opacity: 1,
+      scaleY: 1,
+      duration: 0.55,
+      stagger: 0.08,
+      ease: "power2.out",
+    }, 0.45)
+    .to([t.leftBanner, t.rightBanner], {
+      y: 4,
+      duration: 0.12,
+      ease: "power1.in",
+    }, 1.0)
+    .to([t.leftBanner, t.rightBanner], {
+      y: 0,
+      duration: 0.18,
+      ease: "back.out(2)",
+    }, 1.12);
 
-  // Screen frame drops in
-  if (t.screenFrameGroup) tl.to(t.screenFrameGroup, { opacity: 1, y: 0, duration: 0.38, ease: "power2.out" }, 0.2);
+  // ── PHASE 2: Projector Screen Drop (1.2s – 2.0s) ───────────────────────────
+  tl.to(t.screenFrame, {
+    opacity: 1,
+    y: 0,
+    duration: 0.35,
+    ease: "power2.out",
+  }, 1.2)
+    .to(t.screenCanvas, {
+      opacity: 1,
+      scaleY: 1,
+      duration: 0.65,
+      ease: "power3.out",
+    }, 1.3)
+    .set(t.screenContent, { opacity: 1 }, 1.6);
 
-  // 2. SCREEN DROPS (~0.6s → ~1.3s)
-  // Physical unrolling downward with overshoot and bounce settle
-  if (t.screenSurface) {
-    tl.to(t.screenSurface, { opacity: 1, duration: 0.05 }, 0.6);
-    tl.to(
-      t.screenSurface,
-      {
-        scaleY: 1.025,
-        duration: 0.52,
-        ease: "power2.out",
-      },
-      0.6
-    );
-    tl.to(
-      t.screenSurface,
-      {
-        scaleY: 1.0,
-        duration: 0.16,
-        ease: "power1.inOut",
-      },
-      1.12
-    );
-  }
+  // ── PHASE 3: Hero Title Reveal (2.0s – 2.8s) ───────────────────────────────
+  tl.to(t.heroTitle, {
+    opacity: 1,
+    scale: 1,
+    duration: 0.55,
+    ease: "back.out(1.8)",
+  }, 2.0)
+    .to(t.subtitle, {
+      opacity: 1,
+      y: 0,
+      duration: 0.4,
+      ease: "power2.out",
+    }, 2.35)
+    .add(() => {
+      onEntranceComplete?.();
+    }, 2.7);
 
-  // Bottom weight bar travels down in sync with screen surface
-  if (t.screenWeightBar) {
-    tl.to(t.screenWeightBar, { opacity: 1, duration: 0.05 }, 0.6);
-    tl.to(
-      t.screenWeightBar,
-      {
-        y: 6.75, // slight overshoot corresponding to 1.025 * 270 = 276.75
-        duration: 0.52,
-        ease: "power2.out",
-      },
-      0.6
-    );
-    tl.to(
-      t.screenWeightBar,
-      {
-        y: 0,
-        duration: 0.16,
-        ease: "power1.inOut",
-      },
-      1.12
-    );
-  }
-
-  // 3. CONTENT BUILDS IN — PPT STYLE (~1.3s → ~2.6s), strictly staggered
-  // a. Divider line draws on
-  if (t.dividerLine) {
-    tl.to(
-      t.dividerLine,
-      {
-        strokeDashoffset: 0,
-        duration: 0.28,
-        ease: "power2.out",
-      },
-      1.32
-    );
-  }
-
-  // b. "PITCH" drops/wipes in
-  if (t.pitchTitle) {
-    tl.to(
-      t.pitchTitle,
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.24,
-        ease: "back.out(1.4)",
-      },
-      1.42
-    );
-  }
-
-  // c. "DECK" drops/wipes in (~0.1s after PITCH)
-  if (t.deckTitle) {
-    tl.to(
-      t.deckTitle,
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.24,
-        ease: "back.out(1.4)",
-      },
-      1.52
-    );
-  }
-
-  // d. Tagline fades/wipes in beneath
-  if (t.taglineBlock) {
-    tl.to(
-      t.taglineBlock,
-      {
-        opacity: 1,
-        x: 0,
-        duration: 0.25,
-        ease: "power2.out",
-      },
-      1.64
-    );
-  }
-
-  // e. Bar chart baseline & bars grow up one at a time (left to right, staggered 0.08s)
-  if (t.chartAxis) {
-    tl.to(
-      t.chartAxis,
-      {
-        strokeDashoffset: 0,
-        duration: 0.2,
-        ease: "power2.out",
-      },
-      1.75
-    );
-  }
-
+  // ── PHASE 4: Slide Content Sequential Build (2.8s – 4.5s) ───────────────────
+  // Bar chart rising from baseline
   t.chartBars.forEach((bar, index) => {
     if (bar) {
-      tl.to(
-        bar,
-        {
-          scaleY: 1,
-          duration: 0.22,
-          ease: "back.out(1.2)",
-        },
-        1.82 + index * 0.08
-      );
+      tl.to(bar, {
+        scaleY: 1,
+        duration: 0.45,
+        ease: "back.out(1.6)",
+      }, 2.8 + index * 0.12);
     }
   });
 
-  // f. Arrow line draws across the top of the bars once they have finished
-  const arrowStartTime = 1.82 + t.chartBars.length * 0.08 + 0.04;
-  if (t.chartArrow) {
-    tl.to(
-      t.chartArrow,
-      {
-        strokeDashoffset: 0,
-        duration: 0.28,
-        ease: "power2.out",
-      },
-      arrowStartTime
-    );
-  }
-  if (t.chartArrowHead) {
-    tl.to(
-      t.chartArrowHead,
-      {
-        scale: 1,
-        opacity: 1,
-        duration: 0.16,
-        ease: "back.out(1.6)",
-      },
-      arrowStartTime + 0.22
-    );
-  }
-  if (t.chartBadge) {
-    tl.to(
-      t.chartBadge,
-      {
-        scale: 1,
-        opacity: 1,
-        duration: 0.18,
-        ease: "back.out(1.5)",
-      },
-      arrowStartTime + 0.26
-    );
-  }
+  // Trend arrow swoops upwards over the bars
+  tl.to(t.chartArrow, {
+    opacity: 1,
+    scale: 1,
+    x: 0,
+    y: 0,
+    duration: 0.55,
+    ease: "power3.out",
+  }, 3.35)
+    .to(t.chartArrow, {
+      scale: 1.06,
+      duration: 0.12,
+      yoyo: true,
+      repeat: 1,
+      ease: "sine.inOut",
+    }, 3.85);
 
-  // g. 3 icon rows pop in one at a time, top to bottom (staggered ~0.1s each)
-  const iconStartTime = arrowStartTime + 0.28;
-  if (t.iconRow1) {
-    tl.to(
-      t.iconRow1,
-      {
-        opacity: 1,
-        scale: 1,
-        duration: 0.22,
-        ease: "back.out(1.4)",
-      },
-      iconStartTime
-    );
-  }
-  if (t.iconRow2) {
-    tl.to(
-      t.iconRow2,
-      {
-        opacity: 1,
-        scale: 1,
-        duration: 0.22,
-        ease: "back.out(1.4)",
-      },
-      iconStartTime + 0.1
-    );
-  }
-  if (t.iconRow3) {
-    tl.to(
-      t.iconRow3,
-      {
-        opacity: 1,
-        scale: 1,
-        duration: 0.22,
-        ease: "back.out(1.4)",
-      },
-      iconStartTime + 0.2
-    );
-  }
+  // 3 Icon rows slide in sequentially (PPT style)
+  tl.to(t.iconRow1, {
+    opacity: 1,
+    x: 0,
+    duration: 0.38,
+    ease: "power2.out",
+  }, 3.5)
+    .to(t.iconRow2, {
+      opacity: 1,
+      x: 0,
+      duration: 0.38,
+      ease: "power2.out",
+    }, 3.75)
+    .to(t.iconRow3, {
+      opacity: 1,
+      x: 0,
+      duration: 0.38,
+      ease: "power2.out",
+    }, 4.0);
 
-  // 4. RESOLUTION / HOLD (~2.6s → ~3.6s)
-  const entranceEndTime = iconStartTime + 0.28;
-  tl.call(() => {
-    onEntranceComplete?.();
-  }, undefined, entranceEndTime);
+  // ── PHASE 5: Presenter Callout & Climax Hold (4.5s – 6.6s) ──────────────────
+  tl.to(t.calloutBubble, {
+    opacity: 1,
+    scale: 1,
+    duration: 0.45,
+    ease: "back.out(2.2)",
+  }, 4.4);
 
-  // 5. EXIT (~3.6s → ~4.1s)
-  // Simple clean fade out — all SVG content and base image fade together
-  tl.to(
-    t.container,
-    {
+  // Climax hold gap before clean completion
+  tl.to({}, { duration: 2.1 }, 4.5);
+
+  // ── PHASE 6: Smooth Exit Transition (6.6s – 7.2s) ──────────────────────────
+  tl.to(t.stageFrame, {
+    scale: 0.98,
+    opacity: 0,
+    duration: 0.45,
+    ease: "power2.inOut",
+  }, 6.6)
+    .to(t.container, {
       opacity: 0,
-      duration: 0.45,
-      ease: "power2.in",
-    },
-    3.6
-  );
+      duration: 0.35,
+      ease: "power1.in",
+    }, 6.75);
 
   return tl;
 }
 
+/**
+ * Ambient idle loops for lamps and speech bubble pulse during presentation hold.
+ */
 export function startPitchDeckIdleLoops(
-  targets: Pick<PitchDeckSceneTargets, "lightBeamLeft" | "lightBeamRight" | "chartArrowHead">
+  t: Pick<
+    PitchDeckSceneTargets,
+    "lampLeft" | "lampRight" | "lightBeamLeft" | "lightBeamRight" | "calloutBubble"
+  >
 ): gsap.core.Tween[] {
   const loops: gsap.core.Tween[] = [];
 
-  if (targets.lightBeamLeft) {
+  // Gentle sway on ceiling lamps
+  if (t.lampLeft) {
     loops.push(
-      gsap.to(targets.lightBeamLeft, {
-        opacity: 0.28,
-        duration: 2.2,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-      })
-    );
-  }
-
-  if (targets.lightBeamRight) {
-    loops.push(
-      gsap.to(targets.lightBeamRight, {
-        opacity: 0.28,
+      gsap.to(t.lampLeft, {
+        rotation: 1.2,
+        transformOrigin: "382px 0px",
         duration: 2.4,
-        delay: 0.3,
         ease: "sine.inOut",
         yoyo: true,
         repeat: -1,
@@ -447,11 +307,50 @@ export function startPitchDeckIdleLoops(
     );
   }
 
-  if (targets.chartArrowHead) {
+  if (t.lampRight) {
     loops.push(
-      gsap.to(targets.chartArrowHead, {
-        scale: 1.15,
-        duration: 1.4,
+      gsap.to(t.lampRight, {
+        rotation: -1.2,
+        transformOrigin: "1290px 0px",
+        duration: 2.6,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+      })
+    );
+  }
+
+  // Light beam ambient breathing
+  if (t.lightBeamLeft) {
+    loops.push(
+      gsap.to(t.lightBeamLeft, {
+        opacity: 0.65,
+        duration: 1.8,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+      })
+    );
+  }
+  if (t.lightBeamRight) {
+    loops.push(
+      gsap.to(t.lightBeamRight, {
+        opacity: 0.65,
+        duration: 2.1,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+      })
+    );
+  }
+
+  // Presenter speech bubble breathing
+  if (t.calloutBubble) {
+    loops.push(
+      gsap.to(t.calloutBubble, {
+        scale: 1.03,
+        transformOrigin: "142px 56px",
+        duration: 1.5,
         ease: "sine.inOut",
         yoyo: true,
         repeat: -1,
@@ -462,6 +361,9 @@ export function startPitchDeckIdleLoops(
   return loops;
 }
 
+/**
+ * Fast clean exit sequence when user clicks Skip or modal is dismissed.
+ */
 export function runPitchDeckExit(
   container: HTMLElement | null,
   idleLoops: gsap.core.Tween[],
@@ -476,11 +378,11 @@ export function runPitchDeckExit(
 
   gsap.to(container, {
     opacity: 0,
-    duration: 0.28,
-    ease: "power2.in",
+    scale: 0.98,
+    duration: 0.35,
+    ease: "power2.inOut",
     onComplete: () => {
       onComplete?.();
     },
   });
 }
-

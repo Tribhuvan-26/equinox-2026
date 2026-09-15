@@ -1,7 +1,7 @@
 // app/overlay-animations/animations/core/animationRegistry.ts
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { SpotlightAnimation } from "../events/Spotlight/SpotlightAnimation";
 import { StartupPolyAnimation } from "../events/StartupPoly/StartupPolyAnimation";
 import { IplAuctionAnimation } from "../events/IplAuction/IplAuctionAnimation";
@@ -11,6 +11,8 @@ import { PitchDeckAnimation } from "../events/PitchDeck/PitchDeckAnimation";
 import { StartupExpoAnimation } from "../events/StartupExpo/StartupExpoAnimation";
 import { BrandBattlesAnimation } from "../events/BrandBattles/BrandBattlesAnimation";
 import { createPlaceholderAnimation } from "../events/Placeholder/PlaceholderAnimation";
+import { ECellMeetAnimation } from "../events/ECellMeet/ECellMeetAnimation";
+import { InternshipDriveAnimation } from "../events/InternshipDrive/InternshipDriveAnimation";
 import type {
   AnimationRegistry,
   AnimationTriggerPayload,
@@ -62,15 +64,35 @@ export const animationRegistry: AnimationRegistry = {
     id: "brand-battles",
     title: "Brand Battles",
   },
+  "e-cell-meet": {
+    Component: ECellMeetAnimation,
+    id: "e-cell-meet",
+    title: "E-Cell Meet",
+  },
+  "e-cell": {
+    Component: ECellMeetAnimation,
+    id: "e-cell-meet",
+    title: "E-Cell Meet",
+  },
+  ecell: {
+    Component: ECellMeetAnimation,
+    id: "e-cell-meet",
+    title: "E-Cell Meet",
+  },
   "internship-drive": {
-    Component: createPlaceholderAnimation("Internship Drive", "internship-drive"),
+    Component: InternshipDriveAnimation,
     id: "internship-drive",
     title: "Internship Drive",
   },
-  "e-cell-meet": {
-    Component: createPlaceholderAnimation("E-Cell Meet", "e-cell-meet"),
-    id: "e-cell-meet",
-    title: "E-Cell Meet",
+  internship: {
+    Component: InternshipDriveAnimation,
+    id: "internship-drive",
+    title: "Internship Drive",
+  },
+  drive: {
+    Component: InternshipDriveAnimation,
+    id: "internship-drive",
+    title: "Internship Drive",
   },
 };
 
@@ -128,20 +150,25 @@ export const OverlayAnimationHost: React.FC = () => {
     console.log("[OverlayAnimations] OverlayAnimationHost mounted at root layout!");
   }, []);
 
+  const lastTriggerRef = useRef<{ event: string; time: number } | null>(null);
+
   const handleTrigger = useCallback((payload: AnimationTriggerPayload) => {
     console.log("[OverlayAnimations] OverlayAnimationHost received trigger:", payload);
     if (payload.type === "event" && payload.event) {
-      setActiveEvent((prev) => {
-        if (prev === payload.event) {
-          // Replay if already active: increment key to force clean restart from 0
-          setPlayKey((k) => k + 1);
-          setIsDismissed(false);
-          return prev;
-        }
-        setPlayKey((k) => k + 1);
-        setIsDismissed(false);
-        return payload.event;
-      });
+      const now = Date.now();
+      if (
+        lastTriggerRef.current &&
+        lastTriggerRef.current.event === payload.event &&
+        now - lastTriggerRef.current.time < 2000
+      ) {
+        // Prevent duplicate trigger restart within 2s during navigation transitions
+        return;
+      }
+      lastTriggerRef.current = { event: payload.event, time: now };
+
+      setActiveEvent(payload.event);
+      setPlayKey((k) => k + 1);
+      setIsDismissed(false);
     }
   }, []);
 

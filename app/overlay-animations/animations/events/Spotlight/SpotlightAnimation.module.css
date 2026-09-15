@@ -1,12 +1,27 @@
 /* app/overlay-animations/animations/events/Spotlight/SpotlightAnimation.module.css */
 
 .overlayContainer {
+  --equinox-dark: #2A2A2A;
+  --equinox-periwinkle: #7484FE;
+  --equinox-green: #33FF67;
+  --equinox-offwhite: #F7F2F6;
+
+  /* Backward-compatible aliases */
+  --equinox-blue: var(--equinox-periwinkle);
+  --equinox-yellow: var(--equinox-green);
+  --equinox-coral: var(--equinox-green);
+  --equinox-white: var(--equinox-offwhite);
+
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
   z-index: 99999;
-  background-color: #282828;
+  background-color: var(--equinox-dark);
+  background-image: 
+    linear-gradient(to right, rgba(247, 242, 246, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(247, 242, 246, 0.07) 1px, transparent 1px);
+  background-size: 34px 34px;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -105,20 +120,20 @@
 }
 
 .titleSpot {
-  fill: #ffffff;
-  filter: drop-shadow(0 4px 20px rgba(255, 255, 255, 0.25));
+  fill: var(--equinox-offwhite);
+  filter: drop-shadow(0 4px 20px rgba(247, 242, 246, 0.25));
 }
 
 .titleLight {
-  fill: #2074D5;
-  filter: drop-shadow(0 4px 25px rgba(27, 95, 214, 0.65));
+  fill: var(--equinox-periwinkle);
+  filter: drop-shadow(0 4px 25px rgba(116, 132, 254, 0.65));
 }
 
 .titleStreak {
-  stroke: #2074D5;
+  stroke: var(--equinox-green);
   stroke-width: 6;
   stroke-linecap: round;
-  filter: drop-shadow(0 0 10px rgba(27, 95, 214, 0.8));
+  filter: drop-shadow(0 0 10px rgba(51, 255, 103, 0.8));
 }
 
 /* Skip / Close indicator button */

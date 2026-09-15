@@ -96,6 +96,15 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
       );
 
       timelineRef.current = tl;
+      if (typeof window !== "undefined") {
+        (window as any).__startupPolyTl = tl;
+        const pauseTarget = (window as any).__startupPolyPauseAt;
+        if (pauseTarget !== undefined && pauseTarget !== null) {
+          const pauseSec = typeof pauseTarget === "number" ? pauseTarget : 2.8;
+          tl.pause(pauseSec);
+          return;
+        }
+      }
       tl.play();
     }, containerRef);
 
@@ -166,8 +175,18 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
         preserveAspectRatio="xMidYMid meet"
         xmlns="http://www.w3.org/2000/svg"
       >
+        <defs>
+          <linearGradient id="polyEquinoxGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#7484FE" />
+            <stop offset="100%" stopColor="#33FF67" />
+          </linearGradient>
+          <filter id="polyTextShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#000000" floodOpacity="0.6" />
+          </filter>
+        </defs>
+
         {/* Background Clouds matching reference poster */}
-        <g opacity="0.85" fill="#ffffff">
+        <g opacity="0.12" fill="var(--equinox-offwhite)">
           {/* Cloud 1 (Top Left) */}
           <path d="M300,160 C300,140 320,125 345,125 C360,110 390,110 410,125 C430,115 460,125 470,145 C490,145 505,160 505,175 C505,190 490,200 470,200 L325,200 C305,200 300,185 300,160 Z" />
           {/* Cloud 2 (Top Right) */}
@@ -177,8 +196,8 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
         </g>
 
         {/* Poster Corner Annotations (Verbatim from reference) */}
-        <g fill="#282828">
-          {/* Top Left */}
+        <g>
+          {/* Top Left - Confirmed Reference Wordmark Treatment */}
           <text
             x="80"
             y="95"
@@ -187,8 +206,23 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             fontSize="32"
             letterSpacing="-0.02em"
           >
-            THE EQUINOX <tspan fill="#2074D5">2.0</tspan>
+            <tspan fill="url(#polyEquinoxGrad)">THE </tspan>
+            <tspan fill="var(--equinox-offwhite)" filter="url(#polyTextShadow)">EQUINOX </tspan>
           </text>
+          <g transform="translate(425, 71)">
+            <rect x="0" y="0" width="52" height="25" rx="5" fill="url(#polyEquinoxGrad)" />
+            <text
+              x="26"
+              y="17"
+              textAnchor="middle"
+              fontFamily="var(--font-syne), 'Arial Black', sans-serif"
+              fontWeight="900"
+              fontSize="13"
+              fill="var(--equinox-dark)"
+            >
+              2.0
+            </text>
+          </g>
           <text
             x="82"
             y="135"
@@ -196,7 +230,8 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             fontWeight="700"
             fontSize="12"
             letterSpacing="0.22em"
-            opacity="0.8"
+            fill="url(#polyEquinoxGrad)"
+            opacity="0.9"
           >
             IDEAS  STRATEGY  PEOPLE  GROWTH
           </text>
@@ -210,6 +245,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             fontWeight="800"
             fontSize="24"
             letterSpacing="0.1em"
+            fill="var(--equinox-offwhite)"
           >
             30 - 31 OCT
           </text>
@@ -218,7 +254,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             y1="112"
             x2="1840"
             y2="112"
-            stroke="#282828"
+            stroke="var(--equinox-green)"
             strokeWidth="2.5"
           />
 
@@ -229,7 +265,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             fontFamily="var(--font-syne), 'Arial Black', sans-serif"
             fontWeight="900"
             fontSize="34"
-            fill="#2074D5"
+            fill="var(--equinox-periwinkle)"
           >
             #
           </text>
@@ -240,6 +276,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             fontWeight="700"
             fontSize="12"
             letterSpacing="0.16em"
+            fill="var(--equinox-offwhite)"
           >
             WHERE PASSION
           </text>
@@ -250,6 +287,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             fontWeight="700"
             fontSize="12"
             letterSpacing="0.16em"
+            fill="var(--equinox-offwhite)"
           >
             MEETS PERSEVERANCE
           </text>
@@ -258,7 +296,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             y1="1025"
             x2="175"
             y2="1025"
-            stroke="#282828"
+            stroke="var(--equinox-periwinkle)"
             strokeWidth="2"
           />
 
@@ -271,6 +309,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             fontWeight="700"
             fontSize="12"
             letterSpacing="0.16em"
+            fill="var(--equinox-offwhite)"
           >
             SAME GAME
           </text>
@@ -282,6 +321,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             fontWeight="700"
             fontSize="12"
             letterSpacing="0.16em"
+            fill="var(--equinox-offwhite)"
           >
             BIGGER DREAMS
           </text>
@@ -290,7 +330,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             y1="1010"
             x2="1840"
             y2="1010"
-            stroke="#282828"
+            stroke="var(--equinox-green)"
             strokeWidth="2"
           />
         </g>
@@ -300,20 +340,20 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
           {/* Sparkle 1 (Near Top Left Board) */}
           <path
             d="M480,180 Q480,195 495,195 Q480,195 480,210 Q480,195 465,195 Q480,195 480,180 Z"
-            fill="#282828"
+            fill="var(--equinox-green)"
             opacity="0.85"
           />
           {/* Sparkle 2 (Near Bottom Right Board) */}
           <path
             d="M1480,820 Q1480,838 1498,838 Q1480,838 1480,856 Q1480,838 1462,838 Q1480,838 1480,820 Z"
-            fill="#282828"
+            fill="var(--equinox-periwinkle)"
             opacity="0.85"
           />
           {/* Sparkle 3 (Near Right Deck) */}
           <path
             d="M1740,430 Q1740,442 1752,442 Q1740,442 1740,454 Q1740,442 1728,442 Q1740,442 1740,430 Z"
-            fill="#2074D5"
-            opacity="0.75"
+            fill="var(--equinox-green)"
+            opacity="0.8"
           />
         </g>
 
@@ -326,7 +366,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             width="220"
             height="140"
             rx="14"
-            fill="#0B2D6D"
+            fill="var(--equinox-dark)"
           />
           <rect
             x="-106"
@@ -334,7 +374,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             width="220"
             height="140"
             rx="14"
-            fill="#16529E"
+            fill="var(--equinox-green)"
           />
           {/* Top card */}
           <rect
@@ -343,15 +383,15 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             width="220"
             height="140"
             rx="14"
-            fill="#2074D5"
-            stroke="#ffffff"
-            strokeWidth="3.5"
+            fill="var(--equinox-periwinkle)"
+            stroke="var(--equinox-offwhite)"
+            strokeWidth="3"
           />
           <text
             x="10"
             y="-4"
             textAnchor="middle"
-            fill="#ffffff"
+            fill="var(--equinox-offwhite)"
             fontFamily="var(--font-syne), 'Arial Black', sans-serif"
             fontWeight="900"
             fontSize="26"
@@ -373,7 +413,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             width="220"
             height="140"
             rx="14"
-            fill="#0B2D6D"
+            fill="var(--equinox-dark)"
           />
           <rect
             x="-106"
@@ -381,7 +421,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             width="220"
             height="140"
             rx="14"
-            fill="#16529E"
+            fill="var(--equinox-green)"
           />
           {/* Top card */}
           <rect
@@ -390,15 +430,15 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             width="220"
             height="140"
             rx="14"
-            fill="#2074D5"
-            stroke="#ffffff"
-            strokeWidth="3.5"
+            fill="var(--equinox-periwinkle)"
+            stroke="var(--equinox-offwhite)"
+            strokeWidth="3"
           />
           <text
             x="10"
             y="-4"
             textAnchor="middle"
-            fill="#ffffff"
+            fill="var(--equinox-offwhite)"
             fontFamily="var(--font-syne), 'Arial Black', sans-serif"
             fontWeight="900"
             fontSize="24"
@@ -422,7 +462,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             width="868"
             height="868"
             rx="8"
-            fill="#282828"
+            fill="var(--equinox-dark)"
             opacity="0.12"
           />
           <rect
@@ -431,7 +471,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             width="860"
             height="860"
             rx="6"
-            fill="#282828"
+            fill="var(--equinox-dark)"
           />
 
           {/* 12 Tiles (Clockwise sequence starting from Top-Left corner) */}
@@ -448,8 +488,8 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             {/* Flag Icon */}
             <path
               d="M595,145 L595,195 M595,145 L645,160 L595,175 Z"
-              fill="#282828"
-              stroke="#282828"
+              fill="var(--equinox-dark)"
+              stroke="var(--equinox-dark)"
               strokeWidth="2.5"
               strokeLinejoin="round"
             />
@@ -483,8 +523,8 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             {/* Rocket Icon */}
             <path
               d="M835,135 C835,135 848,145 848,165 L844,175 L826,175 L822,165 C822,145 835,135 835,135 Z M818,175 L814,185 L824,182 Z M852,175 L856,185 L846,182 Z"
-              fill="#282828"
-              stroke="#282828"
+              fill="var(--equinox-dark)"
+              stroke="var(--equinox-dark)"
               strokeWidth="2"
             />
             <text
@@ -518,7 +558,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             <path
               d="M1085,138 C1074,138 1066,146 1066,157 C1066,165 1072,170 1076,175 L1094,175 C1098,170 1104,165 1104,157 C1104,146 1096,138 1085,138 Z M1078,180 L1092,180 M1080,185 L1090,185"
               fill="none"
-              stroke="#282828"
+              stroke="var(--equinox-dark)"
               strokeWidth="2.5"
               strokeLinecap="round"
             />
@@ -543,9 +583,9 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
               className={styles.tileBlue}
             />
             {/* Bar Chart Icon */}
-            <rect x="1272" y="165" width="10" height="25" fill="#ffffff" />
-            <rect x="1288" y="150" width="10" height="40" fill="#ffffff" />
-            <rect x="1304" y="135" width="10" height="55" fill="#ffffff" />
+            <rect x="1272" y="165" width="10" height="25" fill="var(--equinox-white)" />
+            <rect x="1288" y="150" width="10" height="40" fill="var(--equinox-white)" />
+            <rect x="1304" y="135" width="10" height="55" fill="var(--equinox-white)" />
             <text
               x="1295"
               y="235"
@@ -581,7 +621,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
               fontFamily="var(--font-syne), 'Arial Black', Impact, sans-serif"
               fontWeight="900"
               fontSize="48"
-              fill="#282828"
+              fill="var(--equinox-dark)"
             >
               ?
             </text>
@@ -618,7 +658,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
               cy="625"
               r="22"
               fill="none"
-              stroke="#282828"
+              stroke="var(--equinox-dark)"
               strokeWidth="2.5"
             />
             <ellipse
@@ -627,7 +667,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
               rx="11"
               ry="22"
               fill="none"
-              stroke="#282828"
+              stroke="var(--equinox-dark)"
               strokeWidth="2"
             />
             <line
@@ -635,7 +675,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
               y1="625"
               x2="1307"
               y2="625"
-              stroke="#282828"
+              stroke="var(--equinox-dark)"
               strokeWidth="2"
             />
             <text
@@ -663,10 +703,10 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
               cy="850"
               r="24"
               fill="none"
-              stroke="#ffffff"
+              stroke="var(--equinox-white)"
               strokeWidth="3.5"
             />
-            <circle cx="1300" cy="850" r="10" fill="#ffffff" />
+            <circle cx="1300" cy="850" r="10" fill="var(--equinox-white)" />
             <text
               x="1300"
               y="915"
@@ -698,7 +738,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             <path
               d="M1070,815 L1100,815 L1096,838 C1094,848 1088,852 1085,852 C1082,852 1076,848 1074,838 Z M1085,852 L1085,862 M1076,862 L1094,862"
               fill="none"
-              stroke="#282828"
+              stroke="var(--equinox-dark)"
               strokeWidth="2.5"
               strokeLinejoin="round"
             />
@@ -732,8 +772,8 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             {/* Seedling Sprout Icon */}
             <path
               d="M835,860 L835,835 C835,835 848,832 850,820 C838,820 835,832 835,832 C835,832 832,820 820,820 C822,832 835,835 835,835"
-              fill="#282828"
-              stroke="#282828"
+              fill="var(--equinox-dark)"
+              stroke="var(--equinox-dark)"
               strokeWidth="2"
               strokeLinejoin="round"
             />
@@ -761,13 +801,13 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
               cx="620"
               cy="835"
               r="22"
-              fill="#282828"
+              fill="var(--equinox-dark)"
             />
             <text
               x="620"
               y="844"
               textAnchor="middle"
-              fill="#ffffff"
+              fill="var(--equinox-white)"
               fontFamily="var(--font-mono), monospace"
               fontWeight="900"
               fontSize="24"
@@ -804,8 +844,8 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             {/* Handshake Icon */}
             <path
               d="M595,625 L610,610 L625,622 L640,610 L650,622 L635,635 L622,625 L610,637 Z"
-              fill="#282828"
-              stroke="#282828"
+              fill="var(--equinox-dark)"
+              stroke="var(--equinox-dark)"
               strokeWidth="2"
               strokeLinejoin="round"
             />
@@ -837,8 +877,8 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
               className={styles.tileStripeBlue}
             />
             {/* City Skyscrapers Icon */}
-            <rect x="608" y="380" width="22" height="42" fill="#282828" />
-            <rect x="635" y="360" width="26" height="62" fill="#282828" />
+            <rect x="608" y="380" width="22" height="42" fill="var(--equinox-dark)" />
+            <rect x="635" y="360" width="26" height="62" fill="var(--equinox-dark)" />
             <text
               x="635"
               y="450"
@@ -860,8 +900,8 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
               y="270"
               width="500"
               height="500"
-              fill="#ffffff"
-              stroke="#282828"
+              fill="var(--equinox-white)"
+              stroke="var(--equinox-dark)"
               strokeWidth="3.5"
             />
             {/* Inner blueprint dashed frame */}
@@ -871,7 +911,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
               width="472"
               height="472"
               fill="none"
-              stroke="#2074D5"
+              stroke="var(--equinox-blue)"
               strokeWidth="1.5"
               strokeDasharray="6 4"
               opacity="0.35"
@@ -897,7 +937,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
               width="380"
               height="110"
               rx="12"
-              fill="#2074D5"
+              fill="var(--equinox-blue)"
             />
 
             {/* Title: "P" and "LY" Text surrounding the Die slot */}
@@ -935,16 +975,16 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
               width="70"
               height="70"
               rx="12"
-              fill="#2074D5"
-              stroke="#ffffff"
+              fill="var(--equinox-green)"
+              stroke="var(--equinox-dark)"
               strokeWidth="3.5"
             />
-            {/* 5 White Dot-Pips */}
-            <circle cx="-18" cy="-18" r="5.5" fill="#ffffff" />
-            <circle cx="18" cy="-18" r="5.5" fill="#ffffff" />
-            <circle cx="0" cy="0" r="5.5" fill="#ffffff" />
-            <circle cx="-18" cy="18" r="5.5" fill="#ffffff" />
-            <circle cx="18" cy="18" r="5.5" fill="#ffffff" />
+            {/* 5 Dark Dot-Pips */}
+            <circle cx="-18" cy="-18" r="5.5" fill="var(--equinox-dark)" />
+            <circle cx="18" cy="-18" r="5.5" fill="var(--equinox-dark)" />
+            <circle cx="0" cy="0" r="5.5" fill="var(--equinox-dark)" />
+            <circle cx="-18" cy="18" r="5.5" fill="var(--equinox-dark)" />
+            <circle cx="18" cy="18" r="5.5" fill="var(--equinox-dark)" />
           </g>
         </g>
       </svg>
