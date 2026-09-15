@@ -447,7 +447,7 @@ export default function ScrollJourney() {
           {/* Side scroll indicator */}
           <div
             ref={scrollIndicatorRef}
-            className="absolute right-6 bottom-10 z-20 hidden md:flex items-center gap-3 rounded-full border border-white/10 bg-[#1A1A1A] px-4 py-2 opacity-0 shadow-lg"
+            className="absolute right-6 bottom-28 z-20 hidden md:flex items-center gap-3 rounded-full border border-white/10 bg-[#1A1A1A] px-4 py-2 opacity-0 shadow-lg"
           >
             <Mouse className="h-4 w-4 text-[#33FF67] animate-bounce" />
             <div className="text-left">
