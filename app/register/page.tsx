@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { board, event, events, registration, tickets } from "@/lib/content";
 import { Arrow, ContactCard, PageTransition, SectionHeading } from "../ui";
+import { RegisterForm } from "./RegisterForm";
 
 export const metadata: Metadata = {
   title: `Register — ${event.name} ${event.year}`,
@@ -32,6 +33,10 @@ export default function RegisterPage() {
               </li>
             ))}
           </ol>
+
+          <div className="mt-16">
+            <RegisterForm />
+          </div>
 
           <h2 className="mt-20 heading text-3xl font-black text-[#F7F2F6]">Passes</h2>
           <div className="mt-6 flex flex-col gap-6">
