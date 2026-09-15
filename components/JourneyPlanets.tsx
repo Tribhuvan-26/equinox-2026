@@ -13,32 +13,32 @@ export interface PlanetLayout {
 }
 
 export const PLANET_LAYOUTS: PlanetLayout[] = [
-  { index: 0, x: 1600, y: 320, cardTop: 415, badge: "01 · SPOTLIGHT" },
-  { index: 1, x: 3000, y: 760, cardTop: 160, badge: "02 · CROSS ROADS" },
-  { index: 2, x: 4400, y: 300, cardTop: 415, badge: "03 · STARTUP EXPO" },
-  { index: 3, x: 5800, y: 740, cardTop: 160, badge: "04 · BRAND BATTLES" },
-  { index: 4, x: 7200, y: 320, cardTop: 415, badge: "05 · IPL AUCTION" },
-  { index: 5, x: 8600, y: 760, cardTop: 160, badge: "06 · HUSTLE MANIA" },
-  { index: 6, x: 10000, y: 300, cardTop: 415, badge: "07 · INTERNSHIP DRIVE" },
-  { index: 7, x: 11400, y: 740, cardTop: 160, badge: "08 · STARTUP POLY" },
-  { index: 8, x: 12800, y: 320, cardTop: 415, badge: "09 · E-CELL MEET" },
-  { index: 9, x: 14200, y: 720, cardTop: 160, badge: "10 · PITCH DECK" },
+  { index: 0, x: 1600, y: 382, cardTop: 415, badge: "01 · SPOTLIGHT" },
+  { index: 1, x: 3000, y: 698, cardTop: 300, badge: "02 · CROSS ROADS" },
+  { index: 2, x: 4400, y: 367, cardTop: 415, badge: "03 · STARTUP EXPO" },
+  { index: 3, x: 5800, y: 684, cardTop: 300, badge: "04 · BRAND BATTLES" },
+  { index: 4, x: 7200, y: 382, cardTop: 415, badge: "05 · IPL AUCTION" },
+  { index: 5, x: 8600, y: 698, cardTop: 300, badge: "06 · HUSTLE MANIA" },
+  { index: 6, x: 10000, y: 367, cardTop: 415, badge: "07 · INTERNSHIP DRIVE" },
+  { index: 7, x: 11400, y: 684, cardTop: 300, badge: "08 · STARTUP POLY" },
+  { index: 8, x: 12800, y: 382, cardTop: 415, badge: "09 · E-CELL MEET" },
+  { index: 9, x: 14200, y: 670, cardTop: 300, badge: "10 · PITCH DECK" },
 ];
 
 // Single continuous squiggly path connecting Earth launch to all 10 planets with tightened spacing (~1400px apart)
 export const JOURNEY_SQUIGGLY_PATH =
-  "M 350,780 " +
-  "C 700,780 1100,320 1600,320 " +
-  "C 2100,320 2500,760 3000,760 " +
-  "C 3500,760 3900,300 4400,300 " +
-  "C 4900,300 5300,740 5800,740 " +
-  "C 6300,740 6700,320 7200,320 " +
-  "C 7700,320 8100,760 8600,760 " +
-  "C 9100,760 9500,300 10000,300 " +
-  "C 10500,300 10900,740 11400,740 " +
-  "C 11900,740 12300,320 12800,320 " +
-  "C 13300,320 13700,720 14200,720 " +
-  "C 14750,720 15300,540 15800,540";
+  "M 350,713 " +
+  "C 700,713 1100,382 1600,382 " +
+  "C 2100,382 2500,698 3000,698 " +
+  "C 3500,698 3900,367 4400,367 " +
+  "C 4900,367 5300,684 5800,684 " +
+  "C 6300,684 6700,382 7200,382 " +
+  "C 7700,382 8100,698 8600,698 " +
+  "C 9100,698 9500,367 10000,367 " +
+  "C 10500,367 10900,684 11400,684 " +
+  "C 11900,684 12300,382 12800,382 " +
+  "C 13300,382 13700,670 14200,670 " +
+  "C 14750,670 15300,540 15800,540";
 
 export const TOTAL_WORLD_WIDTH = 16500;
 
@@ -64,7 +64,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
     >
       <Link href={`/events/${event.slug}`} className="group pointer-events-auto cursor-pointer">
         <g
-          transform="scale(1.45)"
+          transform="scale(1.75)"
           className="transition-transform duration-300 ease-out group-hover:scale-105"
           style={{ transformOrigin: "0px 0px" }}
         >

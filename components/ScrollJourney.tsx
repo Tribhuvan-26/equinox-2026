@@ -283,18 +283,33 @@ export default function ScrollJourney() {
         // Dynamically scale the horizontal journey to fit the remaining viewport
         // 48px of breathing room so no planet ring or badge ever rides the bottom edge.
         const availableHeight = window.innerHeight - headerSpace - 48;
-        // Real vertical extent of the world: top-row planets reach Y=300-290(ring)=10,
-        // bottom-row planets reach Y=760+290(ring)+30(badge pill)=1080. Scaling to 820
-        // cropped the bottom row, so the lower planets ran off the viewport.
-        const activeHeight = 1010;
+        // Measure what the world actually occupies instead of hard-coding it: the
+        // planets, their rings, badges and the launch site all move when the layout
+        // changes, and a stale constant either crops them or wastes half the screen.
+        const worldSvg = worldRef.current?.querySelector("#journey-content");
+        let contentTop = 0;
+        let activeHeight = 1055;
+        if (worldSvg) {
+          try {
+            const box = (worldSvg as SVGGraphicsElement).getBBox();
+            if (box.height > 0) {
+              contentTop = box.y;
+              activeHeight = box.height;
+            }
+          } catch {
+            // getBBox throws while the SVG is still hidden; the fallback above holds.
+          }
+        }
         // Fill the height that is actually free. The old 0.65 cap left the world stuck in
         // the top half of tall or zoomed-out windows, with a dead band underneath.
         const journeyScale = Math.max(0.3, Math.min(availableHeight / activeHeight, 1));
         document.documentElement.style.setProperty('--journey-scale', `${journeyScale}`);
         journeyScaleRef.current = journeyScale;
 
-        // Centre the scaled world in that free height instead of pinning it to the top.
-        const offsetY = Math.max(0, (availableHeight - activeHeight * journeyScale) / 2);
+        // Centre the measured content in that free height instead of pinning the
+        // world box (whose empty top band is not content) to the top.
+        const offsetY =
+          Math.max(0, (availableHeight - activeHeight * journeyScale) / 2) - contentTop * journeyScale;
         document.documentElement.style.setProperty('--journey-offset-y', `${offsetY}px`);
       };
       updateHeaderSpace();
@@ -529,8 +544,11 @@ export default function ScrollJourney() {
                   ))}
                 </g>
 
+                {/* Everything that must stay on screen. The star field sits outside this
+                    group: it is decoration and may run off the edges. */}
+                <g id="journey-content">
                 {/* Earth launch site */}
-                <g transform="translate(320, 800)">
+                <g transform="translate(320, 727)">
                   <circle cx="0" cy="0" r="165" fill="none" stroke="#7484FE" strokeWidth="1" strokeDasharray="4 6" opacity="0.4" />
                   <ellipse cx="0" cy="0" rx="170" ry="48" fill="none" stroke="#7484FE" strokeWidth="1.5" opacity="0.6" transform="rotate(-15)" />
                   
@@ -608,6 +626,7 @@ export default function ScrollJourney() {
                   <path d="M -8,9 L -18,18 L -14,9 Z" fill="#7484FE" />
                   <circle cx="14" cy="0" r="5.5" fill="#2A2A2A" stroke="#7484FE" strokeWidth="1.5" />
                   <circle cx="16" cy="-1.5" r="1.5" fill="#F7F2F6" opacity="0.8" />
+                </g>
                 </g>
               </svg>
 
