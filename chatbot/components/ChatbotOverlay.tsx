@@ -9,7 +9,7 @@ import {
   animateTriggerLeave,
   animateClickPop,
 } from "../animations/chatAnimations";
-import { Sparkles, MessageSquare, X } from "lucide-react";
+import { Bot, X } from "lucide-react";
 import "../styles/chatbot.css";
 
 interface ChatbotOverlayProps {
@@ -54,35 +54,22 @@ export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOv
 
   return (
     <div className="equinox-chatbot-root">
-      {/* Floating Equinox AI Trigger Button */}
-      <div className="fixed right-5 bottom-5 z-[99990]">
+      {/* Floating Circular Equinox AI Launcher Button */}
+      <div className="fixed right-4 bottom-4 z-[99990] sm:right-6 sm:bottom-6">
         <button
           ref={triggerRef}
           onClick={toggleOpen}
           onMouseEnter={() => animateTriggerHover(triggerRef.current)}
           onMouseLeave={() => animateTriggerLeave(triggerRef.current)}
-          className="group relative flex items-center gap-2.5 rounded-full border-2 border-white bg-[#0f35b5] px-4 py-2.5 sm:px-5 sm:py-3 text-white shadow-2xl transition hover:bg-white hover:text-[#2074d5]"
-          aria-label={isOpen ? "Close Equinox AI Chat" : "Open Equinox AI Chat"}
+          className="chatbot-launcher-btn"
+          aria-label={isOpen ? "Close Equinox AI Assistant" : "Open Equinox AI Assistant"}
+          title={isOpen ? "Close Equinox AI" : "Chat with Equinox AI"}
         >
-          {/* Animated Glowing Beacon */}
-          <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#2074d5] group-hover:bg-[#2074d5] group-hover:text-white shadow-md">
-            {isOpen ? <X className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
-            {!isOpen && (
-              <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-                <span className="relative inline-flex h-3 w-3 rounded-full bg-white" />
-              </span>
-            )}
-          </div>
-
-          <div className="text-left">
-            <span className="block font-mono text-[9px] sm:text-[10px] font-black tracking-widest uppercase text-white/75 group-hover:text-[#2074d5]/80">
-              {isOpen ? "CLOSE" : "ASK EQUINOX"}
-            </span>
-            <span className="block font-mono text-xs sm:text-sm font-black tracking-wider uppercase text-white group-hover:text-[#2074d5]">
-              EQUINOX AI
-            </span>
-          </div>
+          {isOpen ? (
+            <X className="h-6 w-6 text-white stroke-[2.2] sm:h-7 sm:w-7" />
+          ) : (
+            <Bot className="h-7 w-7 text-white stroke-[2] sm:h-8 sm:w-8" />
+          )}
         </button>
       </div>
 
@@ -90,7 +77,7 @@ export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOv
       {isRendered && (
         <div
           ref={windowRef}
-          className="fixed right-3 bottom-20 z-[99999] flex h-[600px] max-h-[82vh] w-[calc(100vw-1.5rem)] max-w-[420px] flex-col sm:right-6"
+          className="fixed right-3 left-3 sm:left-auto sm:right-6 bottom-[76px] sm:bottom-[100px] z-[99999] flex h-[580px] max-h-[calc(100dvh-88px)] sm:h-[640px] sm:max-h-[min(660px,calc(100vh-120px))] w-auto sm:w-[420px] max-w-[calc(100vw-1.5rem)] sm:max-w-[420px] flex-col"
         >
           <ChatWindow
             onClose={() => setIsOpen(false)}

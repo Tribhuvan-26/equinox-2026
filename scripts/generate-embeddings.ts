@@ -157,7 +157,113 @@ Name: ${se.spoc.name}, Phone: ${se.spoc.phone}, Email: ${se.spoc.email || contac
     });
   });
 
-  // 5. Registration, Tickets & Passes
+  // 5. Official Program Blueprint (equinox-events.pdf) - About & Vision
+  chunks.push({
+    id: "pdf-about-equinox",
+    title: "About Equinox (Official Program Blueprint)",
+    source: "chatbot/data/equinox-events.pdf",
+    category: "overview",
+    metadata: { sourcePdf: "equinox-events.pdf" },
+    content: `EQUINOX BLUEPRINT - ABOUT THE EQUINOX:
+EQUINOX is a 3-day event organized by the Centre for Innovation and Entrepreneurship at MLR Institute of Technology, Hyderabad. This event envisions creating a vibrant and engaging environment where students tackle real-world challenges and ignite their entrepreneurial spirit. Through sub-events Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, E-Cell Meet, and Pitch Deck, participants gain invaluable experiences that enhance their problem-solving abilities, creativity, and entrepreneurial mindset.`,
+  });
+
+  chunks.push({
+    id: "pdf-vision",
+    title: "Equinox Vision & Objectives (Official Program Blueprint)",
+    source: "chatbot/data/equinox-events.pdf",
+    category: "overview",
+    metadata: { sourcePdf: "equinox-events.pdf" },
+    content: `VISION:
+We envision creating an inclusive space where students, entrepreneurs, and investors come together to collaborate, learn, and shape impactful ideas. By fostering entrepreneurial thinking and encouraging practical problem-solving, we provide a platform for participants to showcase their ideas, experience real-world business scenarios, and build meaningful connections with industry leaders. Our event empowers emerging innovators and aspiring entrepreneurs to refine their concepts, gain visibility, and explore opportunities for growth, mentorship, and collaboration.`,
+  });
+
+  // 6. Official Program Blueprint (equinox-events.pdf) - Individual Sub-Events (Ideathon strictly excluded)
+  const pdfSubEvents = [
+    {
+      slug: "spotlight",
+      name: "Spotlight",
+      title: "Spotlight - Industry Expert Talks (Official Program Blueprint)",
+      content: `SUB EVENT: SPOTLIGHT (Source: equinox-events.pdf)
+Featuring inspiring presentations from industry experts on the latest trends in technology and entrepreneurship, the e-Summit will provide attendees with valuable insights into emerging technologies, industry trends, and the future of work. These talks will not only inform but also motivate and inspire, as participants hear firsthand how successful entrepreneurs overcame challenges and built thriving ventures. The personal stories of resilience and innovation will empower attendees to pursue their own ambitions with renewed determination, helping them stay focused and driven in the long run.`,
+    },
+    {
+      slug: "crossroads",
+      name: "Crossroads",
+      title: "Crossroads - Business Simulation with CEO, CTO, Marketing Manager Roles (Official Program Blueprint)",
+      content: `SUB EVENT: CROSSROADS (Source: equinox-events.pdf)
+An interactive business simulation where each team member will take on a specific role, such as CEO, CTO, or Marketing Manager. They will face a challenging scenario and will be tasked with developing a strategic plan to overcome the obstacles. The top three teams will be awarded prizes for their exceptional performance based on creativity, feasibility, and teamwork.`,
+    },
+    {
+      slug: "startup-expo",
+      name: "Startup Expo",
+      title: "Startup Expo - Showcase Products & Business Ideas (Official Program Blueprint)",
+      content: `SUB EVENT: STARTUP EXPO (Source: equinox-events.pdf)
+The Startup Expo at the summit offers an exciting platform for students to showcase their innovative products and business ideas to a diverse audience. It is a great opportunity for people who want to showcase their ideas and their marketing skills to simulate a real-life market.`,
+    },
+    {
+      slug: "brand-battles",
+      name: "Brand Battles",
+      title: "Brand Battles - Rival Brands Debate (Official Program Blueprint)",
+      content: `SUB EVENT: BRAND BATTLES (Source: equinox-events.pdf)
+A competitive debate where two teams represent rival brands from the same sector. Participants must present strong, well-researched arguments supported by real-time data, case studies, and relevant market examples to demonstrate why their chosen brand stands superior. Teams with the most compelling arguments and impactful presentations will be awarded.`,
+    },
+    {
+      slug: "ipl-auction",
+      name: "IPL Auction",
+      title: "IPL Auction - Cricket Draft Bidding Experience (Official Program Blueprint)",
+      content: `SUB EVENT: IPL AUCTION (Source: equinox-events.pdf)
+The IPL Auction is a competitive cricket draft experience where participants step into the shoes of team owners and build their own squads. Just like the official auction, each team is given a fixed budget to bid on players. The event runs in a fast-paced, high-energy format as participants strategize, outbid rivals, and assemble the strongest lineup for their team.`,
+    },
+    {
+      slug: "hustle-mania",
+      name: "Hustle Mania",
+      title: "Hustle Mania - Selling Products to Real Customers from Stalls (Official Program Blueprint)",
+      content: `SUB EVENT: HUSTLE MANIA (Source: equinox-events.pdf)
+Hustle Mania is a hands-on business and marketing challenge where participants set up stalls and sell their products to real customers. Every aspect of their operations — expenditure, pricing, revenue, and profit — is tracked throughout the event. Teams must apply marketing strategies, customer engagement skills, and smart budgeting to maximize performance.`,
+    },
+    {
+      slug: "internship-drive",
+      name: "Internship Drive",
+      title: "Internship Drive - Connecting Students with Companies for Internships (Official Program Blueprint)",
+      content: `SUB EVENT: INTERNSHIP DRIVE (Source: equinox-events.pdf)
+The Internship Drive is a unique platform designed for students to connect with companies that may not traditionally engage with campus recruitment. This event provides an opportunity to explore diverse career paths while gaining valuable experience with dynamic startups and mid-level firms. Participants can enhance their professional network and acquire essential skills to thrive in today’s competitive job market.`,
+    },
+    {
+      slug: "startup-poly",
+      name: "Startup Poly",
+      title: "Startup Poly - Monopoly-Inspired Entrepreneurship Challenge (Official Program Blueprint)",
+      content: `SUB EVENT: STARTUP POLY (Source: equinox-events.pdf)
+Startup Poly is a Monopoly-inspired entrepreneurship challenge where participants roll a die and navigate through a board filled with startup-themed opportunities, challenges, rewards, and setbacks. Every move tests their business skills, creativity, and decision-making as they tackle real-world entrepreneurial scenarios. The participants who successfully overcome the challenges and remain in the game until the end will be declared the winners.`,
+    },
+    {
+      slug: "e-cell-meet",
+      name: "E-Cell Meet",
+      title: "E-Cell Meet - Networking for E-Cells from Different Colleges (Official Program Blueprint)",
+      content: `SUB EVENT: E-CELL MEET (Source: equinox-events.pdf)
+The E-Cell Meet is a networking event where E-Cells from different colleges come together to collaborate and share ideas. It provides a platform for students to connect, exchange experiences, and explore potential partnerships. The focus is on building relationships and fostering collaboration across campuses.`,
+    },
+    {
+      slug: "pitch-deck",
+      name: "Pitch Deck",
+      title: "Pitch Deck - Presenting Startup Concepts to Investors (Official Program Blueprint)",
+      content: `SUB EVENT: PITCH DECK (Source: equinox-events.pdf)
+Pitch Deck is an idea presentation event where participants showcase their startup concepts to a panel of investors, venture capitalists, and industry experts. Teams present their problem statement, solution, business model, and market potential through a structured pitch. Selected ideas receive constructive feedback, mentorship opportunities, and potential support from the panel.`,
+    },
+  ];
+
+  pdfSubEvents.forEach((pse) => {
+    chunks.push({
+      id: `pdf-subevent-${pse.slug}`,
+      title: pse.title,
+      source: "chatbot/data/equinox-events.pdf",
+      category: "subevent",
+      metadata: { slug: pse.slug, sourcePdf: "equinox-events.pdf" },
+      content: pse.content,
+    });
+  });
+
+  // 7. Registration, Tickets & Passes
   chunks.push({
     id: "registration-tickets",
     title: "Registration Process & Summit Passes",
@@ -179,7 +285,7 @@ Perks include: Access to all 10 sub-events, Startup Expo floor badge, delegate k
 For team discounts or institutional group passes, contact student coordinators or email cie@mlrinstitutions.ac.in.`,
   });
 
-  // 6. FAQs & Practical Information
+  // 8. FAQs & Practical Information
   const faqText = faqs.map((f, i) => `Q${i + 1}: ${f.q}\nA${i + 1}: ${f.a}`).join("\n\n");
   chunks.push({
     id: "summit-faqs",
@@ -194,7 +300,7 @@ Students, innovators, developers, strategists, and aspiring startup founders fro
 Events cater to diverse specializations including sales/marketing (Hustle Mania), strategy/case analysis (Crossroads), cricket strategy & finance (IPL Auction), venture pitching (Pitch Deck), tech trends (Spotlight), and gaming/monopoly simulation (Startup Poly).`,
   });
 
-  // 7. Impact, Highlights & Partnerships
+  // 9. Impact, Highlights & Partnerships
   chunks.push({
     id: "summit-impact",
     title: "Summit Impact, Scale & Ecosystem Highlights",

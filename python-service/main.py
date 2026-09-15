@@ -44,6 +44,7 @@ kb = KnowledgeBase()
 client = genai.Client(api_key=API_KEY) if API_KEY else None
 
 GENERATION_MODELS = [
+    "gemini-3.6-flash",
     "gemini-3.5-flash",
     "gemini-3.7-flash",
     "gemini-flash-latest",
@@ -52,6 +53,7 @@ GENERATION_MODELS = [
 
 class ChatRequest(BaseModel):
     message: str
+    history: Optional[List[Dict[str, str]]] = []
 
 class SourceItem(BaseModel):
     title: str
@@ -84,14 +86,17 @@ def derive_suggestions(top_chunks: List[Dict[str, Any]], query: str) -> List[str
         return ["What is Equinox 2.0?", "Explore Sub-Events", "Contact Coordinators"]
     return ["Tell me about Hustle Mania", "What is Startup Poly?", "IPL Auction details"]
 
-def match_event_card(top_chunks: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+def match_event_card(top_chunks: List[Dict[str, Any]], query: str = "") -> Optional[Dict[str, Any]]:
     if not top_chunks:
         return None
+    q = query.lower().strip()
+    if any(k in q for k in ["who won", "last year", "winner", "wifi", "judge", "chief guest", "prize pool", "ignore", "food", "stay", "accommodation", "transport"]):
+        return None
     top = top_chunks[0]
-    if top.get("category") == "subevent" and top.get("score", 0) >= 0.58:
+    if top.get("category") == "subevent" and top.get("score", 0) >= 0.70:
         meta = top.get("metadata", {})
         slug = meta.get("slug")
-        if slug:
+        if slug and (slug in q or meta.get("name", "").lower() in q):
             return {
                 "id": slug,
                 "slug": slug,
@@ -195,7 +200,7 @@ Answer:"""
         for c in retrieval["chunks"]
     ]
     
-    event_card = match_event_card(retrieval["chunks"])
+    event_card = match_event_card(retrieval["chunks"], query)
     suggestions = derive_suggestions(retrieval["chunks"], query)
     
     return ChatResponse(

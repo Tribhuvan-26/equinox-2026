@@ -1,58 +1,63 @@
 // app/api/chat/route.ts
-// Chatbot backend proxying queries to the Python FastAPI RAG microservice
+// Primary server-side API route for Equinox 2.0 chatbot
 
-import { getMockEquinoxResponse } from "@/lib/chatbot";
+import { generateRagChatResponse } from "@/lib/rag/generate";
+import { ChatHistoryMessage } from "@/lib/rag/context";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const message = (body.message || "").trim();
+    const history: ChatHistoryMessage[] = Array.isArray(body.history) ? body.history : [];
 
     if (!message) {
       return Response.json(
-        { error: "Message is required" },
-        { status: 400 }
+        {
+          answer:
+            "How can I help you with Equinox 2.0? You can ask about our 10 sub-events, dates (30–31 Oct), venue at MLRIT, or student coordinators.",
+          suggestions: ["List all 10 Sub-Events", "Dates & Venue", "Student Coordinators"],
+          links: [{ label: "Browse Sub-Events", url: "#events" }],
+          grounded: true,
+          service: "equinox-rag",
+        },
+        { status: 200 }
       );
     }
 
-    const ragServiceUrl = (
-      process.env.RAG_SERVICE_URL || "http://127.0.0.1:8001"
-    ).replace(/\/$/, "");
-
-    try {
-      const response = await fetch(`${ragServiceUrl}/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        return Response.json({
-          answer: data.answer,
-          sources: data.sources || data.retrievedChunks || [],
-          retrievedChunks: data.retrievedChunks || data.sources || [],
-          eventCard: data.eventCard,
-          suggestions: data.suggestions || [],
-          links: data.links || [{ label: "Browse Sub-Events", url: "#events" }],
-          grounded: data.grounded ?? true,
-          service: data.service || "python-fastapi",
+    // Optional external RAG microservice if explicitly configured and remote
+    const ragServiceUrl = process.env.RAG_SERVICE_URL?.trim();
+    if (
+      ragServiceUrl &&
+      !ragServiceUrl.includes("127.0.0.1:8001") &&
+      !ragServiceUrl.includes("localhost:8001")
+    ) {
+      try {
+        const response = await fetch(`${ragServiceUrl.replace(/\/$/, "")}/chat`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message, history }),
+          signal: AbortSignal.timeout(4000),
         });
-      } else {
-        console.warn(`Python RAG service returned ${response.status}, using fallback.`);
+        if (response.ok) {
+          const data = await response.json();
+          return Response.json(data);
+        }
+      } catch (err) {
+        console.warn("External RAG service unreachable, falling back to Next.js RAG pipeline:", err);
       }
-    } catch (fetchErr) {
-      console.warn("Failed to reach Python RAG service at", ragServiceUrl, fetchErr);
     }
 
-    // Graceful fallback if Python service is temporarily unreachable
-    const mock = getMockEquinoxResponse(message);
+    // Server-side RAG generation pipeline
+    const result = await generateRagChatResponse(message, history);
+
     return Response.json({
-      answer: mock.answer,
-      suggestions: mock.suggestions,
-      links: mock.links,
-      grounded: false,
-      service: "offline-fallback",
+      answer: result.answer,
+      eventCard: result.eventCard,
+      suggestions: result.suggestions || [],
+      links: result.links || [{ label: "Browse Sub-Events", url: "#events" }],
+      retrievedChunks: result.retrievedChunks || [],
+      grounded: result.grounded,
+      service: result.source,
     });
   } catch (error) {
     console.error("Chatbot API route error:", error);
