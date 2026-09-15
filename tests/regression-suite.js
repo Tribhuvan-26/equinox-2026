@@ -118,6 +118,7 @@ async function runAll() {
       res.answer.toLowerCase().includes("not list") ||
       res.answer.toLowerCase().includes("not state") ||
       res.answer.toLowerCase().includes("opening soon") ||
+      res.answer.toLowerCase().includes("announced soon") ||
       res.answer.toLowerCase().includes("announced closer");
     const noIntroDump = !res.answer.includes("I am your Equinox 2.0 Assistant, grounded on the official");
     const noEventCard = !res.eventCard;

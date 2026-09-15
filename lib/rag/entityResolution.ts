@@ -38,12 +38,31 @@ interface EventEntityDef {
   semanticPhrases: string[];
 }
 
+export function isIdeathonQuery(query: string): boolean {
+  const q = normalizeQueryString(query);
+  return (
+    q.includes("ideathon") ||
+    /\bidea[\s-]*thon\b/i.test(query)
+  );
+}
+
 const EVENT_DEFINITIONS: EventEntityDef[] = [
   {
     slug: "spotlight",
     name: "Spotlight",
     primaryKeywords: ["spotlight", "keynote", "keynotes"],
     semanticPhrases: [
+      "which event has industry expert talks",
+      "industry expert talks",
+      "expert talks",
+      "inspiring presentations from industry experts",
+      "talks by industry experts",
+      "industry experts on technology and entrepreneurship",
+      "latest trends in technology and entrepreneurship",
+      "emerging technologies industry trends",
+      "future of work",
+      "personal stories of resilience and innovation",
+      "hear firsthand how successful entrepreneurs",
       "tech trends",
       "visionary keynotes",
       "emerging tech",
@@ -57,6 +76,19 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
     name: "Cross Roads",
     primaryKeywords: ["crossroads", "crossroad", "cross roads", "crossrds"],
     semanticPhrases: [
+      "which event has ceo cto and marketing manager roles",
+      "which event has ceo cto and marketing manager",
+      "which event has ceo cto marketing manager roles",
+      "ceo cto and marketing manager roles",
+      "ceo cto and marketing manager",
+      "ceo cto marketing manager",
+      "ceo cto",
+      "the business simulation",
+      "business simulation",
+      "interactive business simulation",
+      "team member will take on a specific role",
+      "take on a specific role such as ceo cto or marketing manager",
+      "strategic plan to overcome obstacles",
       "which event is about business cases",
       "event about business cases",
       "business cases",
@@ -73,12 +105,21 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
   {
     slug: "startup-expo",
     name: "Startup Expo",
-    primaryKeywords: ["startup expo", "start up expo", "expo", "exhibition"],
+    primaryKeywords: ["startup expo", "start up expo", "expo"],
     semanticPhrases: [
+      "which event lets students showcase products",
+      "lets students showcase products",
+      "showcase products",
+      "showcase innovative products",
+      "showcase innovative products and business ideas",
+      "showcase products and business ideas",
+      "showcase their innovative products",
+      "showcase their ideas and their marketing skills",
+      "simulate a real life market",
+      "simulate a real-life market",
       "which event is about startups",
       "event about startups",
       "startup expo",
-      "showcase products",
       "exhibition floor",
       "startup ventures",
       "prototype demo",
@@ -91,6 +132,14 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
     name: "Brand Battles",
     primaryKeywords: ["brand battles", "brand battle", "brand", "brands"],
     semanticPhrases: [
+      "which event has rival brands debating",
+      "rival brands debating",
+      "the rival brands one",
+      "two teams represent rival brands",
+      "rival brands from the same sector",
+      "well researched arguments supported by real time data",
+      "well-researched arguments supported by real-time data",
+      "demonstrate why their chosen brand stands superior",
       "which event is about brands",
       "event about brands",
       "brand battles",
@@ -107,6 +156,15 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
     name: "IPL Auction",
     primaryKeywords: ["ipl auction", "ipl", "auction", "aucton", "aucion"],
     semanticPhrases: [
+      "which event involves bidding on cricket players",
+      "bidding on cricket players",
+      "the cricket bidding one",
+      "competitive cricket draft experience",
+      "cricket draft",
+      "step into the shoes of team owners",
+      "step into the shoes of team owners and build their own squads",
+      "fixed budget to bid on players",
+      "assemble the strongest lineup",
       "which event involves bidding",
       "event involves bidding",
       "event about bidding",
@@ -126,12 +184,25 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
     name: "Hustle Mania",
     primaryKeywords: ["hustle mania", "hustle", "mania", "hustler"],
     semanticPhrases: [
+      "which event involves setting up stalls and selling to customers",
+      "setting up stalls and selling to customers",
+      "which event involves selling to real customers",
+      "selling to real customers",
+      "which event involves setting up stalls",
+      "setting up stalls",
+      "the one where you sell products",
+      "hands on business and marketing challenge",
+      "hands-on business and marketing challenge",
+      "set up stalls and sell their products to real customers",
+      "set up stalls and sell products",
+      "expenditure pricing revenue and profit",
+      "tracked throughout the event",
+      "customer engagement skills and smart budgeting",
       "which event involves selling products",
       "event involves selling products",
       "event about selling products",
       "selling products",
       "sell products",
-      "the one where you sell products",
       "product selling",
       "live selling",
       "marketing and negotiation",
@@ -144,6 +215,15 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
     name: "Internship Drive",
     primaryKeywords: ["internship drive", "internship", "internships", "intern"],
     semanticPhrases: [
+      "which event connects students with companies for internships",
+      "connects students with companies for internships",
+      "which event involves internships",
+      "connect students with companies for internships",
+      "connect with companies that may not traditionally engage with campus recruitment",
+      "traditionally engage with campus recruitment",
+      "valuable experience with dynamic startups and mid level firms",
+      "valuable experience with dynamic startups and mid-level firms",
+      "explore diverse career paths",
       "which event is about internships",
       "event about internships",
       "the internship event",
@@ -160,12 +240,24 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
     name: "Startup Poly",
     primaryKeywords: ["startup poly", "startuppoly", "poly", "monopoly"],
     semanticPhrases: [
-      "startup poly",
+      "which event is monopoly inspired",
+      "which event is monopoly-inspired",
       "monopoly inspired",
+      "monopoly-inspired",
+      "the monopoly startup game",
+      "monopoly startup game",
+      "monopoly startup",
+      "monopoly-inspired entrepreneurship challenge",
+      "monopoly inspired entrepreneurship challenge",
+      "roll a die and navigate through a board",
+      "roll a die",
+      "startup themed opportunities challenges rewards and setbacks",
+      "startup-themed opportunities",
+      "remain in the game until the end",
+      "startup poly",
       "board game",
       "business simulation game",
       "tabletop simulation",
-      "monopoly startup",
     ],
   },
   {
@@ -173,6 +265,24 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
     name: "E-Cell Meet",
     primaryKeywords: ["e cell meet", "ecell meet", "ecell", "e-cell", "conclave"],
     semanticPhrases: [
+      "which event is for e cells from different colleges",
+      "which event is for e-cells from different colleges",
+      "which event is for ecells from different colleges",
+      "for e cells from different colleges",
+      "for e-cells from different colleges",
+      "for ecells from different colleges",
+      "which event connects e cells",
+      "which event connects e-cells",
+      "which event connects ecells",
+      "connects e cells",
+      "connects e-cells",
+      "the e cell networking event",
+      "the e-cell networking event",
+      "e cell networking event",
+      "e-cell networking event",
+      "networking event where e cells from different colleges come together",
+      "networking event where e-cells from different colleges come together",
+      "fostering collaboration across campuses",
       "which event is about networking",
       "event about networking",
       "what's the one about networking",
@@ -191,8 +301,24 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
   {
     slug: "pitch-deck",
     name: "Pitch Deck",
-    primaryKeywords: ["pitch deck", "pitchdeck", "pitch", "pitching"],
+    primaryKeywords: ["pitch deck", "pitchdeck", "pitching", "pitch"],
     semanticPhrases: [
+      "which event involves presenting startup concepts to investors",
+      "presenting startup concepts to investors",
+      "present startup concepts to investors",
+      "which event involves presenting startup concepts",
+      "presenting startup concepts",
+      "present startup concepts",
+      "startup concepts to investors",
+      "showcase their startup concepts to a panel of investors",
+      "showcase startup concepts to a panel of investors",
+      "showcase startup concepts",
+      "panel of investors venture capitalists and industry experts",
+      "panel of investors",
+      "problem statement solution business model and market potential",
+      "structured pitch",
+      "pitching to venture capitalists and investors",
+      "idea presentation event",
       "which event is about pitching",
       "event about pitching",
       "pitch deck",
@@ -250,6 +376,10 @@ export function normalizeQueryString(str: string): string {
  * Resolves a query against the 10 official sub-events with typo tolerance and semantic phrases
  */
 export function resolveSubEvent(query: string): ResolvedEntity | undefined {
+  if (isIdeathonQuery(query)) {
+    return undefined;
+  }
+
   const clean = normalizeQueryString(query);
   if (!clean) return undefined;
 
@@ -302,7 +432,7 @@ export function resolveSubEvent(query: string): ResolvedEntity | undefined {
   let bestMatch: { def: EventEntityDef; dist: number } | null = null;
 
   for (const token of tokens) {
-    // Avoid matching common English words
+    // Avoid matching common English words and generic summit words
     if (
       [
         "what",
@@ -329,6 +459,25 @@ export function resolveSubEvent(query: string): ResolvedEntity | undefined {
         "only",
         "team",
         "more",
+        "startup",
+        "startups",
+        "business",
+        "event",
+        "events",
+        "college",
+        "colleges",
+        "roles",
+        "challenge",
+        "competition",
+        "participate",
+        "students",
+        "involves",
+        "concept",
+        "concepts",
+        "idea",
+        "ideas",
+        "real",
+        "different",
       ].includes(token)
     ) {
       continue;
@@ -347,6 +496,8 @@ export function resolveSubEvent(query: string): ResolvedEntity | undefined {
       for (const kw of def.primaryKeywords) {
         const kwParts = kw.split(" ");
         for (const kwPart of kwParts) {
+          // Avoid matching generic word parts
+          if (["startup", "business", "deck"].includes(kwPart) && token !== kwPart) continue;
           if (Math.abs(token.length - kwPart.length) > 2) continue;
           const dist = levenshteinDistance(token, kwPart);
           // Strict threshold: length <= 6 only permits dist 1; prevents "write" (len 5) matching "drive" (dist 2)

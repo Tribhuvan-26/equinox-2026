@@ -15,6 +15,7 @@ import {
   detectAttributeIntent,
   normalizeQueryString,
   detectFalsePremise,
+  isIdeathonQuery,
   ResolvedEntity,
 } from "./rag/entityResolution";
 import { evaluateGuardrails } from "./rag/guardrails";
@@ -195,7 +196,18 @@ export function getMockEquinoxResponse(
 ): ChatbotResponse {
   const trimmed = (query || "").trim();
 
-  // 1. Guardrail evaluation
+  // 1. Ideathon Exclusion Check
+  if (isIdeathonQuery(trimmed)) {
+    return {
+      answer:
+        "Ideathon is not part of the Equinox 2.0 chatbot's supported event information. Equinox 2.0 officially features 10 sub-events: Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, and Pitch Deck.",
+      suggestions: ["List all 10 Sub-Events", "Dates & Venue", "Registration details"],
+      links: [{ label: "Browse Sub-Events", url: "#events" }],
+      grounded: true,
+    };
+  }
+
+  // 2. Guardrail evaluation
   const guard = evaluateGuardrails(trimmed);
   if (guard.type === "injection") {
     return {
@@ -221,7 +233,7 @@ export function getMockEquinoxResponse(
     };
   }
 
-  // 2. Check for false premise before context resolution
+  // 3. Check for false premise before context resolution
   const fp = detectFalsePremise(trimmed);
   if (fp.isFalsePremise && fp.correction) {
     return {
@@ -393,7 +405,15 @@ export function getMockEquinoxResponse(
     q.includes("list of events") ||
     q.includes("what are the 10 events") ||
     q.includes("all 10 sub events") ||
-    q.includes("what are the sub events")
+    q.includes("what are the sub events") ||
+    q.includes("what are all the sub events") ||
+    q.includes("what are all the sub-events") ||
+    q.includes("all the sub events") ||
+    q.includes("all sub events") ||
+    q.includes("sub events") ||
+    q.includes("sub-events") ||
+    q.includes("subevents") ||
+    q.includes("what events are there")
   ) {
     return {
       answer: `The Equinox 2.0 features **10 official sub-events** from the program:\n\n**Page 05:**\n1. **Spotlight**: Visionary keynotes from tech & startup leaders\n2. **Cross Roads**: Business case-study strategy challenge\n3. **Startup Expo**: Live product & venture exhibition\n4. **Brand Battles**: Rival brand defense debate\n5. **IPL Auction**: Simulated cricket bidding & squad valuation\n\n**Page 06:**\n6. **Hustle Mania**: On-campus product selling & negotiation\n7. **Internship Drive**: Direct recruitment with startups\n8. **Startup Poly**: Monopoly-inspired business board game\n9. **E-Cell Meet**: Inter-college entrepreneurship leaders conclave\n10. **Pitch Deck**: Live investor pitch for student ventures`,
@@ -403,10 +423,20 @@ export function getMockEquinoxResponse(
     };
   }
 
-  // 10. About CIE / Equinox
+  // 10. Vision & Objectives
+  if (q.includes("vision") || q.includes("mission") || q.includes("objective")) {
+    return {
+      answer: `**The Equinox 2.0 Vision**:\n\nWe envision creating an inclusive space where students, entrepreneurs, and investors come together to collaborate, learn, and shape impactful ideas. By fostering entrepreneurial thinking and encouraging practical problem-solving, we provide a platform for participants to showcase their ideas, experience real-world business scenarios, and build meaningful connections with industry leaders. Our event empowers emerging innovators and aspiring entrepreneurs to refine their concepts, gain visibility, and explore opportunities for growth, mentorship, and collaboration.`,
+      suggestions: ["Explore Sub-Events", "Dates & Venue", "About CIE"],
+      links: [{ label: "About Section", url: "#about" }],
+      grounded: true,
+    };
+  }
+
+  // 11. About CIE / Equinox
   if (q.includes("about equinox") || q.includes("what is equinox") || q.includes("who are we") || q.includes("about cie")) {
     return {
-      answer: `**The Equinox 2.0** is the flagship entrepreneurship summit of **MLR CIE** (Centre for Innovation & Entrepreneurship, MLRIT). Its mission is to bridge passionate student builders with persevering startup founders and investors under the motto: *"# WHERE PASSION MEETS PERSEVERANCE"*.\n\nDates: **30 - 31 October 2026** at MLRIT Hyderabad.`,
+      answer: `**The Equinox 2.0** is organized by the Centre for Innovation and Entrepreneurship (CIE) at MLR Institute of Technology, Hyderabad. It envisions creating a vibrant and engaging environment where students tackle real-world challenges and ignite their entrepreneurial spirit through 10 premier sub-events: Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, and Pitch Deck.\n\n• **Tagline**: *"# WHERE PASSION MEETS PERSEVERANCE"*\n• **Dates**: **30 - 31 October 2026** at MLRIT Hyderabad.`,
       suggestions: ["Explore Sub-Events", "When is the summit?", "Venue details"],
       links: [{ label: "About Section", url: "#about" }],
       grounded: true,
