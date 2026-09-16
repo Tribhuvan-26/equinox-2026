@@ -61,7 +61,7 @@ export default function RegisterPage() {
                   </ul>
                 </div>
                 {/* Periwinkle pass card face */}
-                <div className="relative flex flex-col justify-between gap-10 bg-gradient-to-br from-[#7484FE] to-[#5868DF] p-8 text-[#F7F2F6]">
+                <div className="relative flex flex-col justify-between gap-10 bg-[#7484FE] p-8 text-[#F7F2F6]">
                   <div className="flex flex-col gap-4">
                     <span className="label w-max rounded-full border border-white/50 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#F7F2F6]">
                       {ticket.badge}

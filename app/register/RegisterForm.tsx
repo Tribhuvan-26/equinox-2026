@@ -19,24 +19,25 @@ export function RegisterForm() {
 
   return (
     <div>
-      <div className="flex flex-col items-start gap-4 rounded-3xl border-2 border-[#33FF67]/40 bg-gradient-to-br from-[#7484FE]/15 to-transparent p-8 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col items-start gap-4 rounded-3xl border-2 border-[#33FF67]/40 bg-gradient-to-br from-[#7484FE]/15 to-transparent p-5 sm:flex-row sm:items-center sm:justify-between sm:p-8">
         <div>
           <p className="text-xs font-black uppercase tracking-wider text-[#33FF67]">
             Registration is open
           </p>
-          <h2 className="heading mt-2 text-2xl font-black sm:text-3xl">
+          <h2 className="heading mt-2 text-xl font-black sm:text-3xl">
             Grab your Equinox 2026 pass
           </h2>
-          <p className="mt-2 max-w-xl text-[#F7F2F6]/80">
+          <p className="mt-2 max-w-xl text-sm text-[#F7F2F6]/80 sm:text-base">
             ₹{REGISTRATION_FEE} per participant. Register your whole team in one go.
           </p>
         </div>
         {!started && (
           <button
             onClick={handleStart}
-            className="press shrink-0 rounded-xl bg-[#33FF67] px-8 py-4 font-black text-[#2A2A2A] shadow-md transition-all hover:scale-[1.02] hover:bg-[#5aff87]"
+            className="press w-full shrink-0 rounded-xl bg-[#33FF67] px-5 py-3 text-sm font-black text-[#2A2A2A] shadow-md transition-all hover:scale-[1.02] hover:bg-[#5aff87] sm:w-auto sm:px-8 sm:py-4 sm:text-base"
           >
-            Register Now / Grab Your Passes
+            <span className="sm:hidden">Register Now</span>
+            <span className="hidden sm:inline">Register Now / Grab Your Passes</span>
           </button>
         )}
       </div>
