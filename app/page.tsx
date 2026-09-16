@@ -15,9 +15,6 @@ import {
   contact,
 } from "@/lib/content";
 import {
-  PageFooterTimeline,
-} from "./EventGraphics";
-import {
   ArrowRight,
   Mail,
   Globe,
@@ -29,6 +26,10 @@ import {
   ExternalLink,
 } from "lucide-react";
 import ScrollJourney from "../components/ScrollJourney";
+import JourneyOutro from "../components/JourneyOutro";
+import ScrollReveal from "../components/ScrollReveal";
+import PinnedSplit from "../components/PinnedSplit";
+import LogoMarquee from "../components/LogoMarquee";
 
 const heroFadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -39,18 +40,21 @@ export default function HomePage() {
   return (
     <div className="riso-texture brochure-grid min-h-screen overflow-x-clip text-[#F7F2F6] selection:bg-[#7484FE] selection:text-[#2A2A2A]">
       <ScrollJourney />
+
+      {/* Seam out of the journey: warp exit, then the summit chapters */}
+      <JourneyOutro line="Ten events charted. The summit begins." />
       {/* =========================================================================
           SECTION 2: ABOUT EQUINOX (Who Are We / What We Do / What Is Equinox)
           ========================================================================= */}
       <section
         id="about"
-        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
+        className="relative mx-auto max-w-[1400px] px-4 py-32 sm:px-8 md:py-48"
       >
-        <div className="max-w-4xl">
-          <span className="rounded-full border border-white/20 bg-white/10 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-[#F7F2F6]">
-            Page 01 · {about.eyebrow}
-          </span>
-          <h2 className="mt-4 font-display-title text-4xl font-black tracking-tight text-[#F7F2F6] sm:text-6xl lg:text-7xl">
+        <div className="max-w-5xl">
+          <h2
+            className="font-display-title font-black leading-[0.95] tracking-tight text-[#F7F2F6]"
+            style={{ fontSize: "clamp(2.6rem, 5.2vw, 5.5rem)" }}
+          >
             {about.heading}
           </h2>
           <p className="mt-6 text-xl leading-relaxed text-[#F7F2F6]/95 sm:text-2xl font-medium">
@@ -59,13 +63,10 @@ export default function HomePage() {
         </div>
 
         {/* Editorial Pair: who are we? / what we do — matching brochure casing */}
-        <div className="mt-16 grid gap-8 md:grid-cols-2">
+        <ScrollReveal className="mt-16 grid gap-8 md:grid-cols-2">
           {/* who are we? */}
-          <div className="program-card rounded-3xl border-2 border-white/20 bg-white/5 p-8 backdrop-blur-xs">
-            <span className="font-mono text-xs font-black tracking-wider text-[#33FF67] uppercase">
-              01 · Vision
-            </span>
-            <h3 className="mt-2 text-3xl font-black lowercase text-[#F7F2F6] sm:text-4xl">
+          <div className="program-card rounded-3xl border border-white/10 bg-[#151515] p-8">
+            <h3 className="text-3xl font-black lowercase text-[#F7F2F6] sm:text-4xl">
               who <span className="text-[#33FF67]">are we?</span>
             </h3>
             <p className="mt-2 font-mono text-xs font-bold uppercase tracking-wider text-[#F7F2F6]/80">
@@ -80,12 +81,9 @@ export default function HomePage() {
           </div>
 
           {/* what we do */}
-          <div className="program-card rounded-3xl border-2 border-white/20 bg-white/5 p-8 backdrop-blur-xs flex flex-col justify-between">
+          <div className="program-card flex flex-col justify-between rounded-3xl border border-white/10 bg-[#151515] p-8">
             <div>
-              <span className="font-mono text-xs font-black tracking-wider text-[#33FF67] uppercase">
-                02 · Mission
-              </span>
-              <h3 className="mt-2 text-3xl font-black lowercase text-[#F7F2F6] sm:text-4xl">
+              <h3 className="text-3xl font-black lowercase text-[#F7F2F6] sm:text-4xl">
                 what <span className="text-[#33FF67]">we do</span>
               </h3>
               <p className="mt-4 text-base leading-relaxed text-[#F7F2F6]/95 sm:text-lg">
@@ -96,7 +94,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="mt-6 rounded-2xl border border-white/20 bg-white/5 p-4">
+            <div className="mt-6 rounded-2xl border border-[#33FF67]/25 bg-[#101010] p-4">
               <span className="font-mono text-xs font-black text-[#33FF67] uppercase">
                 Flagship Hackathon Series
               </span>
@@ -105,15 +103,12 @@ export default function HomePage() {
               </p>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
 
-        {/* what is THE EQUINOX 2.0 — Banner matching Brochure Page 03 */}
-        <div className="program-card mt-8 flex flex-col gap-8 rounded-3xl border-2 border-white/20 bg-[#2A2A2A] p-8 text-[#F7F2F6] shadow-xl sm:p-10 lg:flex-row lg:items-center lg:justify-between">
+        {/* what is THE EQUINOX 2.0 */}
+        <div className="program-card mt-8 flex flex-col gap-8 rounded-3xl border border-[#7484FE]/30 bg-[#151515] p-8 text-[#F7F2F6] shadow-xl sm:p-10 lg:flex-row lg:items-center lg:justify-between">
           <div className="lg:max-w-xl">
-            <span className="font-mono text-xs font-black tracking-wider text-[#7484FE] uppercase">
-              03 · The Summit (Page 03)
-            </span>
-            <h3 className="mt-2 text-3xl font-black text-[#F7F2F6] sm:text-4xl">
+            <h3 className="text-3xl font-black text-[#F7F2F6] sm:text-4xl">
               what is <span className="text-[#7484FE]">THE</span> <span className="text-[#F7F2F6]">EQUINOX</span> <span className="text-[#33FF67]">2.0</span>
             </h3>
             <p className="mt-4 text-sm leading-relaxed text-[#F7F2F6]/85">
@@ -126,113 +121,109 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Highlights Row (What's In Store stats) */}
-        <div className="mt-16">
-          <div className="mb-6 flex items-center justify-between">
-            <span className="font-mono text-xs font-black uppercase tracking-widest text-[#F7F2F6]/80">
-              What&apos;s In Store · Summit Scale
-            </span>
-            <span className="font-mono text-xs font-bold text-[#33FF67] uppercase">
-              Page 04
-            </span>
-          </div>
-
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {highlights.map((item, idx) => (
+        {/* Summit scale: 6-column dense bento. Row one is 3+3, row two is 2+2+2,
+            so every cell is filled at every breakpoint. */}
+        <ScrollReveal className="mt-20 grid grid-flow-dense gap-4 sm:grid-cols-6" stagger={0.06}>
+          {highlights.map((item, idx) => {
+            // 4+2 then 2+4: both rows total exactly 6 columns, so no cell is left empty.
+            const wide = idx === 0 || idx === 3;
+            const accent = idx % 2 === 0 ? "#7484FE" : "#33FF67";
+            return (
               <div
                 key={item.label}
-                className="rounded-2xl border-2 border-white/20 bg-white/5 p-6 backdrop-blur-xs transition hover:border-[#7484FE] hover:bg-white/10"
+                className={`group rounded-3xl border border-white/10 bg-[#151515] p-7 transition-colors duration-500 hover:border-white/25 ${
+                  wide ? "sm:col-span-4" : "sm:col-span-2"
+                }`}
               >
-                <p className={`font-mono text-4xl font-black sm:text-5xl ${idx % 2 === 0 ? "text-[#7484FE]" : "text-[#33FF67]"}`}>
+                <p
+                  className="font-mono font-black leading-none"
+                  style={{ color: accent, fontSize: wide ? "clamp(2.75rem, 5vw, 4.5rem)" : "clamp(2.25rem, 3.4vw, 3.25rem)" }}
+                >
                   {item.value}
                 </p>
-                <p className="mt-2 font-bold text-[#F7F2F6] text-base">
-                  {item.label}
-                </p>
-                <p className="mt-1 text-xs text-[#F7F2F6]/80">
-                  {item.detail}
-                </p>
+                <p className="mt-3 text-base font-bold text-[#F7F2F6]">{item.label}</p>
+                <p className="mt-1 text-xs leading-relaxed text-[#F7F2F6]/70">{item.detail}</p>
+                <span
+                  className="mt-5 block h-px w-0 transition-all duration-700 ease-out group-hover:w-full"
+                  style={{ backgroundColor: accent }}
+                />
               </div>
-            ))}
-          </div>
-        </div>
+            );
+          })}
+        </ScrollReveal>
 
-        {/* Page Footer Timeline */}
-        <PageFooterTimeline pageNumber="03" />
       </section>
 
 
+      {/* Ten sub-events, running as one continuous strip */}
+      <div className="border-y border-white/10">
+        <LogoMarquee slugs={subEvents.map((e) => e.slug)} names={subEvents.map((e) => e.name)} />
+      </div>
+
       {/* =========================================================================
-          SECTION 5: SUMMIT HIGHLIGHTS & OUR IMPACT (Why Sponsor Us)
+          IMPACT
           ========================================================================= */}
       <section
         id="impact"
-        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
+        className="relative mx-auto max-w-[1400px] px-4 py-32 sm:px-8 md:py-48"
       >
-        <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="rounded-full border border-white/20 bg-white/10 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-[#F7F2F6]">
-                Brochure Page 07 · Impact
-              </span>
-              <span className="font-mono text-sm font-bold text-[#33FF67] italic">
-                Why Sponsor Us
-              </span>
+        <PinnedSplit
+          aside={
+            <div>
+              <h2
+                className="font-display-title font-black uppercase leading-[0.92] tracking-tight text-[#F7F2F6] break-words"
+                style={{ fontSize: "clamp(2.5rem, 4.4vw, 4.75rem)" }}
+              >
+                Our impact
+              </h2>
+              <p className="mt-6 max-w-lg text-lg leading-relaxed text-[#F7F2F6]/90">
+                The Equinox connects the brightest engineering and business minds with early-stage venture ecosystems. Sponsoring Equinox places your brand at the epicentre of student entrepreneurship across southern India.
+              </p>
             </div>
-            <h2 className="mt-4 font-display-title text-4xl font-black tracking-tight text-[#F7F2F6] sm:text-6xl uppercase">
-              OUR IMPACT
-            </h2>
-            <p className="mt-4 text-lg leading-relaxed text-[#F7F2F6]/90">
-              The Equinox connects the brightest engineering and business minds with early-stage venture ecosystems. Sponsoring Equinox places your brand at the epicentre of student entrepreneurship across southern India.
-            </p>
-
-            <div className="mt-8 space-y-4">
-              <div className="rounded-2xl border border-white/20 bg-white/5 p-5">
-                <h4 className="font-bold text-[#7484FE] text-lg">Direct Campus Engagement</h4>
-                <p className="mt-1 text-sm text-[#F7F2F6]/85">
-                  Direct visibility before 2,000+ top engineering and MBA students, coders, and startup innovators.
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-white/20 bg-white/5 p-5">
-                <h4 className="font-bold text-[#7484FE] text-lg">Talent &amp; Startup Scouting</h4>
-                <p className="mt-1 text-sm text-[#F7F2F6]/85">
-                  Immediate access to hiring pipelines via Internship Drive and pre-screened student ventures in Pitch Deck and Startup Expo.
-                </p>
-              </div>
+          }
+        >
+          <ScrollReveal className="space-y-4">
+            <div className="rounded-2xl border border-white/10 bg-[#151515] p-6">
+              <h4 className="text-lg font-bold text-[#7484FE]">Direct Campus Engagement</h4>
+              <p className="mt-1 text-sm text-[#F7F2F6]/85">
+                Direct visibility before 2,000+ top engineering and MBA students, coders, and startup innovators.
+              </p>
             </div>
-          </div>
 
-          {/* Distinct "Why Sponsor Us" Stats (2,000+ Footfall, 600+ Participants distinct) */}
-          <div className="grid grid-cols-2 gap-4 sm:gap-6">
-            <div className="rounded-3xl border border-white/20 bg-[#2A2A2A] p-8 text-[#F7F2F6] shadow-xl">
+            <div className="rounded-2xl border border-white/10 bg-[#151515] p-6">
+              <h4 className="text-lg font-bold text-[#7484FE]">Talent &amp; Startup Scouting</h4>
+              <p className="mt-1 text-sm text-[#F7F2F6]/85">
+                Immediate access to hiring pipelines via Internship Drive and pre-screened student ventures in Pitch Deck and Startup Expo.
+              </p>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal className="mt-4 grid grid-cols-2 gap-4" stagger={0.06}>
+            <div className="rounded-3xl border border-[#7484FE]/30 bg-[#151515] p-8 text-[#F7F2F6]">
               <span className="font-mono text-xs font-black uppercase text-[#7484FE]">Audience Reach</span>
               <p className="mt-2 font-mono text-5xl font-black text-[#7484FE] sm:text-6xl">2,000+</p>
               <p className="mt-2 font-bold text-base text-[#F7F2F6]">Footfall</p>
             </div>
 
-            <div className="rounded-3xl border border-white/20 bg-white/5 p-8 backdrop-blur-xs">
+            <div className="rounded-3xl border border-white/10 bg-[#151515] p-8">
               <span className="font-mono text-xs font-black uppercase text-[#33FF67]">Active Delegates</span>
               <p className="mt-2 font-mono text-5xl font-black text-[#33FF67] sm:text-6xl">600+</p>
               <p className="mt-2 font-bold text-[#F7F2F6] text-base">Participants</p>
             </div>
 
-            <div className="rounded-3xl border border-white/20 bg-white/5 p-8 backdrop-blur-xs">
+            <div className="rounded-3xl border border-white/10 bg-[#151515] p-8">
               <span className="font-mono text-xs font-black uppercase text-[#7484FE]">Ecosystem</span>
               <p className="mt-2 font-mono text-5xl font-black text-[#7484FE] sm:text-6xl">15+</p>
               <p className="mt-2 font-bold text-[#F7F2F6] text-base">Startups</p>
             </div>
 
-            <div className="rounded-3xl border border-white/20 bg-[#2A2A2A] p-8 text-[#F7F2F6] shadow-xl">
+            <div className="rounded-3xl border border-[#33FF67]/30 bg-[#151515] p-8 text-[#F7F2F6]">
               <span className="font-mono text-xs font-black uppercase text-[#33FF67]">Competitions</span>
               <p className="mt-2 font-mono text-5xl font-black text-[#33FF67] sm:text-6xl">10</p>
-              <p className="mt-2 font-bold text-base text-[#F7F2F6]">Sub-Events</p>
+              <p className="mt-2 text-base font-bold text-[#F7F2F6]">Sub-Events</p>
             </div>
-          </div>
-        </div>
-
-        {/* Page Footer Timeline */}
-        <PageFooterTimeline pageNumber="08" />
+          </ScrollReveal>
+        </PinnedSplit>
       </section>
 
       {/* =========================================================================
@@ -240,11 +231,14 @@ export default function HomePage() {
           ========================================================================= */}
       <section
         id="contact"
-        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
+        className="relative mx-auto max-w-[1400px] px-4 py-32 sm:px-8 md:py-48"
       >
         {/* Dark Editorial Heading Replicating Page 12 */}
         <div className="max-w-3xl">
-          <h2 className="font-display-title text-6xl font-black tracking-tighter text-[#F7F2F6] sm:text-7xl lg:text-8xl">
+          <h2
+            className="font-display-title font-black leading-[0.9] tracking-tighter text-[#F7F2F6]"
+            style={{ fontSize: "clamp(3.25rem, 7vw, 7rem)" }}
+          >
             Contact Us
           </h2>
           <p className="mt-6 text-lg leading-relaxed text-[#F7F2F6]/95 sm:text-xl font-medium">
@@ -259,12 +253,12 @@ export default function HomePage() {
           </h3>
           <p className="mt-1 font-bold text-xl text-[#F7F2F6]">Student Coordinators</p>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <ScrollReveal className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" stagger={0.06}>
             {studentCoordinators.map((coordinator) => (
               <a
                 key={coordinator.name}
                 href={`tel:${coordinator.phoneRaw}`}
-                className="program-card group flex items-center justify-between rounded-2xl border-2 border-white/20 bg-white/5 p-5 backdrop-blur-xs transition hover:border-[#7484FE] hover:bg-[#7484FE]/20 hover:text-[#F7F2F6]"
+                className="program-card group flex items-center justify-between rounded-2xl border border-white/10 bg-[#151515] p-5 transition duration-300 hover:-translate-y-0.5 hover:border-[#7484FE]"
               >
                 <div>
                   <p className="font-bold text-lg text-[#F7F2F6] group-hover:text-[#7484FE]">
@@ -279,11 +273,11 @@ export default function HomePage() {
                 </div>
               </a>
             ))}
-          </div>
+          </ScrollReveal>
         </div>
 
         {/* Official Contact Box */}
-        <div className="mt-12 rounded-3xl border-2 border-white/20 bg-white/5 p-8 backdrop-blur-xs sm:p-10">
+        <div className="mt-12 rounded-3xl border border-white/10 bg-[#151515] p-8 sm:p-10">
           <div className="grid gap-8 lg:grid-cols-2">
             {/* Email & Website */}
             <div className="space-y-6">
@@ -325,7 +319,7 @@ export default function HomePage() {
             </div>
 
             {/* Address */}
-            <div className="flex items-start gap-4 border-t border-white/20 pt-6 lg:border-t-0 lg:border-l lg:pl-8 lg:pt-0">
+            <div className="flex items-start gap-4 border-t border-white/10 pt-6 lg:border-t-0 lg:border-l lg:pl-8 lg:pt-0">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#7484FE] text-[#F7F2F6]">
                 <MapPin className="h-5 w-5" />
               </div>
@@ -343,7 +337,7 @@ export default function HomePage() {
           </div>
 
           {/* Social Links Row from Page 12 */}
-          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-white/20 pt-6">
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6">
             <div className="flex flex-wrap items-center gap-4">
               {contact.socials.map((social) => (
                 <a
@@ -351,7 +345,7 @@ export default function HomePage() {
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-xs font-bold text-[#F7F2F6] transition hover:bg-[#7484FE] hover:border-[#7484FE]"
+                  className="flex items-center gap-2 rounded-full border border-white/15 bg-[#101010] px-4 py-2 text-xs font-bold text-[#F7F2F6] transition hover:border-[#7484FE] hover:bg-[#7484FE]"
                 >
                   {social.platform === "Instagram" && (
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">
@@ -382,14 +376,9 @@ export default function HomePage() {
               ))}
             </div>
 
-            <span className="font-mono text-xs text-white/70">
-              MLRIT CIE · Official Program
-            </span>
           </div>
         </div>
 
-        {/* Page 12 Footer Timeline Marker */}
-        <PageFooterTimeline pageNumber="12" />
       </section>
     </div>
   );
