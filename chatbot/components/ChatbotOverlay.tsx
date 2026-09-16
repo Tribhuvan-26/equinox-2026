@@ -77,7 +77,7 @@ export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOv
       {isRendered && (
         <div
           ref={windowRef}
-          className="fixed right-3 left-3 sm:left-auto sm:right-6 bottom-[76px] sm:bottom-[100px] z-[99999] flex h-[580px] max-h-[calc(100dvh-88px)] sm:h-[640px] sm:max-h-[min(660px,calc(100vh-120px))] w-auto sm:w-[420px] max-w-[calc(100vw-1.5rem)] sm:max-w-[420px] flex-col"
+          className="fixed right-3 left-3 sm:left-auto sm:right-6 bottom-[76px] sm:bottom-[100px] z-[99999] flex h-[440px] max-h-[calc(100dvh-88px)] sm:h-[500px] sm:max-h-[min(520px,calc(100vh-140px))] w-auto sm:w-[340px] max-w-[calc(100vw-1.5rem)] sm:max-w-[340px] flex-col"
         >
           <ChatWindow
             onClose={() => setIsOpen(false)}

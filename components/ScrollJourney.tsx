@@ -9,6 +9,8 @@ import { ArrowRight, Mouse } from "lucide-react";
 import Globe from "./Globe";
 import { InstitutionalHeader } from "../app/EventGraphics";
 import { subEvents } from "@/lib/content";
+import SpiderIntro from "./SpiderIntro";
+import GlitchWordmark from "./GlitchWordmark";
 import {
   PLANET_LAYOUTS,
   JOURNEY_SQUIGGLY_PATH,
@@ -26,9 +28,6 @@ export default function ScrollJourney() {
   const heroBlockRef = useRef<HTMLDivElement>(null);   // entire hero content
   const globeHeroRef = useRef<HTMLDivElement>(null);   // large background globe
   const heroWordmarkRef = useRef<HTMLDivElement>(null);   // "EQUINOX"
-  const equinRef = useRef<HTMLSpanElement>(null);  // "EQUIN" part
-  const oRef = useRef<HTMLSpanElement>(null);  // "O" part
-  const xRef = useRef<HTMLSpanElement>(null);  // "X" part
   const heroSubtitleRef = useRef<HTMLDivElement>(null);   // tag + subtitle
   const exploreRef = useRef<HTMLDivElement>(null);   // CTA button
 
@@ -41,12 +40,16 @@ export default function ScrollJourney() {
   const rocketRef = useRef<SVGGElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const completionCardRef = useRef<HTMLDivElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
   const indicatorEventRef = useRef<HTMLSpanElement>(null);
   const lenisRef = useRef<Lenis | null>(null);
+  const journeyScaleRef = useRef(0.65);
 
   const [isGlobeReady, setIsGlobeReady] = useState(false);
+  // Globe keeps rendering every frame while it spins; it is a few pixels wide once
+  // the journey starts, so pause it there and give those frames to the scroll.
+  const [isGlobePaused, setIsGlobePaused] = useState(false);
+  const globePausedRef = useRef(false);
   const [showLoader, setShowLoader] = useState(true);
 
   const handleGlobeReady = useCallback(() => setIsGlobeReady(true), []);
@@ -75,12 +78,9 @@ export default function ScrollJourney() {
     return () => clearTimeout(t);
   }, []);
 
-  useEffect(() => {
-    if (isGlobeReady) {
-      const t = setTimeout(() => setShowLoader(false), 400);
-      return () => clearTimeout(t);
-    }
-  }, [isGlobeReady]);
+  // The opener plays for a fixed beat; it calls back when its last frame lands.
+  // The globe keeps loading underneath, so the two never wait on each other.
+  const handleIntroDone = useCallback(() => setShowLoader(false), []);
 
   useEffect(() => {
     document.body.style.overflow = showLoader ? "hidden" : "";
@@ -102,9 +102,10 @@ export default function ScrollJourney() {
 
       rocketRef.current.setAttribute("transform", `translate(${pt.x}, ${pt.y}) rotate(${angle})`);
 
-      // Calculate translation considering the dynamic scale
-      const currentScaleStr = getComputedStyle(document.documentElement).getPropertyValue('--journey-scale');
-      const currentScale = currentScaleStr ? parseFloat(currentScaleStr) : 0.65;
+      // Scale is recomputed only on resize (updateHeaderSpace); reading it from a ref
+      // keeps this scroll callback write-only, so it never forces a style flush per frame.
+      const currentScale = journeyScaleRef.current;
+      const inverseScale = 1 / currentScale;
 
       const targetScreenX = Math.min(window.innerWidth * 0.28, 420);
       const unscaledTargetScreenX = targetScreenX / currentScale;
@@ -120,27 +121,14 @@ export default function ScrollJourney() {
         if (dist < 480) {
           const t = Math.max(0, 1 - dist / 420);
           cardEl.style.opacity = `${t}`;
-          cardEl.style.transform = `translateY(${(1 - t) * 20}px) scale(calc(1 / var(--journey-scale, 0.65)))`;
+          cardEl.style.transform = `translateY(${(1 - t) * 20}px) scale(${inverseScale})`;
           cardEl.style.pointerEvents = t > 0.4 ? "auto" : "none";
           if (t > 0.3) currentEventTitle = `${layout.badge} · ${subEvents[idx]?.name || ""}`;
-        } else {
+        } else if (cardEl.style.opacity !== "0") {
           cardEl.style.opacity = "0";
           cardEl.style.pointerEvents = "none";
         }
       });
-
-      if (completionCardRef.current) {
-        if (pt.x > 14600) {
-          const t = Math.min(1, Math.max(0, (pt.x - 14600) / 600));
-          completionCardRef.current.style.opacity = `${t}`;
-          completionCardRef.current.style.transform = `translateY(${(1 - t) * 20}px) scale(calc(1 / var(--journey-scale, 0.65)))`;
-          completionCardRef.current.style.pointerEvents = t > 0.4 ? "auto" : "none";
-          if (t > 0.3) currentEventTitle = "Expedition Complete · All 10 Explored";
-        } else {
-          completionCardRef.current.style.opacity = "0";
-          completionCardRef.current.style.pointerEvents = "none";
-        }
-      }
 
       if (indicatorEventRef.current && currentEventTitle) {
         indicatorEventRef.current.textContent = currentEventTitle;
@@ -156,6 +144,13 @@ export default function ScrollJourney() {
           end: "bottom bottom",
           scrub: 1.5,
           invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const shouldPause = self.progress > 0.14;
+            if (shouldPause !== globePausedRef.current) {
+              globePausedRef.current = shouldPause;
+              setIsGlobePaused(shouldPause);
+            }
+          },
         },
       });
 
@@ -164,32 +159,17 @@ export default function ScrollJourney() {
         opacity: 0, y: -20, duration: 0.1
       }, 0);
 
-      mainTl.fromTo(equinRef.current,
-        { opacity: 0, x: -60 },
-        { opacity: 1, x: 0, duration: 0.1 },
-        0
-      );
-
-      mainTl.fromTo(xRef.current,
-        { opacity: 0, x: 60 },
-        { opacity: 1, x: 0, duration: 0.1 },
+      // The lockup is on screen from the first frame; scroll only settles its scale.
+      mainTl.fromTo(heroWordmarkRef.current,
+        { scale: 1.06 },
+        { scale: 1, duration: 0.1 },
         0
       );
 
       mainTl.to(globeHeroRef.current, {
-        scale: () => {
-          if (!oRef.current || !globeHeroRef.current) return 0.22;
-          const oHeight = oRef.current.getBoundingClientRect().height;
-          return (oHeight * 1.1) / globeHeroRef.current.offsetHeight;
-        },
-        x: () => {
-          if (!oRef.current) return window.innerWidth * 0.16;
-          const oRect = oRef.current.getBoundingClientRect();
-          const oCenterX = oRect.left + oRect.width / 2;
-          const windowCenterX = window.innerWidth / 2;
-          return oCenterX - windowCenterX;
-        },
-        duration: 0.1
+        scale: 0.18,
+        autoAlpha: 0,
+        duration: 0.1,
       }, 0);
 
       // --- PHASE 2 (10%–15%): Move Wordmark UP to Sticky Header ---
@@ -282,11 +262,36 @@ export default function ScrollJourney() {
         document.documentElement.style.setProperty('--header-space', `${headerSpace}px`);
 
         // Dynamically scale the horizontal journey to fit the remaining viewport
-        const availableHeight = window.innerHeight - headerSpace;
-        // Active journey content spans roughly from Y=150 to Y=970 (820px tall)
-        const activeHeight = 820;
-        const journeyScale = Math.min(availableHeight / activeHeight, 0.65);
+        // 48px of breathing room so no planet ring or badge ever rides the bottom edge.
+        const availableHeight = window.innerHeight - headerSpace - 48;
+        // Measure what the world actually occupies instead of hard-coding it: the
+        // planets, their rings, badges and the launch site all move when the layout
+        // changes, and a stale constant either crops them or wastes half the screen.
+        const worldSvg = worldRef.current?.querySelector("#journey-content");
+        let contentTop = 0;
+        let activeHeight = 1055;
+        if (worldSvg) {
+          try {
+            const box = (worldSvg as SVGGraphicsElement).getBBox();
+            if (box.height > 0) {
+              contentTop = box.y;
+              activeHeight = box.height;
+            }
+          } catch {
+            // getBBox throws while the SVG is still hidden; the fallback above holds.
+          }
+        }
+        // Fill the height that is actually free. The old 0.65 cap left the world stuck in
+        // the top half of tall or zoomed-out windows, with a dead band underneath.
+        const journeyScale = Math.max(0.3, Math.min(availableHeight / activeHeight, 1));
         document.documentElement.style.setProperty('--journey-scale', `${journeyScale}`);
+        journeyScaleRef.current = journeyScale;
+
+        // Centre the measured content in that free height instead of pinning the
+        // world box (whose empty top band is not content) to the top.
+        const offsetY =
+          Math.max(0, (availableHeight - activeHeight * journeyScale) / 2) - contentTop * journeyScale;
+        document.documentElement.style.setProperty('--journey-offset-y', `${offsetY}px`);
       };
       updateHeaderSpace();
       window.addEventListener('resize', updateHeaderSpace);
@@ -352,17 +357,22 @@ export default function ScrollJourney() {
             ref={globeHeroRef}
             className="absolute flex items-center justify-center will-change-transform pointer-events-none"
             style={{
-              width: "min(120vw, 120vh)",
-              height: "min(120vw, 120vh)",
+              width: "min(72vh, 88vw)",
+              height: "min(72vh, 88vw)",
               borderRadius: "50%",
               overflow: "hidden",
               zIndex: 3, // Sit alongside the text, not behind it
             }}
           >
             <Globe
+              isPaused={isGlobePaused}
               onReady={handleGlobeReady}
               speed={2}
-              dots={{ color: "#ffffff", size: 5, density: 8, allDots: false }}
+              dots={
+                isGlobePaused
+                  ? { color: "#ffffff", size: 16, density: 4, allDots: false }
+                  : { color: "#ffffff", size: 5, density: 8, allDots: false }
+              }
               oceanColor="#0a0a0a"
               graticuleColor="#333333"
               outlineColor="#eeeeee"
@@ -374,16 +384,10 @@ export default function ScrollJourney() {
           {/* Massive "EQUINOX" HTML text split into parts */}
           <div
             ref={heroWordmarkRef}
-            className="absolute flex items-center justify-center font-display-title text-[#F7F2F6] leading-none tracking-tight select-none pointer-events-none"
-            style={{
-              fontSize: "clamp(3.5rem, 10.5vw, 11rem)",
-              zIndex: 3,
-              textShadow: "0 4px 32px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.75)",
-            }}
+            className="absolute flex items-center justify-center select-none pointer-events-none"
+            style={{ zIndex: 3 }}
           >
-            <span ref={equinRef} className="will-change-transform opacity-0">EQUIN</span>
-            <span ref={oRef} className="will-change-transform opacity-0">O</span>
-            <span ref={xRef} className="will-change-transform opacity-0">X</span>
+            <GlitchWordmark className="h-[34vh] w-[min(92vw,1100px)] will-change-transform" />
           </div>
         </div>
 
@@ -403,7 +407,7 @@ export default function ScrollJourney() {
             style={{ zIndex: 2 }}
           >
             <p
-              className="font-mono font-black uppercase tracking-[0.22em] text-[#F7F2F6]/70"
+              className="rounded-full bg-[#141414] px-5 py-2 font-mono font-black uppercase tracking-[0.22em] text-[#F7F2F6]/85"
               style={{ fontSize: "clamp(0.6rem, 1.1vw, 0.85rem)" }}
             >
               Ideas today. A better tomorrow.
@@ -414,7 +418,7 @@ export default function ScrollJourney() {
           <div ref={exploreRef} className="relative mt-8 pointer-events-auto" style={{ zIndex: 2 }}>
             <button
               onClick={handleExplore}
-              className="flex items-center gap-3 rounded-full border-2 border-white/20 bg-white/5 px-8 py-4 text-sm font-bold uppercase tracking-wider text-[#F7F2F6] backdrop-blur-xs transition hover:scale-105 hover:border-[#33FF67] hover:bg-[#33FF67]/10"
+              className="flex items-center gap-3 rounded-full border-2 border-white/25 bg-[#141414] px-8 py-4 text-sm font-bold uppercase tracking-wider text-[#F7F2F6] transition hover:scale-105 hover:border-[#33FF67] hover:bg-[#1c2a1f]"
             >
               EXPLORE THE JOURNEY <ArrowRight className="h-4 w-4 ml-1 text-[#33FF67]" />
             </button>
@@ -433,7 +437,7 @@ export default function ScrollJourney() {
           {/* Side scroll indicator */}
           <div
             ref={scrollIndicatorRef}
-            className="absolute right-6 bottom-10 z-20 hidden md:flex items-center gap-3 rounded-full border border-white/10 bg-[#2A2A2A]/85 px-4 py-2 backdrop-blur-md opacity-0 shadow-lg"
+            className="absolute right-6 bottom-28 z-20 hidden md:flex items-center gap-3 rounded-full border border-white/10 bg-[#1A1A1A] px-4 py-2 opacity-0 shadow-lg"
           >
             <Mouse className="h-4 w-4 text-[#33FF67] animate-bounce" />
             <div className="text-left">
@@ -447,12 +451,18 @@ export default function ScrollJourney() {
           </div>
 
           {/* Scaler Wrapper: dynamically shrinks world to fit available height */}
-          <div className="absolute inset-0" style={{ transform: "scale(var(--journey-scale, 0.65))", transformOrigin: "0% 0%" }}>
+          <div
+            className="absolute inset-0"
+            style={{
+              transform: "translateY(var(--journey-offset-y, 0px)) scale(var(--journey-scale, 0.65))",
+              transformOrigin: "0% 0%",
+            }}
+          >
             {/* Horizontal world */}
             <div
               ref={worldRef}
               className="absolute left-0 will-change-transform"
-              style={{ width: `${TOTAL_WORLD_WIDTH}px`, height: "1080px", top: "0%", marginTop: "-80px" }}
+              style={{ width: `${TOTAL_WORLD_WIDTH}px`, height: "1080px", top: "0%" }}
             >
               <svg
                 viewBox={`0 0 ${TOTAL_WORLD_WIDTH} 1080`}
@@ -481,6 +491,13 @@ export default function ScrollJourney() {
                     <stop offset="70%" stopColor="#2A2A2A" stopOpacity="1" />
                     <stop offset="100%" stopColor="#1E1E1E" stopOpacity="1" />
                   </radialGradient>
+                  {/* Painted halo, replaces an SVG drop-shadow filter: a filter re-rasterizes
+                      its whole subtree on every repaint of the translating world. */}
+                  <radialGradient id="earth-halo" cx="50%" cy="50%" r="50%">
+                    <stop offset="60%" stopColor="#7484FE" stopOpacity="0" />
+                    <stop offset="78%" stopColor="#7484FE" stopOpacity="0.22" />
+                    <stop offset="100%" stopColor="#7484FE" stopOpacity="0" />
+                  </radialGradient>
                   <radialGradient id="portal-glow" cx="50%" cy="50%" r="50%">
                     <stop offset="0%" stopColor="#33FF67" stopOpacity="0.9" />
                     <stop offset="50%" stopColor="#7484FE" stopOpacity="0.5" />
@@ -502,15 +519,19 @@ export default function ScrollJourney() {
                   ))}
                 </g>
 
+                {/* Everything that must stay on screen. The star field sits outside this
+                    group: it is decoration and may run off the edges. */}
+                <g id="journey-content">
                 {/* Earth launch site */}
-                <g transform="translate(320, 800)">
+                <g transform="translate(320, 727)">
                   <circle cx="0" cy="0" r="165" fill="none" stroke="#7484FE" strokeWidth="1" strokeDasharray="4 6" opacity="0.4" />
                   <ellipse cx="0" cy="0" rx="170" ry="48" fill="none" stroke="#7484FE" strokeWidth="1.5" opacity="0.6" transform="rotate(-15)" />
                   
-                  <g filter="drop-shadow(0 0 40px rgba(116,132,254,0.45))">
+                  <circle cx="0" cy="0" r="200" fill="url(#earth-halo)" />
+                  <g>
                     <circle cx="0" cy="0" r="140" fill="url(#earth-launch-backing)" />
                     <image
-                      href="/planets/Earth.svg"
+                      href="/planets/Earth.png"
                       x="-155"
                       y="-155"
                       width="310"
@@ -581,6 +602,7 @@ export default function ScrollJourney() {
                   <circle cx="14" cy="0" r="5.5" fill="#2A2A2A" stroke="#7484FE" strokeWidth="1.5" />
                   <circle cx="16" cy="-1.5" r="1.5" fill="#F7F2F6" opacity="0.8" />
                 </g>
+                </g>
               </svg>
 
               {/* Event detail cards */}
@@ -592,7 +614,7 @@ export default function ScrollJourney() {
                   <div
                     key={ev.id}
                     ref={(el) => { cardRefs.current[idx] = el; }}
-                    className="absolute opacity-0 rounded-[28px] p-1.5 bg-white/[0.04] border border-white/[0.08] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_35px_rgba(0,0,0,0.5)] pointer-events-none transition-[opacity,transform] duration-300"
+                    className="absolute opacity-0 rounded-[28px] p-1.5 bg-[#0E0E0E] border border-white/[0.10] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] pointer-events-none"
                     style={{
                       left: `${layout.x + 220}px`,
                       top: `${layout.cardTop}px`,
@@ -601,12 +623,12 @@ export default function ScrollJourney() {
                       transformOrigin: "left center"
                     }}
                   >
-                    {/* Inner Machined Core with Glass & Ambient Glow */}
-                    <div className="relative rounded-[22px] bg-[#1a1a1a]/95 backdrop-blur-xl p-7 border border-white/[0.06] shadow-[inset_0_1px_1px_rgba(255,255,255,0.12)] overflow-hidden">
-                      {/* Ambient Corner Aura Glow matching accent */}
+                    {/* Inner core: solid dark panel (no backdrop-filter — it repainted every
+                        scroll frame while the world translated, which is what made this lag) */}
+                    <div className="relative rounded-[22px] bg-[#151515] p-5 border border-white/[0.06] shadow-[inset_0_1px_1px_rgba(255,255,255,0.10)] overflow-hidden">
+                      {/* Accent edge, replaces the blurred corner aura */}
                       <div
-                        className={`pointer-events-none absolute -top-16 -right-16 w-44 h-44 rounded-full blur-3xl opacity-20 ${isEven ? "bg-[#7484FE]" : "bg-[#33FF67]"
-                          }`}
+                        className={`pointer-events-none absolute inset-x-0 top-0 h-px ${isEven ? "bg-[#7484FE]/50" : "bg-[#33FF67]/50"}`}
                       />
                       {/* Subtle background blueprint grid accent */}
                       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:16px_16px] opacity-25" />
@@ -622,13 +644,10 @@ export default function ScrollJourney() {
                             <span>{String(idx + 1).padStart(2, "0")} / 10 · {ev.category}</span>
                           </div>
 
-                          <span className="font-mono text-[10px] tracking-widest text-[#F7F2F6]/40 uppercase">
-                            STAGE {String(idx + 1).padStart(2, "0")}
-                          </span>
                         </div>
 
                         {/* Event Logo Header */}
-                        <div className="mt-5 mb-2 relative h-11 w-full flex items-center justify-start border-b border-white/[0.06] pb-4">
+                        <div className="mt-4 mb-2 relative h-24 w-full flex items-center justify-start border-b border-white/[0.06] pb-3">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={`/logos/${ev.slug}.png`}
@@ -644,12 +663,12 @@ export default function ScrollJourney() {
                         </p>
 
                         {/* Description */}
-                        <p className="mt-3 text-[13px] leading-relaxed text-[#F7F2F6]/75 font-sans line-clamp-3 font-normal">
+                        <p className="mt-2 text-[13px] leading-relaxed text-[#F7F2F6]/75 font-sans line-clamp-2 font-normal">
                           {ev.description}
                         </p>
 
                         {/* Nested CTA & "Button-in-Button" Trailing Icon Architecture */}
-                        <div className="mt-6 flex items-center w-full">
+                        <div className="mt-4 flex items-center w-full">
                           <Link
                             href={`/events/${ev.slug}`}
                             className="group relative inline-flex items-center justify-between gap-4 rounded-full pl-6 pr-2 py-2 text-xs font-mono font-bold uppercase tracking-[0.12em] text-[#161616] bg-[#33FF67] shadow-[0_0_20px_rgba(51,255,103,0.3),inset_0_1px_0_rgba(255,255,255,0.4)] transition-all duration-300 hover:shadow-[0_0_30px_rgba(51,255,103,0.55)] hover:bg-[#45ff75] hover:scale-[1.02] active:scale-[0.98]"
@@ -666,69 +685,12 @@ export default function ScrollJourney() {
                 );
               })}
 
-              {/* Expedition completion card */}
-              <div
-                ref={completionCardRef}
-                className="absolute opacity-0 rounded-[28px] p-1.5 bg-white/[0.04] border border-[#33FF67]/30 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_40px_rgba(51,255,103,0.15)] pointer-events-none transition-[opacity,transform] duration-300"
-                style={{
-                  left: "15200px",
-                  top: "280px",
-                  width: "450px",
-                  transform: "scale(calc(1 / var(--journey-scale, 0.65)))",
-                  transformOrigin: "left center"
-                }}
-              >
-                <div className="relative rounded-[22px] bg-[#1a1a1a]/95 backdrop-blur-xl p-8 border border-white/[0.08] shadow-[inset_0_1px_1px_rgba(255,255,255,0.12)] overflow-hidden">
-                  {/* Ambient glow */}
-                  <div className="pointer-events-none absolute -top-20 -right-20 w-48 h-48 rounded-full bg-[#33FF67]/20 blur-3xl" />
-
-                  <div className="relative z-10 flex flex-col items-start text-left">
-                    <div className="inline-flex items-center gap-2 font-mono text-[10px] font-black tracking-[0.18em] text-[#33FF67] uppercase bg-[#33FF67]/10 px-3 py-1 rounded-full border border-[#33FF67]/30 shadow-[0_0_15px_rgba(51,255,103,0.15)]">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[#33FF67]" />
-                      Mission Accomplished · 10/10
-                    </div>
-                    <h3 className="mt-4 font-display text-3xl font-black uppercase text-[#F7F2F6] leading-none tracking-tight">
-                      Summit Gateway
-                    </h3>
-                    <p className="mt-2 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-[#7484FE]">
-                      The Equinox 2.0 Awaits
-                    </p>
-                    <p className="mt-3.5 text-[13px] text-[#F7F2F6]/75 leading-relaxed font-sans font-normal">
-                      You have charted every event across the Equinox cosmos. Scroll down to enter the summit story, keynote schedule, venue guides, and registrations.
-                    </p>
-                    <div className="mt-6">
-                      <a
-                        href="#about"
-                        className="group relative inline-flex items-center justify-between gap-4 rounded-full pl-6 pr-2 py-2 text-xs font-mono font-bold uppercase tracking-[0.12em] text-[#F7F2F6] bg-[#7484FE] shadow-[0_0_25px_rgba(116,132,254,0.35),inset_0_1px_0_rgba(255,255,255,0.3)] transition-all duration-300 hover:shadow-[0_0_35px_rgba(116,132,254,0.6)] hover:bg-[#8594ff] hover:scale-[1.02] active:scale-[0.98]"
-                      >
-                        <span>Enter Summit Below</span>
-                        <span className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-[#F7F2F6] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                          <ArrowRight className="h-3.5 w-3.5" />
-                        </span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
 
-        {/* ================================================================
-            LOADING SCREEN
-            ================================================================ */}
-        <div
-          className={`fixed inset-0 flex flex-col items-center justify-center bg-[#2A2A2A] transition-opacity duration-700 ${showLoader ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
-          style={{ zIndex: 60 }}
-        >
-          <div className="flex flex-col items-center justify-center text-center px-4">
-            <h1 className="font-display-title text-4xl sm:text-6xl tracking-tighter text-[#F7F2F6] mb-6">EQUINOX</h1>
-            <span className="font-mono text-xs sm:text-sm font-black tracking-[0.25em] text-[#7484FE] uppercase mb-4">LOADING EXPERIENCE</span>
-            <div className="h-[2px] w-48 sm:w-64 bg-white/15 overflow-hidden relative">
-              <div className="absolute inset-0 bg-[#33FF67] w-1/3 animate-pulse" />
-            </div>
-          </div>
-        </div>
+        {/* Opening sequence: MLR CIE mark, glitch, EQUINOX lockup */}
+        {showLoader && <SpiderIntro onDone={handleIntroDone} />}
       </div>
     </div>
   );
