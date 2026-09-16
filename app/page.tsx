@@ -30,6 +30,7 @@ import JourneyOutro from "../components/JourneyOutro";
 import ScrollReveal from "../components/ScrollReveal";
 import PinnedSplit from "../components/PinnedSplit";
 import LogoMarquee from "../components/LogoMarquee";
+import GallerySection from "../components/GallerySection";
 
 const heroFadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -38,7 +39,7 @@ const heroFadeUp: Variants = {
 
 export default function HomePage() {
   return (
-    <div className="riso-texture brochure-grid min-h-screen overflow-x-clip text-[#F7F2F6] selection:bg-[#7484FE] selection:text-[#2A2A2A]">
+    <div id="top" className="riso-texture brochure-grid min-h-screen overflow-x-clip text-[#F7F2F6] selection:bg-[#7484FE] selection:text-[#2A2A2A]">
       <ScrollJourney />
 
       {/* Seam out of the journey: warp exit, then the summit chapters */}
@@ -156,7 +157,7 @@ export default function HomePage() {
 
 
       {/* Ten sub-events, running as one continuous strip */}
-      <div className="border-y border-white/10">
+      <div id="events" className="border-y border-white/10">
         <LogoMarquee slugs={subEvents.map((e) => e.slug)} names={subEvents.map((e) => e.name)} />
       </div>
 
@@ -225,6 +226,11 @@ export default function HomePage() {
           </ScrollReveal>
         </PinnedSplit>
       </section>
+
+      {/* =========================================================================
+          SECTION 5.5: EVENT GALLERY / ARCHIVES (Above Contact Us)
+          ========================================================================= */}
+      <GallerySection />
 
       {/* =========================================================================
           SECTION 6: CONTACT US (Page 12)

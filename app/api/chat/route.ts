@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     return Response.json(
       {
         answer:
-          "I encountered an unexpected issue processing your question. Please contact student coordinators Shyam (+91 93900 06806) or Mahima (+91 94933 62006), or email cie@mlrinstitutions.ac.in.",
+          "I encountered an unexpected issue processing your question. Please contact Overall Equinox Coordinators Ghanashyam (+91 93900 06806), Jaikar (+91 90324 10189), or Bhavana (+91 99895 32925), or email cie@mlrinstitutions.ac.in.",
         suggestions: ["List all 10 Sub-Events", "Dates & Venue", "Contact details"],
         links: [{ label: "Explore Sub-Events", url: "#events" }],
         grounded: false,

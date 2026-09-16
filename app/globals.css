@@ -386,3 +386,70 @@ body {
     animation: none;
   }
 }
+
+/* ── MINIMAL COSMIC STAR TWINKLE (SCROLL JOURNEY BACKGROUND) ───────────────── */
+@keyframes star-twinkle {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.35);
+  }
+}
+
+@keyframes star-twinkle-subtle {
+  0%, 100% {
+    opacity: 0.28;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.25);
+  }
+}
+
+@keyframes star-sparkle {
+  0%, 100% {
+    opacity: 0.25;
+    transform: translate(-50%, -50%) scale(0.7) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.35) rotate(45deg);
+  }
+}
+
+.star-anim-twinkle {
+  animation: star-twinkle ease-in-out infinite alternate;
+  will-change: opacity, transform;
+}
+
+.star-anim-subtle {
+  animation: star-twinkle-subtle ease-in-out infinite alternate;
+  will-change: opacity, transform;
+}
+
+.star-anim-sparkle {
+  animation: star-sparkle ease-in-out infinite alternate;
+  will-change: opacity, transform;
+}
+
+/* ── DEATH STAR EASTER EGG PULSE ────────────────────────────── */
+@keyframes death-star-laser {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+}
+
+.death-star-laser-pulse {
+  animation: death-star-laser 2.4s ease-in-out infinite;
+  transform-origin: 0px 0px;
+}
+

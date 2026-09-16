@@ -237,7 +237,7 @@ export const IplAuctionScene = forwardRef<SVGSVGElement, IplAuctionSceneProps>(
         {/* =========================================================
              BACKGROUND
              ========================================================= */}
-        <rect id="background" width="1600" height="900" fill="none" />
+        <rect id="background" width="1600" height="900" fill="#F5EFE3" />
 
         {/* Soft gold background waves */}
         <path
@@ -444,7 +444,7 @@ export const IplAuctionScene = forwardRef<SVGSVGElement, IplAuctionSceneProps>(
             fontSize="116"
             fontWeight="900"
             letterSpacing="-5"
-            fill="#FFFFFF"
+            fill="#111827"
           >
             IPL AUCTION
           </text>

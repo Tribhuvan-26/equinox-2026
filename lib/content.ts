@@ -1,10 +1,7 @@
 // Equinox 2026 / The Equinox 2.0 Official Content & Ground Truth
 
-export interface EventSPOC {
-  name: string;
-  phone: string;
-  email?: string;
-}
+import { EVENT_SPOCS, OVERALL_COORDINATORS, EventSPOC } from "@/chatbot/data/events";
+export type { EventSPOC };
 
 export interface SubEvent {
   id: string;
@@ -30,6 +27,7 @@ export interface SubEvent {
   about: string[];
   rules: string[];
   spoc: EventSPOC;
+  spocs: EventSPOC[];
 }
 
 export const event = {
@@ -51,11 +49,10 @@ export const event = {
 };
 
 export const nav = [
-  { label: "Overview", href: "/#top" },
-  { label: "About", href: "/#about" },
+  { label: "Homepage", href: "/#top" },
   { label: "Sub-Events", href: "/#events" },
-  { label: "Impact", href: "/#impact" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Registration", href: "/register" },
 ];
 
 export const contentsList = [
@@ -68,6 +65,7 @@ export const contentsList = [
   { id: "our-impact", label: "Our Impact", href: "#impact" },
   { id: "sponsorship-plans", label: "Sponsorship Plans", href: "#contact" },
   { id: "previous-sponsors", label: "Previous Sponsors", href: "#impact" },
+  { id: "gallery", label: "Event Gallery", href: "#gallery" },
   { id: "contact-us", label: "Contact Us", href: "#contact" },
 ];
 
@@ -88,12 +86,11 @@ export const about = {
   ],
 };
 
-// Official Student Coordinators from Page 12
+// Official Overall Equinox Coordinators
 export const studentCoordinators = [
-  { name: "Sanjana", phone: "+91 82084 99746", phoneRaw: "+918208499746", role: "Student Coordinator" },
-  { name: "Adithya", phone: "+91 91822 40970", phoneRaw: "+919182240970", role: "Student Coordinator" },
-  { name: "Mahith", phone: "+91 95421 30703", phoneRaw: "+919542130703", role: "Student Coordinator" },
-  { name: "Yashashri", phone: "+91 99590 62396", phoneRaw: "+919959062396", role: "Student Coordinator" },
+  { name: "Ghanashyam", phone: "+91 93900 06806", phoneRaw: "+919390006806", role: "Overall Equinox Coordinator" },
+  { name: "Jaikar", phone: "+91 90324 10189", phoneRaw: "+919032410189", role: "Overall Equinox Coordinator" },
+  { name: "Bhavana", phone: "+91 99895 32925", phoneRaw: "+919989532925", role: "Overall Equinox Coordinator" },
 ];
 
 // The 10 Official Sub-Events from Pages 05 & 06 of the Program & Blueprint
@@ -129,7 +126,8 @@ export const subEvents: SubEvent[] = [
       "Audience Q&A follows each keynote session",
       "Priority seating for early arrivals",
     ],
-    spoc: { name: "Sanjana", phone: "+91 82084 99746", email: "cie@mlrinstitutions.ac.in" },
+    spocs: EVENT_SPOCS["spotlight"],
+    spoc: EVENT_SPOCS["spotlight"][0],
   },
   {
     id: "crossroads",
@@ -162,7 +160,8 @@ export const subEvents: SubEvent[] = [
       "Presentation deck submission within 3 hours",
       "7-min presentation + 3-min judge questions",
     ],
-    spoc: { name: "Adithya", phone: "+91 91822 40970", email: "cie@mlrinstitutions.ac.in" },
+    spocs: EVENT_SPOCS["crossroads"],
+    spoc: EVENT_SPOCS["crossroads"][0],
   },
   {
     id: "startup-expo",
@@ -194,7 +193,8 @@ export const subEvents: SubEvent[] = [
       "Each venture receives a dedicated exhibition booth",
       "Founders must be present during expo hours",
     ],
-    spoc: { name: "Mahith", phone: "+91 95421 30703", email: "cie@mlrinstitutions.ac.in" },
+    spocs: EVENT_SPOCS["startup-expo"],
+    spoc: EVENT_SPOCS["startup-expo"][0],
   },
   {
     id: "brand-battles",
@@ -218,7 +218,7 @@ export const subEvents: SubEvent[] = [
     fee: "Announcing soon",
     prize: "Cash prizes & trophies",
     about: [
-      "A competitive debate where two teams represent rival brands from the same sector. Participants must present strong, well-researched arguments supported by real-time data, case studies, and relevant market examples to demonstrate why their chosen brand stands superior. Teams with the most compelling arguments and impactful presentations will be awarded.",
+      "A competitive debate where two teams represent rival brands from the same sector. Participants present strong, well-researched arguments supported by real-time data, case studies, and relevant market examples to demonstrate why their chosen brand stands superior. Teams with the most compelling arguments and impactful presentations will be awarded.",
       "Defend Apple vs Samsung, Swiggy vs Zomato, Coca-Cola vs Pepsi, or Nike vs Adidas in fierce knockout clash rounds.",
     ],
     rules: [
@@ -227,7 +227,8 @@ export const subEvents: SubEvent[] = [
       "Strict timekeeping for arguments, cross-examination, and closing statements",
       "Scoring based on data backing, poise, and logical rebuttals",
     ],
-    spoc: { name: "Yashashri", phone: "+91 99590 62396", email: "cie@mlrinstitutions.ac.in" },
+    spocs: EVENT_SPOCS["brand-battles"],
+    spoc: EVENT_SPOCS["brand-battles"][0],
   },
   {
     id: "ipl-auction",
@@ -260,7 +261,8 @@ export const subEvents: SubEvent[] = [
       "Mandatory player category quotas (batsmen, bowlers, all-rounders, wicketkeepers)",
       "Final team score calculated using official performance ratings",
     ],
-    spoc: { name: "Sanjana", phone: "+91 82084 99746", email: "cie@mlrinstitutions.ac.in" },
+    spocs: EVENT_SPOCS["ipl-auction"],
+    spoc: EVENT_SPOCS["ipl-auction"][0],
   },
 
   // Page 06
@@ -295,7 +297,8 @@ export const subEvents: SubEvent[] = [
       "Strict ethical marketing and accounting practices enforced",
       "Winner decided by net margin, sales volume, and customer feedback",
     ],
-    spoc: { name: "Adithya", phone: "+91 91822 40970", email: "cie@mlrinstitutions.ac.in" },
+    spocs: EVENT_SPOCS["hustle-mania"],
+    spoc: EVENT_SPOCS["hustle-mania"][0],
   },
   {
     id: "internship-drive",
@@ -327,7 +330,8 @@ export const subEvents: SubEvent[] = [
       "Dress code: Smart casual / formal",
       "Attend pre-screening briefing at 09:30 AM",
     ],
-    spoc: { name: "Mahith", phone: "+91 95421 30703", email: "cie@mlrinstitutions.ac.in" },
+    spocs: EVENT_SPOCS["internship-drive"],
+    spoc: EVENT_SPOCS["internship-drive"][0],
   },
   {
     id: "startup-poly",
@@ -359,7 +363,8 @@ export const subEvents: SubEvent[] = [
       "Shock cards introduce unpredictable market events every round",
       "Highest venture enterprise valuation after 10 rounds advances to finals",
     ],
-    spoc: { name: "Yashashri", phone: "+91 99590 62396", email: "cie@mlrinstitutions.ac.in" },
+    spocs: EVENT_SPOCS["startup-poly"],
+    spoc: EVENT_SPOCS["startup-poly"][0],
   },
   {
     id: "e-cell-meet",
@@ -391,7 +396,8 @@ export const subEvents: SubEvent[] = [
       "Participating teams present a 3-minute campus ecosystem snapshot",
       "Collaborative policy resolution drafted at conclave close",
     ],
-    spoc: { name: "Sanjana", phone: "+91 82084 99746", email: "cie@mlrinstitutions.ac.in" },
+    spocs: EVENT_SPOCS["e-cell-meet"],
+    spoc: EVENT_SPOCS["e-cell-meet"][0],
   },
   {
     id: "pitch-deck",
@@ -423,7 +429,8 @@ export const subEvents: SubEvent[] = [
       "Strict 5 minutes pitch window followed by 5 minutes jury interrogation",
       "Evaluated on problem severity, market size, unfair advantage, and execution clarity",
     ],
-    spoc: { name: "Mahith", phone: "+91 95421 30703", email: "cie@mlrinstitutions.ac.in" },
+    spocs: EVENT_SPOCS["pitch-deck"],
+    spoc: EVENT_SPOCS["pitch-deck"][0],
   },
 ];
 
@@ -535,7 +542,7 @@ export const faqs = [
   },
   {
     q: "How can I contact the event coordinators?",
-    a: "You can reach student coordinators Sanjana (+91 82084 99746), Adithya (+91 91822 40970), Mahith (+91 95421 30703), or Yashashri (+91 99590 62396), or email cie@mlrinstitutions.ac.in.",
+    a: "You can reach Overall Equinox Coordinators Ghanashyam (+91 93900 06806), Jaikar (+91 90324 10189), or Bhavana (+91 99895 32925), or email cie@mlrinstitutions.ac.in.",
   },
 ];
 

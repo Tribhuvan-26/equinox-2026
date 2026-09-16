@@ -7,6 +7,13 @@ export interface EventCoordinator {
   phoneRaw: string;
 }
 
+export interface EventSPOC {
+  name: string;
+  phone: string;
+  phoneRaw?: string;
+  email?: string;
+}
+
 export interface SubEventInfo {
   id: string;
   slug: string;
@@ -33,14 +40,63 @@ export interface SubEventInfo {
     | "e-cell-meet"
     | "pitch-deck";
   badgeAccent: string;
+  spocs?: EventSPOC[];
 }
 
-export const OFFICIAL_COORDINATORS: EventCoordinator[] = [
-  { name: "Shyam", phone: "+91 93900 06806", phoneRaw: "+919390006806" },
-  { name: "Mahima", phone: "+91 94933 62006", phoneRaw: "+919493362006" },
-  { name: "Sanjana", phone: "+91 82084 99746", phoneRaw: "+918208499746" },
-  { name: "Adithya", phone: "+91 91822 40970", phoneRaw: "+919182240970" },
+export const OVERALL_COORDINATORS: EventSPOC[] = [
+  { name: "Ghanashyam", phone: "+91 93900 06806", phoneRaw: "+919390006806" },
+  { name: "Jaikar", phone: "+91 90324 10189", phoneRaw: "+919032410189" },
+  { name: "Bhavana", phone: "+91 99895 32925", phoneRaw: "+919989532925" },
 ];
+
+export const OFFICIAL_COORDINATORS: EventCoordinator[] = [
+  { name: "Ghanashyam", phone: "+91 93900 06806", phoneRaw: "+919390006806" },
+  { name: "Jaikar", phone: "+91 90324 10189", phoneRaw: "+919032410189" },
+  { name: "Bhavana", phone: "+91 99895 32925", phoneRaw: "+919989532925" },
+];
+
+export const EVENT_SPOCS: Record<string, EventSPOC[]> = {
+  "spotlight": [
+    { name: "Rithish Kumar", phone: "+91 93987 53113", phoneRaw: "+919398753113" },
+  ],
+  "crossroads": [
+    { name: "Indu", phone: "+91 89197 51488", phoneRaw: "+918919751488" },
+    { name: "Sadwika", phone: "+91 93477 15741", phoneRaw: "+919347715741" },
+  ],
+  "startup-expo": [
+    { name: "Nikitha", phone: "+91 85002 07731", phoneRaw: "+918500207731" },
+    { name: "Adithya Jadhav", phone: "+91 72869 05928", phoneRaw: "+917286905928" },
+  ],
+  "brand-battles": [
+    { name: "Pranav Chandra", phone: "+91 95811 70601", phoneRaw: "+919581170601" },
+    { name: "Hansika Jella", phone: "+91 83099 75984", phoneRaw: "+918309975984" },
+  ],
+  "ipl-auction": [
+    { name: "Raja Vivek", phone: "+91 89857 11276", phoneRaw: "+918985711276" },
+    { name: "Bhruhathi", phone: "+91 62812 77577", phoneRaw: "+916281277577" },
+    { name: "Anamika Kumari", phone: "+91 86867 35562", phoneRaw: "+918686735562" },
+  ],
+  "hustle-mania": [
+    { name: "Sai Vashist", phone: "+91 95156 40740", phoneRaw: "+919515640740" },
+    { name: "Rithwik", phone: "+91 81214 51565", phoneRaw: "+918121451565" },
+  ],
+  "internship-drive": [
+    { name: "Adithya Ganesh", phone: "+91 91822 40970", phoneRaw: "+919182240970" },
+    { name: "Shiva", phone: "+91 93477 38868", phoneRaw: "+919347738868" },
+  ],
+  "startup-poly": [
+    { name: "Tribhuvan", phone: "+91 73306 72121", phoneRaw: "+917330672121" },
+    { name: "Abhinav Sai", phone: "+91 91336 94540", phoneRaw: "+919133694540" },
+    { name: "Farhana", phone: "+91 83280 07810", phoneRaw: "+918328007810" },
+  ],
+  "e-cell-meet": [
+    { name: "Sanjana", phone: "+91 82084 99746", phoneRaw: "+918208499746" },
+    { name: "Adithya Ganesh", phone: "+91 91822 40970", phoneRaw: "+919182240970" },
+  ],
+  "pitch-deck": [
+    { name: "Anuj Lomte", phone: "+91 93901 20510", phoneRaw: "+919390120510" },
+  ],
+};
 
 export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
   // Page 05 Sub-Events
@@ -61,6 +117,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "spotlight",
     badgeAccent: "#3b82f6",
+    spocs: EVENT_SPOCS["spotlight"],
   },
   {
     id: "crossroads",
@@ -79,6 +136,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "crossroads",
     badgeAccent: "#10b981",
+    spocs: EVENT_SPOCS["crossroads"],
   },
   {
     id: "startup-expo",
@@ -97,6 +155,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "startup-expo",
     badgeAccent: "#f59e0b",
+    spocs: EVENT_SPOCS["startup-expo"],
   },
   {
     id: "brand-battles",
@@ -115,6 +174,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "brand-battles",
     badgeAccent: "#ef4444",
+    spocs: EVENT_SPOCS["brand-battles"],
   },
   {
     id: "ipl-auction",
@@ -133,6 +193,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "ipl-auction",
     badgeAccent: "#8b5cf6",
+    spocs: EVENT_SPOCS["ipl-auction"],
   },
 
   // Page 06 Sub-Events
@@ -153,6 +214,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "hustle-mania",
     badgeAccent: "#ec4899",
+    spocs: EVENT_SPOCS["hustle-mania"],
   },
   {
     id: "internship-drive",
@@ -171,6 +233,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "internship-drive",
     badgeAccent: "#06b6d4",
+    spocs: EVENT_SPOCS["internship-drive"],
   },
   {
     id: "startup-poly",
@@ -189,6 +252,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "startup-poly",
     badgeAccent: "#eab308",
+    spocs: EVENT_SPOCS["startup-poly"],
   },
   {
     id: "e-cell-meet",
@@ -207,6 +271,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "e-cell-meet",
     badgeAccent: "#6366f1",
+    spocs: EVENT_SPOCS["e-cell-meet"],
   },
   {
     id: "pitch-deck",
@@ -225,6 +290,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "pitch-deck",
     badgeAccent: "#14b8a6",
+    spocs: EVENT_SPOCS["pitch-deck"],
   },
 ];
 

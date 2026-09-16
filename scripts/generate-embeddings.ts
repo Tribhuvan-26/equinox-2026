@@ -14,6 +14,7 @@ import {
   audience,
 } from "../lib/content";
 import { eventsData } from "../app/events/eventsData";
+import { EVENT_SPOCS } from "../chatbot/data/events";
 
 // Load .env.local if needed
 if (!process.env.GEMINI_API_KEY) {
@@ -92,11 +93,11 @@ ${about.body.join(" ")}`,
 
   chunks.push({
     id: "contacts-coordinators",
-    title: "Official Student Coordinators & Contact Information",
+    title: "Official Overall Coordinators & Contact Information",
     source: "lib/content.ts",
     category: "coordinators",
     metadata: { email: contact.email, website: contact.website },
-    content: `Official Student Coordinators for Equinox 2.0 (Page 12 of brochure):
+    content: `Official Overall Coordinators for Equinox 2.0:
 ${coordsFormatted}
 
 Official Summit Support:
@@ -105,7 +106,7 @@ Website: ${contact.website} (${contact.websiteUrl})
 Address:
 ${contact.addressLines.join("\n")}
 
-For doubts, questions, team reservations, or partnerships, reach out directly to the student coordinators or email cie@mlrinstitutions.ac.in.`,
+For general summit inquiries or partnerships, reach out directly to the Overall Equinox Coordinators or email cie@mlrinstitutions.ac.in.`,
   });
 
   // 4. Sub-events (1 chunk per sub-event with full details from both lib/content.ts & app/events/eventsData.ts)
@@ -114,6 +115,7 @@ For doubts, questions, team reservations, or partnerships, reach out directly to
     const aboutText = se.about.join("\n");
     const rulesText = se.rules.map((r, i) => `${i + 1}. ${r}`).join("\n");
     const skillsText = se.skills.join(", ");
+    const spocsText = se.spocs.map((s) => `• ${s.name}: Phone ${s.phone}`).join("\n");
 
     chunks.push({
       id: `subevent-${se.slug}`,
@@ -125,6 +127,7 @@ For doubts, questions, team reservations, or partnerships, reach out directly to
         pageNumber: se.pageNumber,
         category: se.category,
         spoc: se.spoc,
+        spocs: se.spocs,
         venue: se.venueRoom || se.venue,
         timing: se.timing,
       },
@@ -152,8 +155,8 @@ Prizes & Perks: ${se.prize}
 Rules & Guidelines:
 ${rulesText}
 
-Event SPOC (Single Point of Contact):
-Name: ${se.spoc.name}, Phone: ${se.spoc.phone}, Email: ${se.spoc.email || contact.email}`,
+Event SPOCs (Single Points of Contact):
+${spocsText}`,
     });
   });
 
@@ -253,13 +256,15 @@ Pitch Deck is an idea presentation event where participants showcase their start
   ];
 
   pdfSubEvents.forEach((pse) => {
+    const spocs = EVENT_SPOCS[pse.slug] || [];
+    const spocsText = spocs.map((s) => `• ${s.name}: Phone ${s.phone}`).join("\n");
     chunks.push({
       id: `pdf-subevent-${pse.slug}`,
       title: pse.title,
       source: "chatbot/data/equinox-events.pdf",
       category: "subevent",
-      metadata: { slug: pse.slug, sourcePdf: "equinox-events.pdf" },
-      content: pse.content,
+      metadata: { slug: pse.slug, sourcePdf: "equinox-events.pdf", spocs },
+      content: `${pse.content}\n\nEvent SPOCs (Single Points of Contact):\n${spocsText}`,
     });
   });
 

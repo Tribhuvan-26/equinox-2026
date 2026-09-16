@@ -21,6 +21,57 @@ import {
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Prominent, beautiful twinkling stars with deterministic coordinates and asynchronous phases
+const TWINKLE_STARS = [
+  // Top quadrant
+  { x: 5, y: 11, size: 4.5, color: "#F7F2F6", duration: 3.2, delay: -0.8, type: "dot" as const },
+  { x: 13, y: 21, size: 6.0, color: "#7484FE", duration: 4.1, delay: -2.3, type: "dot" as const },
+  { x: 22, y: 8, size: 3.5, color: "#F7F2F6", duration: 2.8, delay: -1.4, type: "dot" as const },
+  { x: 31, y: 17, size: 16.0, color: "#F7F2F6", duration: 5.2, delay: -3.7, type: "sparkle" as const },
+  { x: 41, y: 10, size: 4.5, color: "#33FF67", duration: 3.6, delay: -0.5, type: "dot" as const },
+  { x: 52, y: 6, size: 5.2, color: "#F7F2F6", duration: 4.4, delay: -1.9, type: "dot" as const },
+  { x: 63, y: 15, size: 3.8, color: "#7484FE", duration: 3.0, delay: -2.7, type: "dot" as const },
+  { x: 74, y: 9, size: 18.0, color: "#F7F2F6", duration: 4.8, delay: -0.9, type: "sparkle" as const },
+  { x: 83, y: 19, size: 4.5, color: "#F7F2F6", duration: 3.5, delay: -3.1, type: "dot" as const },
+  { x: 93, y: 12, size: 5.2, color: "#33FF67", duration: 4.2, delay: -1.6, type: "dot" as const },
+
+  // Upper-middle band
+  { x: 4, y: 34, size: 5.2, color: "#F7F2F6", duration: 3.9, delay: -2.1, type: "dot" as const },
+  { x: 11, y: 43, size: 3.5, color: "#7484FE", duration: 2.6, delay: -0.7, type: "dot" as const },
+  { x: 20, y: 30, size: 18.0, color: "#7484FE", duration: 5.5, delay: -4.0, type: "sparkle" as const },
+  { x: 35, y: 37, size: 4.5, color: "#F7F2F6", duration: 3.3, delay: -1.2, type: "dot" as const },
+  { x: 47, y: 28, size: 3.8, color: "#F7F2F6", duration: 4.6, delay: -3.4, type: "dot" as const },
+  { x: 57, y: 38, size: 6.0, color: "#F7F2F6", duration: 3.7, delay: -0.4, type: "dot" as const },
+  { x: 68, y: 32, size: 4.2, color: "#33FF67", duration: 4.0, delay: -2.8, type: "dot" as const },
+  { x: 78, y: 41, size: 3.5, color: "#F7F2F6", duration: 3.1, delay: -1.5, type: "dot" as const },
+  { x: 87, y: 31, size: 17.0, color: "#F7F2F6", duration: 5.0, delay: -2.2, type: "sparkle" as const },
+  { x: 95, y: 39, size: 4.5, color: "#7484FE", duration: 3.8, delay: -0.3, type: "dot" as const },
+
+  // Center / Lower-middle band
+  { x: 7, y: 55, size: 3.5, color: "#F7F2F6", duration: 3.4, delay: -1.8, type: "dot" as const },
+  { x: 17, y: 61, size: 6.0, color: "#33FF67", duration: 4.5, delay: -3.5, type: "dot" as const },
+  { x: 26, y: 51, size: 4.5, color: "#F7F2F6", duration: 2.9, delay: -0.6, type: "dot" as const },
+  { x: 37, y: 58, size: 3.8, color: "#7484FE", duration: 4.3, delay: -2.4, type: "dot" as const },
+  { x: 46, y: 50, size: 18.0, color: "#F7F2F6", duration: 5.8, delay: -4.5, type: "sparkle" as const },
+  { x: 55, y: 62, size: 4.5, color: "#F7F2F6", duration: 3.2, delay: -1.1, type: "dot" as const },
+  { x: 66, y: 53, size: 5.2, color: "#7484FE", duration: 4.1, delay: -2.9, type: "dot" as const },
+  { x: 75, y: 60, size: 3.5, color: "#F7F2F6", duration: 2.7, delay: -0.8, type: "dot" as const },
+  { x: 84, y: 52, size: 6.0, color: "#F7F2F6", duration: 4.7, delay: -3.9, type: "dot" as const },
+  { x: 93, y: 63, size: 4.2, color: "#33FF67", duration: 3.5, delay: -1.7, type: "dot" as const },
+
+  // Bottom quadrant
+  { x: 4, y: 77, size: 16.0, color: "#F7F2F6", duration: 4.9, delay: -2.0, type: "sparkle" as const },
+  { x: 14, y: 87, size: 4.2, color: "#F7F2F6", duration: 3.3, delay: -0.7, type: "dot" as const },
+  { x: 22, y: 73, size: 5.2, color: "#7484FE", duration: 4.2, delay: -3.3, type: "dot" as const },
+  { x: 32, y: 84, size: 3.5, color: "#F7F2F6", duration: 2.8, delay: -1.3, type: "dot" as const },
+  { x: 43, y: 75, size: 4.8, color: "#33FF67", duration: 3.9, delay: -2.5, type: "dot" as const },
+  { x: 53, y: 88, size: 3.5, color: "#F7F2F6", duration: 4.5, delay: -4.1, type: "dot" as const },
+  { x: 62, y: 78, size: 19.0, color: "#7484FE", duration: 5.4, delay: -1.0, type: "sparkle" as const },
+  { x: 71, y: 85, size: 4.5, color: "#F7F2F6", duration: 3.1, delay: -2.6, type: "dot" as const },
+  { x: 82, y: 74, size: 5.2, color: "#F7F2F6", duration: 4.0, delay: -0.4, type: "dot" as const },
+  { x: 92, y: 86, size: 3.5, color: "#7484FE", duration: 3.6, delay: -3.0, type: "dot" as const },
+];
+
 export default function ScrollJourney() {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -29,7 +80,6 @@ export default function ScrollJourney() {
   const globeHeroRef = useRef<HTMLDivElement>(null);   // large background globe
   const heroWordmarkRef = useRef<HTMLDivElement>(null);   // "EQUINOX"
   const heroSubtitleRef = useRef<HTMLDivElement>(null);   // tag + subtitle
-  const exploreRef = useRef<HTMLDivElement>(null);   // CTA button
 
   const persistentHeaderRef = useRef<HTMLDivElement>(null);
   const navbarWrapperRef = useRef<HTMLDivElement>(null);
@@ -38,6 +88,8 @@ export default function ScrollJourney() {
   const journeyLayerRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<HTMLDivElement>(null);
   const rocketRef = useRef<SVGGElement>(null);
+  const flameTrailRef = useRef<SVGGElement>(null);
+  const idleFlameRef = useRef<SVGGElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
@@ -54,23 +106,81 @@ export default function ScrollJourney() {
 
   const handleGlobeReady = useCallback(() => setIsGlobeReady(true), []);
 
-  const handleExplore = () => {
-    if (lenisRef.current) {
-      lenisRef.current.scrollTo(window.innerHeight * 1.2, { duration: 1.4 });
-    } else {
-      window.scrollTo({ top: window.innerHeight * 1.2, behavior: "smooth" });
-    }
-  };
-
   // ── LENIS + GSAP ─────────────────────────────────────────────────────────────
   useEffect(() => {
     const lenis = new Lenis({ lerp: 0.08, smoothWheel: true });
     lenisRef.current = lenis;
+    if (typeof window !== "undefined") (window as any).__lenis = lenis;
     lenis.on("scroll", ScrollTrigger.update);
     const tick = (t: number) => lenis.raf(t * 1000);
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
-    return () => { gsap.ticker.remove(tick); lenis.destroy(); lenisRef.current = null; };
+    return () => {
+      gsap.ticker.remove(tick);
+      lenis.destroy();
+      lenisRef.current = null;
+      if (typeof window !== "undefined") delete (window as any).__lenis;
+    };
+  }, []);
+
+  // ── VELOCITY-REACTIVE ROCKET IGNITION ───────────────────────────────────────
+  useEffect(() => {
+    let currentIntensity = 0;
+    let lastScrollY = typeof window !== "undefined" ? window.scrollY : 0;
+
+    const flameTick = () => {
+      const currentScrollY = window.scrollY;
+      const scrollDelta = Math.abs(currentScrollY - lastScrollY);
+      lastScrollY = currentScrollY;
+
+      const lenisVelocity = Math.abs(lenisRef.current?.velocity || 0);
+      const effectiveSpeed = Math.max(lenisVelocity, scrollDelta);
+
+      // Thresholds:
+      // Slow/normal scroll has effectiveSpeed < 10 -> 0 ignition.
+      // Fast scroll / flick produces effectiveSpeed up to 60+ -> powerful energetic ignition trail.
+      const minThreshold = 8;
+      const maxThreshold = 65;
+      const targetIntensity = Math.min(
+        Math.max((effectiveSpeed - minThreshold) / (maxThreshold - minThreshold), 0),
+        1
+      );
+
+      // Asymmetric GSAP-style smoothing: fast attack (0.28), smooth natural dissipation (0.09)
+      const lerpSpeed = targetIntensity > currentIntensity ? 0.28 : 0.09;
+      currentIntensity += (targetIntensity - currentIntensity) * lerpSpeed;
+
+      if (currentIntensity < 0.003) {
+        currentIntensity = 0;
+      }
+
+      if (flameTrailRef.current) {
+        if (currentIntensity > 0) {
+          // Dynamic flame flare with natural high-speed plasma jitter
+          const jitterX = 1 + (Math.random() - 0.5) * 0.16 * currentIntensity;
+          const jitterY = 1 + (Math.random() - 0.5) * 0.12 * currentIntensity;
+          const scaleX = (0.25 + currentIntensity * 1.35) * jitterX;
+          const scaleY = (0.35 + currentIntensity * 0.85) * jitterY;
+          const opacity = Math.min(1, currentIntensity * 1.3);
+
+          flameTrailRef.current.style.transform = `scale(${scaleX.toFixed(3)}, ${scaleY.toFixed(3)})`;
+          flameTrailRef.current.style.opacity = opacity.toFixed(3);
+        } else {
+          flameTrailRef.current.style.opacity = "0";
+        }
+      }
+
+      if (idleFlameRef.current) {
+        // Idle pilot flame is subtle at rest and gently yields when the main afterburner ignites
+        const idleOpacity = Math.max(0, 0.75 - currentIntensity * 1.5);
+        idleFlameRef.current.style.opacity = idleOpacity.toFixed(3);
+      }
+    };
+
+    gsap.ticker.add(flameTick);
+    return () => {
+      gsap.ticker.remove(flameTick);
+    };
   }, []);
 
   useEffect(() => {
@@ -93,14 +203,86 @@ export default function ScrollJourney() {
     const path = pathRef.current;
     const totalPathLen = path.getTotalLength();
 
+    // Rocket directional state & smooth 180° rotation when scrolling in the opposite direction
+    let lastProgress = 0;
+    let rocketDirection: 1 | -1 = 1;
+    const turnRotation = { value: 0 };
+    let currentRocketState = { x: 360, y: 690, baseAngle: 0, scale: 1, opacity: 1 };
+
+    const applyRocketTransform = () => {
+      if (!rocketRef.current) return;
+      const totalAngle = currentRocketState.baseAngle + turnRotation.value;
+      const scale = currentRocketState.scale ?? 1;
+      const opacity = currentRocketState.opacity ?? 1;
+      rocketRef.current.setAttribute(
+        "transform",
+        `translate(${currentRocketState.x}, ${currentRocketState.y}) rotate(${totalAngle.toFixed(2)}) scale(${scale.toFixed(3)})`
+      );
+      rocketRef.current.style.opacity = `${opacity.toFixed(3)}`;
+      rocketRef.current.style.visibility = opacity <= 0.001 ? "hidden" : "visible";
+    };
+
+    const setRocketDirection = (newDir: 1 | -1) => {
+      if (rocketDirection === newDir) return;
+      rocketDirection = newDir;
+      const targetValue = newDir === -1 ? 180 : 0;
+      gsap.to(turnRotation, {
+        value: targetValue,
+        duration: 0.42,
+        ease: "power2.inOut",
+        overwrite: true,
+        onUpdate: applyRocketTransform,
+      });
+    };
+
     const updateJourneyProgress = (p: number) => {
       if (!rocketRef.current || !worldRef.current || !pathRef.current) return;
       const curLen = p * totalPathLen;
       const pt = path.getPointAtLength(curLen);
-      const nextPt = path.getPointAtLength(Math.min(curLen + 4, totalPathLen));
-      const angle = Math.atan2(nextPt.y - pt.y, nextPt.x - pt.x) * (180 / Math.PI);
+      const stepAhead = curLen + 4 <= totalPathLen ? 4 : -4;
+      const refPt = path.getPointAtLength(curLen + stepAhead);
+      const angle = stepAhead > 0
+        ? Math.atan2(refPt.y - pt.y, refPt.x - pt.x) * (180 / Math.PI)
+        : Math.atan2(pt.y - refPt.y, pt.x - refPt.x) * (180 / Math.PI);
 
-      rocketRef.current.setAttribute("transform", `translate(${pt.x}, ${pt.y}) rotate(${angle})`);
+      // Detect motion delta along the path
+      const deltaP = p - lastProgress;
+      lastProgress = p;
+      if (deltaP < -0.0002) {
+        setRocketDirection(-1);
+      } else if (deltaP > 0.0002) {
+        setRocketDirection(1);
+      }
+
+      // Smooth black hole event horizon entry: progressively scale down and fade
+      const blackHoleX = 15800;
+      const blackHoleY = 540;
+      const distToBlackHole = Math.hypot(pt.x - blackHoleX, pt.y - blackHoleY);
+
+      let blackHoleScale = 1;
+      let blackHoleOpacity = 1;
+
+      if (pt.x > 15300) {
+        const horizonOuter = 260; // Event horizon approach
+        const horizonCenter = 40; // Singularity center
+        if (distToBlackHole <= horizonCenter) {
+          blackHoleScale = 0;
+          blackHoleOpacity = 0;
+        } else if (distToBlackHole < horizonOuter) {
+          const norm = (distToBlackHole - horizonCenter) / (horizonOuter - horizonCenter);
+          blackHoleScale = Math.max(0, Math.min(1, Math.pow(norm, 1.2)));
+          blackHoleOpacity = Math.max(0, Math.min(1, Math.pow(norm, 1.4)));
+        }
+      }
+
+      currentRocketState = {
+        x: pt.x,
+        y: pt.y,
+        baseAngle: angle,
+        scale: blackHoleScale,
+        opacity: blackHoleOpacity,
+      };
+      applyRocketTransform();
 
       // Scale is recomputed only on resize (updateHeaderSpace); reading it from a ref
       // keeps this scroll callback write-only, so it never forces a style flush per frame.
@@ -150,12 +332,21 @@ export default function ScrollJourney() {
               globePausedRef.current = shouldPause;
               setIsGlobePaused(shouldPause);
             }
+            if (self.progress > 0.15 && self.progress < 0.95) {
+              if (self.direction === -1) {
+                setRocketDirection(-1);
+              } else if (self.direction === 1) {
+                setRocketDirection(1);
+              }
+            } else if (self.progress <= 0.15) {
+              setRocketDirection(1);
+            }
           },
         },
       });
 
       // --- PHASE 1 (0%–10%): Hero to Wordmark ---
-      mainTl.to([heroSubtitleRef.current, exploreRef.current], {
+      mainTl.to(heroSubtitleRef.current, {
         opacity: 0, y: -20, duration: 0.1
       }, 0);
 
@@ -295,8 +486,47 @@ export default function ScrollJourney() {
       };
       updateHeaderSpace();
       window.addEventListener('resize', updateHeaderSpace);
+
+      // ── DIRECT INSTANT RESET FOR HOMEPAGE NAVIGATION (NO REVERSE SCROLL) ────
+      const resetScrollJourney = () => {
+        // 1. Immediately cancel lenis velocity and teleport to top with zero smoothing
+        if (lenisRef.current) {
+          lenisRef.current.scrollTo(0, { immediate: true });
+          lenisRef.current.velocity = 0;
+        }
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+
+        // 2. Snap GSAP timeline and its ScrollTrigger directly to 0 (no scrub delay)
+        if (mainTl) {
+          const st = mainTl.scrollTrigger;
+          if (st) {
+            st.scroll(0);
+          }
+          mainTl.progress(0, false);
+        }
+
+        // 3. Reset directional state & rotation
+        rocketDirection = 1;
+        turnRotation.value = 0;
+        setIsGlobePaused(false);
+        globePausedRef.current = false;
+
+        // 4. Force reset rocket, world transform, cards, and HUD
+        updateJourneyProgress(0);
+
+        // 5. Tell ScrollTrigger to sync immediately at 0
+        ScrollTrigger.update();
+      };
+
+      if (typeof window !== "undefined") {
+        (window as any).__resetScrollJourney = resetScrollJourney;
+      }
+
       return () => {
         window.removeEventListener("resize", updateHeaderSpace);
+        if (typeof window !== "undefined") {
+          delete (window as any).__resetScrollJourney;
+        }
       };
     }, containerRef);
 
@@ -315,20 +545,70 @@ export default function ScrollJourney() {
     <div ref={containerRef} className="relative w-full" style={{ height: "1500vh" }}>
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#2A2A2A]">
 
-        {/* ── SPARSE STAR FIELD ────────────────────────────────────────────── */}
-        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 0 }}>
-          <svg width="100%" height="100%">
-            <pattern id="static-stars" x="0" y="0" width="160" height="160" patternUnits="userSpaceOnUse">
-              <circle fill="#F7F2F6" cx="28" cy="22" r="1.1" opacity="0.35" />
-              <circle fill="#F7F2F6" cx="115" cy="48" r="1.4" opacity="0.55" />
-              <circle fill="#F7F2F6" cx="57" cy="108" r="0.9" opacity="0.25" />
-              <circle fill="#7484FE" cx="138" cy="125" r="1.6" opacity="0.45" />
-              <circle fill="#33FF67" cx="88" cy="18" r="0.9" opacity="0.35" />
-              <circle fill="#F7F2F6" cx="14" cy="70" r="1.0" opacity="0.30" />
-              <circle fill="#F7F2F6" cx="145" cy="78" r="1.3" opacity="0.40" />
+        {/* ── SPARSE STAR FIELD WITH MINIMAL TWINKLING STARS ──────────────── */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
+          {/* Faint static backdrop pattern */}
+          <svg width="100%" height="100%" className="absolute inset-0">
+            <pattern id="static-stars" x="0" y="0" width="180" height="180" patternUnits="userSpaceOnUse">
+              <circle fill="#F7F2F6" cx="28" cy="22" r="2.2" opacity="0.45" />
+              <circle fill="#F7F2F6" cx="115" cy="48" r="2.8" opacity="0.55" />
+              <circle fill="#F7F2F6" cx="57" cy="108" r="2.0" opacity="0.40" />
+              <circle fill="#7484FE" cx="138" cy="125" r="2.6" opacity="0.50" />
+              <circle fill="#33FF67" cx="88" cy="18" r="2.2" opacity="0.45" />
+              <circle fill="#F7F2F6" cx="14" cy="70" r="2.4" opacity="0.45" />
+              <circle fill="#F7F2F6" cx="155" cy="78" r="2.5" opacity="0.50" />
             </pattern>
             <rect x="0" y="0" width="100%" height="100%" fill="url(#static-stars)" />
           </svg>
+
+          {/* Prominent twinkling stars layer */}
+          <div className="absolute inset-0">
+            {TWINKLE_STARS.map((star, i) => {
+              if (star.type === "sparkle") {
+                return (
+                  <div
+                    key={i}
+                    className="star-anim-sparkle absolute pointer-events-none"
+                    style={{
+                      left: `${star.x}%`,
+                      top: `${star.y}%`,
+                      width: `${star.size}px`,
+                      height: `${star.size}px`,
+                      animationDuration: `${star.duration}s`,
+                      animationDelay: `${star.delay}s`,
+                      filter: `drop-shadow(0 0 6px ${star.color}) drop-shadow(0 0 12px ${star.color}99)`,
+                    }}
+                  >
+                    <svg viewBox="0 0 10 10" width={star.size} height={star.size} fill="none">
+                      <path
+                        d="M 5 0 Q 5 5 10 5 Q 5 5 5 10 Q 5 5 0 5 Q 5 5 5 0 Z"
+                        fill={star.color}
+                        opacity="0.95"
+                      />
+                    </svg>
+                  </div>
+                );
+              }
+
+              return (
+                <div
+                  key={i}
+                  className={i % 2 === 0 ? "star-anim-twinkle absolute pointer-events-none" : "star-anim-subtle absolute pointer-events-none"}
+                  style={{
+                    left: `${star.x}%`,
+                    top: `${star.y}%`,
+                    width: `${star.size}px`,
+                    height: `${star.size}px`,
+                    backgroundColor: star.color,
+                    borderRadius: "50%",
+                    boxShadow: `0 0 ${Math.round(star.size * 1.5)}px ${star.color}, 0 0 ${Math.round(star.size * 3)}px ${star.color}aa`,
+                    animationDuration: `${star.duration}s`,
+                    animationDelay: `${star.delay}s`,
+                  }}
+                />
+              );
+            })}
+          </div>
         </div>
 
         {/* ================================================================
@@ -397,7 +677,7 @@ export default function ScrollJourney() {
             ================================================================ */}
         <div
           ref={heroBlockRef}
-          className="absolute inset-0 flex flex-col items-center justify-end pb-12 sm:pb-16 pointer-events-none"
+          className="absolute inset-0 flex flex-col items-center justify-end pb-8 sm:pb-12 pointer-events-none"
           style={{ zIndex: 45 }}
         >
           {/* Subtitle & hanging tag */}
@@ -412,16 +692,6 @@ export default function ScrollJourney() {
             >
               Ideas today. A better tomorrow.
             </p>
-          </div>
-
-          {/* Explore CTA */}
-          <div ref={exploreRef} className="relative mt-8 pointer-events-auto" style={{ zIndex: 2 }}>
-            <button
-              onClick={handleExplore}
-              className="flex items-center gap-3 rounded-full border-2 border-white/25 bg-[#141414] px-8 py-4 text-sm font-bold uppercase tracking-wider text-[#F7F2F6] transition hover:scale-105 hover:border-[#33FF67] hover:bg-[#1c2a1f]"
-            >
-              EXPLORE THE JOURNEY <ArrowRight className="h-4 w-4 ml-1 text-[#33FF67]" />
-            </button>
           </div>
         </div>
 
@@ -470,13 +740,31 @@ export default function ScrollJourney() {
                 style={{ overflow: "visible" }}
               >
                 <defs>
+                  {/* Rocket Thruster Plasma Gradients */}
+                  <linearGradient id="rocket-flame-core" x1="0" y1="0" x2="-85" y2="0" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
+                    <stop offset="25%" stopColor="#33FF67" stopOpacity="0.95" />
+                    <stop offset="65%" stopColor="#7484FE" stopOpacity="0.8" />
+                    <stop offset="100%" stopColor="#7484FE" stopOpacity="0" />
+                  </linearGradient>
+                  <linearGradient id="rocket-flame-plume" x1="0" y1="0" x2="-110" y2="0" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#33FF67" stopOpacity="0.9" />
+                    <stop offset="35%" stopColor="#00F0FF" stopOpacity="0.7" />
+                    <stop offset="70%" stopColor="#7484FE" stopOpacity="0.4" />
+                    <stop offset="100%" stopColor="#7484FE" stopOpacity="0" />
+                  </linearGradient>
+                  <radialGradient id="rocket-flame-glow" cx="0" cy="0" r="50" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#33FF67" stopOpacity="0.85" />
+                    <stop offset="40%" stopColor="#7484FE" stopOpacity="0.4" />
+                    <stop offset="100%" stopColor="#7484FE" stopOpacity="0" />
+                  </radialGradient>
                   <radialGradient id="flame-glow" cx="0%" cy="50%" r="50%">
                     <stop offset="0%" stopColor="#33FF67" stopOpacity="1" />
                     <stop offset="60%" stopColor="#33FF67" stopOpacity="0.4" />
                     <stop offset="100%" stopColor="#33FF67" stopOpacity="0" />
                   </radialGradient>
                   <clipPath id="earth-launch-clip">
-                    <circle cx="0" cy="0" r="140" />
+                    <circle cx="0" cy="0" r="190" />
                   </clipPath>
                   <radialGradient id="earth-launch-backing" cx="35%" cy="35%" r="65%">
                     <stop offset="0%" stopColor="#FFFFFF" />
@@ -503,17 +791,48 @@ export default function ScrollJourney() {
                     <stop offset="50%" stopColor="#7484FE" stopOpacity="0.5" />
                     <stop offset="100%" stopColor="#2A2A2A" stopOpacity="0" />
                   </radialGradient>
+                  {/* Moon Gradients */}
+                  <radialGradient id="moon-surface" cx="35%" cy="35%" r="65%">
+                    <stop offset="0%" stopColor="#FFFFFF" />
+                    <stop offset="35%" stopColor="#E2E8F0" />
+                    <stop offset="70%" stopColor="#94A3B8" />
+                    <stop offset="100%" stopColor="#475569" />
+                  </radialGradient>
+                  <radialGradient id="moon-glow" cx="50%" cy="50%" r="50%">
+                    <stop offset="50%" stopColor="#F7F2F6" stopOpacity="0" />
+                    <stop offset="80%" stopColor="#F7F2F6" stopOpacity="0.25" />
+                    <stop offset="100%" stopColor="#7484FE" stopOpacity="0" />
+                  </radialGradient>
+                  {/* Death Star Easter Egg Gradients */}
+                  <radialGradient id="death-star-body" cx="32%" cy="28%" r="72%">
+                    <stop offset="0%" stopColor="#94A3B8" />
+                    <stop offset="30%" stopColor="#64748B" />
+                    <stop offset="65%" stopColor="#334155" />
+                    <stop offset="85%" stopColor="#1E293B" />
+                    <stop offset="100%" stopColor="#0B0F17" />
+                  </radialGradient>
+                  <radialGradient id="death-star-dish" cx="42%" cy="42%" r="58%">
+                    <stop offset="0%" stopColor="#0F172A" />
+                    <stop offset="65%" stopColor="#1E293B" />
+                    <stop offset="100%" stopColor="#334155" />
+                  </radialGradient>
+                  <radialGradient id="superlaser-glow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
+                    <stop offset="40%" stopColor="#33FF67" stopOpacity="0.85" />
+                    <stop offset="75%" stopColor="#33FF67" stopOpacity="0.35" />
+                    <stop offset="100%" stopColor="#33FF67" stopOpacity="0" />
+                  </radialGradient>
                   <PlanetGradients />
                 </defs>
 
                 {/* Ambient stars */}
-                <g opacity="0.35">
-                  {Array.from({ length: 75 }).map((_, i) => (
+                <g opacity="0.65">
+                  {Array.from({ length: 85 }).map((_, i) => (
                     <circle
                       key={i}
                       cx={(i * 240 + 180) % TOTAL_WORLD_WIDTH}
                       cy={(i * 143 + 110) % 960}
-                      r={i % 3 === 0 ? 2 : 1.2}
+                      r={i % 4 === 0 ? 4.0 : i % 2 === 0 ? 3.0 : 2.2}
                       fill={i % 4 === 0 ? "#7484FE" : i % 5 === 0 ? "#33FF67" : "#F7F2F6"}
                     />
                   ))}
@@ -522,86 +841,315 @@ export default function ScrollJourney() {
                 {/* Everything that must stay on screen. The star field sits outside this
                     group: it is decoration and may run off the edges. */}
                 <g id="journey-content">
-                {/* Earth launch site */}
-                <g transform="translate(320, 727)">
-                  <circle cx="0" cy="0" r="165" fill="none" stroke="#7484FE" strokeWidth="1" strokeDasharray="4 6" opacity="0.4" />
-                  <ellipse cx="0" cy="0" rx="170" ry="48" fill="none" stroke="#7484FE" strokeWidth="1.5" opacity="0.6" transform="rotate(-15)" />
-                  
-                  <circle cx="0" cy="0" r="200" fill="url(#earth-halo)" />
-                  <g>
-                    <circle cx="0" cy="0" r="140" fill="url(#earth-launch-backing)" />
-                    <image
-                      href="/planets/Earth.png"
-                      x="-155"
-                      y="-155"
-                      width="310"
-                      height="310"
-                      clipPath="url(#earth-launch-clip)"
-                      preserveAspectRatio="xMidYMid slice"
-                    />
-                    <circle cx="0" cy="0" r="140" fill="none" stroke="#7484FE" strokeWidth="2" opacity="0.85" />
-                  </g>
-
-                  {/* Editorial Pill Tag Under Earth */}
-                  <g transform="translate(0, 165)">
-                    <rect
-                      x="-85"
-                      y="-12"
-                      width="170"
-                      height="24"
-                      rx="12"
-                      fill="#2A2A2A"
-                      stroke="#7484FE"
+                  {/* Earth launch site */}
+                  <g transform="translate(320, 727)">
+                    {/* Moon orbital track */}
+                    <circle
+                      cx="0"
+                      cy="0"
+                      r="275"
+                      fill="none"
+                      stroke="#F7F2F6"
                       strokeWidth="1.2"
-                      opacity="0.95"
+                      strokeDasharray="4 8"
+                      opacity="0.28"
                     />
-                    <text
-                      x="0"
-                      y="4"
-                      textAnchor="middle"
-                      fill="#7484FE"
-                      fontFamily="monospace"
-                      fontSize="10"
-                      fontWeight="bold"
-                      letterSpacing="1.5"
-                    >
-                      EARTH · MLRIT
-                    </text>
+
+                    <circle cx="0" cy="0" r="225" fill="none" stroke="#7484FE" strokeWidth="1.2" strokeDasharray="4 6" opacity="0.4" />
+                    <ellipse cx="0" cy="0" rx="230" ry="65" fill="none" stroke="#7484FE" strokeWidth="1.5" opacity="0.6" transform="rotate(-15)" />
+
+                    <circle cx="0" cy="0" r="260" fill="url(#earth-halo)" />
+                    <g>
+                      <circle cx="0" cy="0" r="190" fill="url(#earth-launch-backing)" />
+                      <image
+                        href="/planets/Earth.svg"
+                        x="-210"
+                        y="-210"
+                        width="420"
+                        height="420"
+                        clipPath="url(#earth-launch-clip)"
+                        preserveAspectRatio="xMidYMid slice"
+                      />
+                      <circle cx="0" cy="0" r="190" fill="none" stroke="#7484FE" strokeWidth="2.5" opacity="0.85" />
+                    </g>
+
+                    {/* Moon orbiting around Earth */}
+                    <g id="moon-orbit-group">
+                      <animateTransform
+                        attributeName="transform"
+                        type="rotate"
+                        from="0"
+                        to="360"
+                        dur="26s"
+                        repeatCount="indefinite"
+                      />
+                      <g transform="translate(275, 0)">
+                        {/* Lunar subtle glow */}
+                        <circle cx="0" cy="0" r="28" fill="url(#moon-glow)" />
+                        {/* Moon body */}
+                        <circle cx="0" cy="0" r="17" fill="url(#moon-surface)" />
+                        {/* Minimal Moon Craters */}
+                        <circle cx="-5" cy="-4" r="3.2" fill="#64748B" opacity="0.4" />
+                        <circle cx="-6" cy="-4" r="2.8" fill="#475569" opacity="0.25" />
+                        <circle cx="4" cy="5" r="2.6" fill="#64748B" opacity="0.35" />
+                        <circle cx="5" cy="-2" r="1.9" fill="#64748B" opacity="0.3" />
+                        <circle cx="-2" cy="6" r="2.1" fill="#64748B" opacity="0.25" />
+                        <circle cx="1" cy="-5" r="1.5" fill="#64748B" opacity="0.25" />
+                        {/* Crisp rim ring */}
+                        <circle cx="0" cy="0" r="17" fill="none" stroke="#F7F2F6" strokeWidth="1" opacity="0.6" />
+                      </g>
+                    </g>
+
+                    {/* Editorial Pill Tag Under Earth */}
+                    <g transform="translate(0, 225)">
+                      <rect
+                        x="-85"
+                        y="-12"
+                        width="170"
+                        height="24"
+                        rx="12"
+                        fill="#2A2A2A"
+                        stroke="#7484FE"
+                        strokeWidth="1.2"
+                        opacity="0.95"
+                      />
+                      <text
+                        x="0"
+                        y="4"
+                        textAnchor="middle"
+                        fill="#7484FE"
+                        fontFamily="monospace"
+                        fontSize="10"
+                        fontWeight="bold"
+                        letterSpacing="1.5"
+                      >
+                        EARTH · MLRIT
+                      </text>
+                    </g>
                   </g>
-                </g>
 
-                {/* 10 planets */}
-                {PLANET_LAYOUTS.map((layout, idx) => {
-                  const ev = subEvents[idx];
-                  if (!ev) return null;
-                  return <PlanetSVG key={ev.id} index={idx} event={ev} x={layout.x} y={layout.y} badge={layout.badge} />;
-                })}
+                  {/* ── EASTER EGG: DS-1 Orbital Battle Station (Death Star) ────────── */}
+                  <g
+                    transform="translate(5120, 175)"
+                    className="death-star-easter-egg group pointer-events-auto cursor-help"
+                    id="death-star-easter-egg"
+                  >
+                    {/* Ambient targeting reticle on hover */}
+                    <circle
+                      cx="0"
+                      cy="0"
+                      r="58"
+                      fill="none"
+                      stroke="#33FF67"
+                      strokeWidth="0.8"
+                      strokeDasharray="4 8"
+                      className="opacity-0 group-hover:opacity-60 transition-opacity duration-500"
+                    />
+                    <circle
+                      cx="0"
+                      cy="0"
+                      r="72"
+                      fill="none"
+                      stroke="#7484FE"
+                      strokeWidth="0.5"
+                      strokeDasharray="2 12"
+                      className="opacity-0 group-hover:opacity-40 transition-opacity duration-700"
+                    />
 
-                {/* Summit gateway */}
-                <g transform="translate(15800, 540)">
-                  <circle cx="0" cy="0" r="180" fill="none" stroke="#7484FE" strokeWidth="1" strokeDasharray="6 6" opacity="0.4" />
-                  <circle cx="0" cy="0" r="145" fill="none" stroke="#33FF67" strokeWidth="1.5" strokeDasharray="4 8" opacity="0.6" />
-                  <circle cx="0" cy="0" r="105" fill="url(#portal-glow)" />
-                  <circle cx="0" cy="0" r="105" fill="none" stroke="#F7F2F6" strokeWidth="2" opacity="0.8" />
-                  <text x="0" y="4" textAnchor="middle" fill="#F7F2F6" fontFamily="monospace" fontSize="11" fontWeight="bold" letterSpacing="2">
-                    SUMMIT GATEWAY
-                  </text>
-                </g>
+                    {/* Death Star Sphere */}
+                    <g className="transition-transform duration-500 ease-out group-hover:scale-110" style={{ transformOrigin: "0 0" }}>
+                      {/* Shadow halo */}
+                      <circle cx="0" cy="0" r="48" fill="none" stroke="#000000" strokeWidth="6" opacity="0.35" />
+                      {/* Main hull */}
+                      <circle cx="0" cy="0" r="44" fill="url(#death-star-body)" />
 
-                {/* Journey path */}
-                <path ref={pathRef} d={JOURNEY_SQUIGGLY_PATH} fill="none" stroke="#7484FE" strokeWidth="3.5" opacity="0.85" strokeLinecap="round" />
-                <path d={JOURNEY_SQUIGGLY_PATH} fill="none" stroke="#33FF67" strokeWidth="1.5" strokeDasharray="6 10" opacity="0.65" />
+                      {/* Latitude panel grooves */}
+                      <ellipse cx="0" cy="-24" rx="36" ry="7" fill="none" stroke="#64748B" strokeWidth="0.6" opacity="0.4" strokeDasharray="5 3" />
+                      <ellipse cx="0" cy="-12" rx="42" ry="7.5" fill="none" stroke="#475569" strokeWidth="0.5" opacity="0.35" strokeDasharray="7 4" />
+                      <ellipse cx="0" cy="14" rx="42" ry="7.5" fill="none" stroke="#334155" strokeWidth="0.5" opacity="0.4" strokeDasharray="6 3" />
+                      <ellipse cx="0" cy="28" rx="34" ry="6.5" fill="none" stroke="#1E293B" strokeWidth="0.6" opacity="0.45" strokeDasharray="4 3" />
 
-                {/* Rocket */}
-                <g ref={rocketRef} style={{ willChange: "transform" }}>
-                  <path d="M -22,-5 L -38,0 L -22,5 Z" fill="url(#flame-glow)" className="animate-pulse" />
-                  <path d="M -20,-3 L -30,0 L -20,3 Z" fill="#33FF67" opacity="0.9" />
-                  <path d="M 28,0 Q 8,-12 -18,-10 L -22,-6 L -22,6 L -18,10 Q 8,12 28,0 Z" fill="#F7F2F6" stroke="#2A2A2A" strokeWidth="2" />
-                  <path d="M -8,-9 L -18,-18 L -14,-9 Z" fill="#7484FE" />
-                  <path d="M -8,9 L -18,18 L -14,9 Z" fill="#7484FE" />
-                  <circle cx="14" cy="0" r="5.5" fill="#2A2A2A" stroke="#7484FE" strokeWidth="1.5" />
-                  <circle cx="16" cy="-1.5" r="1.5" fill="#F7F2F6" opacity="0.8" />
-                </g>
+                      {/* Meridian panel seams */}
+                      <line x1="-24" y1="-37" x2="-24" y2="-1.5" stroke="#475569" strokeWidth="0.5" opacity="0.35" />
+                      <line x1="-8" y1="-43" x2="-8" y2="-1.5" stroke="#64748B" strokeWidth="0.5" opacity="0.3" />
+                      <line x1="32" y1="-29" x2="32" y2="-1.5" stroke="#475569" strokeWidth="0.5" opacity="0.35" />
+                      <line x1="-28" y1="1.5" x2="-28" y2="34" stroke="#334155" strokeWidth="0.5" opacity="0.35" />
+                      <line x1="-10" y1="1.5" x2="-10" y2="43" stroke="#1E293B" strokeWidth="0.5" opacity="0.3" />
+                      <line x1="16" y1="1.5" x2="16" y2="41" stroke="#334155" strokeWidth="0.5" opacity="0.35" />
+                      <line x1="30" y1="1.5" x2="30" y2="32" stroke="#1E293B" strokeWidth="0.5" opacity="0.3" />
+
+                      {/* Equatorial Trench */}
+                      <rect x="-44" y="-2" width="88" height="4" fill="#070A10" />
+                      <line x1="-44" y1="-2" x2="44" y2="-2" stroke="#334155" strokeWidth="0.8" opacity="0.8" />
+                      <line x1="-44" y1="2" x2="44" y2="2" stroke="#1E293B" strokeWidth="0.8" opacity="0.9" />
+
+                      {/* Trench city/hangar lights */}
+                      <circle cx="-32" cy="0" r="0.9" fill="#33FF67" opacity="0.8" />
+                      <circle cx="-18" cy="0" r="0.8" fill="#F7F2F6" opacity="0.7" />
+                      <circle cx="-4" cy="0" r="0.9" fill="#7484FE" opacity="0.75" />
+                      <circle cx="12" cy="0" r="1.0" fill="#33FF67" opacity="0.85" />
+                      <circle cx="26" cy="0" r="0.8" fill="#F7F2F6" opacity="0.7" />
+                      <circle cx="38" cy="0" r="0.9" fill="#7484FE" opacity="0.8" />
+
+                      {/* Concave Superlaser Focus Dish (Northern Hemisphere) */}
+                      <g transform="translate(14, -18)">
+                        <circle cx="0" cy="0" r="14.5" fill="url(#death-star-dish)" stroke="#475569" strokeWidth="0.9" />
+                        <circle cx="0" cy="0" r="11" fill="none" stroke="#334155" strokeWidth="0.6" opacity="0.7" />
+                        <circle cx="0" cy="0" r="7.5" fill="none" stroke="#1E293B" strokeWidth="0.5" opacity="0.8" />
+
+                        {/* Tributary beam channels converging on center */}
+                        <line x1="-12" y1="-5" x2="-2" y2="-1" stroke="#33FF67" strokeWidth="0.7" opacity="0.75" />
+                        <line x1="-8" y1="-10" x2="-1" y2="-2" stroke="#33FF67" strokeWidth="0.7" opacity="0.75" />
+                        <line x1="0" y1="-13" x2="0" y2="-2" stroke="#33FF67" strokeWidth="0.7" opacity="0.75" />
+                        <line x1="8" y1="-10" x2="1" y2="-2" stroke="#33FF67" strokeWidth="0.7" opacity="0.75" />
+                        <line x1="12" y1="-5" x2="2" y2="-1" stroke="#33FF67" strokeWidth="0.7" opacity="0.75" />
+                        <line x1="10" y1="6" x2="2" y2="1" stroke="#33FF67" strokeWidth="0.7" opacity="0.75" />
+                        <line x1="0" y1="12" x2="0" y2="2" stroke="#33FF67" strokeWidth="0.7" opacity="0.75" />
+                        <line x1="-10" y1="6" x2="-2" y2="1" stroke="#33FF67" strokeWidth="0.7" opacity="0.75" />
+
+                        {/* Central Superlaser Emitter Core */}
+                        <circle cx="0" cy="0" r="3.2" fill="#0D131D" stroke="#64748B" strokeWidth="0.8" />
+                        <circle cx="0" cy="0" r="2.0" fill="#33FF67" className="death-star-laser-pulse" />
+                        <circle
+                          cx="0"
+                          cy="0"
+                          r="6"
+                          fill="url(#superlaser-glow)"
+                          className="opacity-40 group-hover:opacity-100 transition-opacity duration-300"
+                        />
+                      </g>
+
+                      {/* Outer rim highlight */}
+                      <circle cx="0" cy="0" r="44" fill="none" stroke="#94A3B8" strokeWidth="0.8" opacity="0.45" />
+                    </g>
+
+                    {/* Easter Egg Monospace HUD Tag (Visible on Hover) */}
+                    <g
+                      transform="translate(0, 62)"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                    >
+                      <rect
+                        x="-115"
+                        y="-13"
+                        width="230"
+                        height="26"
+                        rx="13"
+                        fill="#141414"
+                        stroke="#33FF67"
+                        strokeWidth="1.2"
+                        opacity="0.95"
+                      />
+                      <text
+                        x="0"
+                        y="4"
+                        textAnchor="middle"
+                        fill="#33FF67"
+                        fontFamily="monospace"
+                        fontSize="9.5"
+                        fontWeight="bold"
+                        letterSpacing="1.4"
+                      >
+                        DS-1 · &ldquo;THAT&apos;S NO MOON&rdquo;
+                      </text>
+                    </g>
+                  </g>
+
+                  {/* 10 planets */}
+                  {PLANET_LAYOUTS.map((layout, idx) => {
+                    const ev = subEvents[idx];
+                    if (!ev) return null;
+                    return <PlanetSVG key={ev.id} index={idx} event={ev} x={layout.x} y={layout.y} badge={layout.badge} />;
+                  })}
+
+                  {/* Summit gateway (Black Hole) */}
+                  <g transform="translate(15800, 540)">
+                    {/* Gravitational event horizon & gravitational lensing orbital rings */}
+                    <circle cx="0" cy="0" r="260" fill="none" stroke="#38BDF8" strokeWidth="1" strokeDasharray="6 8" opacity="0.25" />
+                    <circle cx="0" cy="0" r="200" fill="none" stroke="#7484FE" strokeWidth="1" strokeDasharray="4 6" opacity="0.3" />
+
+                    {/* Black hole SVG */}
+                    <image
+                      href="/blackhole.svg"
+                      x="-360"
+                      y="-202.5"
+                      width="720"
+                      height="405"
+                      preserveAspectRatio="xMidYMid meet"
+                    />
+
+                    {/* Summit Gateway HUD badge */}
+                    <g transform="translate(0, 165)">
+                      <rect x="-85" y="-13" width="170" height="26" rx="13" fill="#0E0E0E" stroke="#38BDF8" strokeWidth="1" opacity="0.85" />
+                      <text x="0" y="4" textAnchor="middle" fill="#F7F2F6" fontFamily="monospace" fontSize="10" fontWeight="bold" letterSpacing="2">
+                        SUMMIT GATEWAY
+                      </text>
+                    </g>
+                  </g>
+
+                  {/* Journey path (invisible guide path for rocket navigation) */}
+                  <path ref={pathRef} d={JOURNEY_SQUIGGLY_PATH} fill="none" stroke="none" opacity="0" pointerEvents="none" />
+
+                  {/* Rocket */}
+                  <g ref={rocketRef} style={{ willChange: "transform" }}>
+                    <g transform="scale(1.35)">
+                      {/* Velocity-activated ignition flame trail */}
+                      <g transform="translate(-22, 0)">
+                        <g ref={flameTrailRef} style={{ willChange: "transform, opacity", opacity: 0 }}>
+                          {/* Soft plasma exhaust aura */}
+                          <ellipse cx="-45" cy="0" rx="45" ry="16" fill="url(#rocket-flame-glow)" opacity="0.65" />
+
+                          {/* Outer supersonic plume */}
+                          <path
+                            d="M 0,-8 C -25,-12 -65,-7 -110,0 C -65,7 -25,12 0,8 Z"
+                            fill="url(#rocket-flame-plume)"
+                          />
+
+                          {/* Inner energetic plasma flame */}
+                          <path
+                            d="M 0,-5 C -20,-7 -50,-4 -85,0 C -50,4 -20,7 0,5 Z"
+                            fill="url(#rocket-flame-core)"
+                          />
+
+                          {/* White-hot thrust core */}
+                          <path
+                            d="M 0,-2.5 C -15,-3.5 -35,-2 -60,0 C -35,2 -15,3.5 0,2.5 Z"
+                            fill="#FFFFFF"
+                            opacity="0.95"
+                          />
+
+                          {/* Shock / Mach diamonds */}
+                          <polygon points="-16,0 -22,-3 -28,0 -22,3" fill="#FFFFFF" opacity="0.9" />
+                          <polygon points="-34,0 -39,-2.4 -44,0 -39,2.4" fill="#33FF67" opacity="0.85" />
+                          <polygon points="-52,0 -56,-1.8 -60,0 -56,1.8" fill="#7484FE" opacity="0.75" />
+                          <polygon points="-70,0 -73,-1.2 -76,0 -73,1.2" fill="#7484FE" opacity="0.6" />
+
+                          {/* Wake trail sparks */}
+                          <circle cx="-92" cy="-2.5" r="1.6" fill="#33FF67" opacity="0.75" />
+                          <circle cx="-105" cy="2" r="1.3" fill="#7484FE" opacity="0.7" />
+                          <circle cx="-120" cy="-1" r="1.1" fill="#FFFFFF" opacity="0.6" />
+                          <circle cx="-135" cy="1.5" r="0.8" fill="#33FF67" opacity="0.5" />
+                        </g>
+                      </g>
+
+                      {/* Idle pilot flame (at low / resting speed) */}
+                      <g ref={idleFlameRef} transform="translate(-22, 0)">
+                        <path d="M 0,-4 L -16,0 L 0,4 Z" fill="url(#flame-glow)" className="animate-pulse" />
+                        <path d="M 0,-2.5 L -10,0 L 0,2.5 Z" fill="#33FF67" opacity="0.85" />
+                      </g>
+
+                      {/* Luke Spaceship (X-Wing) */}
+                      <g transform="translate(4.7, 0) rotate(90)">
+                        <image
+                          href="/LukeSpaceship.svg"
+                          x="-32"
+                          y="-32"
+                          width="64"
+                          height="64"
+                          preserveAspectRatio="xMidYMid meet"
+                        />
+                      </g>
+                    </g>
+                  </g>
                 </g>
               </svg>
 
@@ -637,8 +1185,8 @@ export default function ScrollJourney() {
                         {/* Eyebrow Pill Tag */}
                         <div className="flex items-center justify-between w-full">
                           <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-mono font-bold tracking-[0.16em] uppercase border ${isEven
-                              ? "text-[#7484FE] bg-[#7484FE]/10 border-[#7484FE]/30 shadow-[0_0_15px_rgba(116,132,254,0.15)]"
-                              : "text-[#33FF67] bg-[#33FF67]/10 border-[#33FF67]/30 shadow-[0_0_15px_rgba(51,255,103,0.15)]"
+                            ? "text-[#7484FE] bg-[#7484FE]/10 border-[#7484FE]/30 shadow-[0_0_15px_rgba(116,132,254,0.15)]"
+                            : "text-[#33FF67] bg-[#33FF67]/10 border-[#33FF67]/30 shadow-[0_0_15px_rgba(51,255,103,0.15)]"
                             }`}>
                             <span className={`h-1.5 w-1.5 rounded-full ${isEven ? "bg-[#7484FE]" : "bg-[#33FF67]"}`} />
                             <span>{String(idx + 1).padStart(2, "0")} / 10 · {ev.category}</span>
@@ -647,12 +1195,14 @@ export default function ScrollJourney() {
                         </div>
 
                         {/* Event Logo Header */}
-                        <div className="mt-4 mb-2 relative h-24 w-full flex items-center justify-start border-b border-white/[0.06] pb-3">
+                        <div className={`mt-4 mb-2 relative w-full flex items-center justify-start border-b border-white/[0.06] pb-3 ${ev.slug === "crossroads" ? "h-32" : "h-24"
+                          }`}>
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={`/logos/${ev.slug}.png`}
                             alt={ev.name}
-                            className="h-full w-auto object-contain object-left drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
+                            className={`h-full w-auto object-contain object-left drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] ${ev.slug === "crossroads" ? "scale-125 origin-left" : ""
+                              }`}
                             draggable={false}
                           />
                         </div>

@@ -1,6 +1,6 @@
-// Globe — Originkit
-
 "use client";
+
+// Globe — Originkit
 
 import { memo, useEffect, useRef, useState, type CSSProperties } from "react";
 import {
@@ -155,6 +155,80 @@ function latLngToPosition(
     const y = Math.sin(latRad);
     const z = Math.cos(latRad) * Math.cos(lngRad);
     return { x, y, z };
+}
+
+function createWireframeGridTexture(
+    color: string = "rgba(247, 242, 246, 0.75)",
+    latSpacing: number = 5,
+    lngSpacing: number = 5
+): CanvasTexture {
+    if (typeof document === "undefined") {
+        return new CanvasTexture(null as any);
+    }
+    const width = 2048;
+    const height = 1024;
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return new CanvasTexture(canvas);
+
+    ctx.clearRect(0, 0, width, height);
+
+    // Regular dense latitude and longitude grid lines
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = color;
+
+    // Parallels (latitude lines) from -85° to +85°
+    for (let lat = -85; lat <= 85; lat += latSpacing) {
+        const y = ((90 - lat) / 180) * height;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+    }
+
+    // Meridians (longitude lines) from -180° to +180°
+    for (let lng = -180; lng < 180; lng += lngSpacing) {
+        const x = ((lng + 180) / 360) * width;
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+    }
+
+    // Accented major lines (Equator, Prime Meridian, ±30°, ±60°)
+    ctx.lineWidth = 2.4;
+    ctx.strokeStyle = color;
+
+    const equatorY = height / 2;
+    ctx.beginPath();
+    ctx.moveTo(0, equatorY);
+    ctx.lineTo(width, equatorY);
+    ctx.stroke();
+
+    for (const lat of [-60, -30, 30, 60]) {
+        const y = ((90 - lat) / 180) * height;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+    }
+
+    for (const lng of [-120, -60, 0, 60, 120]) {
+        const x = ((lng + 180) / 360) * width;
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+    }
+
+    const texture = new CanvasTexture(canvas);
+    texture.wrapS = 1000; // RepeatWrapping
+    texture.wrapT = 1001; // ClampToEdgeWrapping
+    texture.generateMipmaps = true;
+    texture.needsUpdate = true;
+    return texture;
 }
 
 interface Marker {

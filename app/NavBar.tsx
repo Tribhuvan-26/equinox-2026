@@ -2,42 +2,88 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
-  FileText,
-  Info,
-  Calendar,
+  Home,
   Layers,
-  Phone,
+  Ticket,
   Circle,
+  Image as ImageIcon,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ICONS: Record<string, LucideIcon> = {
-  Overview: FileText,
-  About: Info,
+  Homepage: Home,
+  Home: Home,
+  Overview: Home,
   "Sub-Events": Layers,
-  Impact: Calendar,
-  Contact: Phone,
+  Gallery: ImageIcon,
+  Registration: Ticket,
+  Register: Ticket,
 };
 
 export function NavBar({
   items,
   className,
-  defaultActive = "Overview",
+  defaultActive = "Homepage",
 }: {
   items: { name: string; url: string }[];
   className?: string;
   defaultActive?: string;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState(defaultActive);
 
   const isActiveItem = (name: string) => {
     if (pathname.startsWith("/events")) return name === "Sub-Events";
+    if (pathname.startsWith("/gallery")) return name === "Gallery";
+    if (pathname.startsWith("/register")) return name === "Registration" || name === "Register";
     if (pathname !== "/") return false;
-    return activeTab === name;
+    return (
+      activeTab === name ||
+      ((name.toLowerCase() === "homepage" || name.toLowerCase() === "overview") &&
+        (activeTab === "Homepage" || activeTab === "Overview" || activeTab === "Home"))
+    );
+  };
+
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    item: { name: string; url: string }
+  ) => {
+    setActiveTab(item.name);
+
+    const isHomepage =
+      item.name.toLowerCase() === "homepage" ||
+      item.name.toLowerCase() === "overview" ||
+      item.name.toLowerCase() === "home" ||
+      item.url === "/#top" ||
+      item.url === "/";
+
+    if (isHomepage) {
+      e.preventDefault();
+
+      if (pathname === "/") {
+        // Direct instant jump without reverse scroll & reset scroll journey
+        if (typeof window !== "undefined") {
+          if ((window as any).__resetScrollJourney) {
+            (window as any).__resetScrollJourney();
+          } else {
+            if ((window as any).__lenis) {
+              (window as any).__lenis.scrollTo(0, { immediate: true });
+              (window as any).__lenis.velocity = 0;
+            }
+            window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+          }
+          window.history.replaceState(null, "", "/#top");
+        }
+      } else {
+        // Navigate directly to homepage
+        router.push("/");
+      }
+      return;
+    }
   };
 
   return (
@@ -48,7 +94,7 @@ export function NavBar({
         {/* Center Nav Navigation */}
         <motion.nav
           aria-label="Primary"
-          className="hidden md:flex items-center gap-1 rounded-full border border-white/20 bg-[#2A2A2A]/90 p-1.5 shadow-2xl backdrop-blur-md"
+          className="flex items-center gap-1 sm:gap-1.5 rounded-full border border-white/20 bg-[#2A2A2A]/90 p-1.5 shadow-2xl backdrop-blur-md"
           initial={{ y: -16, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.3 }}
@@ -56,12 +102,32 @@ export function NavBar({
           {items.map((item) => {
             const Icon = ICONS[item.name] ?? Circle;
             const isActive = isActiveItem(item.name);
+            const isRegistration = item.name.toLowerCase().includes("regist");
+
+            if (isRegistration) {
+              return (
+                <a
+                  key={item.name}
+                  href={item.url}
+                  onClick={(e) => handleNavClick(e, item)}
+                  className={cn(
+                    "relative ml-1 flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-black transition-all shadow-md",
+                    isActive
+                      ? "bg-[#33FF67] text-[#141414] ring-2 ring-[#33FF67]/50 scale-[1.02]"
+                      : "bg-[#33FF67] text-[#141414] hover:bg-[#5aff87] hover:scale-[1.02] active:scale-[0.98]"
+                  )}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  <span>{item.name}</span>
+                </a>
+              );
+            }
 
             return (
               <a
                 key={item.name}
                 href={item.url}
-                onClick={() => setActiveTab(item.name)}
+                onClick={(e) => handleNavClick(e, item)}
                 className={cn(
                   "relative flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition",
                   isActive

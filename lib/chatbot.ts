@@ -9,7 +9,7 @@ import {
   contact,
   highlights,
 } from "./content";
-import { EQUINOX_SUB_EVENTS, SubEventInfo } from "@/chatbot/data/events";
+import { EQUINOX_SUB_EVENTS, SubEventInfo, EVENT_SPOCS, OVERALL_COORDINATORS } from "@/chatbot/data/events";
 import {
   resolveSubEvent,
   detectAttributeIntent,
@@ -29,11 +29,10 @@ export interface ChatbotResponse {
   grounded?: boolean;
 }
 
-const OFFICIAL_CONTACTS_TEXT = `Official Student Coordinators:
-• **Shyam**: +91 93900 06806
-• **Mahima**: +91 94933 62006
-• **Sanjana**: +91 82084 99746
-• **Adithya**: +91 91822 40970
+export const OFFICIAL_CONTACTS_TEXT = `Overall Equinox Coordinators:
+• **Ghanashyam**: +91 93900 06806
+• **Jaikar**: +91 90324 10189
+• **Bhavana**: +91 99895 32925
 Email: **cie@mlrinstitutions.ac.in**`;
 
 /**
@@ -49,6 +48,10 @@ function generateSubEventAttributeAnswer(
   const q = normalizeQueryString(query);
   const attribute = detectAttributeIntent(query);
 
+  const spocs = EVENT_SPOCS[entity.slug] || (content?.spocs) || (content?.spoc ? [content.spoc] : []);
+  const spocsFormatted = spocs.map((s) => `• **${s.name}**: ${s.phone}`).join("\n");
+  const spocsSection = spocsFormatted ? `\n\n**Event SPOCs:**\n${spocsFormatted}` : "";
+
   // 1. Check for false premises first
   const fp = detectFalsePremise(query);
   if (fp.isFalsePremise && fp.correction) {
@@ -61,7 +64,29 @@ function generateSubEventAttributeAnswer(
     };
   }
 
-  // 2. Timing / Schedule
+  // 2. Coordinator / Contact for this Sub-Event
+  if (
+    attribute === "contact" ||
+    q.includes("coordinator") ||
+    q.includes("spoc") ||
+    q.includes("spocs") ||
+    q.includes("contact") ||
+    q.includes("manage") ||
+    q.includes("manager") ||
+    q.includes("who is in charge") ||
+    q.includes("who do i contact") ||
+    q.includes("who to contact")
+  ) {
+    return {
+      answer: `**${info.name}** Event SPOCs / Coordinators:\n\n${spocsFormatted}`,
+      eventCard: undefined,
+      suggestions: [`Tell me about ${info.name}`, `When is it?`, "Venue details"],
+      links: [{ label: "Contact Us", url: "#contact" }],
+      grounded: true,
+    };
+  }
+
+  // 3. Timing / Schedule
   if (
     attribute === "timing" ||
     q.includes("what time") ||
@@ -73,7 +98,7 @@ function generateSubEventAttributeAnswer(
     const timeDetail = content?.time || info.timing;
     const dayDetail = content?.day || "30–31 October 2026";
     return {
-      answer: `**${info.name}** Timing & Schedule:\n\n• **Date**: ${dayDetail}\n• **Time**: ${timeDetail}\n• **Venue**: ${info.venueRoom}`,
+      answer: `**${info.name}** Timing & Schedule:\n\n• **Date**: ${dayDetail}\n• **Time**: ${timeDetail}\n• **Venue**: ${info.venueRoom}${spocsSection}`,
       eventCard: undefined, // Do not attach cards on specific attribute queries
       suggestions: [`Who can participate in ${info.name}?`, `Rules for ${info.name}`, "Dates & Venue"],
       links: [{ label: "View Sub-Events", url: "#events" }],
@@ -81,11 +106,11 @@ function generateSubEventAttributeAnswer(
     };
   }
 
-  // 3. Venue / Location
+  // 4. Venue / Location
   if (attribute === "venue" || q.includes("where is") || q.includes("room") || q.includes("hall")) {
     const venue = content?.venue || info.venueRoom;
     return {
-      answer: `**${info.name}** Venue:\n\n• **Location**: ${venue}\n• **Campus**: MLR Institute of Technology, Dundigal, Hyderabad`,
+      answer: `**${info.name}** Venue:\n\n• **Location**: ${venue}\n• **Campus**: MLR Institute of Technology, Dundigal, Hyderabad${spocsSection}`,
       eventCard: undefined,
       suggestions: [`When is ${info.name}?`, `Who can participate?`, "View Sub-Events"],
       links: [{ label: "View Sub-Events", url: "#events" }],
@@ -93,7 +118,7 @@ function generateSubEventAttributeAnswer(
     };
   }
 
-  // 4. Eligibility / Team size
+  // 5. Eligibility / Team size
   if (
     attribute === "eligibility" ||
     q.includes("participate") ||
@@ -105,7 +130,7 @@ function generateSubEventAttributeAnswer(
     const elig = content?.eligibility || info.eligibility;
     const teamSize = content?.teamSize ? ` (Team Size: ${content.teamSize})` : "";
     return {
-      answer: `**${info.name}** Eligibility & Team Size:\n\n• **Eligibility**: ${elig}${teamSize}\n• **Format**: ${info.format}`,
+      answer: `**${info.name}** Eligibility & Team Size:\n\n• **Eligibility**: ${elig}${teamSize}\n• **Format**: ${info.format}${spocsSection}`,
       eventCard: undefined,
       suggestions: [`What are the rules for ${info.name}?`, `When is it?`, "Registration status"],
       links: [{ label: "View Sub-Events", url: "#events" }],
@@ -113,14 +138,14 @@ function generateSubEventAttributeAnswer(
     };
   }
 
-  // 5. Rules & Format
+  // 6. Rules & Format
   if (attribute === "rules" || q.includes("rule") || q.includes("guideline") || q.includes("format")) {
     const rulesList = content?.rules && content.rules.length > 0
       ? content.rules.map((r: string) => `• ${r}`).join("\n")
       : `• Format: ${info.format}`;
 
     return {
-      answer: `**${info.name}** Rules & Guidelines:\n\n${rulesList}\n\n• **Key Skills**: ${info.skills.join(", ")}`,
+      answer: `**${info.name}** Rules & Guidelines:\n\n${rulesList}\n\n• **Key Skills**: ${info.skills.join(", ")}${spocsSection}`,
       eventCard: undefined,
       suggestions: [`Who can participate?`, `When is it?`, "How to register?"],
       links: [{ label: "View Sub-Events", url: "#events" }],
@@ -128,7 +153,7 @@ function generateSubEventAttributeAnswer(
     };
   }
 
-  // 6. Registration & Fees
+  // 7. Registration & Fees
   if (
     attribute === "registration" ||
     q.includes("register") ||
@@ -138,7 +163,7 @@ function generateSubEventAttributeAnswer(
   ) {
     const feeDetail = content?.fee || "Included in Summit Pass / Free for participants";
     return {
-      answer: `**${info.name}** Registration & Details:\n\n• **Status**: ${info.registrationStatus}\n• **Fee**: ${feeDetail}\n• Registration will be available online through the official Equinox portal.`,
+      answer: `**${info.name}** Registration & Details:\n\n• **Status**: ${info.registrationStatus}\n• **Fee**: ${feeDetail}\n• Registration will be available online through the official Equinox portal.${spocsSection}`,
       eventCard: undefined,
       suggestions: [`Tell me about ${info.name}`, `Dates & Venue`, "Contact coordinators"],
       links: [{ label: "Register on Website", url: "#events" }],
@@ -146,11 +171,11 @@ function generateSubEventAttributeAnswer(
     };
   }
 
-  // 7. Prize & Awards
+  // 8. Prize & Awards
   if (attribute === "prize" || q.includes("prize") || q.includes("award") || q.includes("cash")) {
     const prizeDetail = content?.prize || "Exclusive awards, certificates, and recognition";
     return {
-      answer: `**${info.name}** Prizes & Awards:\n\n• **Prize**: ${prizeDetail}`,
+      answer: `**${info.name}** Prizes & Awards:\n\n• **Prize**: ${prizeDetail}${spocsSection}`,
       eventCard: undefined,
       suggestions: [`Rules for ${info.name}`, `Who can participate?`, "View all events"],
       links: [{ label: "View Sub-Events", url: "#events" }],
@@ -158,24 +183,9 @@ function generateSubEventAttributeAnswer(
     };
   }
 
-  // 8. Coordinator / Contact
-  if (attribute === "contact" || q.includes("coordinator") || q.includes("spoc")) {
-    const spoc = content?.spoc;
-    const spocText = spoc
-      ? `• **Event SPOC**: ${spoc.name} (${spoc.phone}) - ${spoc.email || "cie@mlrinstitutions.ac.in"}\n\n`
-      : "";
-    return {
-      answer: `**${info.name}** Coordinator Contact:\n\n${spocText}${OFFICIAL_CONTACTS_TEXT}`,
-      eventCard: undefined,
-      suggestions: [`Tell me about ${info.name}`, `When is it?`, "Venue details"],
-      links: [{ label: "Contact Us", url: "#contact" }],
-      grounded: true,
-    };
-  }
-
   // Default: Event Overview (ONLY place where eventCard is attached for this event)
   return {
-    answer: `**${info.name}** (Page ${info.pageNumber})\n\n${info.description}\n\n• **Category**: ${info.category}\n• **Skills Evaluated**: ${info.skills.join(", ")}\n• **Format**: ${info.format}`,
+    answer: `**${info.name}** (Page ${info.pageNumber})\n\n${info.description}\n\n• **Category**: ${info.category}\n• **Skills Evaluated**: ${info.skills.join(", ")}\n• **Format**: ${info.format}${spocsSection}`,
     eventCard: info,
     suggestions: [
       `Who can participate in ${info.name}?`,
@@ -359,7 +369,7 @@ export function getMockEquinoxResponse(
     return {
       answer: `**The Equinox 2.0** is confirmed for **${event.date}** (30th & 31st October 2026) at **MLRIT Hyderabad**.\n\n• **Day 1 (30 Oct)**: Crossroads, Startup Expo, Hustle Mania, Startup Poly, Spotlight sessions\n• **Day 2 (31 Oct)**: Brand Battles, IPL Auction, Internship Drive, E-Cell Meet, Pitch Deck Grand Finale`,
       suggestions: ["Where is the venue?", "Explore Sub-Events", "How to register?"],
-      links: [{ label: "View Overview", url: "#top" }],
+      links: [{ label: "Homepage", url: "#top" }],
       grounded: true,
     };
   }
@@ -386,10 +396,15 @@ export function getMockEquinoxResponse(
     q.includes("coordinator") ||
     q.includes("coordinators") ||
     q.includes("contact") ||
+    q.includes("contacts") ||
     q.includes("phone") ||
     q.includes("email") ||
+    q.includes("who do i contact") ||
+    q.includes("who to contact") ||
+    q.includes("ghanashyam") ||
     q.includes("shyam") ||
-    q.includes("mahima")
+    q.includes("jaikar") ||
+    q.includes("bhavana")
   ) {
     return {
       answer: OFFICIAL_CONTACTS_TEXT,

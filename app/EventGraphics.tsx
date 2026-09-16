@@ -271,7 +271,7 @@ export function BadgeSpotlight() {
 
 // Page 05: CROSS ROADS
 export function BadgeCrossroads() {
-  return <EventLogo slug="crossroads" alt="Crossroads" />;
+  return <EventLogo slug="crossroads" alt="Crossroads" className="scale-125 origin-center transition-transform duration-200" />;
 }
 
 // Page 05: STARTUP EXPO

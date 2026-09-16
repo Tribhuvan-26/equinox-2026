@@ -48,9 +48,6 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
       );
 
       timelineRef.current = tl;
-      if (typeof window !== "undefined") {
-        (window as unknown as { __internshipDriveTl?: gsap.core.Timeline }).__internshipDriveTl = tl;
-      }
       tl.play();
     }, containerRef);
 
@@ -126,8 +123,8 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
           `}</style>
         </defs>
 
-        {/* Transparent Background revealing brochure grid */}
-        <rect width="1600" height="900" fill="none" />
+        {/* Static Cream / Beige Background (#F5ECD9) */}
+        <rect width="1600" height="900" fill="#F5ECD9" />
 
         <g id="animatedRoot">
           {/* Subtle Accent Background Dots */}
@@ -146,7 +143,7 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
               fontWeight="900"
               fontSize="16"
               letterSpacing="0.12em"
-              fill="#F7F2F6"
+              fill="#111A35"
             >
               THE EQUINOX 2.0 &#183; 30-31 OCT &#183; MLRIT
             </text>
@@ -166,7 +163,7 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
               letterSpacing="-0.03em"
               textLength="730"
               lengthAdjust="spacingAndGlyphs"
-              fill="#F7F2F6"
+              fill="#111111"
             >
               INTERNSHIP
             </text>
@@ -181,7 +178,7 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
               letterSpacing="-0.03em"
               textLength="420"
               lengthAdjust="spacingAndGlyphs"
-              fill="#7484FE"
+              fill="#2354E6"
             >
               DRIVE
             </text>
@@ -194,7 +191,7 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
               fontWeight="800"
               fontSize="36"
               letterSpacing="0.01em"
-              fill="#F7F2F6"
+              fill="#111111"
             >
               Connect. Intern. Grow.
             </text>
@@ -211,7 +208,7 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
               y1="625"
               x2="310"
               y2="625"
-              stroke="rgba(247, 242, 246, 0.4)"
+              stroke="#111111"
               strokeWidth="3.5"
               strokeDasharray="8 6"
             />
@@ -221,7 +218,7 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
               y1="625"
               x2="530"
               y2="625"
-              stroke="rgba(247, 242, 246, 0.4)"
+              stroke="#111111"
               strokeWidth="3.5"
               strokeDasharray="8 6"
             />
@@ -246,7 +243,7 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
               fontWeight="900"
               fontSize="18"
               letterSpacing="0.08em"
-              fill="#F7F2F6"
+              fill="#111111"
             >
               CONNECT
             </text>
@@ -271,7 +268,7 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
               fontWeight="900"
               fontSize="18"
               letterSpacing="0.08em"
-              fill="#F7F2F6"
+              fill="#111111"
             >
               INTERN
             </text>
@@ -296,7 +293,7 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
               fontWeight="900"
               fontSize="18"
               letterSpacing="0.08em"
-              fill="#F7F2F6"
+              fill="#111111"
             >
               GROW
             </text>
@@ -311,7 +308,7 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
             y1="738"
             x2="1540"
             y2="738"
-            stroke="rgba(247, 242, 246, 0.25)"
+            stroke="#111111"
             strokeWidth="3.5"
             strokeLinecap="round"
           />
@@ -346,7 +343,7 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
           {/* 5. BOTTOM INFORMATION BAR                                 */}
           {/* ========================================================= */}
           <g id="statsBarGroup">
-            <rect x="40" y="775" width="1520" height="90" rx="45" fill="#1A1A1A" stroke="rgba(255, 255, 255, 0.15)" strokeWidth="1.5" />
+            <rect x="40" y="775" width="1520" height="90" rx="45" fill="#111111" />
             <g
               id="statsBarContent"
               className="font-sans-bold"

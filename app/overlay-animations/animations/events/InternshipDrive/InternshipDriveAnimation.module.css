@@ -6,11 +6,7 @@
   width: 100vw;
   height: 100vh;
   z-index: 1000000;
-  background-color: var(--equinox-dark, #2A2A2A);
-  background-image: 
-    linear-gradient(to right, rgba(247, 242, 246, 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(247, 242, 246, 0.07) 1px, transparent 1px);
-  background-size: 34px 34px;
+  background-color: #F5ECD9;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -37,30 +33,32 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.4rem 0.75rem;
+  padding: 0.5rem 1rem;
   font-family: var(--font-mono, monospace);
   font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-weight: 800;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #F7F2F6;
-  background: rgba(20, 20, 21, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #111111;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 2px solid #111111;
   border-radius: 9999px;
   cursor: pointer;
+  box-shadow: 2px 2px 0px #111111;
   backdrop-filter: blur(8px);
-  transition: all 0.2s ease;
+  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
   pointer-events: auto;
 }
 
 .skipButton:hover {
-  background: rgba(20, 20, 21, 1);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
+  background-color: #ffffff;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px #111111;
 }
 
 .skipButton:active {
-  transform: translateY(0);
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px #111111;
 }
 
 @media (prefers-reduced-motion: reduce) {

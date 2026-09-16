@@ -621,8 +621,15 @@ export function detectAttributeIntent(query: string): AttributeIntent | undefine
     q.includes("coordinator") ||
     q.includes("coordinators") ||
     q.includes("spoc") ||
+    q.includes("spocs") ||
     q.includes("phone") ||
     q.includes("email") ||
+    q.includes("contact") ||
+    q.includes("contacts") ||
+    q.includes("who do i contact") ||
+    q.includes("who to contact") ||
+    q.includes("who manages") ||
+    q.includes("manages") ||
     q.includes("who is in charge")
   ) {
     return "contact";
@@ -670,7 +677,7 @@ export function isFollowUpReference(query: string): boolean {
     /\b(what are the rules|rules|guidelines|format)\b/,
     /\b(how do i register|how to register|what about registration|registration|fees|fee)\b/,
     /\b(what is the prize|prize|prizes)\b/,
-    /\b(who is the coordinator|contact|spoc)\b/,
+    /\b(who is the coordinator|contact|spoc|spocs|who manages|who do i contact|who to contact)\b/,
     /\b(tell me more|details)\b/,
   ];
 
