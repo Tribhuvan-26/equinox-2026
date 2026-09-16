@@ -11,6 +11,7 @@ import { InstitutionalHeader } from "../app/EventGraphics";
 import { subEvents } from "@/lib/content";
 import SpiderIntro from "./SpiderIntro";
 import GlitchWordmark from "./GlitchWordmark";
+import MobileJourney from "./MobileJourney";
 import {
   PLANET_LAYOUTS,
   JOURNEY_SQUIGGLY_PATH,
@@ -103,6 +104,17 @@ export default function ScrollJourney() {
   const [isGlobePaused, setIsGlobePaused] = useState(false);
   const globePausedRef = useRef(false);
   const [showLoader, setShowLoader] = useState(true);
+  // Below 768px the 16500px horizontal world is unusable, so the journey phases
+  // are skipped and <MobileJourney /> renders the same 10 events as a vertical spine.
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const sync = () => setIsMobile(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   const handleGlobeReady = useCallback(() => setIsGlobeReady(true), []);
 
@@ -346,9 +358,11 @@ export default function ScrollJourney() {
       });
 
       // --- PHASE 1 (0%–10%): Hero to Wordmark ---
-      mainTl.to(heroSubtitleRef.current, {
-        opacity: 0, y: -20, duration: 0.1
-      }, 0);
+      mainTl.fromTo(heroSubtitleRef.current,
+        { scale: 1 },
+        { opacity: 0, y: -20, scale: 1.35, duration: 0.1, ease: "power1.in" },
+        0
+      );
 
       // The lockup is on screen from the first frame; scroll only settles its scale.
       mainTl.fromTo(heroWordmarkRef.current,
@@ -397,6 +411,7 @@ export default function ScrollJourney() {
       }, 0.1);
 
       // --- PHASE 3 (15%–20%): Journey layer fades in ---
+      if (!isMobile) {
       mainTl.to(journeyLayerRef.current, { autoAlpha: 1, duration: 0.05 }, 0.15);
       mainTl.to(scrollIndicatorRef.current, { autoAlpha: 1, duration: 0.05 }, 0.15);
 
@@ -410,6 +425,7 @@ export default function ScrollJourney() {
           updateJourneyProgress(this.targets()[0].progress);
         }
       }, 0.2);
+      }
 
       // --- PHASE 5 (90%–100%): Clean exit as journey ends ---
       // At the end of the scroll journey, the persistent EQUINOX title, institutional header,
@@ -531,7 +547,7 @@ export default function ScrollJourney() {
     }, containerRef);
 
     return () => ctx.revert();
-  }, [subEvents]);
+  }, [subEvents, isMobile]);
 
   // Force a ScrollTrigger refresh after a short delay to handle font loading
   useEffect(() => {
@@ -542,7 +558,8 @@ export default function ScrollJourney() {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative w-full" style={{ height: "1500vh" }}>
+    <>
+    <div ref={containerRef} className="relative w-full" style={{ height: isMobile ? "115vh" : "1500vh" }}>
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#2A2A2A]">
 
         {/* ── SPARSE STAR FIELD WITH MINIMAL TWINKLING STARS ──────────────── */}
@@ -616,7 +633,7 @@ export default function ScrollJourney() {
             ================================================================ */}
         <div
           ref={navbarWrapperRef}
-          className="absolute top-0 left-0 w-full px-4 pt-4 sm:px-8 sm:pt-6 pointer-events-auto"
+          className="absolute top-0 left-0 hidden w-full px-4 pt-4 sm:block sm:px-8 sm:pt-6 pointer-events-auto"
           style={{ zIndex: 50 }}
         >
           <InstitutionalHeader />
@@ -635,10 +652,10 @@ export default function ScrollJourney() {
           {/* Large Globe — starts huge in hero, shrinks and moves to act as the "O" */}
           <div
             ref={globeHeroRef}
-            className="absolute flex items-center justify-center will-change-transform pointer-events-none"
+            /* Phones get a smaller disc: at min(72vh, 88vw) the globe is almost
+               the whole screen and the wordmark lands on top of it. */
+            className="absolute flex h-[min(46vh,62vw)] w-[min(46vh,62vw)] items-center justify-center will-change-transform pointer-events-none md:h-[min(72vh,88vw)] md:w-[min(72vh,88vw)]"
             style={{
-              width: "min(72vh, 88vw)",
-              height: "min(72vh, 88vw)",
               borderRadius: "50%",
               overflow: "hidden",
               zIndex: 3, // Sit alongside the text, not behind it
@@ -667,7 +684,7 @@ export default function ScrollJourney() {
             className="absolute flex items-center justify-center select-none pointer-events-none"
             style={{ zIndex: 3 }}
           >
-            <GlitchWordmark className="h-[34vh] w-[min(92vw,1100px)] will-change-transform" />
+            <GlitchWordmark className="h-[22vh] w-[min(88vw,1100px)] will-change-transform md:h-[34vh] md:w-[min(92vw,1100px)]" />
           </div>
         </div>
 
@@ -686,12 +703,13 @@ export default function ScrollJourney() {
             className="relative flex flex-col items-center gap-4 pointer-events-none"
             style={{ zIndex: 2 }}
           >
-            <p
-              className="rounded-full bg-[#141414] px-5 py-2 font-mono font-black uppercase tracking-[0.22em] text-[#F7F2F6]/85"
-              style={{ fontSize: "clamp(0.6rem, 1.1vw, 0.85rem)" }}
-            >
-              Ideas today. A better tomorrow.
-            </p>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/tagline-lockup.png"
+              alt="# Where Passion Meets Perseverance"
+              className="h-auto w-[min(94vw,880px)] object-contain"
+              draggable={false}
+            />
           </div>
         </div>
 
@@ -701,7 +719,7 @@ export default function ScrollJourney() {
             ================================================================ */}
         <div
           ref={journeyLayerRef}
-          className="absolute left-0 right-0 bottom-0 pointer-events-none"
+          className="absolute left-0 right-0 bottom-0 pointer-events-none hidden md:block"
           style={{ top: "var(--header-space, 200px)", opacity: 0, zIndex: 10, overflow: "hidden" }}
         >
           {/* Side scroll indicator */}
@@ -1243,5 +1261,7 @@ export default function ScrollJourney() {
         {showLoader && <SpiderIntro onDone={handleIntroDone} />}
       </div>
     </div>
+    <MobileJourney />
+    </>
   );
 }
