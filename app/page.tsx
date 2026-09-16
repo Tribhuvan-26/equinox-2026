@@ -49,12 +49,12 @@ export default function HomePage() {
           ========================================================================= */}
       <section
         id="about"
-        className="relative mx-auto max-w-[1400px] px-4 py-32 sm:px-8 md:py-48"
+        className="relative mx-auto max-w-[1400px] px-4 py-16 sm:px-8 sm:py-32 md:py-48"
       >
         <div className="max-w-5xl">
           <h2
-            className="font-display-title font-black leading-[0.95] tracking-tight text-[#F7F2F6]"
-            style={{ fontSize: "clamp(2.6rem, 5.2vw, 5.5rem)" }}
+            className="font-display-title font-black leading-[0.95] tracking-tight text-[#F7F2F6] break-words hyphens-auto"
+            style={{ fontSize: "clamp(1.9rem, 5.2vw, 5.5rem)" }}
           >
             {about.heading}
           </h2>
@@ -116,10 +116,13 @@ export default function HomePage() {
               Equinox is a 2-day E Summit at MLR Institute of Technology, Hyderabad. It pictures a vibrant and engaging environment where students come together to take on real-world challenges and explore entrepreneurship through events like Spotlight, Case-Study Competitions, Brand Battles, IPL Auction, Startup Expo, Pitch Deck, and E-Cell Meet.
             </p>
           </div>
-          <div className="flex items-center gap-2 font-mono text-xs font-black text-[#7484FE] lg:shrink-0">
+          <Link
+            href="/register"
+            className="group flex items-center gap-2 font-mono text-xs font-black text-[#7484FE] transition-colors hover:text-[#33FF67] lg:shrink-0"
+          >
             <span>30 - 31 OCTOBER 2026</span>
-            <ArrowRight className="h-4 w-4" />
-          </div>
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </Link>
         </div>
 
         {/* Summit scale: 6-column dense bento. Row one is 3+3, row two is 2+2+2,
@@ -166,7 +169,7 @@ export default function HomePage() {
           ========================================================================= */}
       <section
         id="impact"
-        className="relative mx-auto max-w-[1400px] px-4 py-32 sm:px-8 md:py-48"
+        className="relative mx-auto max-w-[1400px] px-4 py-16 sm:px-8 sm:py-32 md:py-48"
       >
         <PinnedSplit
           aside={
@@ -237,7 +240,7 @@ export default function HomePage() {
           ========================================================================= */}
       <section
         id="contact"
-        className="relative mx-auto max-w-[1400px] px-4 py-32 sm:px-8 md:py-48"
+        className="relative mx-auto max-w-[1400px] px-4 py-16 sm:px-8 sm:py-32 md:py-48"
       >
         {/* Dark Editorial Heading Replicating Page 12 */}
         <div className="max-w-3xl">

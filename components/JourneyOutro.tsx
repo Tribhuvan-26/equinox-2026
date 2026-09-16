@@ -67,7 +67,7 @@ export default function JourneyOutro({ line }: { line: string }) {
   }, []);
 
   return (
-    <div ref={rootRef} className="relative isolate overflow-hidden py-32 md:py-48">
+    <div ref={rootRef} className="relative isolate overflow-hidden py-16 sm:py-32 md:py-48">
       {/* light-speed streaks */}
       <div
         ref={streaksRef}
