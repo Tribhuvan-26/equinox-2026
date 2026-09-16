@@ -149,6 +149,8 @@ function fillAndShuffle<T>(items: T[], target: number, seed: number): T[] {
             const swap = pool.pop()!
             out.push(swap)
             pool.push(next)
+        } else {
+            out.push(next)
         }
     }
     return out
