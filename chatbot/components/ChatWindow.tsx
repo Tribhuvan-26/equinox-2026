@@ -7,7 +7,8 @@ import { ChatInput } from "./ChatInput";
 import { EventDetail } from "./EventDetail";
 import { SubEventInfo } from "../data/events";
 import { getBotResponse } from "../data/responses";
-import { Sparkles, X, RotateCcw, Bot, Calendar } from "lucide-react";
+import Image from "next/image";
+import { Sparkles, X, RotateCcw, Calendar } from "lucide-react";
 
 interface ChatWindowProps {
   onClose: () => void;
@@ -146,8 +147,14 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
       {/* Header */}
       <div className="chatbot-riso-bg flex items-center justify-between border-b border-white/20 px-3.5 py-2.5 sm:px-4 sm:py-3">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/40 bg-white text-[#2074d5] shadow-xs">
-            <Bot className="h-4.5 w-4.5" />
+          <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg border border-white/40 bg-[#161622] shadow-xs">
+            <Image
+              src="/chatbot-mascot.png"
+              alt=""
+              width={64}
+              height={90}
+              className="h-[88%] w-auto object-contain"
+            />
           </div>
           <div>
             <div className="flex items-center gap-1.5">

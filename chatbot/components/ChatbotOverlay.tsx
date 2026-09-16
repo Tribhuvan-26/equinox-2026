@@ -9,7 +9,8 @@ import {
   animateTriggerLeave,
   animateClickPop,
 } from "../animations/chatAnimations";
-import { Bot, X } from "lucide-react";
+import Image from "next/image";
+import { X } from "lucide-react";
 import "../styles/chatbot.css";
 
 interface ChatbotOverlayProps {
@@ -68,7 +69,14 @@ export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOv
           {isOpen ? (
             <X className="h-6 w-6 text-white stroke-[2.2] sm:h-7 sm:w-7" />
           ) : (
-            <Bot className="h-7 w-7 text-white stroke-[2] sm:h-8 sm:w-8" />
+            <Image
+              src="/chatbot-mascot.png"
+              alt=""
+              width={160}
+              height={225}
+              priority
+              className="h-[86%] w-auto object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.45)]"
+            />
           )}
         </button>
       </div>
@@ -77,6 +85,7 @@ export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOv
       {isRendered && (
         <div
           ref={windowRef}
+          data-lenis-prevent
           className="fixed right-3 left-3 sm:left-auto sm:right-6 bottom-[76px] sm:bottom-[100px] z-[99999] flex h-[440px] max-h-[calc(100dvh-88px)] sm:h-[500px] sm:max-h-[min(520px,calc(100vh-140px))] w-auto sm:w-[340px] max-w-[calc(100vw-1.5rem)] sm:max-w-[340px] flex-col"
         >
           <ChatWindow

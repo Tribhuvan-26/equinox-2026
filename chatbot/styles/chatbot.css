@@ -27,9 +27,10 @@
   width: 56px;
   height: 56px;
   border-radius: 9999px;
-  background: radial-gradient(circle at 35% 35%, #2a83f2 0%, #2074d5 50%, #0c2b94 100%);
-  border: 2px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 8px 25px -4px rgba(0, 0, 0, 0.45), 0 0 20px rgba(32, 116, 213, 0.45);
+  background: radial-gradient(circle at 35% 30%, #23233a 0%, #161622 55%, #0c0c14 100%);
+  border: 2px solid rgba(116, 132, 254, 0.85);
+  box-shadow: 0 8px 25px -4px rgba(0, 0, 0, 0.55), 0 0 22px rgba(116, 132, 254, 0.45);
+  overflow: hidden;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -45,8 +46,8 @@
 }
 
 .chatbot-launcher-btn:hover {
-  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.55), 0 0 30px rgba(32, 116, 213, 0.65);
-  border-color: #ffffff;
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.6), 0 0 32px rgba(51, 255, 103, 0.5);
+  border-color: #33ff67;
 }
 
 .chatbot-launcher-btn:active {
