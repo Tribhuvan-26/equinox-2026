@@ -11,23 +11,21 @@ export function Footer() {
         {/* Top Section */}
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-start">
           <div className="max-w-md">
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-2xl font-black tracking-widest bg-gradient-to-r from-[#7484FE] to-[#33FF67] bg-clip-text text-transparent uppercase">
-                THE
-              </span>
-              <span className="font-mono text-2xl font-black tracking-widest text-[#F7F2F6] uppercase">
-                EQUINOX
-              </span>
-              <span className="rounded bg-gradient-to-r from-[#7484FE] to-[#33FF67] px-2 py-0.5 font-mono text-xs font-black text-[#2A2A2A]">
-                2.0
-              </span>
-            </div>
+            <img
+              src="/equinox-logo.svg"
+              alt="The Equinox 2.0"
+              className="h-16 w-auto object-contain object-left sm:h-20"
+            />
             <p className="mt-3 text-sm leading-relaxed text-[#F7F2F6]/80">
               The flagship entrepreneurship summit at MLR Institute of Technology, organized by the Centre for Innovation and Entrepreneurship (CIE).
             </p>
             <p className="mt-2 font-mono text-xs font-bold text-[#33FF67]">
               # WHERE PASSION MEETS PERSEVERANCE
             </p>
+            <div className="mt-6 flex items-center gap-6">
+              <img src="/logos/cie-white.png" alt="MLR CIE — Centre for Innovation & Entrepreneurship" className="h-10 w-auto object-contain" />
+              <img src="/logos/mlrit-white.png" alt="MLR Institute of Technology" className="h-8 w-auto object-contain" />
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-12">
