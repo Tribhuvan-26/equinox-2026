@@ -111,7 +111,7 @@ export function NavBar({
                   href={item.url}
                   onClick={(e) => handleNavClick(e, item)}
                   className={cn(
-                    "relative ml-1 flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-black transition-all shadow-md",
+                    "relative ml-1 flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-black transition-all shadow-md sm:px-4",
                     isActive
                       ? "bg-[#33FF67] text-[#141414] ring-2 ring-[#33FF67]/50 scale-[1.02]"
                       : "bg-[#33FF67] text-[#141414] hover:bg-[#5aff87] hover:scale-[1.02] active:scale-[0.98]"
@@ -128,15 +128,16 @@ export function NavBar({
                 key={item.name}
                 href={item.url}
                 onClick={(e) => handleNavClick(e, item)}
+                aria-label={item.name}
                 className={cn(
-                  "relative flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition",
+                  "relative flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-bold transition sm:px-4",
                   isActive
                     ? "bg-[#7484FE] text-[#F7F2F6] shadow-md"
                     : "text-[#F7F2F6]/90 hover:bg-white/15 hover:text-[#F7F2F6]"
                 )}
               >
                 <Icon className="h-3.5 w-3.5" />
-                <span>{item.name}</span>
+                <span className="hidden sm:inline">{item.name}</span>
               </a>
             );
           })}
