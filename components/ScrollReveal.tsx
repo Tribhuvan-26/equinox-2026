@@ -29,6 +29,11 @@ export default function ScrollReveal({
     const targets = Array.from(el.children);
     if (!targets.length) return;
 
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(targets, { opacity: 1, y: 0, scale: 1 });
+      return;
+    }
+
     const ctx = gsap.context(() => {
       gsap.fromTo(
         targets,

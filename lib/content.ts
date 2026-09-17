@@ -521,8 +521,6 @@ export const tickets = [
     name: "Summit Pass",
     description: "Full access pass for both days covering all 10 sub-events, keynotes, and expo floor.",
     perks: ["Access to all sub-events", "Startup Expo badge", "Kit & participation certificate", "Networking access"],
-    badge: "Opening Soon",
-    price: "Stay Tuned",
     unit: "Individual Pass",
     href: "#contact",
   },
