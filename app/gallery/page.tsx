@@ -54,30 +54,30 @@ export default function GalleryPage() {
               </p>
             </div>
 
-            {/* Quick Upload Helper Card */}
+            {/* Live Gallery Status Card */}
             <div className="rounded-2xl border border-white/10 bg-[#1b1c22]/80 p-5 backdrop-blur-md max-w-md">
               <div className="flex items-center gap-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#33FF67]/15 text-[#33FF67]">
-                  <FolderDown className="h-4 w-4" />
+                  <Sparkles className="h-4 w-4" />
                 </div>
                 <div>
                   <p className="font-mono text-xs font-bold uppercase text-[#F7F2F6]">
-                    Upload Directory Ready
+                    32 Archival Photos Live
                   </p>
                   <p className="font-mono text-[11px] text-[#33FF67]">
-                    public/gallery/photo-*.jpg
+                    Original Sony &amp; Fuji Camera Archives
                   </p>
                 </div>
               </div>
               <p className="mt-3 text-xs leading-relaxed text-[#F7F2F6]/75">
-                Drop your event photos directly into the <code className="rounded bg-white/10 px-1 py-0.5 font-mono text-[#33FF67]">public/gallery/</code> folder as <code className="font-mono">photo-1.jpg</code>, <code className="font-mono">photo-2.jpg</code>, etc., and they will instantly load here.
+                Drag across the infinite canvas. Click any photo to view in high resolution or download the original.
               </p>
             </div>
           </div>
         </div>
 
         {/* Gallery Section with Draggable Canvas & Lightbox */}
-        <GallerySection showViewAllLink={false} className="!pt-12 !pb-16" />
+        <GallerySection showViewAllLink={false} isDedicatedPage={true} className="!pt-10 !pb-16" />
 
         {/* Milestone Editions Cards */}
         <div className="mx-auto max-w-[1400px] px-4 sm:px-8 mt-12">

@@ -43,7 +43,18 @@ export interface SubEventInfo {
   spocs?: EventSPOC[];
 }
 
-export const OVERALL_COORDINATORS: EventSPOC[] = [
+export const OVERALL_EQUINOX_COORDINATORS = {
+  primary: [
+    { name: "Ghanashyam", phone: "+91 93900 06806", phoneRaw: "+919390006806" },
+    { name: "Jaikar", phone: "+91 90324 10189", phoneRaw: "+919032410189" },
+  ],
+  secondary: [
+    { name: "Sanjana", phone: "+91 82084 99746", phoneRaw: "+918208499746" },
+    { name: "Adithya Ganesh", phone: "+91 91822 40970", phoneRaw: "+919182240970" },
+  ],
+};
+
+export const CHATBOT_CONTACTS: EventSPOC[] = [
   { name: "Ghanashyam", phone: "+91 93900 06806", phoneRaw: "+919390006806" },
   { name: "Jaikar", phone: "+91 90324 10189", phoneRaw: "+919032410189" },
   { name: "Bhavana", phone: "+91 99895 32925", phoneRaw: "+919989532925" },
@@ -52,7 +63,11 @@ export const OVERALL_COORDINATORS: EventSPOC[] = [
 export const OFFICIAL_COORDINATORS: EventCoordinator[] = [
   { name: "Ghanashyam", phone: "+91 93900 06806", phoneRaw: "+919390006806" },
   { name: "Jaikar", phone: "+91 90324 10189", phoneRaw: "+919032410189" },
-  { name: "Bhavana", phone: "+91 99895 32925", phoneRaw: "+919989532925" },
+];
+
+export const OVERALL_COORDINATORS: EventSPOC[] = [
+  ...OVERALL_EQUINOX_COORDINATORS.primary,
+  ...OVERALL_EQUINOX_COORDINATORS.secondary,
 ];
 
 export const EVENT_SPOCS: Record<string, EventSPOC[]> = {
@@ -97,6 +112,41 @@ export const EVENT_SPOCS: Record<string, EventSPOC[]> = {
     { name: "Anuj Lomte", phone: "+91 93901 20510", phoneRaw: "+919390120510" },
   ],
 };
+
+export function getEventSPOCs(eventIdentifier: string): EventSPOC[] {
+  if (!eventIdentifier) return [];
+  const normalized = eventIdentifier
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]/g, "");
+
+  const slugMap: Record<string, string> = {
+    spotlight: "spotlight",
+    crossroads: "crossroads",
+    crossroad: "crossroads",
+    "cross-roads": "crossroads",
+    startupexpo: "startup-expo",
+    expo: "startup-expo",
+    brandbattles: "brand-battles",
+    brandbattle: "brand-battles",
+    iplauction: "ipl-auction",
+    ipl: "ipl-auction",
+    auction: "ipl-auction",
+    hustlemania: "hustle-mania",
+    hustle: "hustle-mania",
+    internshipdrive: "internship-drive",
+    internship: "internship-drive",
+    startuppoly: "startup-poly",
+    poly: "startup-poly",
+    ecellmeet: "e-cell-meet",
+    ecell: "e-cell-meet",
+    pitchdeck: "pitch-deck",
+    pitch: "pitch-deck",
+  };
+
+  const targetSlug = slugMap[normalized] || eventIdentifier.toLowerCase().trim().replace(/\s+/g, "-");
+  return EVENT_SPOCS[targetSlug] || [];
+}
 
 export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
   // Page 05 Sub-Events

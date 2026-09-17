@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { SubEventInfo, OFFICIAL_COORDINATORS } from "../data/events";
+import { SubEventInfo, getEventSPOCs } from "../data/events";
 import { X, Calendar, MapPin, Award, Users, Phone, ArrowLeft } from "lucide-react";
 
 interface EventDetailProps {
@@ -12,10 +12,15 @@ interface EventDetailProps {
 export function EventDetail({ event, onClose }: EventDetailProps) {
   if (!event) return null;
 
+  const spocs = event.spocs && event.spocs.length > 0 ? event.spocs : getEventSPOCs(event.slug || event.name);
+
   return (
-    <div className="absolute inset-0 z-30 flex flex-col bg-[#2074d5] text-white">
+    <div
+      data-lenis-prevent
+      className="absolute inset-0 z-30 flex h-full w-full flex-col overflow-hidden bg-[#2074d5] text-white"
+    >
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-white/20 bg-[#0c2b94] px-4 py-3">
+      <div className="shrink-0 flex items-center justify-between border-b border-white/20 bg-[#0c2b94] px-4 py-3">
         <button
           onClick={onClose}
           className="flex items-center gap-1.5 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-bold text-white transition hover:bg-white hover:text-[#2074d5]"
@@ -38,7 +43,11 @@ export function EventDetail({ event, onClose }: EventDetailProps) {
       </div>
 
       {/* Scrollable Content */}
-      <div className="chatbot-scrollbar flex-1 overflow-y-auto p-4 space-y-4 text-sm">
+      <div
+        data-lenis-prevent
+        onWheel={(e) => e.stopPropagation()}
+        className="chatbot-scrollbar flex-1 min-h-0 overflow-y-auto p-4 space-y-4 text-sm"
+      >
         {/* Title Lockup */}
         <div className="rounded-2xl border-2 border-white/40 bg-white/10 p-4">
           <span className="inline-block rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase text-white">
@@ -119,15 +128,15 @@ export function EventDetail({ event, onClose }: EventDetailProps) {
           <p className="text-[11px] font-bold text-white/80">
             Student Coordinators for {event.name}:
           </p>
-          <div className="mt-2 grid grid-cols-2 gap-2">
-            {OFFICIAL_COORDINATORS.map((c) => (
+          <div className="mt-2 flex flex-col gap-1.5">
+            {spocs.map((c) => (
               <a
                 key={c.name}
-                href={`tel:${c.phoneRaw}`}
-                className="flex items-center gap-1 text-[11px] font-mono text-white/90 hover:underline"
+                href={`tel:${c.phoneRaw || c.phone.replace(/\s+/g, "")}`}
+                className="flex items-center gap-1.5 text-[11px] font-mono text-white/90 hover:underline"
               >
                 <Phone className="h-2.5 w-2.5 text-white/60" />
-                <span>{c.name}: {c.phone}</span>
+                <span>{c.name} — {c.phone}</span>
               </a>
             ))}
           </div>
@@ -135,7 +144,7 @@ export function EventDetail({ event, onClose }: EventDetailProps) {
       </div>
 
       {/* Footer */}
-      <div className="border-t border-white/20 bg-[#0c2b94] p-3 text-center">
+      <div className="shrink-0 border-t border-white/20 bg-[#0c2b94] p-3 text-center">
         <a
           href="#contact"
           onClick={onClose}

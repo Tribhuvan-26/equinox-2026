@@ -456,6 +456,7 @@ export const contact = {
   email: "cie@mlrinstitutions.ac.in",
   website: "mlritcie.in",
   websiteUrl: "https://mlritcie.in",
+  mapsUrl: "https://maps.app.goo.gl/D5zN2u45HjAdk4sKA",
   addressLines: [
     "Centre for Innovation and Entrepreneurship,",
     "MLR Institute of Technology,",

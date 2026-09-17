@@ -821,6 +821,17 @@ export default function ScrollJourney() {
                     <stop offset="80%" stopColor="#F7F2F6" stopOpacity="0.25" />
                     <stop offset="100%" stopColor="#7484FE" stopOpacity="0" />
                   </radialGradient>
+                  {/* Space Station and Portal Gradients */}
+                  <radialGradient id="station-docking-glow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#7484FE" stopOpacity="0.4" />
+                    <stop offset="60%" stopColor="#33FF67" stopOpacity="0.15" />
+                    <stop offset="100%" stopColor="#0B0F17" stopOpacity="0" />
+                  </radialGradient>
+                  <radialGradient id="portal-cosmic-glow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#33DF5A" stopOpacity="0.5" />
+                    <stop offset="50%" stopColor="#29CE53" stopOpacity="0.2" />
+                    <stop offset="100%" stopColor="#020904" stopOpacity="0" />
+                  </radialGradient>
                   {/* Death Star Easter Egg Gradients */}
                   <radialGradient id="death-star-body" cx="32%" cy="28%" r="72%">
                     <stop offset="0%" stopColor="#94A3B8" />
@@ -919,15 +930,86 @@ export default function ScrollJourney() {
                     </g>
 
                     {/* Editorial Pill Tag Under Earth */}
-                    <g transform="translate(0, 225)">
+                    <g transform="translate(0, 242)">
                       <rect
-                        x="-85"
-                        y="-12"
-                        width="170"
-                        height="24"
-                        rx="12"
-                        fill="#2A2A2A"
+                        x="-150"
+                        y="-24"
+                        width="300"
+                        height="48"
+                        rx="24"
+                        fill="#1F2028"
                         stroke="#7484FE"
+                        strokeWidth="2"
+                        opacity="0.95"
+                      />
+                      <text
+                        x="0"
+                        y="7"
+                        textAnchor="middle"
+                        fill="#7484FE"
+                        fontFamily="monospace"
+                        fontSize="18"
+                        fontWeight="bold"
+                        letterSpacing="3"
+                      >
+                        EARTH · MLRIT
+                      </text>
+                    </g>
+                  </g>
+
+                  {/* ── EASTER EGG: Deep Space Orbital Station ────────── */}
+                  <g
+                    transform="translate(5120, 175)"
+                    className="spacestation-easter-egg group pointer-events-auto cursor-help"
+                    id="spacestation-easter-egg"
+                  >
+                    {/* Ambient docking reticle on hover */}
+                    <circle
+                      cx="0"
+                      cy="0"
+                      r="105"
+                      fill="none"
+                      stroke="#33FF67"
+                      strokeWidth="0.8"
+                      strokeDasharray="4 8"
+                      className="opacity-0 group-hover:opacity-60 transition-opacity duration-500"
+                    />
+                    <circle
+                      cx="0"
+                      cy="0"
+                      r="130"
+                      fill="none"
+                      stroke="#7484FE"
+                      strokeWidth="0.5"
+                      strokeDasharray="2 12"
+                      className="opacity-0 group-hover:opacity-40 transition-opacity duration-700"
+                    />
+
+                    {/* Space Station Asset */}
+                    <g className="transition-transform duration-500 ease-out group-hover:scale-110" style={{ transformOrigin: "0 0" }}>
+                      <image
+                        href="/spacestation.svg"
+                        x="-135"
+                        y="-90"
+                        width="270"
+                        height="180"
+                        preserveAspectRatio="xMidYMid meet"
+                      />
+                    </g>
+
+                    {/* Easter Egg Monospace HUD Tag (Visible on Hover) */}
+                    <g
+                      transform="translate(0, 105)"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                    >
+                      <rect
+                        x="-135"
+                        y="-13"
+                        width="270"
+                        height="26"
+                        rx="13"
+                        fill="#141414"
+                        stroke="#33FF67"
                         strokeWidth="1.2"
                         opacity="0.95"
                       />
@@ -935,20 +1017,69 @@ export default function ScrollJourney() {
                         x="0"
                         y="4"
                         textAnchor="middle"
-                        fill="#7484FE"
+                        fill="#33FF67"
                         fontFamily="monospace"
-                        fontSize="10"
+                        fontSize="9.5"
                         fontWeight="bold"
-                        letterSpacing="1.5"
+                        letterSpacing="1.4"
                       >
-                        EARTH · MLRIT
+                        EQUINOX · DEEP SPACE STATION
                       </text>
                     </g>
                   </g>
 
-                  {/* ── EASTER EGG: DS-1 Orbital Battle Station (Death Star) ────────── */}
+                  {/* ── Interdimensional Portal Easter Egg near Planet 6 ────────── */}
                   <g
-                    transform="translate(5120, 175)"
+                    transform="translate(8480, 140)"
+                    className="portal-gateway-easter-egg group pointer-events-auto cursor-pointer"
+                    id="portal-gateway-planet6"
+                  >
+                    {/* Portal SVG asset */}
+                    <g className="transition-transform duration-500 ease-out group-hover:scale-110" style={{ transformOrigin: "0 0" }}>
+                      <image
+                        href="/portol.svg"
+                        x="-175"
+                        y="-80"
+                        width="350"
+                        height="160"
+                        preserveAspectRatio="xMidYMid meet"
+                      />
+                    </g>
+
+                    {/* Monospace HUD Tag (Visible on Hover) */}
+                    <g
+                      transform="translate(0, 95)"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                    >
+                      <rect
+                        x="-115"
+                        y="-13"
+                        width="230"
+                        height="26"
+                        rx="13"
+                        fill="#141414"
+                        stroke="#29CE53"
+                        strokeWidth="1.2"
+                        opacity="0.95"
+                      />
+                      <text
+                        x="0"
+                        y="4"
+                        textAnchor="middle"
+                        fill="#33DF5A"
+                        fontFamily="monospace"
+                        fontSize="9.5"
+                        fontWeight="bold"
+                        letterSpacing="1.4"
+                      >
+                        INTERDIMENSIONAL RIFT · 06
+                      </text>
+                    </g>
+                  </g>
+
+                  {/* ── EASTER EGG: DS-1 Orbital Battle Station (Death Star) above Planet 8 ────────── */}
+                  <g
+                    transform="translate(11400, 140)"
                     className="death-star-easter-egg group pointer-events-auto cursor-help"
                     id="death-star-easter-egg"
                   >
@@ -1155,14 +1286,14 @@ export default function ScrollJourney() {
                         <path d="M 0,-2.5 L -10,0 L 0,2.5 Z" fill="#33FF67" opacity="0.85" />
                       </g>
 
-                      {/* Luke Spaceship (X-Wing) */}
+                      {/* Spaceship */}
                       <g transform="translate(4.7, 0) rotate(90)">
                         <image
-                          href="/LukeSpaceship.svg"
-                          x="-32"
-                          y="-32"
-                          width="64"
-                          height="64"
+                          href="/spaceship.svg"
+                          x="-34"
+                          y="-34"
+                          width="68"
+                          height="68"
                           preserveAspectRatio="xMidYMid meet"
                         />
                       </g>

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { MessageData, ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { EventDetail } from "./EventDetail";
@@ -15,33 +14,11 @@ interface ChatWindowProps {
   onEventSelect?: (slug: string) => void;
 }
 
-export const SUB_EVENTS = [
-  { name: "Spotlight", slug: "spotlight" },
-  { name: "Crossroads", slug: "crossroads" },
-  { name: "Startup Expo", slug: "startup-expo" },
-  { name: "Brand Battles", slug: "brand-battles" },
-  { name: "IPL Auction", slug: "ipl-auction" },
-  { name: "Hustle Mania", slug: "hustle-mania" },
-  { name: "Internship Drive", slug: "internship-drive" },
-  { name: "Startup Poly", slug: "startup-poly" },
-  { name: "E-Cell Meet", slug: "e-cell-meet" },
-  { name: "Pitch Deck", slug: "pitch-deck" },
-] as const;
-
-const DEFAULT_QUICK_ACTIONS = [
-  "Hustle Mania",
-  "Startup Poly",
-  "IPL Auction",
-  "Dates & Venue",
-  "Coordinators",
-];
-
 const INITIAL_MESSAGE: MessageData = {
   id: "msg-welcome",
   sender: "bot",
   text: "Welcome to **The Equinox 2.0**!\n\nI am your interactive event assistant, grounded directly in the official event program. Ask me about any of our **10 sub-events**, confirmed dates (**30 - 31 OCT**), MLRIT venue, or coordinators!",
   suggestions: [
-    "Events",
     "Tell me about Hustle Mania",
     "What is Startup Poly?",
     "How does IPL Auction work?",
@@ -51,11 +28,9 @@ const INITIAL_MESSAGE: MessageData = {
 };
 
 export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
-  const router = useRouter();
   const [messages, setMessages] = useState<MessageData[]>([INITIAL_MESSAGE]);
   const [isTyping, setIsTyping] = useState(false);
   const [activeEventDetail, setActiveEventDetail] = useState<SubEventInfo | null>(null);
-  const [isEventListOpen, setIsEventListOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -63,7 +38,7 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
       top: scrollRef.current.scrollHeight,
       behavior: "smooth",
     });
-  }, [messages, isTyping, isEventListOpen]);
+  }, [messages, isTyping]);
 
   const handleSendMessage = async (text: string) => {
     const userMsg: MessageData = {
@@ -121,31 +96,21 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
   };
 
   const handleSuggestionSelect = (suggestion: string) => {
-    if (suggestion === "Events" || suggestion === "Browse Events") {
-      setIsEventListOpen(true);
-      return;
-    }
     handleSendMessage(suggestion);
-  };
-
-  const handleEventClick = (slug: string) => {
-    if (onEventSelect) {
-      onEventSelect(slug);
-    } else {
-      router.push(`/events/${slug}`);
-    }
   };
 
   const handleReset = () => {
     setMessages([INITIAL_MESSAGE]);
     setActiveEventDetail(null);
-    setIsEventListOpen(false);
   };
 
   return (
-    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl sm:rounded-3xl border border-white/50 bg-[#2074d5] text-white shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_25px_rgba(32,116,213,0.35)]">
+    <div
+      data-lenis-prevent
+      className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl sm:rounded-3xl border border-white/50 bg-[#2074d5] text-white shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_25px_rgba(32,116,213,0.35)]"
+    >
       {/* Header */}
-      <div className="chatbot-riso-bg flex items-center justify-between border-b border-white/20 px-3.5 py-2.5 sm:px-4 sm:py-3">
+      <div className="chatbot-riso-bg shrink-0 flex items-center justify-between border-b border-white/20 px-3.5 py-2.5 sm:px-4 sm:py-3">
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg border border-white/40 bg-[#161622] shadow-xs">
             <Image
@@ -193,7 +158,9 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
       {/* Message History Scroller */}
       <div
         ref={scrollRef}
-        className="chatbot-scrollbar flex-1 overflow-y-auto p-3 sm:p-3.5 space-y-3"
+        data-lenis-prevent
+        onWheel={(e) => e.stopPropagation()}
+        className="chatbot-scrollbar flex-1 min-h-0 overflow-y-auto p-3 sm:p-3.5 space-y-3"
       >
         {messages.map((msg, idx) => (
           <ChatMessage
@@ -215,63 +182,10 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
         )}
       </div>
 
-      {/* Quick Action Bar / Sub-Events Expansion Row */}
-      <div className="border-t border-white/15 bg-[#0c2b94]/95 px-2.5 py-1.5 text-white">
-        {isEventListOpen ? (
-          <div>
-            <div className="mb-1 flex items-center justify-between font-mono text-[10px] text-white/90">
-              <span className="font-bold tracking-wider uppercase text-white flex items-center gap-1">
-                <Calendar className="h-3 w-3" />
-                <span>Select Sub-Event:</span>
-              </span>
-              <button
-                type="button"
-                onClick={() => setIsEventListOpen(false)}
-                className="text-[9.5px] font-mono text-white/75 hover:text-white underline transition"
-              >
-                ← Back
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-1 max-h-[88px] overflow-y-auto chatbot-scrollbar pt-0.5">
-              {SUB_EVENTS.map((evt) => (
-                <button
-                  key={evt.slug}
-                  type="button"
-                  onClick={() => handleEventClick(evt.slug)}
-                  className="rounded-full border border-white/30 bg-white/10 px-2 py-0.5 font-mono text-[10px] font-medium text-white transition hover:border-white hover:bg-white hover:text-[#2074d5] active:scale-95"
-                >
-                  {evt.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-wrap items-center gap-1 max-h-[56px] overflow-y-auto chatbot-scrollbar">
-            {/* Events Quick-Action Button */}
-            <button
-              type="button"
-              onClick={() => setIsEventListOpen(true)}
-              className="flex items-center gap-1 rounded-full border border-white bg-white/20 px-2 py-0.5 font-mono text-[10px] font-black text-white shadow-xs transition hover:bg-white hover:text-[#2074d5] active:scale-95"
-            >
-              <Calendar className="h-2.5 w-2.5" />
-              Events
-            </button>
-            {DEFAULT_QUICK_ACTIONS.map((action, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => handleSendMessage(action)}
-                className="rounded-full border border-white/30 bg-white/10 px-2 py-0.5 font-mono text-[10px] font-medium text-white transition hover:border-white hover:bg-white hover:text-[#2074d5] active:scale-95"
-              >
-                {action}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
       {/* Input Bar */}
-      <ChatInput onSend={handleSendMessage} disabled={isTyping} />
+      <div className="shrink-0">
+        <ChatInput onSend={handleSendMessage} disabled={isTyping} />
+      </div>
 
       {/* Event Detail Slide-over Panel */}
       <EventDetail

@@ -29,11 +29,22 @@ export interface ChatbotResponse {
   grounded?: boolean;
 }
 
-export const OFFICIAL_CONTACTS_TEXT = `Overall Equinox Coordinators:
+export const OFFICIAL_CONTACTS_TEXT = `Overall Equinox Coordinators (for general Equinox queries):
+
+Primary:
 • **Ghanashyam**: +91 93900 06806
 • **Jaikar**: +91 90324 10189
-• **Bhavana**: +91 99895 32925
+
+Secondary:
+• **Sanjana**: +91 82084 99746
+• **Adithya Ganesh**: +91 91822 40970
+
 Email: **cie@mlrinstitutions.ac.in**`;
+
+export const CHATBOT_CONTACTS_TEXT = `Chatbot Support Contacts (for chatbot-related information & issues):
+• **Ghanashyam**: +91 93900 06806
+• **Jaikar**: +91 90324 10189
+• **Bhavana**: +91 99895 32925`;
 
 /**
  * Generates an accurate, grounded answer for a specific sub-event based on requested attribute
@@ -391,25 +402,59 @@ export function getMockEquinoxResponse(
     };
   }
 
-  // 8. Coordinators & Contact Info
+  // 8. Chatbot-Specific Support Contacts
   if (
-    q.includes("coordinator") ||
-    q.includes("coordinators") ||
-    q.includes("contact") ||
-    q.includes("contacts") ||
-    q.includes("phone") ||
-    q.includes("email") ||
-    q.includes("who do i contact") ||
-    q.includes("who to contact") ||
+    q.includes("chatbot contact") ||
+    q.includes("chatbot support") ||
+    q.includes("chatbot issue") ||
+    q.includes("chatbot help") ||
+    q.includes("who do i contact for chatbot") ||
+    q.includes("bhavana") ||
+    (q.includes("chatbot") && (q.includes("contact") || q.includes("issues") || q.includes("support") || q.includes("help") || q.includes("who")))
+  ) {
+    return {
+      answer: CHATBOT_CONTACTS_TEXT,
+      suggestions: ["Overall Equinox Coordinators", "Explore Sub-Events", "Dates & Venue"],
+      links: [{ label: "Contact Us Section", url: "#contact" }],
+      grounded: true,
+    };
+  }
+
+  // 9. Overall Coordinators & Contact Info
+  if (
+    q.includes("overall") ||
+    q.includes("general contact") ||
+    q.includes("summit coordinator") ||
     q.includes("ghanashyam") ||
     q.includes("shyam") ||
     q.includes("jaikar") ||
-    q.includes("bhavana")
+    q.includes("cie@mlrinstitutions.ac.in")
   ) {
     return {
       answer: OFFICIAL_CONTACTS_TEXT,
       suggestions: ["Where is the venue?", "Explore Sub-Events", "When is the summit?"],
       links: [{ label: "Contact Us Section", url: "#contact" }],
+      grounded: true,
+    };
+  }
+
+  // 10. General / Ambiguous Contact Queries (Fallback Rule)
+  if (
+    q.includes("coordinator") ||
+    q.includes("coordinators") ||
+    q.includes("contact") ||
+    q.includes("contacts") ||
+    q.includes("spoc") ||
+    q.includes("spocs") ||
+    q.includes("who do i contact") ||
+    q.includes("who to contact") ||
+    q.includes("who manages") ||
+    q.includes("who handles")
+  ) {
+    return {
+      answer: `Which sub-event's SPOC or coordinator are you looking for? Equinox 2.0 features 10 sub-events (Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, and Pitch Deck).\n\nFor general summit inquiries, you can contact the **Overall Equinox Coordinators**:\n\nPrimary:\n• **Ghanashyam**: +91 93900 06806\n• **Jaikar**: +91 90324 10189\n\nSecondary:\n• **Sanjana**: +91 82084 99746\n• **Adithya Ganesh**: +91 91822 40970`,
+      suggestions: ["SPOCs for IPL Auction", "Who manages Crossroads?", "Chatbot Support"],
+      links: [{ label: "Browse Sub-Events", url: "#events" }],
       grounded: true,
     };
   }

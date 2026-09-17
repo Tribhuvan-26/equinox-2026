@@ -55,22 +55,32 @@
 }
 
 /* Custom scrollbar for chat window */
+.chatbot-scrollbar {
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.45) rgba(7, 26, 92, 0.5);
+}
+
 .chatbot-scrollbar::-webkit-scrollbar {
   width: 6px;
+  display: block !important;
 }
 
 .chatbot-scrollbar::-webkit-scrollbar-track {
-  background: rgba(7, 26, 92, 0.6);
+  background: rgba(7, 26, 92, 0.5);
   border-radius: 4px;
 }
 
 .chatbot-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.45);
   border-radius: 4px;
 }
 
 .chatbot-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.8);
 }
 
 /* Event visual badges */

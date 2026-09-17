@@ -328,21 +328,26 @@ export default function HomePage() {
             </div>
 
             {/* Address */}
-            <div className="flex items-start gap-4 border-t border-white/10 pt-6 lg:border-t-0 lg:border-l lg:pl-8 lg:pt-0">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#7484FE] text-[#F7F2F6]">
+            <a
+              href={contact.mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex cursor-pointer items-start gap-4 border-t border-white/10 pt-6 transition duration-300 lg:border-t-0 lg:border-l lg:pl-8 lg:pt-0"
+            >
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#7484FE] text-[#F7F2F6] transition duration-300 group-hover:scale-105 group-hover:bg-[#5b6be6]">
                 <MapPin className="h-5 w-5" />
               </div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-[#F7F2F6]/70">
                   Address
                 </p>
-                <div className="mt-1 text-sm leading-relaxed text-[#F7F2F6]/90">
+                <div className="mt-1 text-sm leading-relaxed text-[#F7F2F6]/90 transition duration-300 group-hover:text-[#7484FE]">
                   {contact.addressLines.map((line, i) => (
                     <p key={i}>{line}</p>
                   ))}
                 </div>
               </div>
-            </div>
+            </a>
           </div>
 
           {/* Social Links Row from Page 12 */}

@@ -54,7 +54,7 @@ export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOv
   };
 
   return (
-    <div className="equinox-chatbot-root">
+    <div className="equinox-chatbot-root" data-lenis-prevent>
       {/* Floating Circular Equinox AI Launcher Button */}
       <div className="fixed right-4 bottom-4 z-[99990] sm:right-6 sm:bottom-6">
         <button

@@ -64,6 +64,10 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
   y,
   badge,
 }) => {
+  const pillWidth = badge.length > 18 ? 200 : 150;
+  const pillX = -pillWidth / 2;
+  const pillStroke = index === 9 ? "#7484FE" : index % 2 === 0 ? "#7484FE" : "#33FF67";
+
   return (
     <g
       transform={`translate(${x}, ${y})`}
@@ -363,31 +367,33 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
           )}
 
           {/* Editorial Pill Tag Under Planet */}
-          <g transform="translate(0, 115)">
-            <rect
-              x="-75"
-              y="-12"
-              width="150"
-              height="24"
-              rx="12"
-              fill="#2A2A2A"
-              stroke={index === 9 ? "#7484FE" : index % 2 === 0 ? "#7484FE" : "#33FF67"}
-              strokeWidth="1.2"
-              opacity="0.95"
-            />
-            <text
-              x="0"
-              y="4"
-              textAnchor="middle"
-              fill={index === 9 ? "#7484FE" : index % 2 === 0 ? "#7484FE" : "#33FF67"}
-              fontFamily="monospace"
-              fontSize="10"
-              fontWeight="bold"
-              letterSpacing="1.5"
-            >
-              {badge}
-            </text>
-          </g>
+          {badge && (
+            <g transform="translate(0, 115)">
+              <rect
+                x={pillX}
+                y="-12"
+                width={pillWidth}
+                height="24"
+                rx="12"
+                fill="#2A2A2A"
+                stroke={pillStroke}
+                strokeWidth="1.2"
+                opacity="0.95"
+              />
+              <text
+                x="0"
+                y="4"
+                textAnchor="middle"
+                fill={pillStroke}
+                fontFamily="monospace"
+                fontSize="10"
+                fontWeight="bold"
+                letterSpacing="1.5"
+              >
+                {badge}
+              </text>
+            </g>
+          )}
         </g>
       </Link>
     </g>
