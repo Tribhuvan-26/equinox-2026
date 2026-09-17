@@ -92,7 +92,19 @@ export function NavBar({
     <header
       className={cn("fixed top-4 right-0 left-0 z-[9990] px-4", className)}
     >
-      <div className="mx-auto flex max-w-[1400px] items-center justify-center">
+      <div className="relative mx-auto flex max-w-[1400px] items-center justify-center">
+        {/* CIE Logo — the homepage hero has its own CIE lockup while it's in view, so skip the duplicate there */}
+        {pathname !== "/" && (
+          <a
+            href="/"
+            aria-label="Centre for Innovation & Entrepreneurship"
+            className="absolute left-0 hidden items-center sm:flex"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logos/cie-white.png" alt="CIE" className="h-9 w-auto object-contain" />
+          </a>
+        )}
+
         {/* Center Nav Navigation */}
         <motion.nav
           aria-label="Primary"
