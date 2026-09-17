@@ -50,7 +50,7 @@ export const event = {
 
 export const nav = [
   { label: "Homepage", href: "/#top" },
-  { label: "Sub-Events", href: "/#events" },
+  { label: "Sub-Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },
   { label: "Registration", href: "/register" },
 ];
