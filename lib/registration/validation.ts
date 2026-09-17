@@ -33,9 +33,7 @@ export function validateParticipant(p: Participant): ParticipantErrors {
   if (!p.name.trim()) errors.name = "Name is required.";
   if (!p.rollNumber.trim()) errors.rollNumber = "Roll number is required.";
 
-  if (!p.college) errors.college = "Select a college.";
-  else if (p.college === "Other" && !p.collegeOther.trim())
-    errors.college = "Specify your college name.";
+  if (!p.college.trim()) errors.college = "College name is required.";
 
   if (!p.department) errors.department = "Select a department.";
   else if (p.department === "Other" && !p.departmentOther.trim())
