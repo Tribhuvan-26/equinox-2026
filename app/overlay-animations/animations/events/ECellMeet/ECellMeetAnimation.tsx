@@ -81,6 +81,22 @@ export const ECellMeetAnimation: React.FC<AnimationComponentProps> = ({
       role="dialog"
       aria-label="The E-CELL Meet Event Animation"
     >
+      {/* Top Left Branding: Equinox 2.0 */}
+      <div id="ecell-top-branding-left" className={styles.topBrandingLeft}>
+        <div className={styles.brandTitle}>
+          <span className={styles.brandThe}>THE </span>
+          <span className={styles.brandEquinox}>EQUINOX </span>
+          <span className={styles.brandVersion}>2.0</span>
+        </div>
+        <div className={styles.brandSub}>IDEAS &#183; STRATEGY &#183; PEOPLE &#183; GROWTH</div>
+      </div>
+
+      {/* Top Right Date & Venue: Oct 30-31 MLRIT */}
+      <div id="ecell-top-branding-right" className={styles.topBrandingRight}>
+        <span className={styles.dateDot} />
+        <span className={styles.dateText}>OCT 30-31 &#183; MLRIT</span>
+      </div>
+
       {/* Skip / Dismiss Button */}
       <button
         ref={skipButtonRef}

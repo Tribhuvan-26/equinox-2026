@@ -88,6 +88,26 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
       role="dialog"
       aria-label="Internship Drive Event Animation"
     >
+      {/* Top Left Branding: Equinox 2.0 with Reference Accent */}
+      <div id="idrive-top-branding-left" className={styles.topBrandingLeft}>
+        <div className={styles.brandTitle}>
+          <div className={styles.brandDotPair}>
+            <span className={styles.dotGreen} />
+            <span className={styles.dotViolet} />
+          </div>
+          <span className={styles.brandThe}>THE </span>
+          <span className={styles.brandEquinox}>EQUINOX </span>
+          <span className={styles.brandVersion}>2.0</span>
+        </div>
+        <div className={styles.brandSub}>CONNECT &#183; INTERN &#183; GROW</div>
+      </div>
+
+      {/* Top Right Date & Venue: Oct 30-31 MLRIT */}
+      <div id="idrive-top-branding-right" className={styles.topBrandingRight}>
+        <span className={styles.dateDot} />
+        <span className={styles.dateText}>OCT 30-31 &#183; MLRIT</span>
+      </div>
+
       {/* Skip / Dismiss Button */}
       <button
         ref={skipButtonRef}
@@ -144,6 +164,15 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
             <stop offset="100%" stopColor="#33FF67" stopOpacity="0.9" />
           </linearGradient>
 
+          {/* Ambient Blurred Spheres Blur Filters */}
+          <filter id="ambientBlurHeavy" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="24" result="blur" />
+          </filter>
+          <filter id="ambientBlurMedium" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="16" result="blur" />
+          </filter>
+
+          {/* Glowing Ball Radial Gradients (STRICTLY Green and Blue ONLY) */}
           <radialGradient id="sphereViolet" cx="40%" cy="40%" r="60%">
             <stop offset="0%" stopColor="#A8B4FF" />
             <stop offset="50%" stopColor="#7484FE" />
@@ -156,7 +185,19 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
             <stop offset="100%" stopColor="#0B3D18" stopOpacity="0" />
           </radialGradient>
 
+          <radialGradient id="sphereBlueCyan" cx="40%" cy="40%" r="60%">
+            <stop offset="0%" stopColor="#BAE6FD" />
+            <stop offset="45%" stopColor="#38BDF8" />
+            <stop offset="80%" stopColor="#0284C7" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#082F49" stopOpacity="0" />
+          </radialGradient>
+
           {/* Subtle Futuristic Glow Filters */}
+          <filter id="internshipTitleGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="0" stdDeviation="12" floodColor="#7484FE" floodOpacity="0.32" />
+            <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor="#FFFFFF" floodOpacity="0.25" />
+          </filter>
+
           <filter id="driveGlow" x="-20%" y="-20%" width="140%" height="140%">
             <feDropShadow dx="0" dy="0" stdDeviation="12" floodColor="#7484FE" floodOpacity="0.35" />
             <feDropShadow dx="0" dy="0" stdDeviation="24" floodColor="#33FF67" floodOpacity="0.2" />
@@ -294,10 +335,62 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
           <line x1="0" y1="-160" x2="0" y2="160" />
         </g>
 
-        {/* Atmospheric Glowing Spheres & Left-Side Partially Visible Globe */}
-        <g pointerEvents="none">
-          <circle cx="1360" cy="68" r="16" fill="url(#sphereCyan)" opacity="0.9" />
-          <circle cx="1425" cy="510" r="18" fill="url(#sphereCyan)" opacity="0.75" />
+        {/* Atmospheric Glowing Blurred Balls (Strictly Green & Blue) & Left Globe */}
+        <g id="ambientGlowingSpheres" pointerEvents="none">
+          {/* Ball 1: Top-left atmospheric blue blur orb (behind branding header) */}
+          <circle
+            id="ambientBall1"
+            cx="140"
+            cy="55"
+            r="46"
+            fill="url(#sphereViolet)"
+            opacity="0.85"
+            filter="url(#ambientBlurHeavy)"
+          />
+
+          {/* Ball 2: Top-right vibrant neon-green blur orb */}
+          <circle
+            id="ambientBall2"
+            cx="1360"
+            cy="75"
+            r="38"
+            fill="url(#sphereCyan)"
+            opacity="0.85"
+            filter="url(#ambientBlurMedium)"
+          />
+
+          {/* Ball 3: Center-left electric sky-blue blur orb (behind title transition) */}
+          <circle
+            id="ambientBall3"
+            cx="440"
+            cy="360"
+            r="52"
+            fill="url(#sphereBlueCyan)"
+            opacity="0.75"
+            filter="url(#ambientBlurHeavy)"
+          />
+
+          {/* Ball 4: Mid-right emerald-green blur orb (behind student & wireframe) */}
+          <circle
+            id="ambientBall4"
+            cx="1440"
+            cy="480"
+            r="44"
+            fill="url(#sphereCyan)"
+            opacity="0.80"
+            filter="url(#ambientBlurMedium)"
+          />
+
+          {/* Ball 5: Lower-center electric periwinkle-blue blur orb (behind handshake horizon) */}
+          <circle
+            id="ambientBall5"
+            cx="800"
+            cy="680"
+            r="50"
+            fill="url(#sphereViolet)"
+            opacity="0.75"
+            filter="url(#ambientBlurHeavy)"
+          />
 
           {/* Left-Side Partially Visible Globe (Subtle Orbital Floating & Parallax Rotation) */}
           <g id="leftGlobe" transform="translate(6, 620)">
@@ -306,31 +399,8 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
         </g>
 
         <g id="animatedRoot">
-          {/* Top Decorative Double Dot Accent */}
-          <g transform="translate(42, 50)">
-            <circle cx="0" cy="-10" r="14" fill="#33FF67" opacity="0.95" />
-            <circle cx="0" cy="14" r="14" fill="#7484FE" opacity="0.95" />
-          </g>
-
           {/* ========================================================= */}
-          {/* 1. TOP METADATA                                           */}
-          {/* ========================================================= */}
-          <g id="topMetadata">
-            <text
-              x="92"
-              y="58"
-              className="font-mono-bold"
-              fontWeight="900"
-              fontSize="16"
-              letterSpacing="0.14em"
-              fill="#F7F2F6"
-            >
-              THE EQUINOX 2.0 &#183; 30-31 OCT &#183; MLRIT
-            </text>
-          </g>
-
-          {/* ========================================================= */}
-          {/* 2. HERO HEADLINE & TAGLINE                                */}
+          {/* 1. HERO HEADLINE & TAGLINE                                */}
           {/* ========================================================= */}
           <g id="headlineGroup">
             <text
@@ -343,7 +413,8 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
               letterSpacing="-0.03em"
               textLength="730"
               lengthAdjust="spacingAndGlyphs"
-              fill="#111111"
+              fill="#FFFFFF"
+              filter="url(#internshipTitleGlow)"
             >
               INTERNSHIP
             </text>
@@ -380,14 +451,15 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
             <text
               id="headlineTagline"
               x="90"
-              y="525"
+              y="518"
               className="font-sans-bold"
-              fontWeight="800"
-              fontSize="36"
-              letterSpacing="0.01em"
-              fill="#111111"
+              fontWeight="700"
+              fontSize="24"
+              letterSpacing="0.04em"
+              fill="#CBD5E1"
+              filter="drop-shadow(0 2px 8px rgba(116, 132, 254, 0.35))"
             >
-              Connect. Intern. Grow.
+              Interlinked networks, exponential growth
             </text>
           </g>
 

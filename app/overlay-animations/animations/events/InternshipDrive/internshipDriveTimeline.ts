@@ -64,9 +64,26 @@ export function createInternshipDriveTimeline(
 
   const q = gsap.utils.selector(container);
 
+  const elTopBrandingLeft = q("#idrive-top-branding-left");
+  const elTopBrandingRight = q("#idrive-top-branding-right");
+  const elTopBrandVersion = q("#idrive-top-branding-left [class*='brandVersion']");
+  const elTopBrandDots = q("#idrive-top-branding-left [class*='brandDotPair'] span");
+  const elTopDateDot = q("#idrive-top-branding-right [class*='dateDot']");
+
   if (prefersReducedMotion) {
     gsap.set(container, { opacity: 1 });
     if (skipButton) gsap.set(skipButton, { opacity: 1, pointerEvents: "auto" });
+    gsap.set([elTopBrandingLeft, elTopBrandingRight], { opacity: 1, y: 0 });
+    gsap.set(
+      [
+        q("#ambientBall1"),
+        q("#ambientBall2"),
+        q("#ambientBall3"),
+        q("#ambientBall4"),
+        q("#ambientBall5"),
+      ],
+      { opacity: 0.8, scale: 1 }
+    );
     gsap.set(q("#headlineInternship"), { opacity: 1, y: 0 });
     gsap.set(q("#headlineDrive"), { opacity: 1, y: 0 });
     gsap.set(q("#headlineTagline"), { opacity: 1, y: 0 });
@@ -95,8 +112,18 @@ export function createInternshipDriveTimeline(
   gsap.set(container, { opacity: 0 });
   if (skipButton) gsap.set(skipButton, { opacity: 1, pointerEvents: "auto" });
 
-  // Stable header & background accents
-  gsap.set(q("#topMetadata"), { opacity: 1, y: 0 });
+  // Top branding headers initial state
+  gsap.set([elTopBrandingLeft, elTopBrandingRight], { opacity: 0, y: -16 });
+  gsap.set(
+    [
+      q("#ambientBall1"),
+      q("#ambientBall2"),
+      q("#ambientBall3"),
+      q("#ambientBall4"),
+      q("#ambientBall5"),
+    ],
+    { opacity: 0, scale: 0.75, transformOrigin: "center center" }
+  );
   gsap.set(q("#groundLine"), { opacity: 0, scaleX: 0, transformOrigin: "760px 738px" });
   gsap.set(q("#headlineTagline"), { opacity: 0, y: 15 });
 
@@ -146,6 +173,38 @@ export function createInternshipDriveTimeline(
   // 0.00 – 0.25s: Full-screen splash screen establishes cleanly
   tl.to(container, { opacity: 1, duration: 0.25, ease: "power1.out" }, 0.0);
 
+  // Top branding headers reveal (Equinox 2.0 on top left, Oct 30-31 MLRIT on top right)
+  tl.to(
+    [elTopBrandingLeft, elTopBrandingRight],
+    {
+      opacity: 1,
+      y: 0,
+      duration: 0.45,
+      stagger: 0.1,
+      ease: "power2.out",
+    },
+    0.10
+  );
+
+  // Atmospheric blurred balls reveal softly
+  tl.to(
+    [
+      q("#ambientBall1"),
+      q("#ambientBall2"),
+      q("#ambientBall3"),
+      q("#ambientBall4"),
+      q("#ambientBall5"),
+    ],
+    {
+      opacity: 1,
+      scale: 1,
+      duration: 0.90,
+      stagger: 0.08,
+      ease: "power2.out",
+    },
+    0.04
+  );
+
   // Ground line expands early
   tl.to(q("#groundLine"), { opacity: 1, scaleX: 1, duration: 0.50, ease: "power2.out" }, 0.15);
 
@@ -193,14 +252,16 @@ export function createInternshipDriveTimeline(
   // ==========================================================================
   // REQUIREMENT 6: MAIN TITLE ENTRANCE ANIMATION & ONE-TIME LIGHT SWEEP
   // ==========================================================================
-  // "INTERNSHIP" appears with a subtle upward/fade-in reveal
-  tl.to(
+  // "INTERNSHIP" appears with a punchy upward/fade-in reveal
+  tl.fromTo(
     q("#headlineInternship"),
+    { opacity: 0, y: 28, scale: 0.96 },
     {
       opacity: 1,
       y: 0,
-      duration: 0.60,
-      ease: "power2.out",
+      scale: 1,
+      duration: 0.65,
+      ease: "back.out(1.2)",
     },
     0.08
   );
@@ -217,16 +278,17 @@ export function createInternshipDriveTimeline(
     0.24
   );
 
-  // Tagline enters smoothly
-  tl.to(
+  // Tagline "Interlinked networks, exponential growth" enters smoothly
+  tl.fromTo(
     q("#headlineTagline"),
+    { opacity: 0, y: 16 },
     {
       opacity: 1,
       y: 0,
-      duration: 0.45,
+      duration: 0.55,
       ease: "power2.out",
     },
-    0.50
+    0.42
   );
 
   // Subtle light/glow sweep across the title once during entrance
@@ -438,6 +500,143 @@ export function createInternshipDriveTimeline(
   // ==========================================================================
   // CONTINUOUS POST-ENTRANCE LOOPS: ICON FLOATING, PULSE, AND FLOW CYCLES
   // ==========================================================================
+  // Living pulse & continuous glow on Top Branding accents (Equinox 2.0 & Date Dot)
+  if (elTopBrandVersion.length > 0) {
+    gsap.to(elTopBrandVersion, {
+      scale: 1.05,
+      filter: "drop-shadow(0 0 16px rgba(56, 189, 248, 0.85))",
+      duration: 1.8,
+      ease: "sine.inOut",
+      yoyo: true,
+      repeat: -1,
+      transformOrigin: "center center",
+    });
+  }
+  if (elTopBrandDots.length > 0) {
+    gsap.to(elTopBrandDots, {
+      scale: 1.3,
+      opacity: 0.7,
+      duration: 1.3,
+      stagger: 0.2,
+      ease: "sine.inOut",
+      yoyo: true,
+      repeat: -1,
+    });
+  }
+  if (elTopDateDot.length > 0) {
+    gsap.to(elTopDateDot, {
+      scale: 1.35,
+      opacity: 0.6,
+      duration: 1.2,
+      ease: "sine.inOut",
+      yoyo: true,
+      repeat: -1,
+    });
+  }
+
+  // Living breathing & glow on the INTERNSHIP title
+  gsap.to(q("#headlineInternship"), {
+    filter: "drop-shadow(0 0 20px rgba(116, 132, 254, 0.48))",
+    duration: 2.2,
+    ease: "sine.inOut",
+    yoyo: true,
+    repeat: -1,
+    delay: 1.8,
+  });
+
+  // Living pulse on the tagline "Interlinked networks, exponential growth"
+  gsap.to(q("#headlineTagline"), {
+    opacity: 0.72,
+    duration: 2.0,
+    ease: "sine.inOut",
+    yoyo: true,
+    repeat: -1,
+    delay: 2.2,
+  });
+
+  // Continuous periodic title shine sweep across INTERNSHIP & DRIVE
+  const titleSweepLoop = gsap.timeline({
+    delay: 3.5,
+    repeat: -1,
+    repeatDelay: 3.0,
+  });
+  titleSweepLoop
+    .set(q("#titleShineSweep"), { x: -260, opacity: 0 })
+    .to(q("#titleShineSweep"), {
+      x: 1050,
+      opacity: 0.95,
+      duration: 0.85,
+      ease: "power1.inOut",
+    })
+    .to(q("#titleShineSweep"), { opacity: 0, duration: 0.15 }, "-=0.15");
+
+  // ==========================================================================
+  // 5 Atmospheric Blurred Balls: Subtle Floating & Breathing Loops (Green & Blue)
+  // ==========================================================================
+  gsap.to(q("#ambientBall1"), {
+    x: 10,
+    y: -12,
+    scale: 1.12,
+    opacity: 0.65,
+    duration: 3.8,
+    ease: "sine.inOut",
+    yoyo: true,
+    repeat: -1,
+    transformOrigin: "center center",
+  });
+
+  gsap.to(q("#ambientBall2"), {
+    x: -12,
+    y: 10,
+    scale: 1.15,
+    opacity: 0.62,
+    duration: 4.2,
+    ease: "sine.inOut",
+    yoyo: true,
+    repeat: -1,
+    delay: 0.4,
+    transformOrigin: "center center",
+  });
+
+  gsap.to(q("#ambientBall3"), {
+    x: -8,
+    y: -14,
+    scale: 1.1,
+    opacity: 0.58,
+    duration: 3.4,
+    ease: "sine.inOut",
+    yoyo: true,
+    repeat: -1,
+    delay: 0.2,
+    transformOrigin: "center center",
+  });
+
+  gsap.to(q("#ambientBall4"), {
+    x: 12,
+    y: -10,
+    scale: 1.14,
+    opacity: 0.64,
+    duration: 4.5,
+    ease: "sine.inOut",
+    yoyo: true,
+    repeat: -1,
+    delay: 0.6,
+    transformOrigin: "center center",
+  });
+
+  gsap.to(q("#ambientBall5"), {
+    x: 14,
+    y: 10,
+    scale: 1.12,
+    opacity: 0.6,
+    duration: 3.6,
+    ease: "sine.inOut",
+    yoyo: true,
+    repeat: -1,
+    delay: 0.3,
+    transformOrigin: "center center",
+  });
+
   // Subtle floating/pulse on CONNECT, INTERN, GROW icons after appearing
   gsap.to([q("#iconGroupConnect"), q("#iconGroupIntern"), q("#iconGroupGrow")], {
     y: -3.5,

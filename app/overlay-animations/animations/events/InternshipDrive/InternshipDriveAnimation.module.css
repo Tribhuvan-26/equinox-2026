@@ -6,7 +6,7 @@
   width: 100vw;
   height: 100vh;
   z-index: 1000000;
-  background-color: #F5ECD9;
+  background-color: #000000;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -24,6 +24,121 @@
   pointer-events: none;
 }
 
+/* =========================================================================
+   TOP BRANDING HEADER (Equinox 2.0 & Oct 30-31 MLRIT)
+   ========================================================================= */
+.topBrandingLeft {
+  position: absolute;
+  top: 1.5rem;
+  left: 2rem;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  user-select: none;
+}
+
+.brandTitle {
+  font-family: var(--font-display, 'Outfit', 'Inter', sans-serif);
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  line-height: 1.1;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.brandDotPair {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-right: 0.2rem;
+}
+
+.dotGreen {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background-color: #33FF67;
+  box-shadow: 0 0 6px #33FF67;
+}
+
+.dotViolet {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background-color: #7484FE;
+  box-shadow: 0 0 6px #7484FE;
+}
+
+.brandThe {
+  font-weight: 800;
+  color: #CBD5E1;
+  letter-spacing: 0.12em;
+}
+
+.brandEquinox {
+  font-weight: 900;
+  color: #FFFFFF;
+}
+
+.brandVersion {
+  font-weight: 900;
+  color: #38BDF8;
+  background: linear-gradient(135deg, #7484FE 0%, #38BDF8 50%, #33FF67 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.5));
+  will-change: transform, opacity;
+}
+
+.brandSub {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 0.3rem;
+  margin-left: 1.2rem;
+}
+
+.topBrandingRight {
+  position: absolute;
+  top: 1.5rem;
+  right: 7.5rem;
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.95rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #F7F2F6;
+  background: rgba(20, 22, 28, 0.85);
+  border: 1.5px solid rgba(116, 132, 254, 0.35);
+  border-radius: 9999px;
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+  user-select: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  will-change: transform, opacity;
+}
+
+.dateDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background-color: #38BDF8;
+  box-shadow: 0 0 8px #38BDF8;
+}
+
 /* Skip / Dismiss Button */
 .skipButton {
   position: absolute;
@@ -39,26 +154,53 @@
   font-weight: 800;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #111111;
-  background-color: rgba(255, 255, 255, 0.9);
-  border: 2px solid #111111;
+  color: #F7F2F6;
+  background-color: rgba(30, 31, 33, 0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
   border-radius: 9999px;
   cursor: pointer;
-  box-shadow: 2px 2px 0px #111111;
-  backdrop-filter: blur(8px);
-  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(10px);
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
   pointer-events: auto;
 }
 
 .skipButton:hover {
-  background-color: #ffffff;
+  background-color: rgba(45, 47, 50, 0.95);
+  border-color: #38BDF8;
+  color: #38BDF8;
   transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0px #111111;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
 }
 
 .skipButton:active {
   transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px #111111;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 640px) {
+  .topBrandingLeft {
+    top: 1rem;
+    left: 1rem;
+  }
+  .brandTitle {
+    font-size: 0.95rem;
+  }
+  .brandSub {
+    display: none;
+  }
+  .topBrandingRight {
+    top: 1rem;
+    right: 5.5rem;
+    padding: 0.4rem 0.65rem;
+    font-size: 0.65rem;
+  }
+  .skipButton {
+    top: 1rem;
+    right: 1rem;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.7rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -66,3 +208,4 @@
     transition: opacity 0.2s ease-in-out;
   }
 }
+

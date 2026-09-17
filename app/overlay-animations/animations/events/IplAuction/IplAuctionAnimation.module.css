@@ -4,39 +4,120 @@
   width: 100vw;
   height: 100vh;
   z-index: 99999;
-  background: rgba(10, 16, 30, 0.82);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #F7F1E5;
-  padding: 1.5rem;
+  background-color: #F5EFE3;
+  padding: 0;
   margin: 0;
   overflow: hidden;
+  user-select: none;
 }
 
 .stageFrame {
+  position: absolute;
+  inset: 0;
   width: 100vw;
   height: 100vh;
-  background-color: #F7F1E5;
-  overflow: hidden;
-  position: relative;
-  width: 100%;
-  max-width: 1400px;
-  max-height: 88vh;
-  aspect-ratio: 16 / 9;
-  border-radius: 18px;
-  overflow: hidden;
   background-color: #F5EFE3;
-  box-shadow:
-    0 25px 60px -15px rgba(0, 0, 0, 0.6),
-    0 0 0 1.5px rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+  max-width: none;
+  max-height: none;
+  border-radius: 0;
+  box-shadow: none;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
   margin: 0;
+}
+
+/* =========================================================================
+   TOP BRANDING HEADER (Equinox 2.0 & Oct 30-31 MLRIT)
+   ========================================================================= */
+.topBrandingLeft {
+  position: absolute;
+  top: 1.5rem;
+  left: 2rem;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  user-select: none;
+}
+
+.brandTitle {
+  font-family: var(--font-display, 'Outfit', 'Inter', sans-serif);
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #0D1B3E;
+  line-height: 1.1;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.brandThe {
+  font-weight: 800;
+  color: #4B5563;
+  letter-spacing: 0.12em;
+}
+
+.brandEquinox {
+  font-weight: 900;
+  color: #0D1B3E;
+}
+
+.brandVersion {
+  font-weight: 900;
+  color: #1A5FE0;
+  text-shadow: 0 0 14px rgba(26, 95, 224, 0.45);
+  will-change: transform, opacity;
+}
+
+.brandSub {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(13, 27, 62, 0.6);
+  margin-top: 0.3rem;
+}
+
+.topBrandingRight {
+  position: absolute;
+  top: 1.5rem;
+  right: 7.5rem;
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.95rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #0D1B3E;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1.5px solid rgba(26, 95, 224, 0.25);
+  border-radius: 9999px;
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+  user-select: none;
+  box-shadow: 0 4px 12px rgba(13, 27, 62, 0.08);
+  will-change: transform, opacity;
+}
+
+.dateDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background-color: #1A5FE0;
+  box-shadow: 0 0 8px #1A5FE0;
 }
 
 .sceneSvg {

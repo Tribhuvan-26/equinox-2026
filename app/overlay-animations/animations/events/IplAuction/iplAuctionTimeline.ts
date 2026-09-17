@@ -30,9 +30,18 @@ export function createIplAuctionTimeline(
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  const q = targets.container ? gsap.utils.selector(targets.container) : null;
+  const elTopBrandingLeft = q ? q("#ipl-top-branding-left") : null;
+  const elTopBrandingRight = q ? q("#ipl-top-branding-right") : null;
+  const elTopBrandVersion = q ? q("#ipl-top-branding-left [class*='brandVersion']") : null;
+  const elTopDateDot = q ? q("#ipl-top-branding-right [class*='dateDot']") : null;
+
   if (prefersReducedMotion) {
     if (targets.container) gsap.set(targets.container, { opacity: 1 });
     if (targets.stageFrame) gsap.set(targets.stageFrame, { opacity: 1 });
+    if (elTopBrandingLeft && elTopBrandingRight) {
+      gsap.set([elTopBrandingLeft, elTopBrandingRight], { opacity: 1, y: 0 });
+    }
 
     tl.to({}, { duration: 5.5 });
 
@@ -64,6 +73,10 @@ export function createIplAuctionTimeline(
 
   if (targets.stageFrame) {
     gsap.set(targets.stageFrame, { opacity: 0 });
+  }
+
+  if (elTopBrandingLeft && elTopBrandingRight) {
+    gsap.set([elTopBrandingLeft, elTopBrandingRight], { opacity: 0, y: -16 });
   }
 
   if (targets.skipButton) {
@@ -131,6 +144,43 @@ export function createIplAuctionTimeline(
       },
       0
     );
+  }
+
+  // Top branding reveal (Equinox 2.0 on top-left, Oct 30-31 MLRIT on top-right)
+  if (elTopBrandingLeft && elTopBrandingRight) {
+    tl.to(
+      [elTopBrandingLeft, elTopBrandingRight],
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.45,
+        stagger: 0.1,
+        ease: "power2.out",
+      },
+      0.10
+    );
+  }
+
+  // Living loop for top branding accents
+  if (elTopBrandVersion && elTopBrandVersion.length > 0) {
+    gsap.to(elTopBrandVersion, {
+      scale: 1.06,
+      duration: 1.8,
+      ease: "sine.inOut",
+      yoyo: true,
+      repeat: -1,
+      transformOrigin: "center center",
+    });
+  }
+  if (elTopDateDot && elTopDateDot.length > 0) {
+    gsap.to(elTopDateDot, {
+      scale: 1.35,
+      opacity: 0.6,
+      duration: 1.2,
+      ease: "sine.inOut",
+      yoyo: true,
+      repeat: -1,
+    });
   }
 
   if (targets.skipButton) {

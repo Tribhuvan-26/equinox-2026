@@ -28,7 +28,8 @@ export async function generateMetadata({
 
 export default async function EventPage({ params }: PageProps) {
   const { slug } = await params;
-  const item = eventsData[slug];
+  const normalizedSlug = slug in eventsData ? slug : slug.replace(/_/g, "-");
+  const item = eventsData[normalizedSlug];
   if (!item) notFound();
 
   return (

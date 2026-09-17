@@ -89,6 +89,11 @@ export function createECellMeetTimeline(
   const elStallGrow = q("#stall-info-grow");
   const elStallGrowLine = q("#stall-info-grow-line");
 
+  const elTopBrandingLeft = q("#ecell-top-branding-left");
+  const elTopBrandingRight = q("#ecell-top-branding-right");
+  const elTopBrandVersion = q("#ecell-top-branding-left [class*='brandVersion']");
+  const elTopDateDot = q("#ecell-top-branding-right [class*='dateDot']");
+
   // =========================================================================
   // 1. INITIAL RESTING / HIDDEN STATES (t = 0.0s)
   // =========================================================================
@@ -102,6 +107,9 @@ export function createECellMeetTimeline(
     y: 0,
     scale: 1,
   });
+
+  // Top branding headers initial state
+  gsap.set([elTopBrandingLeft, elTopBrandingRight], { opacity: 0, y: -16 });
 
   // Skip button initial state
   if (skipButton) {
@@ -152,6 +160,19 @@ export function createECellMeetTimeline(
   // =========================================================================
   // 2. CHOREOGRAPHED ENTRANCE TIMELINE (0.0s – 1.6s)
   // =========================================================================
+
+  // Top branding headers reveal (Equinox 2.0 on top left, Oct 30-31 MLRIT on top right)
+  tl.to(
+    [elTopBrandingLeft, elTopBrandingRight],
+    {
+      opacity: 1,
+      y: 0,
+      duration: 0.45,
+      stagger: 0.1,
+      ease: "power2.out",
+    },
+    0.12
+  );
 
   // Skip button reveal
   if (skipButton) {
@@ -434,6 +455,29 @@ export function createECellMeetTimeline(
       .to(elStallIdeas, { opacity: 0.65, duration: 0.35, yoyo: true, repeat: 1, ease: "power1.inOut" })
       .to(elStallNetwork, { opacity: 0.65, duration: 0.35, yoyo: true, repeat: 1, ease: "power1.inOut" }, "-=0.1")
       .to(elStallGrow, { opacity: 0.75, duration: 0.35, yoyo: true, repeat: 1, ease: "power1.inOut" }, "-=0.1");
+
+    // 5. Top branding subtle living kinetic pulse (Equinox 2.0 glow & date indicator)
+    if (elTopBrandVersion) {
+      gsap.to(elTopBrandVersion, {
+        scale: 1.06,
+        opacity: 0.85,
+        duration: 1.8,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+        transformOrigin: "center center",
+      });
+    }
+    if (elTopDateDot) {
+      gsap.to(elTopDateDot, {
+        scale: 1.35,
+        opacity: 0.6,
+        duration: 1.2,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+      });
+    }
   }, 1.45);
 
   // Settle milestone
