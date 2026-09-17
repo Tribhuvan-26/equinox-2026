@@ -49,9 +49,13 @@ export default function HomePage() {
           ========================================================================= */}
       <section
         id="about"
-        className="relative mx-auto max-w-[1400px] px-4 py-16 sm:px-8 sm:py-32 md:py-48"
+        className="relative mx-auto max-w-[1400px] overflow-hidden px-4 py-16 sm:px-8 sm:py-32 md:py-48"
       >
-        <div className="max-w-5xl">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-20 left-1/4 h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(closest-side,rgba(116,132,254,0.18),transparent)] blur-3xl"
+        />
+        <div className="relative max-w-5xl">
           <h2
             className="font-display-title font-black leading-[0.95] tracking-tight text-[#F7F2F6] break-words hyphens-auto"
             style={{ fontSize: "clamp(1.9rem, 5.2vw, 5.5rem)" }}
@@ -135,7 +139,7 @@ export default function HomePage() {
             return (
               <div
                 key={item.label}
-                className={`group rounded-3xl border border-white/10 bg-[#151515] p-7 transition-colors duration-500 hover:border-white/25 ${
+                className={`program-card group rounded-3xl border border-white/10 bg-[#151515] p-7 hover:border-white/25 ${
                   wide ? "sm:col-span-4" : "sm:col-span-2"
                 }`}
               >
@@ -169,8 +173,12 @@ export default function HomePage() {
           ========================================================================= */}
       <section
         id="impact"
-        className="relative mx-auto max-w-[1400px] px-4 py-16 sm:px-8 sm:py-32 md:py-48"
+        className="relative mx-auto max-w-[1400px] overflow-hidden px-4 py-16 sm:px-8 sm:py-32 md:py-48"
       >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute top-1/3 right-0 h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(closest-side,rgba(51,255,103,0.14),transparent)] blur-3xl"
+        />
         <PinnedSplit
           aside={
             <div>
@@ -187,14 +195,14 @@ export default function HomePage() {
           }
         >
           <ScrollReveal className="space-y-4">
-            <div className="rounded-2xl border border-white/10 bg-[#151515] p-6">
+            <div className="program-card rounded-2xl border border-white/10 bg-[#151515] p-6">
               <h4 className="text-lg font-bold text-[#7484FE]">Direct Campus Engagement</h4>
               <p className="mt-1 text-sm text-[#F7F2F6]/85">
                 Direct visibility before 2,000+ top engineering and MBA students, coders, and startup innovators.
               </p>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-[#151515] p-6">
+            <div className="program-card rounded-2xl border border-white/10 bg-[#151515] p-6">
               <h4 className="text-lg font-bold text-[#7484FE]">Talent &amp; Startup Scouting</h4>
               <p className="mt-1 text-sm text-[#F7F2F6]/85">
                 Immediate access to hiring pipelines via Internship Drive and pre-screened student ventures in Pitch Deck and Startup Expo.
@@ -203,25 +211,25 @@ export default function HomePage() {
           </ScrollReveal>
 
           <ScrollReveal className="mt-4 grid grid-cols-2 gap-4" stagger={0.06}>
-            <div className="rounded-3xl border border-[#7484FE]/30 bg-[#151515] p-8 text-[#F7F2F6]">
+            <div className="program-card rounded-3xl border border-[#7484FE]/30 bg-[#151515] p-8 text-[#F7F2F6]">
               <span className="font-mono text-xs font-black uppercase text-[#7484FE]">Audience Reach</span>
               <p className="mt-2 font-mono text-5xl font-black text-[#7484FE] sm:text-6xl">2,000+</p>
               <p className="mt-2 font-bold text-base text-[#F7F2F6]">Footfall</p>
             </div>
 
-            <div className="rounded-3xl border border-white/10 bg-[#151515] p-8">
+            <div className="program-card rounded-3xl border border-white/10 bg-[#151515] p-8">
               <span className="font-mono text-xs font-black uppercase text-[#33FF67]">Active Delegates</span>
               <p className="mt-2 font-mono text-5xl font-black text-[#33FF67] sm:text-6xl">600+</p>
               <p className="mt-2 font-bold text-[#F7F2F6] text-base">Participants</p>
             </div>
 
-            <div className="rounded-3xl border border-white/10 bg-[#151515] p-8">
+            <div className="program-card rounded-3xl border border-white/10 bg-[#151515] p-8">
               <span className="font-mono text-xs font-black uppercase text-[#7484FE]">Ecosystem</span>
               <p className="mt-2 font-mono text-5xl font-black text-[#7484FE] sm:text-6xl">15+</p>
               <p className="mt-2 font-bold text-[#F7F2F6] text-base">Startups</p>
             </div>
 
-            <div className="rounded-3xl border border-[#33FF67]/30 bg-[#151515] p-8 text-[#F7F2F6]">
+            <div className="program-card rounded-3xl border border-[#33FF67]/30 bg-[#151515] p-8 text-[#F7F2F6]">
               <span className="font-mono text-xs font-black uppercase text-[#33FF67]">Competitions</span>
               <p className="mt-2 font-mono text-5xl font-black text-[#33FF67] sm:text-6xl">10</p>
               <p className="mt-2 text-base font-bold text-[#F7F2F6]">Sub-Events</p>
@@ -240,10 +248,14 @@ export default function HomePage() {
           ========================================================================= */}
       <section
         id="contact"
-        className="relative mx-auto max-w-[1400px] px-4 py-16 sm:px-8 sm:py-32 md:py-48"
+        className="relative mx-auto max-w-[1400px] overflow-hidden px-4 py-16 sm:px-8 sm:py-32 md:py-48"
       >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-32 left-1/2 h-[34rem] w-[50rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(116,132,254,0.16),transparent)] blur-3xl"
+        />
         {/* Dark Editorial Heading Replicating Page 12 */}
-        <div className="max-w-3xl">
+        <div className="relative max-w-3xl">
           <h2
             className="font-display-title font-black leading-[0.9] tracking-tighter text-[#F7F2F6]"
             style={{ fontSize: "clamp(3.25rem, 7vw, 7rem)" }}
@@ -286,7 +298,7 @@ export default function HomePage() {
         </div>
 
         {/* Official Contact Box */}
-        <div className="mt-12 rounded-3xl border border-white/10 bg-[#151515] p-8 sm:p-10">
+        <div className="program-card mt-12 rounded-3xl border border-white/10 bg-[#151515] p-8 sm:p-10">
           <div className="grid gap-8 lg:grid-cols-2">
             {/* Email & Website */}
             <div className="space-y-6">

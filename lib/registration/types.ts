@@ -31,6 +31,8 @@ export type RegistrationRecord = {
   admin_note: string | null;
   created_at: string;
   updated_at: string;
+  team_seq: number;
+  confirmation_number: string;
 };
 
 export function emptyParticipant(): Participant {

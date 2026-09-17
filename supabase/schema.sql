@@ -19,7 +19,9 @@ create table if not exists public.pass_registrations (
   status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
   admin_note text,
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  team_seq bigserial,
+  confirmation_number text unique
 );
 
 create index if not exists pass_registrations_status_idx on public.pass_registrations (status);

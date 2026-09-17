@@ -57,6 +57,11 @@ export async function POST(request: Request) {
   const supabase = supabaseAdmin();
   const registrationId = randomUUID();
 
+  function generateConfirmationNumber(): string {
+    const code = randomUUID().replace(/-/g, "").slice(0, 6).toUpperCase();
+    return `CNF-${code}`;
+  }
+
   let screenshotPath: string;
   let utrProofPath: string | null = null;
   try {
@@ -71,23 +76,47 @@ export async function POST(request: Request) {
 
   const totalAmount = participants.length * REGISTRATION_FEE;
 
-  const { error } = await supabase.from("pass_registrations").insert({
-    id: registrationId,
-    participants: participants.map(participantForStorage),
-    participant_count: participants.length,
-    total_amount: totalAmount,
-    payment_screenshot_path: screenshotPath,
-    utr_number: utrNumber,
-    utr_proof_path: utrProofPath,
-    status: "pending",
-  });
+  let confirmationNumber = generateConfirmationNumber();
+  let teamSeq: number | null = null;
 
-  if (error) {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const { data, error } = await supabase
+      .from("pass_registrations")
+      .insert({
+        id: registrationId,
+        participants: participants.map(participantForStorage),
+        participant_count: participants.length,
+        total_amount: totalAmount,
+        payment_screenshot_path: screenshotPath,
+        utr_number: utrNumber,
+        utr_proof_path: utrProofPath,
+        status: "pending",
+        confirmation_number: confirmationNumber,
+      })
+      .select("team_seq")
+      .single();
+
+    if (!error) {
+      teamSeq = data.team_seq;
+      break;
+    }
+
+    const isConfirmationCollision = error.code === "23505" && error.message.includes("confirmation_number");
+    if (isConfirmationCollision && attempt === 0) {
+      confirmationNumber = generateConfirmationNumber();
+      continue;
+    }
+
     console.error("[register] insert failed", error);
     return NextResponse.json({ error: "Could not save your registration. Please try again." }, { status: 500 });
   }
 
-  return NextResponse.json({ id: registrationId, totalAmount }, { status: 201 });
+  const teamNumber = `EQ-${String(teamSeq).padStart(3, "0")}`;
+
+  return NextResponse.json(
+    { id: registrationId, totalAmount, confirmationNumber, teamNumber },
+    { status: 201 }
+  );
 
   async function uploadFile(file: File, path: string): Promise<string> {
     const ext = extensionFor(file.type);

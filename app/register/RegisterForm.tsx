@@ -60,7 +60,11 @@ function RegistrationFormBody() {
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [result, setResult] = useState<{ id: string; totalAmount: number } | null>(null);
+  const [result, setResult] = useState<{
+    totalAmount: number;
+    confirmationNumber: string;
+    teamNumber: string;
+  } | null>(null);
   const submitLock = useRef(false);
 
   const totalAmount = participants.length * REGISTRATION_FEE;
@@ -126,7 +130,11 @@ function RegistrationFormBody() {
         return;
       }
 
-      setResult({ id: data.id, totalAmount: data.totalAmount });
+      setResult({
+        totalAmount: data.totalAmount,
+        confirmationNumber: data.confirmationNumber,
+        teamNumber: data.teamNumber,
+      });
     } catch {
       setSubmitError("Network error. Please check your connection and try again.");
       submitLock.current = false;
@@ -144,7 +152,10 @@ function RegistrationFormBody() {
         <p className="mx-auto mt-3 max-w-xl text-[#F7F2F6]/85">
           You will receive a confirmation email within 24 hours after verification.
         </p>
-        <p className="mt-4 font-mono text-sm text-[#F7F2F6]/60">Registration ID: {result.id}</p>
+        <div className="mt-4 flex flex-col items-center gap-1 font-mono text-sm text-[#F7F2F6]/60">
+          <p>Confirmation Number: <span className="text-[#33FF67]">{result.confirmationNumber}</span></p>
+          <p>Team Number: <span className="text-[#33FF67]">{result.teamNumber}</span></p>
+        </div>
       </div>
     );
   }
