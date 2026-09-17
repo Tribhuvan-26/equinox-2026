@@ -73,6 +73,7 @@ export const OVERALL_COORDINATORS: EventSPOC[] = [
 export const EVENT_SPOCS: Record<string, EventSPOC[]> = {
   "spotlight": [
     { name: "Rithish Kumar", phone: "+91 93987 53113", phoneRaw: "+919398753113" },
+    { name: "Yashwanth Abhishek", phone: "+91 96520 97857", phoneRaw: "+919652097857" },
   ],
   "crossroads": [
     { name: "Indu", phone: "+91 89197 51488", phoneRaw: "+918919751488" },

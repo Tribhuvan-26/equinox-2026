@@ -271,6 +271,7 @@ STRICT GROUNDING & BEHAVIOR RULES:
    C) Sub-Event Specific SPOCs (ONLY for that specific sub-event):
       • Spotlight:
         - Rithish Kumar — +91 93987 53113
+        - Yashwanth Abhishek — +91 96520 97857
       • Cross Roads / Crossroads:
         - Indu — +91 89197 51488
         - Sadwika — +91 93477 15741

@@ -4,9 +4,9 @@
 const tests = [
   // 1. All 10 sub-events include their complete SPOC list
   {
-    name: "Spotlight overview includes Rithish Kumar",
+    name: "Spotlight overview includes Rithish Kumar and Yashwanth Abhishek",
     query: "Tell me about Spotlight",
-    expectedSPOCs: ["Rithish Kumar", "+91 93987 53113"],
+    expectedSPOCs: ["Rithish Kumar", "+91 93987 53113", "Yashwanth Abhishek", "+91 96520 97857"],
     unexpectedSPOCs: ["Indu", "Sadwika", "Ghanashyam"],
   },
   {
@@ -82,7 +82,7 @@ const tests = [
   {
     name: "who do I contact for Spotlight?",
     query: "who do I contact for Spotlight?",
-    expectedSPOCs: ["Rithish Kumar", "+91 93987 53113"],
+    expectedSPOCs: ["Rithish Kumar", "+91 93987 53113", "Yashwanth Abhishek", "+91 96520 97857"],
     unexpectedSPOCs: ["Ghanashyam", "Indu", "Sadwika"],
   },
   {
