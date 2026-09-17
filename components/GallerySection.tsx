@@ -1,18 +1,20 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
   Layers,
   Move,
+  Grid3X3,
+  Columns2,
 } from "lucide-react";
 import {
   DraggableContainer,
   GridBody,
   GridItem,
 } from "@/components/ui/infinite-drag-scroll";
-import { PREVIOUS_EVENT_PHOTOS, GalleryPhoto } from "@/lib/gallery-data";
+import { PREVIOUS_EVENT_PHOTOS, GalleryPhoto, GALLERY_CATEGORIES } from "@/lib/gallery-data";
 
 interface GallerySectionProps {
   showViewAllLink?: boolean;
@@ -29,6 +31,9 @@ export default function GallerySection({
   isDedicatedPage = false,
   containerHeight,
 }: GallerySectionProps) {
+  const [activeCategory, setActiveCategory] = useState<string>("All Moments");
+  const [mobileLayout, setMobileLayout] = useState<"reel" | "grid">("reel");
+
   // Map all 32 photo items from the gallery dataset
   const galleryItems: GalleryItem[] = useMemo(() => {
     return PREVIOUS_EVENT_PHOTOS.map((item) => ({
@@ -36,6 +41,22 @@ export default function GallerySection({
       imageUrl: item.image.src,
     }));
   }, []);
+
+  const filteredItems = useMemo(() => {
+    if (activeCategory === "All Moments") return galleryItems;
+    return galleryItems.filter((p) => p.category === activeCategory);
+  }, [galleryItems, activeCategory]);
+
+  // Split filtered items into 2 staggered horizontal reels for mobile
+  const { reelRow1, reelRow2 } = useMemo(() => {
+    const r1: GalleryItem[] = [];
+    const r2: GalleryItem[] = [];
+    filteredItems.forEach((photo, idx) => {
+      if (idx % 2 === 0) r1.push(photo);
+      else r2.push(photo);
+    });
+    return { reelRow1: r1, reelRow2: r2 };
+  }, [filteredItems]);
 
   const canvasHeight =
     containerHeight ||
@@ -46,7 +67,7 @@ export default function GallerySection({
   return (
     <section
       id="gallery"
-      className={`relative mx-auto max-w-[1400px] px-4 py-16 sm:px-8 md:py-24 ${className}`}
+      className={`relative mx-auto max-w-[1400px] px-4 py-12 sm:px-8 md:py-24 ${className}`}
     >
       {/* Editorial Header */}
       <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
@@ -66,8 +87,8 @@ export default function GallerySection({
           >
             Past Event Moments
           </h2>
-          <p className="mt-6 text-lg leading-relaxed text-[#F7F2F6]/90 sm:text-xl font-medium max-w-2xl">
-            Swipe in any direction across our infinite photo tapestry of previous Equinox editions, hackathons, and summits. Explore real camera captures from past events.
+          <p className="mt-4 text-base leading-relaxed text-[#F7F2F6]/90 sm:text-xl font-medium max-w-2xl sm:mt-6">
+            Explore real camera captures of previous Equinox editions, hackathons, and CIE summits.
           </p>
         </div>
 
@@ -84,8 +105,148 @@ export default function GallerySection({
         )}
       </div>
 
-      {/* Infinite Drag Scroll Canvas Container */}
-      <div className="relative mt-10 overflow-hidden rounded-3xl border border-white/10 bg-[#141414] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)]">
+      {/* ========================================================================= */}
+      {/* MOBILE GALLERY VIEW: Fluid, Touch-Friendly, Never Traps Page Scroll       */}
+      {/* ========================================================================= */}
+      <div className="mt-8 block md:hidden">
+        {/* Controls: Category Filter Bar & View Toggle */}
+        <div className="flex flex-col gap-3">
+          {/* Layout Toggle Pill */}
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#F7F2F6]/70">
+              Showing {filteredItems.length} moments
+            </span>
+            <div className="flex items-center rounded-full border border-white/10 bg-white/5 p-1">
+              <button
+                type="button"
+                onClick={() => setMobileLayout("reel")}
+                className={`flex items-center gap-1 rounded-full px-3 py-1 font-mono text-[10px] font-bold transition ${
+                  mobileLayout === "reel"
+                    ? "bg-[#33FF67] text-[#141414] shadow"
+                    : "text-[#F7F2F6]/70 hover:text-[#F7F2F6]"
+                }`}
+              >
+                <Columns2 className="h-3 w-3" />
+                <span>Reels</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setMobileLayout("grid")}
+                className={`flex items-center gap-1 rounded-full px-3 py-1 font-mono text-[10px] font-bold transition ${
+                  mobileLayout === "grid"
+                    ? "bg-[#33FF67] text-[#141414] shadow"
+                    : "text-[#F7F2F6]/70 hover:text-[#F7F2F6]"
+                }`}
+              >
+                <Grid3X3 className="h-3 w-3" />
+                <span>Grid</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Category Filter Pills (Smooth Horizontal Pan) */}
+          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none touch-pan-x -mx-4 px-4">
+            {GALLERY_CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setActiveCategory(cat)}
+                className={`shrink-0 rounded-full px-3.5 py-1.5 font-mono text-[11px] font-bold transition ${
+                  activeCategory === cat
+                    ? "border border-[#33FF67]/40 bg-[#33FF67]/20 text-[#33FF67]"
+                    : "border border-white/10 bg-white/5 text-[#F7F2F6]/70 hover:border-white/20"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Mobile Layout Mode 1: Dual Staggered Swipe Reels (touch-pan-y allows effortless page scroll) */}
+        {mobileLayout === "reel" ? (
+          <div className="relative mt-4 space-y-3 -mx-4 px-4 overflow-hidden">
+            {/* Top Reel Row */}
+            <div className="flex gap-3 overflow-x-auto scrollbar-none touch-pan-y pb-1 snap-x snap-mandatory">
+              {reelRow1.map((photo) => (
+                <div
+                  key={photo.id}
+                  className="snap-start shrink-0 w-[260px] aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 bg-[#1b1c22] select-none pointer-events-none shadow-lg"
+                  onContextMenu={(e) => e.preventDefault()}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={photo.imageUrl}
+                    alt={photo.title}
+                    draggable={false}
+                    loading="lazy"
+                    onContextMenu={(e) => e.preventDefault()}
+                    style={{ WebkitTouchCallout: "none", userSelect: "none" }}
+                    className="h-full w-full object-cover select-none pointer-events-none"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Bottom Reel Row */}
+            {reelRow2.length > 0 && (
+              <div className="flex gap-3 overflow-x-auto scrollbar-none touch-pan-y pb-1 snap-x snap-mandatory">
+                {reelRow2.map((photo) => (
+                  <div
+                    key={photo.id}
+                    className="snap-start shrink-0 w-[260px] aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 bg-[#1b1c22] select-none pointer-events-none shadow-lg"
+                    onContextMenu={(e) => e.preventDefault()}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={photo.imageUrl}
+                      alt={photo.title}
+                      draggable={false}
+                      loading="lazy"
+                      onContextMenu={(e) => e.preventDefault()}
+                      style={{ WebkitTouchCallout: "none", userSelect: "none" }}
+                      className="h-full w-full object-cover select-none pointer-events-none"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Swipe Helper Pill */}
+            <div className="mt-2 flex items-center justify-center gap-1.5 font-mono text-[11px] text-[#F7F2F6]/60">
+              <Move className="h-3 w-3 text-[#33FF67]" />
+              <span>Swipe photos horizontally • Scroll down for rest of page</span>
+            </div>
+          </div>
+        ) : (
+          /* Mobile Layout Mode 2: Clean 2-Column Photo Feed */
+          <div className="mt-4 grid grid-cols-2 gap-2.5">
+            {filteredItems.map((photo) => (
+              <div
+                key={photo.id}
+                className="aspect-[4/3] rounded-xl overflow-hidden border border-white/10 bg-[#1b1c22] select-none pointer-events-none shadow-md"
+                onContextMenu={(e) => e.preventDefault()}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={photo.imageUrl}
+                  alt={photo.title}
+                  draggable={false}
+                  loading="lazy"
+                  onContextMenu={(e) => e.preventDefault()}
+                  style={{ WebkitTouchCallout: "none", userSelect: "none" }}
+                  className="h-full w-full object-cover select-none pointer-events-none"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ========================================================================= */}
+      {/* DESKTOP GALLERY VIEW: Rich 2D 360-Degree Infinite Drag Canvas              */}
+      {/* ========================================================================= */}
+      <div className="relative mt-10 hidden md:block overflow-hidden rounded-3xl border border-white/10 bg-[#141414] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)]">
         {/* Ambient Glows */}
         <div className="pointer-events-none absolute -top-28 left-1/3 h-56 w-[450px] -translate-x-1/2 rounded-full bg-[#7484FE]/15 blur-3xl z-10" />
         <div className="pointer-events-none absolute -bottom-28 right-1/4 h-56 w-[450px] rounded-full bg-[#33FF67]/10 blur-3xl z-10" />
