@@ -210,29 +210,29 @@ export default function HomePage() {
             </div>
           </ScrollReveal>
 
-          <ScrollReveal className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2" stagger={0.06}>
-            <div className="program-card rounded-3xl border border-[#7484FE]/30 bg-[#151515] p-8 text-[#F7F2F6]">
-              <span className="font-mono text-xs font-black uppercase text-[#7484FE]">Audience Reach</span>
-              <p className="mt-2 font-mono text-5xl font-black text-[#7484FE] sm:text-6xl">2,000+</p>
-              <p className="mt-2 font-bold text-base text-[#F7F2F6]">Footfall</p>
+          <ScrollReveal className="mt-4 grid grid-cols-2 gap-3 sm:gap-4" stagger={0.06}>
+            <div className="program-card rounded-2xl sm:rounded-3xl border border-[#7484FE]/30 bg-[#151515] p-4 sm:p-8 text-[#F7F2F6] flex flex-col justify-between">
+              <span className="font-mono text-[10px] sm:text-xs font-black uppercase text-[#7484FE] tracking-wider">Audience Reach</span>
+              <p className="mt-1 sm:mt-2 font-mono text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-black text-[#7484FE] tracking-tight whitespace-nowrap">2,000+</p>
+              <p className="mt-1 sm:mt-2 font-bold text-xs sm:text-base text-[#F7F2F6]">Footfall</p>
             </div>
 
-            <div className="program-card rounded-3xl border border-white/10 bg-[#151515] p-8">
-              <span className="font-mono text-xs font-black uppercase text-[#33FF67]">Active Delegates</span>
-              <p className="mt-2 font-mono text-5xl font-black text-[#33FF67] sm:text-6xl">600+</p>
-              <p className="mt-2 font-bold text-[#F7F2F6] text-base">Participants</p>
+            <div className="program-card rounded-2xl sm:rounded-3xl border border-white/10 bg-[#151515] p-4 sm:p-8 flex flex-col justify-between">
+              <span className="font-mono text-[10px] sm:text-xs font-black uppercase text-[#33FF67] tracking-wider">Active Delegates</span>
+              <p className="mt-1 sm:mt-2 font-mono text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-black text-[#33FF67] tracking-tight whitespace-nowrap">600+</p>
+              <p className="mt-1 sm:mt-2 font-bold text-[#F7F2F6] text-xs sm:text-base">Participants</p>
             </div>
 
-            <div className="program-card rounded-3xl border border-white/10 bg-[#151515] p-8">
-              <span className="font-mono text-xs font-black uppercase text-[#7484FE]">Ecosystem</span>
-              <p className="mt-2 font-mono text-5xl font-black text-[#7484FE] sm:text-6xl">15+</p>
-              <p className="mt-2 font-bold text-[#F7F2F6] text-base">Startups</p>
+            <div className="program-card rounded-2xl sm:rounded-3xl border border-white/10 bg-[#151515] p-4 sm:p-8 flex flex-col justify-between">
+              <span className="font-mono text-[10px] sm:text-xs font-black uppercase text-[#7484FE] tracking-wider">Ecosystem</span>
+              <p className="mt-1 sm:mt-2 font-mono text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-black text-[#7484FE] tracking-tight whitespace-nowrap">15+</p>
+              <p className="mt-1 sm:mt-2 font-bold text-[#F7F2F6] text-xs sm:text-base">Startups</p>
             </div>
 
-            <div className="program-card rounded-3xl border border-[#33FF67]/30 bg-[#151515] p-8 text-[#F7F2F6]">
-              <span className="font-mono text-xs font-black uppercase text-[#33FF67]">Competitions</span>
-              <p className="mt-2 font-mono text-5xl font-black text-[#33FF67] sm:text-6xl">10</p>
-              <p className="mt-2 text-base font-bold text-[#F7F2F6]">Sub-Events</p>
+            <div className="program-card rounded-2xl sm:rounded-3xl border border-[#33FF67]/30 bg-[#151515] p-4 sm:p-8 text-[#F7F2F6] flex flex-col justify-between">
+              <span className="font-mono text-[10px] sm:text-xs font-black uppercase text-[#33FF67] tracking-wider">Competitions</span>
+              <p className="mt-1 sm:mt-2 font-mono text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-black text-[#33FF67] tracking-tight whitespace-nowrap">10</p>
+              <p className="mt-1 sm:mt-2 text-xs sm:text-base font-bold text-[#F7F2F6]">Sub-Events</p>
             </div>
           </ScrollReveal>
         </PinnedSplit>
@@ -257,8 +257,8 @@ export default function HomePage() {
         {/* Dark Editorial Heading Replicating Page 12 */}
         <div className="relative max-w-3xl">
           <h2
-            className="font-display-title font-black leading-[0.9] tracking-tighter text-[#F7F2F6]"
-            style={{ fontSize: "clamp(2.5rem, 7vw, 7rem)" }}
+            className="font-display-title font-black leading-[0.9] tracking-tighter text-[#F7F2F6] break-words hyphens-none"
+            style={{ fontSize: "clamp(1.75rem, 6.5vw, 7rem)" }}
           >
             Contact Us
           </h2>

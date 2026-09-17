@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
   Layers,
+  ChevronLeft,
+  ChevronRight,
   Move,
-  Grid3X3,
-  Columns2,
 } from "lucide-react";
 import {
   DraggableContainer,
@@ -31,7 +31,8 @@ export default function GallerySection({
   isDedicatedPage = false,
   containerHeight,
 }: GallerySectionProps) {
-  const [mobileLayout, setMobileLayout] = useState<"reel" | "grid">("reel");
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const mobileReelRef = useRef<HTMLDivElement>(null);
 
   // Map all 32 photo items from the gallery dataset
   const galleryItems: GalleryItem[] = useMemo(() => {
@@ -41,16 +42,27 @@ export default function GallerySection({
     }));
   }, []);
 
-  // Split items into 2 staggered horizontal reels for mobile
-  const { reelRow1, reelRow2 } = useMemo(() => {
-    const r1: GalleryItem[] = [];
-    const r2: GalleryItem[] = [];
-    galleryItems.forEach((photo, idx) => {
-      if (idx % 2 === 0) r1.push(photo);
-      else r2.push(photo);
-    });
-    return { reelRow1: r1, reelRow2: r2 };
-  }, [galleryItems]);
+  const handleMobileScroll = () => {
+    if (!mobileReelRef.current) return;
+    const { scrollLeft, clientWidth } = mobileReelRef.current;
+    if (clientWidth > 0) {
+      const newIdx = Math.round(scrollLeft / clientWidth);
+      if (newIdx !== currentIndex && newIdx >= 0 && newIdx < galleryItems.length) {
+        setCurrentIndex(newIdx);
+      }
+    }
+  };
+
+  const scrollToPhoto = (index: number) => {
+    const target = Math.max(0, Math.min(galleryItems.length - 1, index));
+    if (mobileReelRef.current) {
+      mobileReelRef.current.scrollTo({
+        left: target * mobileReelRef.current.clientWidth,
+        behavior: "smooth",
+      });
+    }
+    setCurrentIndex(target);
+  };
 
   const canvasHeight =
     containerHeight ||
@@ -76,8 +88,8 @@ export default function GallerySection({
             </span>
           </div>
           <h2
-            className="mt-3 font-display-title font-black leading-[0.92] tracking-tighter text-[#F7F2F6]"
-            style={{ fontSize: "clamp(2.25rem, 6.5vw, 6.5rem)" }}
+            className="mt-3 font-display-title font-black leading-[0.92] tracking-tighter text-[#F7F2F6] break-words hyphens-none"
+            style={{ fontSize: "clamp(1.65rem, 6.5vw, 6.5rem)" }}
           >
             Past Event Moments
           </h2>
@@ -100,104 +112,33 @@ export default function GallerySection({
       </div>
 
       {/* ========================================================================= */}
-      {/* MOBILE GALLERY VIEW: Fluid, Touch-Friendly, Never Traps Page Scroll       */}
+      {/* MOBILE GALLERY VIEW: Single Image per View, Touch-Friendly Snap Carousel   */}
       {/* ========================================================================= */}
       <div className="mt-8 block md:hidden">
-        {/* Layout Toggle Pill */}
-        <div className="flex items-center justify-between">
-          <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#F7F2F6]/70">
-            Showing {galleryItems.length} moments
+        {/* Photo Counter Header */}
+        <div className="flex items-center justify-between pb-2.5">
+          <span className="font-mono text-xs font-black uppercase tracking-wider text-[#33FF67]">
+            Archive Photo {String(currentIndex + 1).padStart(2, "0")} of {String(galleryItems.length).padStart(2, "0")}
           </span>
-          <div className="flex items-center rounded-full border border-white/10 bg-white/5 p-1">
-            <button
-              type="button"
-              onClick={() => setMobileLayout("reel")}
-              className={`flex items-center gap-1 rounded-full px-3 py-1 font-mono text-[10px] font-bold transition ${
-                mobileLayout === "reel"
-                  ? "bg-[#33FF67] text-[#141414] shadow"
-                  : "text-[#F7F2F6]/70 hover:text-[#F7F2F6]"
-              }`}
-            >
-              <Columns2 className="h-3 w-3" />
-              <span>Reels</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setMobileLayout("grid")}
-              className={`flex items-center gap-1 rounded-full px-3 py-1 font-mono text-[10px] font-bold transition ${
-                mobileLayout === "grid"
-                  ? "bg-[#33FF67] text-[#141414] shadow"
-                  : "text-[#F7F2F6]/70 hover:text-[#F7F2F6]"
-              }`}
-            >
-              <Grid3X3 className="h-3 w-3" />
-              <span>Grid</span>
-            </button>
-          </div>
+          <span className="font-mono text-[10px] uppercase text-[#F7F2F6]/60">
+            Swipe left/right
+          </span>
         </div>
 
-        {/* Mobile Layout Mode 1: Dual Staggered Swipe Reels (touch-pan-y allows effortless page scroll) */}
-        {mobileLayout === "reel" ? (
-          <div className="relative mt-4 space-y-3 -mx-4 px-4 overflow-hidden">
-            {/* Top Reel Row */}
-            <div className="flex gap-3 overflow-x-auto scrollbar-none touch-pan-y pb-1 snap-x snap-mandatory">
-              {reelRow1.map((photo) => (
-                <div
-                  key={photo.id}
-                  className="snap-start shrink-0 w-[260px] aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 bg-[#1b1c22] select-none pointer-events-none shadow-lg"
-                  onContextMenu={(e) => e.preventDefault()}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={photo.imageUrl}
-                    alt={photo.title}
-                    draggable={false}
-                    loading="lazy"
-                    onContextMenu={(e) => e.preventDefault()}
-                    style={{ WebkitTouchCallout: "none", userSelect: "none" }}
-                    className="h-full w-full object-cover select-none pointer-events-none"
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Bottom Reel Row */}
-            {reelRow2.length > 0 && (
-              <div className="flex gap-3 overflow-x-auto scrollbar-none touch-pan-y pb-1 snap-x snap-mandatory">
-                {reelRow2.map((photo) => (
-                  <div
-                    key={photo.id}
-                    className="snap-start shrink-0 w-[260px] aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 bg-[#1b1c22] select-none pointer-events-none shadow-lg"
-                    onContextMenu={(e) => e.preventDefault()}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={photo.imageUrl}
-                      alt={photo.title}
-                      draggable={false}
-                      loading="lazy"
-                      onContextMenu={(e) => e.preventDefault()}
-                      style={{ WebkitTouchCallout: "none", userSelect: "none" }}
-                      className="h-full w-full object-cover select-none pointer-events-none"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Swipe Helper Pill */}
-            <div className="mt-2 flex items-center justify-center gap-1.5 font-mono text-[11px] text-[#F7F2F6]/60">
-              <Move className="h-3 w-3 text-[#33FF67]" />
-              <span>Swipe photos horizontally • Scroll down for rest of page</span>
-            </div>
-          </div>
-        ) : (
-          /* Mobile Layout Mode 2: Clean 2-Column Photo Feed */
-          <div className="mt-4 grid grid-cols-2 gap-2.5">
-            {galleryItems.map((photo) => (
+        {/* Single-Image Snap Carousel (Only 1 full image visible per swipe, no partial cutoffs) */}
+        <div
+          ref={mobileReelRef}
+          onScroll={handleMobileScroll}
+          className="flex w-full overflow-x-auto snap-x snap-mandatory scrollbar-none touch-pan-y rounded-2xl border border-white/10 bg-[#161618] shadow-2xl"
+          style={{ scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}
+        >
+          {galleryItems.map((photo, idx) => (
+            <div
+              key={photo.id}
+              className="w-full shrink-0 snap-center p-2.5 sm:p-3"
+            >
               <div
-                key={photo.id}
-                className="aspect-[4/3] rounded-xl overflow-hidden border border-white/10 bg-[#1b1c22] select-none pointer-events-none shadow-md"
+                className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-white/10 bg-[#121214] shadow-inner select-none pointer-events-none"
                 onContextMenu={(e) => e.preventDefault()}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -205,15 +146,68 @@ export default function GallerySection({
                   src={photo.imageUrl}
                   alt={photo.title}
                   draggable={false}
-                  loading="lazy"
+                  loading={idx < 2 ? "eager" : "lazy"}
                   onContextMenu={(e) => e.preventDefault()}
                   style={{ WebkitTouchCallout: "none", userSelect: "none" }}
                   className="h-full w-full object-cover select-none pointer-events-none"
                 />
+
+                {/* Subtle caption overlay */}
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/45 to-transparent p-3 sm:p-4 flex items-end justify-between gap-2">
+                  <span className="font-mono text-xs font-bold text-white/95 truncate">
+                    {photo.title}
+                  </span>
+                  <span className="shrink-0 rounded-full bg-white/15 backdrop-blur-md px-2.5 py-0.5 font-mono text-[10px] font-semibold text-[#33FF67]">
+                    {photo.category}
+                  </span>
+                </div>
               </div>
-            ))}
+            </div>
+          ))}
+        </div>
+
+        {/* Carousel Navigation Bar (Prev / Progress Track / Next) */}
+        <div className="mt-3 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => scrollToPhoto(currentIndex - 1)}
+            disabled={currentIndex === 0}
+            aria-label="Previous photo"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-[#F7F2F6] transition disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 hover:border-[#33FF67]/40 active:scale-95"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+
+          {/* Progress Indicator Bar */}
+          <div className="flex flex-col items-center gap-1">
+            <div className="flex items-center gap-1">
+              <span className="font-mono text-sm font-black text-[#F7F2F6]">
+                {String(currentIndex + 1).padStart(2, "0")}
+              </span>
+              <span className="font-mono text-xs text-[#F7F2F6]/40">/</span>
+              <span className="font-mono text-xs text-[#F7F2F6]/60">
+                {String(galleryItems.length).padStart(2, "0")}
+              </span>
+            </div>
+            {/* Mini Progress Track */}
+            <div className="h-1 w-24 rounded-full bg-white/10 overflow-hidden">
+              <div
+                className="h-full bg-[#33FF67] transition-all duration-200"
+                style={{ width: `${((currentIndex + 1) / galleryItems.length) * 100}%` }}
+              />
+            </div>
           </div>
-        )}
+
+          <button
+            type="button"
+            onClick={() => scrollToPhoto(currentIndex + 1)}
+            disabled={currentIndex === galleryItems.length - 1}
+            aria-label="Next photo"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-[#F7F2F6] transition disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 hover:border-[#33FF67]/40 active:scale-95"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </div>
       </div>
 
       {/* ========================================================================= */}
@@ -271,33 +265,33 @@ export default function GallerySection({
       </div>
 
       {/* Highlights Metrics Strip */}
-      <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <div className="rounded-2xl border border-white/10 bg-[#151515] p-5">
-          <span className="font-mono text-[11px] font-bold uppercase text-[#7484FE]">
+      <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-4">
+        <div className="rounded-2xl border border-white/10 bg-[#151515] p-4 sm:p-5 flex flex-col justify-between">
+          <span className="font-mono text-[10px] sm:text-[11px] font-bold uppercase text-[#7484FE] tracking-wider">
             Summits Hosted
           </span>
-          <p className="mt-1 font-mono text-3xl font-black text-[#F7F2F6]">4+</p>
+          <p className="mt-1 font-mono text-2xl xs:text-3xl font-black text-[#F7F2F6] tracking-tight whitespace-nowrap">4+</p>
           <p className="text-xs text-[#F7F2F6]/60">Flagship Editions</p>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-[#151515] p-5">
-          <span className="font-mono text-[11px] font-bold uppercase text-[#33FF67]">
+        <div className="rounded-2xl border border-white/10 bg-[#151515] p-4 sm:p-5 flex flex-col justify-between">
+          <span className="font-mono text-[10px] sm:text-[11px] font-bold uppercase text-[#33FF67] tracking-wider">
             Past Footfall
           </span>
-          <p className="mt-1 font-mono text-3xl font-black text-[#33FF67]">2,000+</p>
+          <p className="mt-1 font-mono text-2xl xs:text-3xl font-black text-[#33FF67] tracking-tight whitespace-nowrap">2,000+</p>
           <p className="text-xs text-[#F7F2F6]/60">Student Delegates</p>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-[#151515] p-5">
-          <span className="font-mono text-[11px] font-bold uppercase text-[#7484FE]">
+        <div className="rounded-2xl border border-white/10 bg-[#151515] p-4 sm:p-5 flex flex-col justify-between">
+          <span className="font-mono text-[10px] sm:text-[11px] font-bold uppercase text-[#7484FE] tracking-wider">
             Cash Distributed
           </span>
-          <p className="mt-1 font-mono text-3xl font-black text-[#F7F2F6]">₹5L+</p>
+          <p className="mt-1 font-mono text-2xl xs:text-3xl font-black text-[#F7F2F6] tracking-tight whitespace-nowrap">₹5L+</p>
           <p className="text-xs text-[#F7F2F6]/60">Prize Pools Awarded</p>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-[#151515] p-5">
-          <span className="font-mono text-[11px] font-bold uppercase text-[#33FF67]">
+        <div className="rounded-2xl border border-white/10 bg-[#151515] p-4 sm:p-5 flex flex-col justify-between">
+          <span className="font-mono text-[10px] sm:text-[11px] font-bold uppercase text-[#33FF67] tracking-wider">
             Startups Pitched
           </span>
-          <p className="mt-1 font-mono text-3xl font-black text-[#33FF67]">45+</p>
+          <p className="mt-1 font-mono text-2xl xs:text-3xl font-black text-[#33FF67] tracking-tight whitespace-nowrap">45+</p>
           <p className="text-xs text-[#F7F2F6]/60">Early Ventures</p>
         </div>
       </div>
