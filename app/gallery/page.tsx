@@ -70,7 +70,7 @@ export default function GalleryPage() {
                 </div>
               </div>
               <p className="mt-3 text-xs leading-relaxed text-[#F7F2F6]/75">
-                Swipe or drag across the canvas in any direction. Click any photo to view in high resolution.
+                Swipe or drag across the infinite canvas in any direction to explore archival photos.
               </p>
             </div>
           </div>
