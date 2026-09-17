@@ -72,19 +72,107 @@ export default function GallerySection({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (!selectedPhoto || galleryItems.length === 0) return;
     const idx = galleryItems.findIndex((p) => p.id === selectedPhoto.id);
     const nextIdx = (idx + 1) % galleryItems.length;
     setSelectedPhoto(galleryItems[nextIdx]);
-  };
+  }, [selectedPhoto, galleryItems]);
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     if (!selectedPhoto || galleryItems.length === 0) return;
     const idx = galleryItems.findIndex((p) => p.id === selectedPhoto.id);
     const prevIdx = (idx - 1 + galleryItems.length) % galleryItems.length;
     setSelectedPhoto(galleryItems[prevIdx]);
-  };
+  }, [selectedPhoto, galleryItems]);
+
+  // Window-level Trackpad 2-finger swipe & Touch swipe listener for modal (Next/Prev/Close)
+  useEffect(() => {
+    if (!selectedPhoto) return;
+    let accumulatedX = 0;
+    let accumulatedY = 0;
+    let lastTriggerTime = 0;
+
+    const handleModalWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const now = Date.now();
+      if (now - lastTriggerTime < 320) return; // Debounce after action
+
+      accumulatedX += e.deltaX;
+      accumulatedY += e.deltaY;
+
+      // Detect horizontal swipe (left / right) -> flip photo
+      if (Math.abs(accumulatedX) > Math.abs(accumulatedY)) {
+        if (accumulatedX > 25) {
+          lastTriggerTime = now;
+          accumulatedX = 0;
+          accumulatedY = 0;
+          handleNext();
+        } else if (accumulatedX < -25) {
+          lastTriggerTime = now;
+          accumulatedX = 0;
+          accumulatedY = 0;
+          handlePrev();
+        }
+      } else {
+        // Detect vertical swipe (up / down) -> close modal
+        if (Math.abs(accumulatedY) > 30) {
+          lastTriggerTime = now;
+          accumulatedX = 0;
+          accumulatedY = 0;
+          setSelectedPhoto(null);
+        }
+      }
+    };
+
+    // Touch swipe support for mobile
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let isTouchActive = false;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        isTouchActive = true;
+      }
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (!isTouchActive || e.changedTouches.length === 0) return;
+      isTouchActive = false;
+      const endX = e.changedTouches[0].clientX;
+      const endY = e.changedTouches[0].clientY;
+      const diffX = endX - touchStartX;
+      const diffY = endY - touchStartY;
+
+      if (Math.abs(diffX) > Math.abs(diffY)) {
+        // Horizontal swipe
+        if (diffX < -30) {
+          handleNext();
+        } else if (diffX > 30) {
+          handlePrev();
+        }
+      } else {
+        // Vertical swipe -> close
+        if (Math.abs(diffY) > 35) {
+          setSelectedPhoto(null);
+        }
+      }
+    };
+
+    window.addEventListener("wheel", handleModalWheel, { passive: false });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
+
+    return () => {
+      window.removeEventListener("wheel", handleModalWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [selectedPhoto, handleNext, handlePrev]);
 
   const handlePointerDown = (e: React.PointerEvent) => {
     pointerDownPos.current = { x: e.clientX, y: e.clientY };
@@ -257,19 +345,19 @@ export default function GallerySection({
               transition={{ duration: 0.22, ease: "easeOut" }}
               drag
               dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-              dragElastic={0.65}
+              dragElastic={0.7}
               onDragEnd={(_, info) => {
                 const { offset, velocity } = info;
                 // Swipe left -> next photo
-                if (offset.x < -70 || velocity.x < -300) {
+                if (offset.x < -35 || velocity.x < -150) {
                   handleNext();
                 }
                 // Swipe right -> prev photo
-                else if (offset.x > 70 || velocity.x > 300) {
+                else if (offset.x > 35 || velocity.x > 150) {
                   handlePrev();
                 }
                 // Swipe up or down -> close modal
-                else if (Math.abs(offset.y) > 90 || Math.abs(velocity.y) > 400) {
+                else if (Math.abs(offset.y) > 40 || Math.abs(velocity.y) > 200) {
                   setSelectedPhoto(null);
                 }
               }}
@@ -307,7 +395,7 @@ export default function GallerySection({
 
               {/* Pure Photo Display without Download Option */}
               <div
-                className="relative flex items-center justify-center max-h-[85vh] w-full select-none"
+                className="relative flex items-center justify-center max-h-[85vh] w-full select-none pointer-events-none"
                 onContextMenu={(e) => e.preventDefault()}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -323,9 +411,9 @@ export default function GallerySection({
                   className="max-h-[82vh] max-w-full rounded-2xl object-contain shadow-2xl pointer-events-none select-none"
                 />
 
-                {/* Protective Transparent Overlay: Blocks right-clicking or dragging */}
+                {/* Protective Transparent Overlay */}
                 <div
-                  className="absolute inset-0 z-20 pointer-events-auto cursor-grab active:cursor-grabbing"
+                  className="absolute inset-0 z-20 pointer-events-none"
                   onContextMenu={(e) => e.preventDefault()}
                 />
 
