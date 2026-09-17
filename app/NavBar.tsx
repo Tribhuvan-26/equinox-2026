@@ -36,6 +36,8 @@ export function NavBar({
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(defaultActive);
 
+  if (pathname.startsWith("/admin")) return null;
+
   const isActiveItem = (name: string) => {
     if (pathname.startsWith("/events")) return name === "Sub-Events";
     if (pathname.startsWith("/gallery")) return name === "Gallery";
