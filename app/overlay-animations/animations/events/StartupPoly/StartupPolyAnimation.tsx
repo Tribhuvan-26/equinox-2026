@@ -207,9 +207,9 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
             letterSpacing="-0.02em"
           >
             <tspan fill="url(#polyEquinoxGrad)">THE </tspan>
-            <tspan fill="var(--equinox-offwhite)" filter="url(#polyTextShadow)">EQUINOX </tspan>
+            <tspan fill="var(--equinox-offwhite)" filter="url(#polyTextShadow)">EQUINOX</tspan>
           </text>
-          <g transform="translate(425, 71)">
+          <g transform="translate(460, 71)">
             <rect x="0" y="0" width="52" height="25" rx="5" fill="url(#polyEquinoxGrad)" />
             <text
               x="26"
@@ -358,97 +358,101 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
         </g>
 
         {/* Left Card Deck Stack: "BIG IDEAS" */}
-        <g ref={leftDeckRef} transform="translate(260, 520)">
-          {/* Stack shadow & underlying cards */}
-          <rect
-            x="-110"
-            y="-70"
-            width="220"
-            height="140"
-            rx="14"
-            fill="var(--equinox-dark)"
-          />
-          <rect
-            x="-106"
-            y="-76"
-            width="220"
-            height="140"
-            rx="14"
-            fill="var(--equinox-green)"
-          />
-          {/* Top card */}
-          <rect
-            x="-100"
-            y="-82"
-            width="220"
-            height="140"
-            rx="14"
-            fill="var(--equinox-periwinkle)"
-            stroke="var(--equinox-offwhite)"
-            strokeWidth="3"
-          />
-          <text
-            x="10"
-            y="-4"
-            textAnchor="middle"
-            fill="var(--equinox-offwhite)"
-            fontFamily="var(--font-syne), 'Arial Black', sans-serif"
-            fontWeight="900"
-            fontSize="26"
-            letterSpacing="-0.01em"
-          >
-            BIG
-            <tspan x="10" y="28">
-              IDEAS
-            </tspan>
-          </text>
+        <g transform="translate(260, 520)">
+          <g ref={leftDeckRef}>
+            {/* Stack shadow & underlying cards */}
+            <rect
+              x="-110"
+              y="-70"
+              width="220"
+              height="140"
+              rx="14"
+              fill="var(--equinox-dark)"
+            />
+            <rect
+              x="-106"
+              y="-76"
+              width="220"
+              height="140"
+              rx="14"
+              fill="var(--equinox-green)"
+            />
+            {/* Top card */}
+            <rect
+              x="-100"
+              y="-82"
+              width="220"
+              height="140"
+              rx="14"
+              fill="var(--equinox-periwinkle)"
+              stroke="var(--equinox-offwhite)"
+              strokeWidth="3"
+            />
+            <text
+              x="10"
+              y="-4"
+              textAnchor="middle"
+              fill="var(--equinox-offwhite)"
+              fontFamily="var(--font-syne), 'Arial Black', sans-serif"
+              fontWeight="900"
+              fontSize="26"
+              letterSpacing="-0.01em"
+            >
+              BIG
+              <tspan x="10" y="28">
+                IDEAS
+              </tspan>
+            </text>
+          </g>
         </g>
 
         {/* Right Card Deck Stack: "BIGGER MOVES" */}
-        <g ref={rightDeckRef} transform="translate(1660, 520)">
-          {/* Stack shadow & underlying cards */}
-          <rect
-            x="-110"
-            y="-70"
-            width="220"
-            height="140"
-            rx="14"
-            fill="var(--equinox-dark)"
-          />
-          <rect
-            x="-106"
-            y="-76"
-            width="220"
-            height="140"
-            rx="14"
-            fill="var(--equinox-green)"
-          />
-          {/* Top card */}
-          <rect
-            x="-100"
-            y="-82"
-            width="220"
-            height="140"
-            rx="14"
-            fill="var(--equinox-periwinkle)"
-            stroke="var(--equinox-offwhite)"
-            strokeWidth="3"
-          />
-          <text
-            x="10"
-            y="-4"
-            textAnchor="middle"
-            fill="var(--equinox-offwhite)"
-            fontFamily="var(--font-syne), 'Arial Black', sans-serif"
-            fontWeight="900"
-            fontSize="24"
-            letterSpacing="-0.01em"
-          >
-            BIGGER
-            <tspan x="10" y="28">
-              MOVES
-            </tspan>
-          </text>
+        <g transform="translate(1660, 520)">
+          <g ref={rightDeckRef}>
+            {/* Stack shadow & underlying cards */}
+            <rect
+              x="-110"
+              y="-70"
+              width="220"
+              height="140"
+              rx="14"
+              fill="var(--equinox-dark)"
+            />
+            <rect
+              x="-106"
+              y="-76"
+              width="220"
+              height="140"
+              rx="14"
+              fill="var(--equinox-green)"
+            />
+            {/* Top card */}
+            <rect
+              x="-100"
+              y="-82"
+              width="220"
+              height="140"
+              rx="14"
+              fill="var(--equinox-periwinkle)"
+              stroke="var(--equinox-offwhite)"
+              strokeWidth="3"
+            />
+            <text
+              x="10"
+              y="-4"
+              textAnchor="middle"
+              fill="var(--equinox-offwhite)"
+              fontFamily="var(--font-syne), 'Arial Black', sans-serif"
+              fontWeight="900"
+              fontSize="24"
+              letterSpacing="-0.01em"
+            >
+              BIGGER
+              <tspan x="10" y="28">
+                MOVES
+              </tspan>
+            </text>
+          </g>
         </g>
 
         {/* ============================================================== */}
