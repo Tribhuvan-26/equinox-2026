@@ -40,9 +40,9 @@ export function ChatInput({
   };
 
   return (
-    <div className="border-t border-white/20 bg-[#0c2b94] p-3 text-white">
-      <form onSubmit={handleSubmit} className="flex items-center gap-2">
-        <div className="relative flex flex-1 items-center rounded-2xl border-2 border-white/40 bg-white/10 px-3.5 py-1.5 focus-within:border-white focus-within:bg-white/20">
+    <div className="border-t border-white/15 bg-[#0c2b94] p-2.5 sm:p-3 text-white">
+      <form onSubmit={handleSubmit} className="flex items-center gap-1.5 sm:gap-2">
+        <div className="relative flex flex-1 items-center rounded-xl border border-white/35 bg-white/10 px-3 py-1 focus-within:border-white focus-within:bg-white/15">
           <input
             ref={inputRef}
             type="text"
@@ -51,7 +51,7 @@ export function ChatInput({
             onKeyDown={handleKeyDown}
             disabled={disabled}
             placeholder={placeholder}
-            className="flex-1 bg-transparent py-1 text-xs sm:text-sm text-white placeholder-white/60 outline-hidden disabled:opacity-50"
+            className="flex-1 bg-transparent py-0.5 text-xs sm:text-[13px] text-white placeholder-white/50 outline-hidden disabled:opacity-50"
           />
           {text.trim().length > 0 && (
             <button
@@ -68,16 +68,16 @@ export function ChatInput({
           ref={buttonRef}
           type="submit"
           disabled={!text.trim() || disabled}
-          className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-[#2074d5] shadow-md transition hover:bg-white/90 disabled:opacity-40 disabled:hover:bg-white"
+          className="flex h-8 w-8 sm:h-8.5 sm:w-8.5 items-center justify-center rounded-lg bg-white text-[#2074d5] shadow-xs transition hover:bg-white/90 active:scale-95 disabled:opacity-40 disabled:hover:bg-white"
           aria-label="Send query"
         >
-          <Send className="h-4 w-4" />
+          <Send className="h-3.5 w-3.5" />
         </button>
       </form>
 
-      <div className="mt-1.5 flex items-center justify-between px-1 text-[10px] text-white/60 font-mono">
-        <span>Equinox 2.0 · Offline Assistant</span>
-        <span>Press Enter ↵</span>
+      <div className="mt-1 flex items-center justify-between px-0.5 text-[9px] text-white/50 font-mono">
+        <span>Equinox 2.0 Assistant</span>
+        <span>Enter ↵</span>
       </div>
     </div>
   );

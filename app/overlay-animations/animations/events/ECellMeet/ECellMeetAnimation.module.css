@@ -5,15 +5,15 @@
   inset: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 1000000;
-  background-color: #202121;
+  z-index: 99999;
+  background-color: var(--cream, #F5ECD9);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
   pointer-events: auto;
-  opacity: 1;
+  opacity: 0;
 }
 
 .stageSvg {
@@ -29,9 +29,9 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 10;
-  opacity: 0.03;
-  mix-blend-mode: overlay;
+  z-index: 2;
+  opacity: 0.12;
+  mix-blend-mode: multiply;
 }
 
 /* Skip / Dismiss button */
@@ -49,27 +49,26 @@
   font-weight: 800;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #F7F2F6;
-  background-color: rgba(32, 33, 33, 0.85);
-  border: 1.5px solid rgba(247, 242, 246, 0.3);
+  color: var(--navy, #0A1F44);
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 2px solid var(--navy, #0A1F44);
   border-radius: 9999px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 2px 2px 0px var(--navy, #0A1F44);
   backdrop-filter: blur(8px);
-  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
   pointer-events: auto;
 }
 
 .skipButton:hover {
-  background-color: rgba(42, 42, 42, 0.95);
-  border-color: #33FF67;
+  background-color: var(--white, #ffffff);
   transform: translate(-1px, -1px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  box-shadow: 3px 3px 0px var(--navy, #0A1F44);
 }
 
 .skipButton:active {
   transform: translate(1px, 1px);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 1px 1px 0px var(--navy, #0A1F44);
 }
 
 /* Transform Origins and GPU Acceleration for Animated SVG groups */

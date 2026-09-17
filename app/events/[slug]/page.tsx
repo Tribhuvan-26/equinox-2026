@@ -57,7 +57,7 @@ export default async function EventPage({ params }: PageProps) {
         </div>
 
         {/* Hero Section: Headline with Word-Pair Contrast & Official Badge */}
-        <div className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+        <div className="mt-8 flex flex-col gap-6 sm:mt-10 sm:gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0">
             <span className="inline-block border border-white/40 bg-[#0B2D6D] px-3.5 py-1 font-mono text-xs font-black uppercase tracking-widest text-[#F9D47B] shadow-[2px_2px_0px_#ffffff]">
               Official Equinox Sub-Event · {item.category}
@@ -116,7 +116,7 @@ export default async function EventPage({ params }: PageProps) {
             </span>
           </div>
 
-          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid grid-flow-dense gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
             {/* Date & Timing Placeholder */}
             <div className="rounded-2xl border-2 border-white/40 bg-[#0B2D6D]/80 p-6 shadow-[4px_4px_0px_rgba(0,0,0,0.25)] backdrop-blur-xs">
               <div className="flex items-center justify-between">

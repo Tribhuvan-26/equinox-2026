@@ -68,16 +68,16 @@ export function ChatMessage({
     >
       {/* Bubble */}
       <div
-        className={`max-w-[88%] rounded-2xl p-3.5 text-xs sm:text-sm ${
+        className={`max-w-[90%] rounded-2xl px-3 py-2 text-xs sm:text-[13px] ${
           isUser
-            ? "border-2 border-white bg-white text-[#282828] shadow-md font-medium"
-            : "border border-white/30 bg-[#0c2b94]/95 text-white/95 shadow-sm backdrop-blur-xs"
+            ? "border border-white/80 bg-white text-[#282828] shadow-xs font-medium"
+            : "border border-white/25 bg-[#0c2b94]/95 text-white/95 shadow-xs backdrop-blur-xs"
         }`}
       >
         {!isUser && (
-          <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-wider uppercase text-white/70">
-            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white text-[#2074d5]">
-              <Bot className="h-2.5 w-2.5" />
+          <div className="mb-1 flex items-center gap-1.5 text-[9.5px] font-mono font-bold tracking-wider uppercase text-white/70">
+            <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-white text-[#2074d5]">
+              <Bot className="h-2 w-2" />
             </span>
             <span>EQUINOX 2.0 AI</span>
           </div>
@@ -86,7 +86,7 @@ export function ChatMessage({
         {isUser ? (
           <p className="leading-relaxed">{message.text}</p>
         ) : (
-          <div>{renderFormattedText(message.text)}</div>
+          <div className="leading-relaxed">{renderFormattedText(message.text)}</div>
         )}
 
         {/* Embedded Interactive Event Card */}

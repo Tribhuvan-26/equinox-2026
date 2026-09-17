@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { board, event, events, registration, tickets } from "@/lib/content";
 import { Arrow, ContactCard, PageTransition, SectionHeading } from "../ui";
+import { RegisterForm } from "./RegisterForm";
 
 export const metadata: Metadata = {
   title: `Register — ${event.name} ${event.year}`,

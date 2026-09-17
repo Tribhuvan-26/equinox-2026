@@ -211,9 +211,10 @@ def embed_text(text: str) -> list[float]:
                 model=model_name,
                 contents=text
             )
-            values = res.embeddings[0].values
-            if values:
-                return values
+            if res.embeddings:
+                values = res.embeddings[0].values
+                if values:
+                    return values
         except Exception as e:
             continue
     raise RuntimeError("Failed to generate embedding with all configured models")

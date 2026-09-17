@@ -13,35 +13,13 @@ function EventLogo({ slug, alt, className = "" }: { slug: string; alt: string; c
 export function InstitutionalHeader({ className = "" }: { className?: string }) {
   return (
     <div className={`flex flex-wrap items-center justify-between gap-4 py-4 text-white ${className}`}>
-      {/* Left: MLR CIE */}
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/30 bg-white/10 p-1 backdrop-blur-xs">
-          <svg viewBox="0 0 40 40" fill="none" className="h-8 w-8 text-white">
-            <rect x="4" y="4" width="32" height="32" rx="4" stroke="currentColor" strokeWidth="2" />
-            <text x="8" y="19" fill="currentColor" fontSize="10" fontWeight="900" fontFamily="sans-serif">MLR</text>
-            <text x="8" y="30" fill="currentColor" fontSize="8" fontWeight="800" fontFamily="sans-serif">CIE</text>
-          </svg>
-        </div>
-        <div className="border-l border-white/30 pl-3 leading-tight">
-          <p className="text-xs font-bold tracking-wider uppercase">Centre for</p>
-          <p className="text-xs font-bold tracking-wider uppercase">Innovation &amp; Entrepreneurship</p>
-          <p className="text-[9px] text-white/70 italic">Making Ideas Happen</p>
-        </div>
-      </div>
+      {/* Left: MLR CIE official lockup */}
+      {/* eslint-disable-next-line @next/next/no-img-element -- fixed-ratio brand asset, no next/image benefit */}
+      <img src="/logos/cie-white.png" alt="MLR CIE — Centre for Innovation & Entrepreneurship" className="h-12 w-auto object-contain sm:h-14" />
 
-      {/* Right: MLRIT */}
-      <div className="flex items-center gap-2 text-right">
-        <div>
-          <p className="text-sm font-black tracking-widest uppercase">MLRIT</p>
-          <p className="text-[10px] text-white/80 font-medium italic">Engineering Ideas, Engineering Careers</p>
-        </div>
-        <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/15">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5 text-white">
-            <circle cx="12" cy="12" r="9" />
-            <path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4" opacity="0.6" />
-          </svg>
-        </div>
-      </div>
+      {/* Right: MLRIT official lockup */}
+      {/* eslint-disable-next-line @next/next/no-img-element -- fixed-ratio brand asset, no next/image benefit */}
+      <img src="/logos/mlrit-white.png" alt="MLR Institute of Technology" className="h-9 w-auto object-contain sm:h-11" />
     </div>
   );
 }
@@ -276,7 +254,7 @@ export function BadgeSpotlight() {
 
 // Page 05: CROSS ROADS
 export function BadgeCrossroads() {
-  return <EventLogo slug="crossroads" alt="Crossroads" />;
+  return <EventLogo slug="crossroads" alt="Crossroads" className="scale-125 origin-center transition-transform duration-200" />;
 }
 
 // Page 05: STARTUP EXPO

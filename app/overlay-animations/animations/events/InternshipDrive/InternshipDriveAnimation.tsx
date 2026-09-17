@@ -343,7 +343,7 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
               letterSpacing="-0.03em"
               textLength="730"
               lengthAdjust="spacingAndGlyphs"
-              fill="#F7F2F6"
+              fill="#111111"
             >
               INTERNSHIP
             </text>
@@ -385,7 +385,7 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
               fontWeight="800"
               fontSize="36"
               letterSpacing="0.01em"
-              fill="#F7F2F6"
+              fill="#111111"
             >
               Connect. Intern. Grow.
             </text>
@@ -471,7 +471,7 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
               fontWeight="900"
               fontSize="18"
               letterSpacing="0.08em"
-              fill="#F7F2F6"
+              fill="#111111"
             >
               CONNECT
             </text>
@@ -496,7 +496,7 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
               fontWeight="900"
               fontSize="18"
               letterSpacing="0.08em"
-              fill="#F7F2F6"
+              fill="#111111"
             >
               INTERN
             </text>
@@ -521,7 +521,7 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
               fontWeight="900"
               fontSize="18"
               letterSpacing="0.08em"
-              fill="#F7F2F6"
+              fill="#111111"
             >
               GROW
             </text>

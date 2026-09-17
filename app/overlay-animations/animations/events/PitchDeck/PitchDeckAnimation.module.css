@@ -31,21 +31,10 @@
   box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6);
 }
 
-.baseImage {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  pointer-events: none;
-}
-
 .stageSvg {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
+  display: block;
   pointer-events: none;
 }
 

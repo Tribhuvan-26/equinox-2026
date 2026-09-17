@@ -3,9 +3,6 @@
 import { useRef, useState } from "react";
 import {
   motion,
-  useMotionValueEvent,
-  useScroll,
-  useSpring,
   type Variants,
 } from "framer-motion";
 import Link from "next/link";
@@ -18,14 +15,6 @@ import {
   contact,
 } from "@/lib/content";
 import {
-  InstitutionalHeader,
-  HangingTag,
-  CoverPopUpArt,
-  PageFooterTimeline,
-  SubEventBadge,
-} from "./EventGraphics";
-import AccordionGallery from "./components/AccordionGallery";
-import {
   ArrowRight,
   Mail,
   Globe,
@@ -36,6 +25,12 @@ import {
   Layers,
   ExternalLink,
 } from "lucide-react";
+import ScrollJourney from "../components/ScrollJourney";
+import JourneyOutro from "../components/JourneyOutro";
+import ScrollReveal from "../components/ScrollReveal";
+import PinnedSplit from "../components/PinnedSplit";
+import LogoMarquee from "../components/LogoMarquee";
+import GallerySection from "../components/GallerySection";
 
 const heroFadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -43,27 +38,6 @@ const heroFadeUp: Variants = {
 };
 
 export default function HomePage() {
-  const [activeEventIndex, setActiveEventIndex] = useState(0);
-  const eventsScrollRef = useRef<HTMLDivElement>(null);
-
-  // Scroll progress across the pinned fan, eased with a spring so the active
-  // panel settles into place instead of snapping frame-to-frame with raw scroll.
-  const { scrollYProgress } = useScroll({
-    target: eventsScrollRef,
-    offset: ["start start", "end end"],
-  });
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 260,
-    damping: 34,
-    mass: 0.6,
-  });
-
-  useMotionValueEvent(smoothProgress, "change", (p) => {
-    const n = subEvents.length;
-    const idx = Math.min(n - 1, Math.max(0, Math.round(p * n - 0.5)));
-    setActiveEventIndex((prev) => (prev === idx ? prev : idx));
-  });
-
   return (
     <div className="riso-texture brochure-grid min-h-screen overflow-x-clip text-white selection:bg-[#F9D47B] selection:text-[#282828]">
       {/* =========================================================================
@@ -183,7 +157,7 @@ export default function HomePage() {
           ========================================================================= */}
       <section
         id="about"
-        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
+        className="relative mx-auto max-w-[1400px] px-4 py-16 sm:px-8 sm:py-32 md:py-48"
       >
         <div className="max-w-4xl">
           <span className="rounded-full border border-white/40 bg-white/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-white">
@@ -244,7 +218,7 @@ export default function HomePage() {
               </p>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* what is THE EQUINOX 2.0 — Banner matching Brochure Page 03 */}
         <div className="program-card mt-8 flex flex-col gap-8 rounded-3xl border-2 border-white bg-white p-8 text-[#282828] shadow-xl sm:p-10 lg:flex-row lg:items-center lg:justify-between">
@@ -261,8 +235,8 @@ export default function HomePage() {
           </div>
           <div className="flex items-center gap-2 font-mono text-xs font-black text-[#2074D5] lg:shrink-0">
             <span>30 - 31 OCTOBER 2026</span>
-            <ArrowRight className="h-4 w-4" />
-          </div>
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </Link>
         </div>
 
         {/* Highlights Row (What's In Store stats) */}
@@ -292,12 +266,10 @@ export default function HomePage() {
                   {item.detail}
                 </p>
               </div>
-            ))}
-          </div>
-        </div>
+            );
+          })}
+        </ScrollReveal>
 
-        {/* Page Footer Timeline */}
-        <PageFooterTimeline pageNumber="03" />
       </section>
 
       {/* =========================================================================
@@ -423,17 +395,12 @@ export default function HomePage() {
         </div>
       </div>
 
-      <section className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 pt-4 pb-4 sm:px-8">
-        {/* Page Footer Markers */}
-        <PageFooterTimeline pageNumber={subEvents[activeEventIndex].pageNumber} />
-      </section>
-
       {/* =========================================================================
-          SECTION 5: SUMMIT HIGHLIGHTS & OUR IMPACT (Why Sponsor Us)
+          IMPACT
           ========================================================================= */}
       <section
         id="impact"
-        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
+        className="relative mx-auto max-w-[1400px] px-4 py-16 sm:px-8 sm:py-32 md:py-48"
       >
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           <div>
@@ -494,19 +461,21 @@ export default function HomePage() {
               <p className="mt-2 font-mono text-5xl font-black text-[#EB547C] sm:text-6xl">10</p>
               <p className="mt-2 font-bold text-base text-[#282828]">Sub-Events</p>
             </div>
-          </div>
-        </div>
-
-        {/* Page Footer Timeline */}
-        <PageFooterTimeline pageNumber="08" />
+          </ScrollReveal>
+        </PinnedSplit>
       </section>
+
+      {/* =========================================================================
+          SECTION 5.5: EVENT GALLERY / ARCHIVES (Above Contact Us)
+          ========================================================================= */}
+      <GallerySection />
 
       {/* =========================================================================
           SECTION 6: CONTACT US (Page 12)
           ========================================================================= */}
       <section
         id="contact"
-        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
+        className="relative mx-auto max-w-[1400px] px-4 py-16 sm:px-8 sm:py-32 md:py-48"
       >
         {/* Dark Editorial Heading Replicating Page 12 */}
         <div className="max-w-3xl">
@@ -525,7 +494,7 @@ export default function HomePage() {
           </h3>
           <p className="mt-1 font-bold text-xl text-white">Student Coordinators</p>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <ScrollReveal className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" stagger={0.06}>
             {studentCoordinators.map((coordinator) => (
               <a
                 key={coordinator.name}
@@ -545,7 +514,7 @@ export default function HomePage() {
                 </div>
               </a>
             ))}
-          </div>
+          </ScrollReveal>
         </div>
 
         {/* Official Contact Box (Rounded Card with border matching Page 12) */}
@@ -609,7 +578,7 @@ export default function HomePage() {
           </div>
 
           {/* Social Links Row from Page 12 */}
-          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-white/20 pt-6">
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6">
             <div className="flex flex-wrap items-center gap-4">
               {contact.socials.map((social) => (
                 <a
@@ -648,14 +617,9 @@ export default function HomePage() {
               ))}
             </div>
 
-            <span className="font-mono text-xs text-white/70">
-              MLRIT CIE · Official Program
-            </span>
           </div>
         </div>
 
-        {/* Page 12 Footer Timeline Marker */}
-        <PageFooterTimeline pageNumber="12" />
       </section>
     </div>
   );

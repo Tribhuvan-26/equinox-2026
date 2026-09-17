@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1c1d24" />
+      <stop offset="50%" stop-color="#141418" />
+      <stop offset="100%" stop-color="#0e0e12" />
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="800" fill="url(#grad)" />
+  <rect width="800" height="800" fill="url(#grid)" />
+  <rect x="20" y="20" width="760" height="760" rx="24" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="2" />
+  <rect x="30" y="30" width="740" height="740" rx="16" fill="none" stroke="#33FF67" stroke-opacity="0.25" stroke-dasharray="8 8" stroke-width="2" />
+  
+  <g transform="translate(400, 310)">
+    <circle r="60" fill="rgba(255,255,255,0.04)" stroke="#33FF67" stroke-opacity="0.4" stroke-width="2"/>
+    <path d="M -24 -8 L -16 -18 L 16 -18 L 24 -8 L 32 -8 A 6 6 0 0 1 38 -2 L 38 24 A 6 6 0 0 1 32 30 L -32 30 A 6 6 0 0 1 -38 24 L -38 -2 A 6 6 0 0 1 -32 -8 Z" fill="none" stroke="#33FF67" stroke-width="3" stroke-linejoin="round" />
+    <circle cx="0" cy="11" r="12" fill="none" stroke="#33FF67" stroke-width="3" />
+  </g>
+
+  <text x="400" y="440" text-anchor="middle" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="800" letter-spacing="2">
+    PHOTO PLACEHOLDER 07
+  </text>
+  <text x="400" y="480" text-anchor="middle" fill="#33FF67" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="700">
+    E-Cell Conclave
+  </text>
+  <text x="400" y="525" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="monospace" font-size="15" letter-spacing="1">
+    DROP PHOTO HERE: public/gallery/photo-7.jpg
+  </text>
+</svg>

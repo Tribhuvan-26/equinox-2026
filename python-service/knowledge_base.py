@@ -37,9 +37,10 @@ class KnowledgeBase:
                     model=model,
                     contents=query
                 )
-                values = res.embeddings[0].values
-                if values:
-                    vec = np.array(values, dtype=np.float32)
+                if res.embeddings:
+                    values = res.embeddings[0].values
+                    if values:
+                        vec = np.array(values, dtype=np.float32)
                     norm = np.linalg.norm(vec)
                     return vec / (norm if norm > 0 else 1.0)
             except Exception:

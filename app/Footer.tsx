@@ -28,6 +28,10 @@ export function Footer() {
             <p className="mt-2 font-mono text-xs font-bold text-[#F9D47B]">
               # WHERE PASSION MEETS PERSEVERANCE
             </p>
+            <div className="mt-6 flex items-center gap-6">
+              <img src="/logos/cie-white.png" alt="MLR CIE — Centre for Innovation & Entrepreneurship" className="h-10 w-auto object-contain" />
+              <img src="/logos/mlrit-white.png" alt="MLR Institute of Technology" className="h-8 w-auto object-contain" />
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-12">
