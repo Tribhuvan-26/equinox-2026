@@ -3,6 +3,9 @@
 import { useRef, useState } from "react";
 import {
   motion,
+  useMotionValueEvent,
+  useScroll,
+  useSpring,
   type Variants,
 } from "framer-motion";
 import Link from "next/link";
@@ -15,22 +18,21 @@ import {
   contact,
 } from "@/lib/content";
 import {
+  InstitutionalHeader,
+  HangingTag,
+  CoverPopUpArt,
+  PageFooterTimeline,
+  SubEventBadge,
+} from "./EventGraphics";
+import AccordionGallery from "./components/AccordionGallery";
+import {
   ArrowRight,
   Mail,
   Globe,
   MapPin,
   Phone,
   Calendar,
-  Sparkles,
-  Layers,
-  ExternalLink,
 } from "lucide-react";
-import ScrollJourney from "../components/ScrollJourney";
-import JourneyOutro from "../components/JourneyOutro";
-import ScrollReveal from "../components/ScrollReveal";
-import PinnedSplit from "../components/PinnedSplit";
-import LogoMarquee from "../components/LogoMarquee";
-import GallerySection from "../components/GallerySection";
 
 const heroFadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -38,6 +40,27 @@ const heroFadeUp: Variants = {
 };
 
 export default function HomePage() {
+  const [activeEventIndex, setActiveEventIndex] = useState(0);
+  const eventsScrollRef = useRef<HTMLDivElement>(null);
+
+  // Scroll progress across the pinned fan, eased with a spring so the active
+  // panel settles into place instead of snapping frame-to-frame with raw scroll.
+  const { scrollYProgress } = useScroll({
+    target: eventsScrollRef,
+    offset: ["start start", "end end"],
+  });
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 260,
+    damping: 34,
+    mass: 0.6,
+  });
+
+  useMotionValueEvent(smoothProgress, "change", (p) => {
+    const n = subEvents.length;
+    const idx = Math.min(n - 1, Math.max(0, Math.round(p * n - 0.5)));
+    setActiveEventIndex((prev) => (prev === idx ? prev : idx));
+  });
+
   return (
     <div className="riso-texture brochure-grid min-h-screen overflow-x-clip text-white selection:bg-[#F9D47B] selection:text-[#282828]">
       {/* =========================================================================
@@ -157,7 +180,7 @@ export default function HomePage() {
           ========================================================================= */}
       <section
         id="about"
-        className="relative mx-auto max-w-[1400px] px-4 py-16 sm:px-8 sm:py-32 md:py-48"
+        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
       >
         <div className="max-w-4xl">
           <span className="rounded-full border border-white/40 bg-white/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-white">
@@ -218,7 +241,7 @@ export default function HomePage() {
               </p>
             </div>
           </div>
-        </ScrollReveal>
+        </div>
 
         {/* what is THE EQUINOX 2.0 — Banner matching Brochure Page 03 */}
         <div className="program-card mt-8 flex flex-col gap-8 rounded-3xl border-2 border-white bg-white p-8 text-[#282828] shadow-xl sm:p-10 lg:flex-row lg:items-center lg:justify-between">
@@ -235,8 +258,8 @@ export default function HomePage() {
           </div>
           <div className="flex items-center gap-2 font-mono text-xs font-black text-[#2074D5] lg:shrink-0">
             <span>30 - 31 OCTOBER 2026</span>
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
+            <ArrowRight className="h-4 w-4" />
+          </div>
         </div>
 
         {/* Highlights Row (What's In Store stats) */}
@@ -266,10 +289,12 @@ export default function HomePage() {
                   {item.detail}
                 </p>
               </div>
-            );
-          })}
-        </ScrollReveal>
+            ))}
+          </div>
+        </div>
 
+        {/* Page Footer Timeline */}
+        <PageFooterTimeline pageNumber="03" />
       </section>
 
       {/* =========================================================================
@@ -314,77 +339,76 @@ export default function HomePage() {
                   return {
                     content: (
                       <div
-                        className={`h-full w-full border-2 transition-colors duration-300 ${
-                          isActive
+                        className={`h-full w-full border-2 transition-colors duration-300 ${isActive
                             ? "border-white bg-[#EB547C]"
                             : "border-white/30 bg-white/5 hover:border-white/70 hover:bg-white/10"
-                        }`}
+                          }`}
                       >
                         {isActive ? (
                           /* Expanded content */
                           <div className="flex h-full flex-col p-6 sm:p-8">
-                        <div className="flex items-center justify-between gap-3">
-                          <span className="font-mono text-xs font-black tracking-widest text-[#282828]">
-                            PAGE {item.pageNumber} · {item.category}
-                          </span>
-                          <span className="font-mono text-xs font-bold text-[#282828]/70">
-                            Event {String(idx + 1).padStart(2, "0")} of {subEvents.length}
-                          </span>
-                        </div>
+                            <div className="flex items-center justify-between gap-3">
+                              <span className="font-mono text-xs font-black tracking-widest text-[#282828]">
+                                PAGE {item.pageNumber} · {item.category}
+                              </span>
+                              <span className="font-mono text-xs font-bold text-[#282828]/70">
+                                Event {String(idx + 1).padStart(2, "0")} of {subEvents.length}
+                              </span>
+                            </div>
 
-                        <div className="mt-4 flex min-h-[88px] w-full items-center justify-center rounded-2xl border-2 border-[#282828] bg-[#2074D5] p-4 text-center">
-                          <SubEventBadge slug={item.slug} />
-                        </div>
+                            <div className="mt-4 flex min-h-[88px] w-full items-center justify-center rounded-2xl border-2 border-[#282828] bg-[#2074D5] p-4 text-center">
+                              <SubEventBadge slug={item.slug} />
+                            </div>
 
-                        <p className="mt-5 text-base leading-relaxed text-[#282828] sm:text-lg">
-                          {item.description}
-                        </p>
+                            <p className="mt-5 text-base leading-relaxed text-[#282828] sm:text-lg">
+                              {item.description}
+                            </p>
 
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          {item.skills.map((skill) => (
-                            <span
-                              key={skill}
-                              className="rounded-full border border-[#282828]/20 bg-white/60 px-3 py-0.5 text-xs text-[#282828]"
-                            >
-                              {skill}
-                            </span>
-                          ))}
-                        </div>
+                            <div className="mt-4 flex flex-wrap gap-2">
+                              {item.skills.map((skill) => (
+                                <span
+                                  key={skill}
+                                  className="rounded-full border border-[#282828]/20 bg-white/60 px-3 py-0.5 text-xs text-[#282828]"
+                                >
+                                  {skill}
+                                </span>
+                              ))}
+                            </div>
 
-                        <div className="mt-auto flex flex-col gap-3 border-t border-[#282828]/20 pt-4 sm:flex-row sm:items-center sm:justify-between">
-                          <span className="flex items-center gap-1.5 text-xs font-semibold text-[#282828]/80">
-                            <Calendar className="h-3.5 w-3.5" />
-                            {item.timing}
-                          </span>
-                          <div className="flex flex-wrap items-center gap-3">
-                            <Link
-                              href={`/events/${item.slug}`}
-                              className="group/link flex shrink-0 items-center gap-1 text-xs font-bold text-[#282828] hover:underline"
-                            >
-                              View Details &amp; Rules
-                              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-1" />
-                            </Link>
-                            <Link
-                              href="/register"
-                              className="flex shrink-0 items-center gap-2 rounded-full border-2 border-[#282828] bg-[#F9D47B] px-5 py-2 text-xs font-bold uppercase tracking-wider text-[#282828] shadow-[3px_3px_0px_#282828] transition hover:scale-105 hover:bg-[#ffe17d]"
-                            >
-                              Register Now
-                              <ArrowRight className="h-3.5 w-3.5" />
-                            </Link>
+                            <div className="mt-auto flex flex-col gap-3 border-t border-[#282828]/20 pt-4 sm:flex-row sm:items-center sm:justify-between">
+                              <span className="flex items-center gap-1.5 text-xs font-semibold text-[#282828]/80">
+                                <Calendar className="h-3.5 w-3.5" />
+                                {item.timing}
+                              </span>
+                              <div className="flex flex-wrap items-center gap-3">
+                                <Link
+                                  href={`/events/${item.slug}`}
+                                  className="group/link flex shrink-0 items-center gap-1 text-xs font-bold text-[#282828] hover:underline"
+                                >
+                                  View Details &amp; Rules
+                                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-1" />
+                                </Link>
+                                <Link
+                                  href="/register"
+                                  className="flex shrink-0 items-center gap-2 rounded-full border-2 border-[#282828] bg-[#F9D47B] px-5 py-2 text-xs font-bold uppercase tracking-wider text-[#282828] shadow-[3px_3px_0px_#282828] transition hover:scale-105 hover:bg-[#ffe17d]"
+                                >
+                                  Register Now
+                                  <ArrowRight className="h-3.5 w-3.5" />
+                                </Link>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    ) : (
-                      /* Collapsed spine: just the number + name, legible at any size */
-                      <div className="flex h-full w-full items-center gap-3 px-5 lg:flex-col lg:justify-between lg:gap-4 lg:px-0 lg:py-6">
-                        <span className="font-mono text-xs font-black text-[#F9D47B]">
-                          {String(idx + 1).padStart(2, "0")}
-                        </span>
-                        <span className="font-display-title text-base font-black uppercase tracking-tight text-white lg:[writing-mode:vertical-rl]">
-                          {item.name}
-                        </span>
-                      </div>
-                    )}
+                        ) : (
+                          /* Collapsed spine: just the number + name, legible at any size */
+                          <div className="flex h-full w-full items-center gap-3 px-5 lg:flex-col lg:justify-between lg:gap-4 lg:px-0 lg:py-6">
+                            <span className="font-mono text-xs font-black text-[#F9D47B]">
+                              {String(idx + 1).padStart(2, "0")}
+                            </span>
+                            <span className="font-display-title text-base font-black uppercase tracking-tight text-white lg:[writing-mode:vertical-rl]">
+                              {item.name}
+                            </span>
+                          </div>
+                        )}
                       </div>
                     ),
                   };
@@ -395,12 +419,17 @@ export default function HomePage() {
         </div>
       </div>
 
+      <section className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 pt-4 pb-4 sm:px-8">
+        {/* Page Footer Markers */}
+        <PageFooterTimeline pageNumber={subEvents[activeEventIndex].pageNumber} />
+      </section>
+
       {/* =========================================================================
-          IMPACT
+          SECTION 5: SUMMIT HIGHLIGHTS & OUR IMPACT (Why Sponsor Us)
           ========================================================================= */}
       <section
         id="impact"
-        className="relative mx-auto max-w-[1400px] px-4 py-16 sm:px-8 sm:py-32 md:py-48"
+        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
       >
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           <div>
@@ -461,21 +490,18 @@ export default function HomePage() {
               <p className="mt-2 font-mono text-5xl font-black text-[#EB547C] sm:text-6xl">10</p>
               <p className="mt-2 font-bold text-base text-[#282828]">Sub-Events</p>
             </div>
-          </ScrollReveal>
-        </PinnedSplit>
+          </div>
+        </div>
+
+        {/* Page Footer Timeline */}
+        <PageFooterTimeline pageNumber="08" />
       </section>
-
-      {/* =========================================================================
-          SECTION 5.5: EVENT GALLERY / ARCHIVES (Above Contact Us)
-          ========================================================================= */}
-      <GallerySection />
-
       {/* =========================================================================
           SECTION 6: CONTACT US (Page 12)
           ========================================================================= */}
       <section
         id="contact"
-        className="relative mx-auto max-w-[1400px] px-4 py-16 sm:px-8 sm:py-32 md:py-48"
+        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
       >
         {/* Dark Editorial Heading Replicating Page 12 */}
         <div className="max-w-3xl">
@@ -494,7 +520,7 @@ export default function HomePage() {
           </h3>
           <p className="mt-1 font-bold text-xl text-white">Student Coordinators</p>
 
-          <ScrollReveal className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" stagger={0.06}>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {studentCoordinators.map((coordinator) => (
               <a
                 key={coordinator.name}
@@ -514,7 +540,7 @@ export default function HomePage() {
                 </div>
               </a>
             ))}
-          </ScrollReveal>
+          </div>
         </div>
 
         {/* Official Contact Box (Rounded Card with border matching Page 12) */}
@@ -578,7 +604,7 @@ export default function HomePage() {
           </div>
 
           {/* Social Links Row from Page 12 */}
-          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6">
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-white/20 pt-6">
             <div className="flex flex-wrap items-center gap-4">
               {contact.socials.map((social) => (
                 <a
@@ -617,9 +643,14 @@ export default function HomePage() {
               ))}
             </div>
 
+            <span className="font-mono text-xs text-white/70">
+              MLRIT CIE · Official Program
+            </span>
           </div>
         </div>
 
+        {/* Page 12 Footer Timeline Marker */}
+        <PageFooterTimeline pageNumber="12" />
       </section>
     </div>
   );
