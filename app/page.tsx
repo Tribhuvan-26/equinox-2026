@@ -58,7 +58,7 @@ export default function HomePage() {
         <div className="relative max-w-5xl">
           <h2
             className="font-display-title font-black leading-[0.95] tracking-tight text-[#F7F2F6] break-words hyphens-auto"
-            style={{ fontSize: "clamp(1.9rem, 5.2vw, 5.5rem)" }}
+            style={{ fontSize: "clamp(1.35rem, 5.2vw, 5.5rem)" }}
           >
             {about.heading}
           </h2>
@@ -210,7 +210,7 @@ export default function HomePage() {
             </div>
           </ScrollReveal>
 
-          <ScrollReveal className="mt-4 grid grid-cols-2 gap-4" stagger={0.06}>
+          <ScrollReveal className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2" stagger={0.06}>
             <div className="program-card rounded-3xl border border-[#7484FE]/30 bg-[#151515] p-8 text-[#F7F2F6]">
               <span className="font-mono text-xs font-black uppercase text-[#7484FE]">Audience Reach</span>
               <p className="mt-2 font-mono text-5xl font-black text-[#7484FE] sm:text-6xl">2,000+</p>
@@ -258,7 +258,7 @@ export default function HomePage() {
         <div className="relative max-w-3xl">
           <h2
             className="font-display-title font-black leading-[0.9] tracking-tighter text-[#F7F2F6]"
-            style={{ fontSize: "clamp(3.25rem, 7vw, 7rem)" }}
+            style={{ fontSize: "clamp(2.5rem, 7vw, 7rem)" }}
           >
             Contact Us
           </h2>

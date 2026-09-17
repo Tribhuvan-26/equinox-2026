@@ -694,7 +694,7 @@ export default function ScrollJourney() {
             ================================================================ */}
         <div
           ref={heroBlockRef}
-          className="absolute inset-0 flex flex-col items-center justify-end pb-8 sm:pb-12 pointer-events-none"
+          className="absolute inset-0 flex flex-col items-center justify-end pb-24 sm:pb-12 pointer-events-none"
           style={{ zIndex: 45 }}
         >
           {/* Subtitle & hanging tag */}

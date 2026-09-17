@@ -62,7 +62,7 @@ export default function GallerySection({
           </div>
           <h2
             className="mt-3 font-display-title font-black leading-[0.92] tracking-tighter text-[#F7F2F6]"
-            style={{ fontSize: "clamp(2.75rem, 6.5vw, 6.5rem)" }}
+            style={{ fontSize: "clamp(2.25rem, 6.5vw, 6.5rem)" }}
           >
             Past Event Moments
           </h2>
