@@ -97,13 +97,37 @@ export const DraggableContainer = ({
 
         const wrapperEl = wrapperRef.current;
         const handleWheelScroll = (event: WheelEvent) => {
-            if (!isDragging) {
-                event.preventDefault();
-                animate(y, y.get() - event.deltaY * 1.5, {
-                    type: "tween",
-                    duration: 0.6,
-                    ease: cubicBezier(0.18, 0.71, 0.11, 1),
-                });
+            if (isDragging) return;
+            event.preventDefault();
+
+            // Check if trackpad gesture (continuous small deltas) vs stepped mouse wheel
+            const isContinuousTrackpad =
+                Math.abs(event.deltaY) < 50 && (Math.abs(event.deltaX) < 50 || event.deltaX !== 0);
+
+            if (isContinuousTrackpad) {
+                // High-precision trackpad 360-degree swipe in any direction (horizontal, vertical, diagonal)
+                if (event.deltaX !== 0) {
+                    x.set(x.get() - event.deltaX * 1.15);
+                }
+                if (event.deltaY !== 0) {
+                    y.set(y.get() - event.deltaY * 1.15);
+                }
+            } else {
+                // Stepped mouse wheel: smooth kinetic tween in any scrolled axis
+                if (event.deltaX !== 0) {
+                    animate(x, x.get() - event.deltaX * 1.4, {
+                        type: "tween",
+                        duration: 0.45,
+                        ease: cubicBezier(0.18, 0.71, 0.11, 1),
+                    });
+                }
+                if (event.deltaY !== 0) {
+                    animate(y, y.get() - event.deltaY * 1.4, {
+                        type: "tween",
+                        duration: 0.45,
+                        ease: cubicBezier(0.18, 0.71, 0.11, 1),
+                    });
+                }
             }
         };
 
@@ -122,25 +146,33 @@ export const DraggableContainer = ({
     }, [x, y, isDragging]);
 
     return (
-        <div ref={wrapperRef} className={cn(containerHeight, "overflow-hidden select-none", wrapperClassName)}>
-            <motion.div className={cn(containerHeight, "overflow-hidden")}>
+        <div
+            ref={wrapperRef}
+            className={cn(containerHeight, "overflow-hidden select-none touch-none", wrapperClassName)}
+            style={{ touchAction: "none" }}
+        >
+            <motion.div
+                className={cn(containerHeight, "overflow-hidden touch-none")}
+                style={{ touchAction: "none" }}
+            >
                 <motion.div
                     className={cn(
-                        "grid h-fit w-fit cursor-grab grid-cols-[repeat(2,max-content)] bg-[#141414] active:cursor-grabbing will-change-transform",
+                        "grid h-fit w-fit cursor-grab grid-cols-[repeat(2,max-content)] bg-[#141414] active:cursor-grabbing will-change-transform touch-none select-none",
                         className,
                     )}
+                    style={{ x, y, touchAction: "none" }}
                     drag
                     dragMomentum={true}
+                    dragElastic={0.06}
                     dragTransition={{
-                        timeConstant: 200,
-                        power: 0.28,
+                        timeConstant: 220,
+                        power: 0.35,
                         restDelta: 0,
                         bounceStiffness: 0,
                     }}
-                    onMouseDown={handleIsDragging}
-                    onMouseUp={handleIsNotDragging}
-                    onMouseLeave={handleIsNotDragging}
-                    style={{ x, y }}
+                    onPointerDown={handleIsDragging}
+                    onPointerUp={handleIsNotDragging}
+                    onPointerCancel={handleIsNotDragging}
                     ref={ref}
                 >
                     {children}

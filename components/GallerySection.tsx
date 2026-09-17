@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "motion/react";
 import {
   ArrowRight,
   Layers,
   X,
   ChevronLeft,
   ChevronRight,
-  Download,
   Move,
 } from "lucide-react";
 import {
@@ -34,6 +34,7 @@ export default function GallerySection({
   containerHeight,
 }: GallerySectionProps) {
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryItem | null>(null);
+  const pointerDownPos = useRef<{ x: number; y: number } | null>(null);
 
   // Map all 32 photo items from the gallery dataset
   const galleryItems: GalleryItem[] = useMemo(() => {
@@ -85,6 +86,22 @@ export default function GallerySection({
     setSelectedPhoto(galleryItems[prevIdx]);
   };
 
+  const handlePointerDown = (e: React.PointerEvent) => {
+    pointerDownPos.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const handleItemClick = (photo: GalleryItem, e: React.MouseEvent) => {
+    if (pointerDownPos.current) {
+      const dist = Math.hypot(
+        e.clientX - pointerDownPos.current.x,
+        e.clientY - pointerDownPos.current.y
+      );
+      // If pointer moved more than 7px, it was a swipe/pan, not a click!
+      if (dist > 7) return;
+    }
+    setSelectedPhoto(photo);
+  };
+
   const canvasHeight =
     containerHeight ||
     (isDedicatedPage
@@ -115,7 +132,7 @@ export default function GallerySection({
             Past Event Moments
           </h2>
           <p className="mt-6 text-lg leading-relaxed text-[#F7F2F6]/90 sm:text-xl font-medium max-w-2xl">
-            Drag across our infinite photo tapestry of previous Equinox editions, hackathons, and summits. Explore real camera captures from past events.
+            Swipe in any direction across our infinite photo tapestry of previous Equinox editions, hackathons, and summits. Explore real camera captures from past events.
           </p>
         </div>
 
@@ -153,7 +170,9 @@ export default function GallerySection({
                   role="button"
                   tabIndex={0}
                   aria-label="View photo"
-                  onClick={() => setSelectedPhoto(photo)}
+                  onPointerDown={handlePointerDown}
+                  onClick={(e) => handleItemClick(photo, e)}
+                  onContextMenu={(e) => e.preventDefault()}
                   className="group relative block w-[280px] sm:w-[320px] md:w-[360px] aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-[#1b1c22] shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:border-[#33FF67]/80 cursor-pointer select-none"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -162,7 +181,17 @@ export default function GallerySection({
                     alt="Equinox Event Photo"
                     draggable={false}
                     loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 pointer-events-none"
+                    onContextMenu={(e) => e.preventDefault()}
+                    style={{
+                      WebkitTouchCallout: "none",
+                      userSelect: "none",
+                    }}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 pointer-events-none select-none"
+                  />
+                  {/* Invisible protective overlay against saving / downloading */}
+                  <div
+                    className="absolute inset-0 z-10 pointer-events-none"
+                    onContextMenu={(e) => e.preventDefault()}
                   />
                 </div>
               </GridItem>
@@ -170,10 +199,10 @@ export default function GallerySection({
           </GridBody>
         </DraggableContainer>
 
-        {/* Corner Trackpad Drag Instruction Pill */}
+        {/* Corner Swipe/Drag Instruction Pill */}
         <div className="pointer-events-none absolute bottom-4 right-4 z-30 flex items-center gap-2 rounded-full border border-white/15 bg-black/80 px-3.5 py-1.5 font-mono text-[11px] text-[#F7F2F6]/85 backdrop-blur-md shadow-lg">
           <Move className="h-3 w-3 text-[#33FF67] animate-pulse" />
-          <span>Press trackpad &amp; drag to pan • Click photo to view</span>
+          <span>Swipe in any direction • Click photo to view</span>
         </div>
       </div>
 
@@ -209,68 +238,106 @@ export default function GallerySection({
         </div>
       </div>
 
-      {/* Lightbox Modal (Clean Pure Image View) */}
-      {selectedPhoto && (
-        <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4 sm:p-8 backdrop-blur-md"
-          onClick={() => setSelectedPhoto(null)}
-        >
-          <div
-            className="relative flex items-center justify-center max-h-[92vh] max-w-5xl overflow-hidden rounded-3xl border border-white/15 bg-[#121214] shadow-2xl p-2 sm:p-4"
-            onClick={(e) => e.stopPropagation()}
+      {/* Lightbox Modal (Clean Pure Image View with Swipe In Any Direction & No Download) */}
+      <AnimatePresence>
+        {selectedPhoto && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4 sm:p-8 backdrop-blur-md select-none touch-none"
+            onClick={() => setSelectedPhoto(null)}
+            onContextMenu={(e) => e.preventDefault()}
           >
-            {/* Close Button */}
-            <button
-              type="button"
-              onClick={() => setSelectedPhoto(null)}
-              aria-label="Close dialog"
-              className="absolute top-4 right-4 z-30 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/70 text-[#F7F2F6] transition hover:bg-white/20 hover:scale-110 active:scale-95 cursor-pointer"
+            <motion.div
+              initial={{ scale: 0.94, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.94, opacity: 0 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+              drag
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={0.65}
+              onDragEnd={(_, info) => {
+                const { offset, velocity } = info;
+                // Swipe left -> next photo
+                if (offset.x < -70 || velocity.x < -300) {
+                  handleNext();
+                }
+                // Swipe right -> prev photo
+                else if (offset.x > 70 || velocity.x > 300) {
+                  handlePrev();
+                }
+                // Swipe up or down -> close modal
+                else if (Math.abs(offset.y) > 90 || Math.abs(velocity.y) > 400) {
+                  setSelectedPhoto(null);
+                }
+              }}
+              className="relative flex items-center justify-center max-h-[92vh] max-w-5xl overflow-hidden rounded-3xl border border-white/15 bg-[#121214] shadow-2xl p-2 sm:p-4 cursor-grab active:cursor-grabbing touch-none select-none"
+              onClick={(e) => e.stopPropagation()}
+              onContextMenu={(e) => e.preventDefault()}
             >
-              <X className="h-5 w-5" />
-            </button>
-
-            {/* Navigation Arrows */}
-            <button
-              type="button"
-              onClick={handlePrev}
-              aria-label="Previous photo"
-              className="absolute left-4 top-1/2 z-30 flex -translate-y-1/2 h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/70 text-[#F7F2F6] transition hover:bg-white/20 hover:scale-110 active:scale-95 cursor-pointer"
-            >
-              <ChevronLeft className="h-6 w-6" />
-            </button>
-            <button
-              type="button"
-              onClick={handleNext}
-              aria-label="Next photo"
-              className="absolute right-4 top-1/2 z-30 flex -translate-y-1/2 h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/70 text-[#F7F2F6] transition hover:bg-white/20 hover:scale-110 active:scale-95 cursor-pointer"
-            >
-              <ChevronRight className="h-6 w-6" />
-            </button>
-
-            {/* Pure Photo Display */}
-            <div className="relative flex items-center justify-center max-h-[85vh] w-full">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={selectedPhoto.imageUrl}
-                alt="Equinox Event Photo"
-                className="max-h-[82vh] max-w-full rounded-2xl object-contain shadow-2xl"
-              />
-
-              {/* Minimal Clean Download Button in Bottom Right */}
-              <a
-                href={selectedPhoto.imageUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                download
-                className="absolute bottom-4 right-4 z-30 flex items-center gap-2 rounded-full border border-white/20 bg-black/80 px-4 py-2 font-mono text-xs font-bold text-[#F7F2F6] backdrop-blur-md transition hover:bg-[#33FF67] hover:text-[#141414] hover:border-[#33FF67]"
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => setSelectedPhoto(null)}
+                aria-label="Close dialog"
+                className="absolute top-4 right-4 z-40 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/70 text-[#F7F2F6] transition hover:bg-white/20 hover:scale-110 active:scale-95 cursor-pointer"
               >
-                <Download className="h-3.5 w-3.5" />
-                <span>Download Original</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
+                <X className="h-5 w-5" />
+              </button>
+
+              {/* Navigation Arrows */}
+              <button
+                type="button"
+                onClick={handlePrev}
+                aria-label="Previous photo"
+                className="absolute left-4 top-1/2 z-40 flex -translate-y-1/2 h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/70 text-[#F7F2F6] transition hover:bg-white/20 hover:scale-110 active:scale-95 cursor-pointer"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+              <button
+                type="button"
+                onClick={handleNext}
+                aria-label="Next photo"
+                className="absolute right-4 top-1/2 z-40 flex -translate-y-1/2 h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/70 text-[#F7F2F6] transition hover:bg-white/20 hover:scale-110 active:scale-95 cursor-pointer"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+
+              {/* Pure Photo Display without Download Option */}
+              <div
+                className="relative flex items-center justify-center max-h-[85vh] w-full select-none"
+                onContextMenu={(e) => e.preventDefault()}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={selectedPhoto.imageUrl}
+                  alt="Equinox Event Photo"
+                  draggable={false}
+                  onContextMenu={(e) => e.preventDefault()}
+                  style={{
+                    WebkitTouchCallout: "none",
+                    userSelect: "none",
+                  }}
+                  className="max-h-[82vh] max-w-full rounded-2xl object-contain shadow-2xl pointer-events-none select-none"
+                />
+
+                {/* Protective Transparent Overlay: Blocks right-clicking or dragging */}
+                <div
+                  className="absolute inset-0 z-20 pointer-events-auto cursor-grab active:cursor-grabbing"
+                  onContextMenu={(e) => e.preventDefault()}
+                />
+
+                {/* Bottom Gesture Hint Badge */}
+                <div className="pointer-events-none absolute bottom-4 left-4 z-30 flex items-center gap-2 rounded-full border border-white/15 bg-black/75 px-3.5 py-1.5 font-mono text-[11px] text-[#F7F2F6]/80 backdrop-blur-md">
+                  <span>Swipe ‹ › to browse • Swipe ↕ to close</span>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

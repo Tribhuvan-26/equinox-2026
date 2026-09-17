@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, Upload, Sparkles, FolderDown, Ticket } from "lucide-react";
+import { ArrowLeft, Sparkles, Ticket } from "lucide-react";
 import GallerySection from "@/components/GallerySection";
 import { event } from "@/lib/content";
 
@@ -70,7 +70,7 @@ export default function GalleryPage() {
                 </div>
               </div>
               <p className="mt-3 text-xs leading-relaxed text-[#F7F2F6]/75">
-                Drag across the infinite canvas. Click any photo to view in high resolution or download the original.
+                Swipe or drag across the canvas in any direction. Click any photo to view in high resolution.
               </p>
             </div>
           </div>
