@@ -3,6 +3,9 @@
 import { useRef, useState } from "react";
 import {
   motion,
+  useMotionValueEvent,
+  useScroll,
+  useSpring,
   type Variants,
 } from "framer-motion";
 import Link from "next/link";
@@ -15,22 +18,21 @@ import {
   contact,
 } from "@/lib/content";
 import {
+  InstitutionalHeader,
+  HangingTag,
+  CoverPopUpArt,
+  PageFooterTimeline,
+  SubEventBadge,
+} from "./EventGraphics";
+import AccordionGallery from "./components/AccordionGallery";
+import {
   ArrowRight,
   Mail,
   Globe,
   MapPin,
   Phone,
   Calendar,
-  Sparkles,
-  Layers,
-  ExternalLink,
 } from "lucide-react";
-import ScrollJourney from "../components/ScrollJourney";
-import JourneyOutro from "../components/JourneyOutro";
-import ScrollReveal from "../components/ScrollReveal";
-import PinnedSplit from "../components/PinnedSplit";
-import LogoMarquee from "../components/LogoMarquee";
-import GallerySection from "../components/GallerySection";
 
 const heroFadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -38,12 +40,141 @@ const heroFadeUp: Variants = {
 };
 
 export default function HomePage() {
-  return (
-    <div id="top" className="riso-texture brochure-grid min-h-screen overflow-x-clip text-[#F7F2F6] selection:bg-[#7484FE] selection:text-[#2A2A2A]">
-      <ScrollJourney />
+  const [activeEventIndex, setActiveEventIndex] = useState(0);
+  const eventsScrollRef = useRef<HTMLDivElement>(null);
 
-      {/* Seam out of the journey: warp exit, then the summit chapters */}
-      <JourneyOutro line="Ten events charted. The summit begins." />
+  // Scroll progress across the pinned fan, eased with a spring so the active
+  // panel settles into place instead of snapping frame-to-frame with raw scroll.
+  const { scrollYProgress } = useScroll({
+    target: eventsScrollRef,
+    offset: ["start start", "end end"],
+  });
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 260,
+    damping: 34,
+    mass: 0.6,
+  });
+
+  useMotionValueEvent(smoothProgress, "change", (p) => {
+    const n = subEvents.length;
+    const idx = Math.min(n - 1, Math.max(0, Math.round(p * n - 0.5)));
+    setActiveEventIndex((prev) => (prev === idx ? prev : idx));
+  });
+
+  return (
+    <div className="riso-texture brochure-grid min-h-screen overflow-x-clip text-white selection:bg-[#F9D47B] selection:text-[#282828]">
+      {/* =========================================================================
+          SECTION 1: HERO / COVER (Page 01)
+          ========================================================================= */}
+      <section
+        id="top"
+        className="relative mx-auto flex min-h-screen max-w-[1400px] flex-col justify-between px-4 pt-4 pb-12 sm:px-8 sm:pt-6"
+      >
+        {/* Institutional Header */}
+        <InstitutionalHeader />
+
+        {/* Cover Title Area — asymmetric on desktop: copy left, pop-up art offset right */}
+        <div className="relative my-auto flex flex-col items-center text-center lg:grid lg:grid-cols-12 lg:items-center lg:gap-10 lg:text-left">
+          <motion.div
+            className="lg:col-span-7"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.4 }}
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12 } } }}
+          >
+            {/* Top Row: Date Pill and Edition */}
+            <motion.div
+              variants={heroFadeUp}
+              className="flex w-full max-w-4xl items-center justify-between px-2 sm:px-4 lg:max-w-none lg:justify-start lg:gap-6 lg:px-0"
+            >
+              <span className="font-mono text-xs font-black tracking-widest uppercase text-white/90 sm:text-sm">
+                E-SUMMIT
+              </span>
+              <div className="flex items-center gap-2 rounded-full border-2 border-white bg-white/10 px-4 py-1.5 backdrop-blur-xs">
+                <Calendar className="h-4 w-4 text-[#F9D47B]" />
+                <span className="font-mono text-xs font-black tracking-wider uppercase sm:text-sm text-white">
+                  {event.date}
+                </span>
+              </div>
+            </motion.div>
+
+            {/* Massive "THE EQUINOX" Title Lockup with Hanging "2.0" */}
+            <motion.div variants={heroFadeUp} className="mt-4 flex justify-center lg:justify-start">
+              <div className="leading-none">
+                <span className="block font-mono text-2xl font-black tracking-widest text-[#EB547C] sm:text-4xl lg:text-5xl">
+                  THE
+                </span>
+                {/* Wrapping the word in its own relative box (sized to the text itself,
+                    not the full row) lets the tag anchor to the actual top-right corner
+                    of "EQUINOX" at any size, instead of a viewport-relative guess. */}
+                <div className="relative inline-block">
+                  <h1 className="font-display-title display-title-shadow text-6xl tracking-tighter text-[#F9D47B] sm:text-8xl md:text-9xl lg:text-[clamp(4rem,10vw,12rem)]">
+                    EQUINOX
+                  </h1>
+                  {/* Left is a % of the word's own box, so it tracks the "I/N" boundary
+                      at any text size instead of a viewport-relative guess. */}
+                  <div className="absolute top-full left-[57%] -mt-4 sm:-mt-6 lg:-mt-10">
+                    <HangingTag />
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Hashtag Tagline Badge */}
+            <motion.div variants={heroFadeUp} className="mt-4 flex justify-center sm:mt-6 lg:justify-start">
+              <div className="inline-flex items-center gap-2 rounded-md border-2 border-[#282828] bg-[#F9D47B] px-4 py-2 shadow-[4px_4px_0px_#282828] sm:px-6 sm:py-2.5">
+                <span className="font-mono text-sm font-black text-[#282828] sm:text-base">
+                  #
+                </span>
+                <span className="font-mono text-xs font-black tracking-wider uppercase text-[#282828] sm:text-sm md:text-base">
+                  WHERE PASSION MEETS PERSEVERANCE
+                </span>
+              </div>
+            </motion.div>
+
+            {/* Spaced OVERVIEW Typography */}
+            <motion.div variants={heroFadeUp} className="mt-4 w-full">
+              <h2 className="font-mono text-3xl font-black tracking-[0.28em] text-white uppercase sm:text-5xl md:text-6xl lg:text-7xl">
+                OVERVIEW
+              </h2>
+            </motion.div>
+
+            {/* CTA & Quick Actions */}
+            <motion.div variants={heroFadeUp} className="mt-8 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
+              <a
+                href="#events"
+                className="flex items-center gap-2 rounded-full border-2 border-[#282828] bg-[#F9D47B] px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-[#282828] shadow-[4px_4px_0px_#282828] transition hover:scale-105 hover:bg-[#ffe17d]"
+              >
+                Explore 10 Sub-Events
+                <ArrowRight className="h-4 w-4" />
+              </a>
+              <a
+                href="#about"
+                className="flex items-center gap-2 rounded-full border-2 border-white bg-white/10 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-xs transition hover:bg-white hover:text-[#2074D5]"
+              >
+                About Equinox
+              </a>
+            </motion.div>
+          </motion.div>
+
+          {/* Vector Pop-Up Book Editorial Art — offset into its own column, overlapping on desktop */}
+          <motion.div
+            className="mt-6 w-full max-w-2xl px-2 sm:mt-8 lg:col-span-5 lg:mt-20 lg:max-w-none lg:translate-x-6 lg:px-0"
+            initial={{ opacity: 0, scale: 0.94, y: 24 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
+          >
+            <div className="animate-float">
+              <CoverPopUpArt />
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Cover Page Footer Timeline */}
+        <PageFooterTimeline pageNumber="01" />
+      </section>
+
       {/* =========================================================================
           SECTION 2: ABOUT EQUINOX (Who Are We / What We Do / What Is Equinox)
           ========================================================================= */}
@@ -62,114 +193,244 @@ export default function HomePage() {
           >
             {about.heading}
           </h2>
-          <p className="mt-6 text-xl leading-relaxed text-[#F7F2F6]/95 sm:text-2xl font-medium">
+          <p className="mt-6 text-xl leading-relaxed text-white/95 sm:text-2xl font-medium">
             {about.whatIsEquinox}
           </p>
         </div>
 
         {/* Editorial Pair: who are we? / what we do — matching brochure casing */}
-        <ScrollReveal className="mt-16 grid gap-8 md:grid-cols-2">
-          {/* who are we? */}
-          <div className="program-card rounded-3xl border border-white/10 bg-[#151515] p-8">
-            <h3 className="text-3xl font-black lowercase text-[#F7F2F6] sm:text-4xl">
-              who <span className="text-[#33FF67]">are we?</span>
+        <div className="mt-16 grid gap-8 md:grid-cols-2">
+          {/* who are we? (lowercase bold matching Brochure Page 01) */}
+          <div className="program-card rounded-3xl border-2 border-white/40 bg-white/10 p-8 backdrop-blur-xs">
+            <span className="font-mono text-xs font-black tracking-wider text-[#F9D47B] uppercase">
+              01 · Vision
+            </span>
+            <h3 className="mt-2 text-3xl font-black lowercase text-white sm:text-4xl">
+              who <span className="text-[#F9D47B]">are we?</span>
             </h3>
-            <p className="mt-2 font-mono text-xs font-bold uppercase tracking-wider text-[#F7F2F6]/80">
+            <p className="mt-2 font-mono text-xs font-bold uppercase tracking-wider text-white/80">
               Centre for Innovation &amp; Entrepreneurship @MLRIT
             </p>
-            <p className="mt-4 text-sm leading-relaxed text-[#F7F2F6]/90">
-              Established in 2015, MLRIT-CIE is an <span className="font-bold text-[#33FF67]">entrepreneurship development cell</span> dedicated to nurturing young innovators and supporting <span className="font-bold text-[#7484FE]">early-stage startups</span>. We focus on building a strong and thriving ecosystem that encourages growth, collaboration, and innovation.
+            <p className="mt-4 text-sm leading-relaxed text-white/90">
+              Established in 2015, MLRIT-CIE is an <span className="font-bold text-[#F9D47B]">entrepreneurship development cell</span> dedicated to nurturing young innovators and supporting <span className="font-bold text-[#F9D47B]">early-stage startups</span>. We focus on building a strong and thriving ecosystem that encourages growth, collaboration, and innovation.
             </p>
-            <p className="mt-3 text-sm leading-relaxed text-[#F7F2F6]/90">
-              By inspiring <span className="font-bold text-[#7484FE]">creativity</span> and <span className="font-bold text-[#33FF67]">entrepreneurial spirit</span> among students, alumni, faculty, and industry partners, we create opportunities for <span className="font-bold text-[#7484FE]">learning, development</span>, and success. Through continuous support and guidance, we aim to drive innovation and turn <span className="font-bold text-[#33FF67]">ideas into reality</span>.
+            <p className="mt-3 text-sm leading-relaxed text-white/90">
+              By inspiring <span className="font-bold text-[#F9D47B]">creativity</span> and <span className="font-bold text-[#F9D47B]">entrepreneurial spirit</span> among students, alumni, faculty, and industry partners, we create opportunities for <span className="font-bold text-[#F9D47B]">learning, development</span>, and success. Through continuous support and guidance, we aim to drive innovation and turn <span className="font-bold text-[#F9D47B]">ideas into reality</span>.
             </p>
           </div>
 
-          {/* what we do */}
-          <div className="program-card flex flex-col justify-between rounded-3xl border border-white/10 bg-[#151515] p-8">
+          {/* what we do (lowercase bold matching brochure treatment) */}
+          <div className="program-card rounded-3xl border-2 border-white/40 bg-white/10 p-8 backdrop-blur-xs flex flex-col justify-between">
             <div>
-              <h3 className="text-3xl font-black lowercase text-[#F7F2F6] sm:text-4xl">
-                what <span className="text-[#33FF67]">we do</span>
+              <span className="font-mono text-xs font-black tracking-wider text-[#F9D47B] uppercase">
+                02 · Mission
+              </span>
+              <h3 className="mt-2 text-3xl font-black lowercase text-white sm:text-4xl">
+                what <span className="text-[#F9D47B]">we do</span>
               </h3>
-              <p className="mt-4 text-base leading-relaxed text-[#F7F2F6]/95 sm:text-lg">
+              <p className="mt-4 text-base leading-relaxed text-white/95 sm:text-lg">
                 We host high-impact hackathons, from MetaLoop, our biggest national-level AR/VR hackathon, to Inventron, our flagship 36-hour build challenge.
               </p>
-              <p className="mt-4 text-sm leading-relaxed text-[#F7F2F6]/85">
+              <p className="mt-4 text-sm leading-relaxed text-white/85">
                 CIE MLRIT creates an ecosystem where ambitious students transform theoretical ideas into viable ventures through hands-on mentorship, seed funding, prototype support, and direct access to angel investors.
               </p>
             </div>
 
-            <div className="mt-6 rounded-2xl border border-[#33FF67]/25 bg-[#101010] p-4">
-              <span className="font-mono text-xs font-black text-[#33FF67] uppercase">
+            <div className="mt-6 rounded-2xl border border-white/20 bg-white/5 p-4">
+              <span className="font-mono text-xs font-black text-[#F9D47B] uppercase">
                 Flagship Hackathon Series
               </span>
-              <p className="mt-1 font-bold text-[#F7F2F6] text-sm">
+              <p className="mt-1 font-bold text-white text-sm">
                 MetaLoop (National AR/VR) &amp; Inventron (36-Hour Build Challenge)
               </p>
             </div>
           </div>
-        </ScrollReveal>
+        </div>
 
-        {/* what is THE EQUINOX 2.0 */}
-        <div className="program-card mt-8 flex flex-col gap-8 rounded-3xl border border-[#7484FE]/30 bg-[#151515] p-8 text-[#F7F2F6] shadow-xl sm:p-10 lg:flex-row lg:items-center lg:justify-between">
+        {/* what is THE EQUINOX 2.0 — Banner matching Brochure Page 03 */}
+        <div className="program-card mt-8 flex flex-col gap-8 rounded-3xl border-2 border-white bg-white p-8 text-[#282828] shadow-xl sm:p-10 lg:flex-row lg:items-center lg:justify-between">
           <div className="lg:max-w-xl">
-            <h3 className="text-3xl font-black text-[#F7F2F6] sm:text-4xl">
-              what is <span className="text-[#7484FE]">THE</span> <span className="text-[#F7F2F6]">EQUINOX</span> <span className="text-[#33FF67]">2.0</span>
+            <span className="font-mono text-xs font-black tracking-wider text-[#2074D5] uppercase">
+              03 · The Summit (Page 03)
+            </span>
+            <h3 className="mt-2 text-3xl font-black text-[#282828] sm:text-4xl">
+              what is <span className="text-[#EB547C]">THE</span> <span className="text-[#2074D5]">EQUINOX</span> <span className="text-[#EB547C]">2.0</span>
             </h3>
-            <p className="mt-4 text-sm leading-relaxed text-[#F7F2F6]/85">
+            <p className="mt-4 text-sm leading-relaxed text-[#1f222e]">
               Equinox is a 2-day E Summit at MLR Institute of Technology, Hyderabad. It pictures a vibrant and engaging environment where students come together to take on real-world challenges and explore entrepreneurship through events like Spotlight, Case-Study Competitions, Brand Battles, IPL Auction, Startup Expo, Pitch Deck, and E-Cell Meet.
             </p>
           </div>
-          <Link
-            href="/register"
-            className="group flex items-center gap-2 font-mono text-xs font-black text-[#7484FE] transition-colors hover:text-[#33FF67] lg:shrink-0"
-          >
+          <div className="flex items-center gap-2 font-mono text-xs font-black text-[#2074D5] lg:shrink-0">
             <span>30 - 31 OCTOBER 2026</span>
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
+            <ArrowRight className="h-4 w-4" />
+          </div>
         </div>
 
-        {/* Summit scale: 6-column dense bento. Row one is 3+3, row two is 2+2+2,
-            so every cell is filled at every breakpoint. */}
-        <ScrollReveal className="mt-20 grid grid-flow-dense gap-4 sm:grid-cols-6" stagger={0.06}>
-          {highlights.map((item, idx) => {
-            // 4+2 then 2+4: both rows total exactly 6 columns, so no cell is left empty.
-            const wide = idx === 0 || idx === 3;
-            const accent = idx % 2 === 0 ? "#7484FE" : "#33FF67";
-            return (
+        {/* Highlights Row (What's In Store stats) */}
+        <div className="mt-16">
+          <div className="mb-6 flex items-center justify-between">
+            <span className="font-mono text-xs font-black uppercase tracking-widest text-white/80">
+              What&apos;s In Store · Summit Scale
+            </span>
+            <span className="font-mono text-xs font-bold text-[#F9D47B] uppercase">
+              Page 04
+            </span>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {highlights.map((item) => (
               <div
                 key={item.label}
-                className={`program-card group rounded-3xl border border-white/10 bg-[#151515] p-7 hover:border-white/25 ${
-                  wide ? "sm:col-span-4" : "sm:col-span-2"
-                }`}
+                className={`program-card group rounded-3xl border border-white/10 bg-[#151515] p-7 hover:border-white/25 ${wide ? "sm:col-span-4" : "sm:col-span-2"
+                  }`}
               >
-                <p
-                  className="font-mono font-black leading-none"
-                  style={{ color: accent, fontSize: wide ? "clamp(2.75rem, 5vw, 4.5rem)" : "clamp(2.25rem, 3.4vw, 3.25rem)" }}
-                >
+                <p className="font-mono text-4xl font-black text-[#F9D47B] sm:text-5xl">
                   {item.value}
                 </p>
-                <p className="mt-3 text-base font-bold text-[#F7F2F6]">{item.label}</p>
-                <p className="mt-1 text-xs leading-relaxed text-[#F7F2F6]/70">{item.detail}</p>
-                <span
-                  className="mt-5 block h-px w-0 transition-all duration-700 ease-out group-hover:w-full"
-                  style={{ backgroundColor: accent }}
-                />
+                <p className="mt-2 font-bold text-white text-base">
+                  {item.label}
+                </p>
+                <p className="mt-1 text-xs text-white/80">
+                  {item.detail}
+                </p>
               </div>
-            );
-          })}
-        </ScrollReveal>
+            ))}
+          </div>
+        </div>
 
+        {/* Page Footer Timeline */}
+        <PageFooterTimeline pageNumber="03" />
       </section>
 
+      {/* =========================================================================
+          SECTION 4: SUB-EVENTS (Pages 05 & 06)
+          ========================================================================= */}
+      <section
+        id="events"
+        className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 py-20 sm:px-8"
+      >
+        {/* Section Header */}
+        <div>
+          <span className="rounded-full border border-white/40 bg-white/15 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-white">
+            Pages 05 &amp; 06
+          </span>
+          <h2 className="mt-3 font-display-title text-5xl font-black tracking-tight text-white sm:text-7xl lg:text-8xl">
+            SUB-EVENTS
+          </h2>
+          <p className="mt-3 max-w-xl text-base text-white/90 sm:text-lg">
+            All 10 official sub-events, locked in one after another. Keep scrolling to step through every one, then hit Register on the one you want.
+          </p>
+        </div>
+      </section>
 
-      {/* Ten sub-events, running as one continuous strip */}
-      <div id="events" className="border-y border-white/10">
-        <LogoMarquee slugs={subEvents.map((e) => e.slug)} names={subEvents.map((e) => e.name)} />
+      {/* Scroll-Locked Fan — this wrapper is tall (10 viewport-heights), and
+          the fan pins in place (position: sticky) while it scrolls past, so
+          every event has to be stepped through before the page moves on to
+          the next section below. */}
+      <div ref={eventsScrollRef} style={{ height: `${subEvents.length * 70}vh` }} className="relative">
+        <div className="sticky top-0 flex h-screen items-center px-4 sm:px-8">
+          <div className="mx-auto w-full max-w-[1400px]">
+            <div className="mb-6 text-center font-mono text-xs font-bold uppercase tracking-wider text-white/70">
+              Keep scrolling to move through all {subEvents.length} events
+            </div>
+
+            <div className="h-[520px] lg:h-[560px]">
+              <AccordionGallery
+                activeIndex={activeEventIndex}
+                onSelect={setActiveEventIndex}
+                className="h-full flex-col lg:flex-row"
+                items={subEvents.map((item, idx) => {
+                  const isActive = idx === activeEventIndex;
+                  return {
+                    content: (
+                      <div
+                        className={`h-full w-full border-2 transition-colors duration-300 ${isActive
+                          ? "border-white bg-[#EB547C]"
+                          : "border-white/30 bg-white/5 hover:border-white/70 hover:bg-white/10"
+                          }`}
+                      >
+                        {isActive ? (
+                          /* Expanded content */
+                          <div className="flex h-full flex-col p-6 sm:p-8">
+                            <div className="flex items-center justify-between gap-3">
+                              <span className="font-mono text-xs font-black tracking-widest text-[#282828]">
+                                PAGE {item.pageNumber} · {item.category}
+                              </span>
+                              <span className="font-mono text-xs font-bold text-[#282828]/70">
+                                Event {String(idx + 1).padStart(2, "0")} of {subEvents.length}
+                              </span>
+                            </div>
+
+                            <div className="mt-4 flex min-h-[88px] w-full items-center justify-center rounded-2xl border-2 border-[#282828] bg-[#2074D5] p-4 text-center">
+                              <SubEventBadge slug={item.slug} />
+                            </div>
+
+                            <p className="mt-5 text-base leading-relaxed text-[#282828] sm:text-lg">
+                              {item.description}
+                            </p>
+
+                            <div className="mt-4 flex flex-wrap gap-2">
+                              {item.skills.map((skill) => (
+                                <span
+                                  key={skill}
+                                  className="rounded-full border border-[#282828]/20 bg-white/60 px-3 py-0.5 text-xs text-[#282828]"
+                                >
+                                  {skill}
+                                </span>
+                              ))}
+                            </div>
+
+                            <div className="mt-auto flex flex-col gap-3 border-t border-[#282828]/20 pt-4 sm:flex-row sm:items-center sm:justify-between">
+                              <span className="flex items-center gap-1.5 text-xs font-semibold text-[#282828]/80">
+                                <Calendar className="h-3.5 w-3.5" />
+                                {item.timing}
+                              </span>
+                              <div className="flex flex-wrap items-center gap-3">
+                                <Link
+                                  href={`/events/${item.slug}`}
+                                  className="group/link flex shrink-0 items-center gap-1 text-xs font-bold text-[#282828] hover:underline"
+                                >
+                                  View Details &amp; Rules
+                                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-1" />
+                                </Link>
+                                <Link
+                                  href="/register"
+                                  className="flex shrink-0 items-center gap-2 rounded-full border-2 border-[#282828] bg-[#F9D47B] px-5 py-2 text-xs font-bold uppercase tracking-wider text-[#282828] shadow-[3px_3px_0px_#282828] transition hover:scale-105 hover:bg-[#ffe17d]"
+                                >
+                                  Register Now
+                                  <ArrowRight className="h-3.5 w-3.5" />
+                                </Link>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          /* Collapsed spine: just the number + name, legible at any size */
+                          <div className="flex h-full w-full items-center gap-3 px-5 lg:flex-col lg:justify-between lg:gap-4 lg:px-0 lg:py-6">
+                            <span className="font-mono text-xs font-black text-[#F9D47B]">
+                              {String(idx + 1).padStart(2, "0")}
+                            </span>
+                            <span className="font-display-title text-base font-black uppercase tracking-tight text-white lg:[writing-mode:vertical-rl]">
+                              {item.name}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    ),
+                  };
+                })}
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
+      <section className="relative mx-auto max-w-[1400px] border-t border-white/20 px-4 pt-4 pb-4 sm:px-8">
+        {/* Page Footer Markers */}
+        <PageFooterTimeline pageNumber={subEvents[activeEventIndex].pageNumber} />
+      </section>
+
       {/* =========================================================================
-          IMPACT
+          SECTION 5: SUMMIT HIGHLIGHTS & OUR IMPACT (Why Sponsor Us)
           ========================================================================= */}
       <section
         id="impact"
@@ -208,7 +469,7 @@ export default function HomePage() {
                 Immediate access to hiring pipelines via Internship Drive and pre-screened student ventures in Pitch Deck and Startup Expo.
               </p>
             </div>
-          </ScrollReveal>
+          </div>
 
           <ScrollReveal className="mt-4 grid grid-cols-2 gap-3 sm:gap-4" stagger={0.06}>
             <div className="program-card rounded-2xl sm:rounded-3xl border border-[#7484FE]/30 bg-[#151515] p-4 sm:p-8 text-[#F7F2F6] flex flex-col justify-between">
@@ -234,15 +495,12 @@ export default function HomePage() {
               <p className="mt-1 sm:mt-2 font-mono text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-black text-[#33FF67] tracking-tight whitespace-nowrap">10</p>
               <p className="mt-1 sm:mt-2 text-xs sm:text-base font-bold text-[#F7F2F6]">Sub-Events</p>
             </div>
-          </ScrollReveal>
-        </PinnedSplit>
+          </div>
+        </div>
+
+        {/* Page Footer Timeline */}
+        <PageFooterTimeline pageNumber="08" />
       </section>
-
-      {/* =========================================================================
-          SECTION 5.5: EVENT GALLERY / ARCHIVES (Above Contact Us)
-          ========================================================================= */}
-      <GallerySection />
-
       {/* =========================================================================
           SECTION 6: CONTACT US (Page 12)
           ========================================================================= */}
@@ -262,39 +520,39 @@ export default function HomePage() {
           >
             Contact Us
           </h2>
-          <p className="mt-6 text-lg leading-relaxed text-[#F7F2F6]/95 sm:text-xl font-medium">
+          <p className="mt-6 text-lg leading-relaxed text-white/95 sm:text-xl font-medium">
             {contact.lead}
           </p>
         </div>
 
-        {/* Student Coordinators from Page 12 */}
+        {/* Student Coordinators from Page 12 (Updated: Sanjana, Adithya, Mahith, Yashashri) */}
         <div className="mt-12">
-          <h3 className="font-mono text-sm font-black uppercase tracking-wider text-[#33FF67]">
+          <h3 className="font-mono text-sm font-black uppercase tracking-wider text-[#F9D47B]">
             {contact.subheading}
           </h3>
-          <p className="mt-1 font-bold text-xl text-[#F7F2F6]">Student Coordinators</p>
+          <p className="mt-1 font-bold text-xl text-white">Student Coordinators</p>
 
-          <ScrollReveal className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" stagger={0.06}>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {studentCoordinators.map((coordinator) => (
               <a
                 key={coordinator.name}
                 href={`tel:${coordinator.phoneRaw}`}
-                className="program-card group flex items-center justify-between rounded-2xl border border-white/10 bg-[#151515] p-5 transition duration-300 hover:-translate-y-0.5 hover:border-[#7484FE]"
+                className="program-card group flex items-center justify-between rounded-2xl border-2 border-white/40 bg-white/10 p-5 backdrop-blur-xs transition hover:border-[#F9D47B] hover:bg-white hover:text-[#2074D5]"
               >
                 <div>
-                  <p className="font-bold text-lg text-[#F7F2F6] group-hover:text-[#7484FE]">
+                  <p className="font-bold text-lg text-white group-hover:text-[#2074D5]">
                     {coordinator.name}
                   </p>
-                  <p className="font-mono text-sm text-[#33FF67] font-semibold">
+                  <p className="font-mono text-sm text-[#F9D47B] group-hover:text-[#282828] font-semibold">
                     {coordinator.phone}
                   </p>
                 </div>
-                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-current text-[#7484FE]">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-current text-[#F9D47B] group-hover:text-[#2074D5]">
                   <Phone className="h-4 w-4" />
                 </div>
               </a>
             ))}
-          </ScrollReveal>
+          </div>
         </div>
 
         {/* Official Contact Box */}
@@ -303,16 +561,16 @@ export default function HomePage() {
             {/* Email & Website */}
             <div className="space-y-6">
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#7484FE] text-[#F7F2F6]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#2074D5]">
                   <Mail className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#F7F2F6]/70">
+                  <p className="text-xs font-bold uppercase tracking-wider text-white/70">
                     Mail
                   </p>
                   <a
                     href={`mailto:${contact.email}`}
-                    className="text-lg font-bold text-[#F7F2F6] hover:text-[#7484FE] hover:underline sm:text-xl"
+                    className="text-lg font-bold text-white hover:underline sm:text-xl"
                   >
                     {contact.email}
                   </a>
@@ -320,18 +578,18 @@ export default function HomePage() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#7484FE] text-[#F7F2F6]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#2074D5]">
                   <Globe className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#F7F2F6]/70">
+                  <p className="text-xs font-bold uppercase tracking-wider text-white/70">
                     Website
                   </p>
                   <a
                     href={contact.websiteUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-lg font-bold text-[#F7F2F6] hover:text-[#7484FE] hover:underline sm:text-xl"
+                    className="text-lg font-bold text-white hover:underline sm:text-xl"
                   >
                     {contact.website}
                   </a>
@@ -350,7 +608,7 @@ export default function HomePage() {
                 <MapPin className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-[#F7F2F6]/70">
+                <p className="text-xs font-bold uppercase tracking-wider text-white/70">
                   Address
                 </p>
                 <div className="mt-1 text-sm leading-relaxed text-[#F7F2F6]/90 transition duration-300 group-hover:text-[#7484FE]">
@@ -363,7 +621,7 @@ export default function HomePage() {
           </div>
 
           {/* Social Links Row from Page 12 */}
-          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6">
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-white/20 pt-6">
             <div className="flex flex-wrap items-center gap-4">
               {contact.socials.map((social) => (
                 <a
@@ -371,7 +629,7 @@ export default function HomePage() {
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-full border border-white/15 bg-[#101010] px-4 py-2 text-xs font-bold text-[#F7F2F6] transition hover:border-[#7484FE] hover:bg-[#7484FE]"
+                  className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-xs font-bold text-white transition hover:bg-white hover:text-[#2074D5]"
                 >
                   {social.platform === "Instagram" && (
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">
@@ -402,9 +660,14 @@ export default function HomePage() {
               ))}
             </div>
 
+            <span className="font-mono text-xs text-white/70">
+              MLRIT CIE · Official Program
+            </span>
           </div>
         </div>
 
+        {/* Page 12 Footer Timeline Marker */}
+        <PageFooterTimeline pageNumber="12" />
       </section>
     </div>
   );

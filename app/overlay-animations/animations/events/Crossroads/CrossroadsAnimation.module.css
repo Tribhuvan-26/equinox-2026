@@ -1,27 +1,12 @@
 /* app/overlay-animations/animations/events/Crossroads/CrossroadsAnimation.module.css */
 
 .overlayContainer {
-  --equinox-dark: #2A2A2A;
-  --equinox-periwinkle: #7484FE;
-  --equinox-green: #33FF67;
-  --equinox-offwhite: #F7F2F6;
-
-  /* Backward-compatible aliases */
-  --equinox-blue: var(--equinox-periwinkle);
-  --equinox-yellow: var(--equinox-green);
-  --equinox-coral: var(--equinox-green);
-  --equinox-white: var(--equinox-offwhite);
-
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
   z-index: 99999;
-  background-color: var(--equinox-dark);
-  background-image: 
-    linear-gradient(to right, rgba(247, 242, 246, 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(247, 242, 246, 0.07) 1px, transparent 1px);
-  background-size: 34px 34px;
+  background-color: #ffffff;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -58,9 +43,9 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(247, 242, 246, 0.08);
-  border: 1px solid rgba(247, 242, 246, 0.2);
-  color: var(--equinox-offwhite);
+  background: rgba(13, 14, 21, 0.08);
+  border: 1.5px solid rgba(13, 14, 21, 0.25);
+  color: #282828;
   font-family: var(--font-mono, monospace);
   font-size: 11px;
   font-weight: 700;
@@ -76,8 +61,8 @@
 }
 
 .skipButton:hover {
-  background: rgba(247, 242, 246, 0.18);
-  border-color: rgba(247, 242, 246, 0.45);
+  background: rgba(13, 14, 21, 0.16);
+  border-color: rgba(13, 14, 21, 0.55);
   transform: translateY(-1px);
 }
 
@@ -94,5 +79,5 @@
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  fill: var(--equinox-offwhite);
+  fill: #282828;
 }

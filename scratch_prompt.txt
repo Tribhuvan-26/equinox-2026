@@ -1,0 +1,1165 @@
+<USER_REQUEST>
+IMPORTANT — THIS IS AN IMPLEMENTATION TASK, NOT A DESIGN/REDESIGN TASK.
+
+I am providing the FINAL APPROVED E-CELL artwork/image for this page.
+
+YOUR JOB:
+Convert THIS EXACT DESIGN into a professional, animation-ready SVG/vector composition and animate its existing components.
+
+DO NOT CREATE A NEW DESIGN.
+DO NOT REDESIGN IT.
+DO NOT REINTERPRET IT.
+DO NOT SIMPLIFY IT INTO A DIFFERENT ILLUSTRATION.
+DO NOT REPLACE THE CHARACTERS WITH DIFFERENT CHARACTERS.
+DO NOT INVENT NEW OBJECTS.
+DO NOT USE THE PREVIOUS GENERATED VERSION.
+DO NOT USE A FLAT PNG/JPG AS THE MAIN IMPLEMENTATION.
+
+The supplied image is the SINGLE SOURCE OF TRUTH.
+
+The only thing that should change is that the visual artwork becomes properly structured into SVG/vector components so that each component can be animated independently.
+
+==================================================
+1. FIRST — INSPECT THE EXISTING WEBSITE
+==================================================
+
+Before modifying anything:
+
+1. Inspect the existing project structure.
+2. Find the existing E-CELL event route/page.
+3. Find how the existing chatbot opens/navigates to events.
+4. Find the existing event-page animation system, if any.
+5. Reuse the existing architecture.
+6. Do NOT rebuild the website.
+7. Do NOT replace the chatbot.
+8. Do NOT modify unrelated event pages.
+9. Do NOT create a second navigation system.
+10. Make the smallest clean implementation necessary.
+
+The final flow must remain:
+
+Existing Landing Page
+→ Existing Chatbot
+→ E-CELL Meet option
+→ /events/e-cell-meet
+→ E-CELL animated scene
+
+==================================================
+2. ABSOLUTE VISUAL RULE
+==================================================
+
+THE PROVIDED E-CELL IMAGE IS THE FINAL ART DIRECTION.
+
+At rest, the SVG composition must look as close as technically possible to the supplied image.
+
+Think of the task as:
+
+FINAL IMAGE
+        ↓
+accurate SVG reconstruction
+        ↓
+separate SVG groups/layers
+        ↓
+animate those exact groups
+
+NOT:
+
+image
+→ inspiration
+→ new illustration
+→ different artwork
+
+That is NOT acceptable.
+
+If an element cannot be reproduced as a complex SVG shape, replace the INTERNAL IMPLEMENTATION with simpler SVG primitives while preserving the SAME visual appearance.
+
+Use:
+
+- <svg>
+- <g>
+- <path>
+- <rect>
+- <circle>
+- <ellipse>
+- <line>
+- <polygon>
+- <polyline>
+- <text> where appropriate
+- SVG masks/clipping paths if required
+- CSS/SVG transforms
+- CSS keyframes / Web Animations API / GSAP if already available or appropriate
+
+Do NOT use raster images for important artwork.
+
+Do NOT make the entire scene one image.
+
+==================================================
+3. REQUIRED SVG LAYER STRUCTURE
+==================================================
+
+Create a clearly structured SVG.
+
+Use meaningful IDs/groups such as:
+
+#ecell-scene
+#background
+#background-shapes
+
+#top-left-pole
+#top-left-banner
+#top-left-banner-text
+#top-left-blue-panel
+#top-left-blue-panel-text
+
+#ecell-title
+#ecell-title-text
+#ecell-title-accent
+#ecell-tagline
+
+#top-right-badge
+#top-right-badge-strap
+#top-right-badge-card
+#top-right-badge-icon
+#top-right-badge-text
+
+#right-information-board
+#right-board-frame
+#right-board-title
+#right-board-line
+#right-board-ideas
+#right-board-network
+#right-board-collaborate
+#right-board-grow
+#right-board-icons
+
+#ecell-meet-area
+
+#tent
+#tent-roof
+#tent-poles
+#tent-table
+#tent-equipment
+#tent-background-people
+
+#left-megaphone
+#megaphone-body
+#megaphone-handle
+#megaphone-sound-lines
+
+#student-left
+#student-left-head
+#student-left-hair
+#student-left-body
+#student-left-arm
+#student-left-hand
+#student-left-bag
+#student-left-lanyard
+#student-left-card
+
+#student-right
+#student-right-head
+#student-right-hair
+#student-right-body
+#student-right-arm
+#student-right-hand
+#student-right-bag
+#student-right-lanyard
+#student-right-card
+
+#exchange-card
+
+#bottom-right-mini-board
+#mini-board-frame
+#mini-board-text
+#mini-board-icon
+#mini-board-accent
+
+#plants
+#left-plants
+#right-plants
+
+#decorative-blue-elements
+
+These are examples of layer names. Create whatever additional subgroups are necessary.
+
+EVERY IMPORTANT OBJECT MUST BE ITS OWN SVG GROUP.
+
+==================================================
+4. VERY IMPORTANT — TEXT MUST BE ANIMATABLE
+==================================================
+
+Do NOT bake important text into a raster image.
+
+Important text must exist independently inside SVG whenever practical.
+
+For example:
+
+E-CELL
+CONNECT | COLLABORATE | GROW
+DIFFERENT COLLEGES SAME VISION
+E-CELL MEET
+E-CELL
+IDEAS
+NETWORK
+COLLABORATE
+GROW
+IDEAS
+PARTNERSHIPS
+OPPORTUNITIES
+BUILD
+CONNECT
+GROW
+
+Each major text block should be independently addressable.
+
+This allows:
+
+- fade in
+- opacity animation
+- slight upward reveal
+- letter/word stagger
+- stroke/underline reveal
+- subtle scale
+- slight tracking animation
+
+Do NOT animate text by animating the entire background board only.
+
+The board and its text should be separate.
+
+==================================================
+5. DO NOT DESTROY THE ORIGINAL COMPOSITION
+==================================================
+
+Preserve:
+
+- overall composition
+- object positions
+- proportions
+- colors
+- typography style
+- visual hierarchy
+- character positions
+- character poses
+- banner positions
+- board positions
+- megaphone position
+- tent position
+- plants
+- decorative blue shapes
+- hanging badge
+- bottom-right board
+
+Especially:
+
+THE BOTTOM-RIGHT MINI BOARD MUST REMAIN.
+
+The previous table that had been removed must NOT be brought back.
+
+There is NO permission to restore the old table.
+
+The bottom-right area contains the small A-frame style board with:
+
+IDEAS
+PARTNERSHIPS
+OPPORTUNITIES
+
+Keep that exact visual concept.
+
+==================================================
+6. MAIN E-CELL TITLE ANIMATION
+==================================================
+
+The large E-CELL title is the hero element.
+
+Animate it as individual SVG letters or logical letter groups.
+
+Preferred animation:
+
+0.0s:
+Title starts slightly offset/downscaled with low opacity.
+
+0.15–1.0s:
+Letters reveal/stagger into their final positions.
+
+Use subtle:
+
+- opacity
+- translateY
+- scale
+- slight tracking adjustment
+
+Do NOT use:
+
+- cartoon bounce
+- huge rotation
+- spinning
+- elastic gaming animation
+- excessive overshoot
+
+The final title must settle into EXACTLY the supplied composition.
+
+The blue accent shapes around the title can appear with short staggered scale/fade motion.
+
+The tagline:
+
+CONNECT | COLLABORATE | GROW
+
+should reveal after the title using a subtle upward/opacity animation.
+
+==================================================
+7. TOP-LEFT HANGING BANNER
+==================================================
+
+This banner must be treated as a physically hanging object.
+
+Separate:
+
+- pole
+- rope/support
+- banner
+- upper dark section
+- lower blue section
+- banner text
+- decorative details
+
+Animate the banner using a transform origin near its actual hanging point.
+
+Animation:
+
+- slight initial swing
+- rotate a few degrees
+- return toward center
+- small natural settling movement
+
+The banner text must NOT simply rotate independently like a floating label.
+
+It should remain attached to the banner.
+
+However, the text itself should have a subtle opacity/reveal animation as the banner settles.
+
+The movement must feel like a real hanging banner.
+
+==================================================
+8. TOP-RIGHT E-CELL BADGE
+==================================================
+
+Separate:
+
+- hanging strap
+- connector
+- badge/card
+- rocket/icon
+- E-CELL text
+- BUILD
+- CONNECT
+- GROW
+
+The badge should swing from the actual hanging point.
+
+Use:
+
+transform-origin at the top suspension point.
+
+Animation:
+
+small pendulum-like rotation
+→ settle
+→ subtle ambient movement
+
+The text/icon can reveal independently.
+
+Do not make the badge fly across the screen.
+
+==================================================
+9. RIGHT E-CELL INFORMATION BOARD
+==================================================
+
+This is one of the main visual elements.
+
+Separate:
+
+- board frame
+- blue edge/accent
+- board background
+- E-CELL title
+- underline
+- IDEA icon + text
+- NETWORK icon + text
+- COLLABORATE icon + text
+- GROW icon + text
+
+Animation:
+
+2.0–3.5 seconds approximately.
+
+First:
+board enters subtly from its intended direction / slight offset.
+
+Then:
+title appears.
+
+Then:
+underline draws/reveals.
+
+Then each information row appears sequentially:
+
+IDEAS
+NETWORK
+COLLABORATE
+GROW
+
+Icons should animate with subtle opacity/scale/line reveal.
+
+Do NOT make the whole board constantly bounce.
+
+After entrance, it should remain stable with only extremely subtle ambient motion.
+
+==================================================
+10. E-CELL MEET BANNER
+==================================================
+
+The E-CELL MEET banner must be independently animated.
+
+Animate:
+
+- banner body
+- blue section
+- E-CELL MEET text
+
+Use subtle:
+
+- fade
+- upward reveal
+- slight scale
+- settling motion
+
+The text should feel physically attached to the banner.
+
+==================================================
+11. LEFT MEGAPHONE
+==================================================
+
+The megaphone must be SVG.
+
+Separate:
+
+- horn
+- body
+- handle
+- stand
+- inner speaker area
+- blue details
+
+Animate it subtly.
+
+Possible animation:
+
+- slight tilt
+- very small vibration when sound lines activate
+
+The megaphone sound lines should animate independently.
+
+Sound-line animation:
+
+opacity 0 → 1
+slight outward scale
+opacity 1 → 0
+
+Repeat slowly.
+
+Do NOT create audio unless the existing website specifically supports it.
+
+==================================================
+12. TENT / BOOTH
+==================================================
+
+The tent must remain visually similar to the supplied artwork.
+
+Separate:
+
+- roof
+- roof panels
+- poles
+- counter/table
+- equipment
+- background people/silhouettes
+
+Animation should be subtle:
+
+- roof/canopy slight settling
+- tiny environmental motion
+- equipment subtle opacity/highlight
+- background silhouettes minimal movement
+
+Do NOT redesign the booth.
+
+Do NOT replace it with another booth.
+
+==================================================
+13. CENTRAL STUDENTS — EXTREMELY IMPORTANT
+==================================================
+
+The two central students are part of the supplied final artwork.
+
+DO NOT replace them with different characters.
+
+DO NOT redesign their clothing.
+
+DO NOT change their pose.
+
+DO NOT change their proportions.
+
+DO NOT make them cartoonishly bounce.
+
+Recreate them using SVG vector shapes/groups as accurately as possible.
+
+Separate:
+
+Student 1:
+- head
+- hair
+- face
+- body
+- clothing
+- arm
+- hand
+- backpack
+- lanyard
+- ID card
+
+Student 2:
+- head
+- hair
+- face
+- body
+- clothing
+- arm
+- hand
+- bag
+- lanyard
+- ID card
+
+Animation should be extremely subtle and professional.
+
+Possible motion:
+
+- tiny breathing movement
+- very slight body movement
+- subtle head movement
+- tiny lanyard movement
+- tiny bag movement
+
+Do NOT animate the whole characters dramatically.
+
+==================================================
+14. CARD EXCHANGE — IMPORTANT HERO MICRO-ANIMATION
+==================================================
+
+The blue card being exchanged between the two students should be its own SVG group.
+
+Animate it independently.
+
+Possible sequence:
+
+- subtle glow/highlight
+- slight movement toward the receiving hand
+- tiny scale emphasis
+- settle
+
+The movement should make it feel like the students are actually exchanging the card.
+
+Keep the animation subtle and believable.
+
+==================================================
+15. STUDENT LANYARDS / ID CARDS / BAGS
+==================================================
+
+These are excellent secondary animation elements.
+
+Add very subtle movement:
+
+- lanyard slight sway
+- ID card tiny swing
+- bag slight movement
+- badge slight highlight
+
+These should follow the character movement.
+
+They must not move independently in an unrealistic way.
+
+==================================================
+16. BOTTOM-RIGHT MINI BOARD
+==================================================
+
+This MUST remain.
+
+It contains:
+
+IDEAS
+PARTNERSHIPS
+OPPORTUNITIES
+
+Separate:
+
+- left/right frame
+- board
+- text
+- lightbulb/icon
+- underline/accent
+
+Animation:
+
+- board settles into place
+- text reveals line by line
+- icon softly appears
+- underline draws
+
+Then remain mostly static.
+
+DO NOT replace this with a table.
+
+DO NOT remove it.
+
+==================================================
+17. PLANTS / DECORATIVE BLUE ELEMENTS
+==================================================
+
+All visible decorative blue elements should be SVG where practical.
+
+Plants:
+
+- leaves as separate groups
+- subtle sway
+
+Decorative blue marks:
+
+- slight opacity pulse
+- tiny translation
+- staggered entrance
+
+Do NOT add random particles.
+
+Do NOT add unrelated decorative elements.
+
+Do NOT add gradients or visual effects that are not present in the supplied design.
+
+==================================================
+18. FIVE-SECOND MAIN ENTRANCE ANIMATION
+==================================================
+
+The complete entrance animation must take approximately 5 seconds.
+
+It should feel like one professionally directed animation sequence.
+
+TIMELINE:
+
+0.0–0.8s
+----------------
+Background establishes.
+Decorative elements subtly appear.
+Main E-CELL title begins.
+
+0.6–1.4s
+----------------
+E-CELL title completes.
+Tagline reveals.
+
+0.8–1.8s
+----------------
+Top-left hanging banner swings into its natural position.
+Banner text reveals.
+
+1.2–2.0s
+----------------
+Top-right E-CELL badge swings naturally.
+Badge icon/text reveals.
+
+1.8–3.0s
+----------------
+Right information board establishes.
+Title appears.
+Underline draws.
+IDEAS → NETWORK → COLLABORATE → GROW reveal sequentially.
+
+2.2–3.5s
+----------------
+Tent/booth details establish.
+Megaphone sound lines begin.
+Subtle environmental movement starts.
+
+2.8–4.0s
+----------------
+Central students receive subtle life motion.
+Lanyards/cards/bags move naturally.
+Blue card exchange gets a subtle emphasis.
+
+3.4–4.4s
+----------------
+Bottom-right mini board settles.
+IDEAS → PARTNERSHIPS → OPPORTUNITIES reveal.
+
+4.4–5.0s
+----------------
+All components complete their entrance.
+Everything settles into the exact final artwork composition.
+
+At 5 seconds:
+THE FULL SCENE MUST BE STABLE.
+
+==================================================
+19. AFTER THE 5-SECOND INTRO
+==================================================
+
+Do NOT continuously animate everything.
+
+Only selected components may have ambient loops:
+
+- hanging banner: tiny slow swing
+- hanging E-CELL badge: tiny pendulum movement
+- plants: extremely subtle sway
+- megaphone sound lines: occasional pulse
+- decorative blue accents: very subtle pulse
+- student lanyards/cards: tiny occasional movement
+- blue card: occasional soft highlight
+- board accents: extremely subtle glow/highlight if visually appropriate
+
+Most of the artwork should remain still.
+
+The user should feel that the illustration is alive, not that everything is bouncing.
+
+==================================================
+20. PHYSICS / MOTION QUALITY
+==================================================
+
+Use professional motion design principles.
+
+For hanging objects:
+
+- transform-origin at suspension point
+- small rotation
+- natural easing
+- slight damping
+- minimal overshoot
+
+For text:
+
+- opacity
+- translate
+- slight scale
+- stagger
+
+For line icons:
+
+- stroke-dasharray / stroke-dashoffset where appropriate
+
+For underlines:
+
+- animate stroke-dashoffset or scaleX
+
+For board elements:
+
+- slight reveal + settle
+
+For people:
+
+- extremely subtle secondary motion
+
+Use proper easing such as:
+
+ease-out
+cubic-bezier
+spring-like/damped motion where appropriate
+
+Avoid:
+
+linear robotic movement
+huge overshoot
+bouncing UI
+spinning elements
+random movement
+particle explosions
+3D rotations
+camera shakes
+parallax overload
+
+==================================================
+21. NO FLAT IMAGE CHEATING
+==================================================
+
+This is a CRITICAL requirement.
+
+DO NOT simply do:
+
+<img src="ecell.png">
+
+and animate the entire image.
+
+DO NOT put the supplied image as a background and pretend it is animated.
+
+DO NOT use the image as the permanent final visual underneath the SVG.
+
+The important visible components must be actual SVG/vector groups.
+
+If a complex shape cannot be reproduced exactly:
+
+simplify the internal SVG geometry,
+BUT preserve the visual appearance and silhouette.
+
+The final result must be genuinely animatable.
+
+==================================================
+22. NO NEW ARTWORK
+==================================================
+
+DO NOT add:
+
+- new characters
+- new tables
+- new chairs
+- new buildings
+- new logos
+- new signs
+- new UI panels
+- new gradients
+- new backgrounds
+- random particles
+- random 3D effects
+- unrelated icons
+- futuristic effects
+- gaming effects
+- unrelated illustrations
+
+If it is not in the supplied artwork, do not invent it.
+
+==================================================
+23. TYPOGRAPHY
+==================================================
+
+Preserve the visual typography style of the supplied artwork.
+
+If the exact font is unavailable:
+
+choose the closest professional web-safe/local font available,
+but preserve:
+
+- weight
+- proportions
+- spacing
+- uppercase treatment
+- alignment
+- hierarchy
+
+Do NOT change the text content.
+
+Do NOT rewrite the text.
+
+==================================================
+24. RESPONSIVENESS
+==================================================
+
+The SVG must work responsively on:
+
+- desktop
+- laptop
+- tablet
+- mobile
+
+Use a proper SVG viewBox.
+
+Do not crop the important artwork on smaller screens.
+
+Maintain the composition as much as possible.
+
+Do not redesign the mobile version into a completely different scene.
+
+If necessary, scale the complete SVG composition proportionally.
+
+==================================================
+25. ANIMATION IMPLEMENTATION
+==================================================
+
+Use the most reliable animation method for the existing project.
+
+Preferred options:
+
+1. Existing project animation library if already installed.
+2. GSAP if appropriate and available.
+3. CSS/SVG animations.
+4. Web Animations API.
+
+Do not add unnecessary dependencies if the existing project already has a suitable solution.
+
+Create one clear animation controller/timeline for the E-CELL scene.
+
+For example:
+
+ecellIntroTimeline
+
+and clearly named functions/groups.
+
+Make sure animation starts automatically when the E-CELL page/component mounts.
+
+==================================================
+26. ROUTE ENTRY / RE-ENTRY
+==================================================
+
+Animation must start when the user enters:
+
+/events/e-cell-meet
+
+It must NOT require a browser refresh.
+
+When the user:
+
+E-CELL
+→ another event
+→ E-CELL again
+
+the entrance animation should replay correctly.
+
+Clean up all animation timelines/listeners when the component unmounts.
+
+Prevent:
+
+- duplicate timelines
+- duplicate event listeners
+- stale animation state
+- memory leaks
+- animation continuing after leaving the page
+- flickering on re-entry
+
+==================================================
+27. CHATBOT INTEGRATION
+==================================================
+
+The existing chatbot must remain unchanged visually.
+
+Make sure its E-CELL option correctly routes to:
+
+/events/e-cell-meet
+
+Do not create another chatbot.
+
+Do not create another event selector.
+
+Do not change unrelated chatbot options.
+
+Test:
+
+Landing Page
+→ Chatbot
+→ E-CELL Meet
+→ E-CELL page
+→ animation automatically starts
+
+==================================================
+28. SKIP BUTTON / EXISTING CONTROLS
+==================================================
+
+If the current E-CELL page already has a SKIP button or animation control:
+
+keep it.
+
+Make it skip the entrance timeline cleanly.
+
+After skip:
+
+show the completed final composition.
+
+Do not reload the page.
+
+Do not break the rest of the UI.
+
+==================================================
+29. ACCESSIBILITY
+==================================================
+
+Respect:
+
+prefers-reduced-motion
+
+If reduced motion is enabled:
+
+- skip major movement
+- use simple fades
+- keep the final artwork visible
+- do not remove the artwork
+
+==================================================
+30. PERFORMANCE
+==================================================
+
+The SVG should be optimized.
+
+Avoid unnecessarily huge numbers of paths.
+
+Use groups and reusable SVG definitions where possible.
+
+Avoid expensive continuous animations.
+
+Animate transforms/opacity rather than constantly changing complex geometry where possible.
+
+The animation should remain smooth on normal laptops and mobile devices.
+
+==================================================
+31. IMPORTANT VALIDATION STEP
+==================================================
+
+After implementation, compare the rendered page directly against the supplied source image.
+
+Check:
+
+1. E-CELL title position
+2. title size
+3. tagline position
+4. top-left banner
+5. E-CELL MEET section
+6. top-right badge
+7. right information board
+8. megaphone
+9. tent
+10. central male student
+11. central female student
+12. card exchange
+13. bottom-right mini board
+14. plants
+15. decorative blue elements
+16. overall spacing
+17. colors
+18. proportions
+19. composition
+
+If anything looks like a NEW design rather than the supplied design, fix it.
+
+==================================================
+32. VERY IMPORTANT — DO NOT REPEAT THE PREVIOUS FAILURE
+==================================================
+
+The previous implementation failed because it:
+
+- replaced the original visual style
+- simplified the characters
+- changed the composition
+- removed/changed important artwork
+- treated the image as inspiration
+- created a different illustration
+
+DO NOT DO THAT AGAIN.
+
+This implementation is NOT an artistic interpretation.
+
+It is an SVG conversion + animation of the supplied final artwork.
+
+The supplied image determines WHAT everything looks like.
+
+SVG determines HOW everything is implemented.
+
+Animation determines HOW the existing elements move.
+
+==================================================
+33. FINAL QUALITY STANDARD
+==================================================
+
+The result should feel like a premium editorial/event animation.
+
+It should look like:
+
+A professionally illustrated static poster
+that has been converted into
+a carefully layered SVG motion graphic.
+
+NOT:
+
+A generic animated website illustration.
+
+NOT:
+
+A new AI-generated illustration.
+
+NOT:
+
+A collection of bouncing objects.
+
+NOT:
+
+A flat image with a few CSS effects.
+
+The final result should be:
+
+EXACT DESIGN
++
+PROPER SVG LAYERS
++
+PROFESSIONAL MOTION
++
+CLEAN ROUTING
++
+CHATBOT INTEGRATION
+
+==================================================
+34. BEFORE YOU FINISH
+==================================================
+
+Do not stop after creating the SVG.
+
+Actually verify:
+
+[ ] Existing website still works
+[ ] Existing chatbot still works
+[ ] E-CELL chatbot option works
+[ ] /events/e-cell-meet works
+[ ] No 404
+[ ] No console errors
+[ ] SVG is not a single flat image
+[ ] Major objects have separate groups
+[ ] Major text is independently animatable
+[ ] Main title animates
+[ ] Top-left banner animates
+[ ] Top-right badge animates
+[ ] Right board animates
+[ ] Board text/icons animate
+[ ] E-CELL MEET animates
+[ ] Megaphone animates
+[ ] Sound lines animate
+[ ] Tent has subtle motion
+[ ] Central students have subtle motion
+[ ] Card exchange animates
+[ ] Lanyards/cards have subtle motion
+[ ] Bottom-right mini board animates
+[ ] Plants/decorative elements animate subtly
+[ ] Main entrance is approximately 5 seconds
+[ ] Ambient motion remains subtle after 5 seconds
+[ ] Skip works if present
+[ ] Re-entering E-CELL replays animation
+[ ] prefers-reduced-motion works
+[ ] Mobile does not destroy the composition
+[ ] No unrelated pages were redesigned
+
+==================================================
+FINAL COMMAND
+==================================================
+
+BUILD THIS NOW USING THE SUPPLIED E-CELL IMAGE AS THE ABSOLUTE SOURCE OF TRUTH.
+
+DO NOT DESIGN ANYTHING NEW.
+
+DO NOT ASK ME TO PROVIDE ANOTHER DESIGN.
+
+DO NOT REPLACE THE ARTWORK.
+
+CONVERT THE EXISTING ARTWORK INTO A LAYERED, PROFESSIONAL, ANIMATION-READY SVG AND ANIMATE EVERY REASONABLY ANIMATABLE COMPONENT.
+
+The final rendered result must visually match the supplied image first.
+Animation comes second.
+
+SOURCE IMAGE = DESIGN TRUTH.
+SVG = IMPLEMENTATION.
+ANIMATION = MOTION OF THAT SAME DESIGN.
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-09-07T17:51:01+05:30.
+
+The user has uploaded 1 image(s):
+- C:/Users/nithy/.gemini/antigravity/brain/d2572751-ef4c-4450-ac70-1892cdc32750/.user_uploaded/media_1788783654119.png
+You can embed this image in an artifact if you need the USER to review it.
+</ADDITIONAL_METADATA>

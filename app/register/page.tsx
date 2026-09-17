@@ -23,7 +23,7 @@ export default function RegisterPage() {
             eyebrow={registration.eyebrow}
             heading={registration.heading}
           />
-          <p className="mt-8 max-w-2xl leading-relaxed text-[#F7F2F6]/85 text-lg">
+          <p className="mt-8 max-w-2xl leading-relaxed text-white/85 text-lg">
             {registration.body}
           </p>
 
@@ -31,9 +31,8 @@ export default function RegisterPage() {
             {registration.steps.map((step, i) => (
               <div
                 key={step.title}
-                className={`group flex flex-col justify-between gap-3 rounded-2xl border border-white/20 bg-[#2A2A2A]/90 p-6 backdrop-blur-md transition-all hover:border-[#33FF67] hover:bg-[#333333] ${
-                  i === 0 ? "sm:col-span-2 sm:row-span-2" : i === 1 ? "sm:col-span-2" : "sm:col-span-1"
-                }`}
+                className={`group flex flex-col justify-between gap-3 rounded-2xl border border-white/20 bg-[#2A2A2A]/90 p-6 backdrop-blur-md transition-all hover:border-[#33FF67] hover:bg-[#333333] ${i === 0 ? "sm:col-span-2 sm:row-span-2" : i === 1 ? "sm:col-span-2" : "sm:col-span-1"
+                  }`}
               >
                 <span className="text-xs font-black uppercase tracking-wider text-[#33FF67]">
                   Step {String(i + 1).padStart(2, "0")}
@@ -61,10 +60,10 @@ export default function RegisterPage() {
                 key={ticket.name}
                 className="group grid overflow-hidden rounded-3xl border-2 border-white/20 shadow-xl transition-all duration-300 hover:border-[#33FF67]/60 hover:shadow-2xl lg:grid-cols-[1fr_22rem]"
               >
-                <div className="flex flex-col gap-6 bg-[#2A2A2A]/95 p-8 text-[#F7F2F6]">
+                <div className="flex flex-col gap-6 bg-[#0B2D6D]/95 p-8 text-white">
                   <div className="flex flex-col gap-3">
-                    <h3 className="heading text-2xl font-black text-[#F7F2F6]">{ticket.name}</h3>
-                    <p className="max-w-xl leading-relaxed text-[#F7F2F6]/80">
+                    <h3 className="heading text-2xl font-black text-white">{ticket.name}</h3>
+                    <p className="max-w-xl leading-relaxed text-white/80">
                       {ticket.description}
                     </p>
                   </div>
@@ -73,8 +72,8 @@ export default function RegisterPage() {
                     <p className="label mt-1 text-[#F7F2F6]/90 font-medium">per participant · {ticket.unit}</p>
                   </div>
                 </div>
-                {/* Periwinkle pass card face */}
-                <div className="relative flex flex-col justify-between gap-10 bg-[#7484FE] p-8 text-[#F7F2F6]">
+                {/* Coral pass card face matching brochure visual style */}
+                <div className="relative flex flex-col justify-between gap-10 bg-gradient-to-br from-[#EB547C] to-[#E03260] p-8 text-white">
                   <div className="flex flex-col gap-4">
                     <span className="label w-max rounded-full border border-white/50 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#F7F2F6]">
                       What You Get
