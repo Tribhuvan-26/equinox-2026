@@ -24,7 +24,6 @@ export function Footer() {
             </p>
             <div className="mt-6 flex items-center gap-6">
               <img src="/logos/cie-white.png" alt="MLR CIE — Centre for Innovation & Entrepreneurship" className="h-10 w-auto object-contain" />
-              <img src="/logos/mlrit-white.png" alt="MLR Institute of Technology" className="h-8 w-auto object-contain" />
             </div>
           </div>
 
@@ -75,13 +74,6 @@ export function Footer() {
               </ul>
             </div>
           </div>
-        </div>
-
-        {/* Massive Footer Wordmark */}
-        <div className="border-t border-white/20 pt-8 text-center md:text-left">
-          <p className="font-display-title text-5xl font-black tracking-tighter text-[#F7F2F6]/10 sm:text-7xl md:text-8xl lg:text-[10rem]">
-            THE EQUINOX
-          </p>
         </div>
 
         {/* Bottom Legal / Institutional Bar */}
