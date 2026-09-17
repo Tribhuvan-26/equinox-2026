@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
 import { supabaseAdmin, PAYMENT_PROOFS_BUCKET } from "@/lib/supabase/admin";
-import { REGISTRATION_FEE, MAX_TEAM_SIZE } from "@/lib/registration/constants";
+import { REGISTRATION_FEE, MAX_TEAM_SIZE, MIN_TEAM_SIZE } from "@/lib/registration/constants";
 import { isParticipantValid, participantForStorage } from "@/lib/registration/validation";
 import type { Participant } from "@/lib/registration/types";
 
@@ -32,8 +32,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Malformed participant details." }, { status: 400 });
   }
 
-  if (!Array.isArray(participants) || participants.length === 0) {
-    return NextResponse.json({ error: "At least one participant is required." }, { status: 400 });
+  if (!Array.isArray(participants) || participants.length < MIN_TEAM_SIZE) {
+    return NextResponse.json({ error: `A team must have at least ${MIN_TEAM_SIZE} members.` }, { status: 400 });
   }
   if (participants.length > MAX_TEAM_SIZE) {
     return NextResponse.json({ error: `A team can have at most ${MAX_TEAM_SIZE} members.` }, { status: 400 });
