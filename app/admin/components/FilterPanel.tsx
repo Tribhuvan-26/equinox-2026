@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import { Search, Filter, X } from "lucide-react";
 import type { RegistrationRecord, RegistrationStatus } from "@/lib/registration/types";
 
-export function FilterPanel({
+export function FilterPanel<T extends RegistrationRecord>({
   registrations,
   onFilterChange,
 }: {
-  registrations: RegistrationRecord[];
-  onFilterChange: (filtered: RegistrationRecord[]) => void;
+  registrations: T[];
+  onFilterChange: (filtered: T[]) => void;
 }) {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<RegistrationStatus | "">("");

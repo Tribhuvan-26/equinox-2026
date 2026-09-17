@@ -7,10 +7,11 @@ export interface Database {
     Tables: {
       pass_registrations: {
         Row: RegistrationRecord;
-        Insert: Omit<RegistrationRecord, "created_at" | "updated_at" | "admin_note"> & {
+        Insert: Omit<RegistrationRecord, "created_at" | "updated_at" | "admin_note" | "team_seq"> & {
           created_at?: string;
           updated_at?: string;
           admin_note?: string | null;
+          team_seq?: number;
         };
         Update: Partial<RegistrationRecord>;
         Relationships: [];
