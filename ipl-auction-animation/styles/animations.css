@@ -1,364 +1,143 @@
-/* ============================================================ */
-/* IPL AUCTION ENHANCED ANIMATION STYLES                        */
-/* ============================================================ */
+/* ==========================================================================
+   IPL Auction Animation Keyframes & Bindings
+   All timing, easing, and keyframes are isolated here.
+   ========================================================================== */
 
-/* 1. Main Title & Green Swoosh */
-#layer-title {
-  transform-origin: 897px 150px;
-  animation: iplTitleAnim 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
-  will-change: transform, opacity;
-}
-
-#layer-swoosh {
-  animation: iplSwooshAnim 0.85s cubic-bezier(0.25, 1, 0.5, 1) 0.15s both;
-  will-change: clip-path, opacity;
-}
-
-@keyframes iplTitleAnim {
-  0% {
-    opacity: 0;
-    transform: translateY(16px) scale(0.88);
-  }
-  20% {
-    opacity: 1;
-  }
-  80% {
-    opacity: 1;
-    transform: translateY(-2px) scale(1.02);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0px) scale(1.0);
-  }
-}
-
-@keyframes iplSwooshAnim {
-  0% {
-    clip-path: inset(0 100% 0 0);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  100% {
-    clip-path: inset(0 0% 0 0);
-    opacity: 1;
-  }
-}
-
-/* Subtle single light sweep/glow passing across title letterforms */
-#titleShineSweep {
-  animation: iplTitleShineAnim 1.05s cubic-bezier(0.25, 1, 0.5, 1) 0.80s forwards;
-  opacity: 0;
-}
-@keyframes iplTitleShineAnim {
-  0% {
-    transform: translateX(-400px);
-    opacity: 0;
-  }
-  20% {
-    opacity: 0.9;
-  }
-  80% {
-    opacity: 0.9;
-  }
-  100% {
-    transform: translateX(1200px);
-    opacity: 0;
-  }
-}
-
-/* 2. Budget Bar: Expand from Left -> Right, Text Reveal, Glowing ₹120 CR */
-#budget-bar-pill {
-  animation: iplBudgetPillExpand 0.70s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
-  transform-origin: 450px 290px;
-}
-@keyframes iplBudgetPillExpand {
-  0% {
-    clip-path: inset(0 100% 0 0 round 45px);
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  100% {
-    clip-path: inset(0 0% 0 0 round 45px);
-    opacity: 1;
-  }
-}
-
-#budget-bar-labels {
-  animation: iplBudgetTextReveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.85s both;
-}
-@keyframes iplBudgetTextReveal {
-  0% {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0px);
-  }
-}
-
-#budget-bar-price {
-  animation: iplBudgetPriceReveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.85s both,
-             iplBudgetPricePulse 2.4s ease-in-out 1.40s infinite alternate;
-  transform-origin: 820px 288px;
-}
-@keyframes iplBudgetPriceReveal {
-  0% {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0px);
-  }
-}
-@keyframes iplBudgetPricePulse {
-  0% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 1px rgba(70, 247, 136, 0.3));
-  }
-  100% {
-    transform: scale(1.025);
-    filter: drop-shadow(0 0 7px rgba(70, 247, 136, 0.85));
-  }
-}
-
-/* 3. Left and Right Flags Hanging & Gentle Continuous Sway */
-#flag-left {
-  transform-origin: 144px 54px;
-  animation: iplLeftFlagSway 6.0s ease-in-out infinite;
-  will-change: transform;
-}
-@keyframes iplLeftFlagSway {
-  0% {
+/* 1. Hanging Pennants Sway */
+@keyframes sway {
+  0%, 100% {
     transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(1.2deg);
   }
   50% {
-    transform: rotate(-0.8deg);
-  }
-  75% {
-    transform: rotate(0.9deg);
-  }
-  100% {
-    transform: rotate(0deg);
+    transform: rotate(1.5deg);
   }
 }
 
-#flag-right {
-  transform-origin: 1528px 45px;
-  animation: iplRightFlagSway 6.6s ease-in-out infinite;
-  will-change: transform;
+#banner-left {
+  transform-origin: 100px 30px;
+  animation: sway 4s ease-in-out infinite;
 }
-@keyframes iplRightFlagSway {
+
+#banner-right {
+  transform-origin: 1100px 30px;
+  animation: sway 4s ease-in-out infinite reverse;
+}
+
+/* 2. Team Slots Sequential Pop-In */
+@keyframes popIn {
   0% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(-1.1deg);
-  }
-  50% {
-    transform: rotate(0.9deg);
-  }
-  75% {
-    transform: rotate(-0.7deg);
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
   }
   100% {
-    transform: rotate(0deg);
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
-.flag-pin-dot {
-  animation: iplPinDotPulse 2.8s ease-in-out infinite alternate;
+.team-slot {
   transform-origin: center;
+  animation: popIn 0.5s ease-out both;
 }
-@keyframes iplPinDotPulse {
-  0% {
-    filter: drop-shadow(0 0 2px rgba(65, 241, 130, 0.4));
+
+.team-slot:nth-child(1),
+.team-slot-pos:nth-child(1) .team-slot,
+.team-slot[data-team="1"] {
+  animation-delay: 0.05s;
+}
+
+.team-slot:nth-child(2),
+.team-slot-pos:nth-child(2) .team-slot,
+.team-slot[data-team="2"] {
+  animation-delay: 0.10s;
+}
+
+.team-slot:nth-child(3),
+.team-slot-pos:nth-child(3) .team-slot,
+.team-slot[data-team="3"] {
+  animation-delay: 0.15s;
+}
+
+.team-slot:nth-child(4),
+.team-slot-pos:nth-child(4) .team-slot,
+.team-slot[data-team="4"] {
+  animation-delay: 0.20s;
+}
+
+.team-slot:nth-child(5),
+.team-slot-pos:nth-child(5) .team-slot,
+.team-slot[data-team="5"] {
+  animation-delay: 0.25s;
+}
+
+.team-slot:nth-child(6),
+.team-slot-pos:nth-child(6) .team-slot,
+.team-slot[data-team="6"] {
+  animation-delay: 0.30s;
+}
+
+.team-slot:nth-child(7),
+.team-slot-pos:nth-child(7) .team-slot,
+.team-slot[data-team="7"] {
+  animation-delay: 0.35s;
+}
+
+.team-slot:nth-child(8),
+.team-slot-pos:nth-child(8) .team-slot,
+.team-slot[data-team="8"] {
+  animation-delay: 0.40s;
+}
+
+.team-slot:nth-child(9),
+.team-slot-pos:nth-child(9) .team-slot,
+.team-slot[data-team="9"] {
+  animation-delay: 0.45s;
+}
+
+.team-slot:nth-child(10),
+.team-slot-pos:nth-child(10) .team-slot,
+.team-slot[data-team="10"] {
+  animation-delay: 0.50s;
+}
+
+/* 3. Stage People Vertical Floating Bob */
+@keyframes bob {
+  0%, 100% {
+    transform: translateY(0);
   }
-  100% {
-    filter: drop-shadow(0 0 8px rgba(65, 241, 130, 0.95));
+  50% {
+    transform: translateY(-6px);
   }
 }
 
-/* 4. Sequential Team Logos (Left -> Right) */
-.team-logo-1 { animation: teamLogoEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1) 1.00s both; transform-origin: 111px 442px; }
-.team-logo-2 { animation: teamLogoEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1) 1.12s both; transform-origin: 280px 443px; }
-.team-logo-3 { animation: teamLogoEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1) 1.24s both; transform-origin: 435px 442px; }
-.team-logo-4 { animation: teamLogoEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1) 1.36s both; transform-origin: 597px 443px; }
-.team-logo-5 { animation: teamLogoEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1) 1.48s both; transform-origin: 757px 442px; }
-.team-logo-6 { animation: teamLogoEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1) 1.60s both; transform-origin: 914px 443px; }
-.team-logo-7 { animation: teamLogoEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1) 1.72s both; transform-origin: 1072px 442px; }
-.team-logo-8 { animation: teamLogoEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1) 1.84s both; transform-origin: 1234px 443px; }
-.team-logo-9 { animation: teamLogoEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1) 1.96s both; transform-origin: 1395px 442px; }
-.team-logo-10 { animation: teamLogoEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1) 2.08s both; transform-origin: 1558px 440px; }
+#stage-people {
+  animation: bob 3.2s ease-in-out infinite;
+}
 
-@keyframes teamLogoEnter {
-  0% {
-    opacity: 0;
-    transform: translateY(12px) scale(0.82);
+/* 4. Stage People Subtle Looping Drop-Shadow Elevation Pulse */
+@keyframes stageShadowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 4px 8px rgba(13, 27, 62, 0.15));
   }
-  30% {
+  50% {
+    filter: drop-shadow(0 12px 18px rgba(13, 27, 62, 0.34));
+  }
+}
+
+#stage-people image {
+  animation: stageShadowPulse 3.2s ease-in-out infinite;
+}
+
+/* 5. Headline Breathing Opacity Pulse */
+@keyframes headlinePulse {
+  0%, 100% {
     opacity: 1;
   }
-  75% {
-    transform: translateY(-2px) scale(1.03);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0px) scale(1.0);
+  50% {
+    opacity: 0.85;
   }
 }
 
-/* 5. Team Budget Labels ("₹120 Cr") Reveal Immediately After Logo */
-.team-price-1 { animation: teamPriceEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) 1.08s both; }
-.team-price-2 { animation: teamPriceEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) 1.20s both; }
-.team-price-3 { animation: teamPriceEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) 1.32s both; }
-.team-price-4 { animation: teamPriceEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) 1.44s both; }
-.team-price-5 { animation: teamPriceEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) 1.56s both; }
-.team-price-6 { animation: teamPriceEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) 1.68s both; }
-.team-price-7 { animation: teamPriceEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) 1.80s both; }
-.team-price-8 { animation: teamPriceEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) 1.92s both; }
-.team-price-9 { animation: teamPriceEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) 2.04s both; }
-.team-price-10 { animation: teamPriceEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) 2.16s both; }
-
-@keyframes teamPriceEnter {
-  0% {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0px);
-  }
-}
-
-/* Desynchronized subtle floating on logos after appearing */
-.logo-float-a { animation: logoFloatMotionA 3.8s ease-in-out infinite alternate; }
-.logo-float-b { animation: logoFloatMotionB 4.2s ease-in-out infinite alternate; }
-.logo-float-c { animation: logoFloatMotionC 3.5s ease-in-out infinite alternate; }
-
-@keyframes logoFloatMotionA {
-  0% { transform: translateY(0px); }
-  100% { transform: translateY(-3px); }
-}
-@keyframes logoFloatMotionB {
-  0% { transform: translateY(0px); }
-  100% { transform: translateY(2.5px); }
-}
-@keyframes logoFloatMotionC {
-  0% { transform: translateY(-1.5px); }
-  100% { transform: translateY(1.5px); }
-}
-
-/* 6. Side Curves Drawing & Continuous Subtle Parallax Drift */
-.draw-stroke-left-blue {
-  stroke-dasharray: 750;
-  stroke-dashoffset: 750;
-  animation: animDrawLeftBlue 1.10s cubic-bezier(0.2, 0.8, 0.25, 1) 0.55s forwards;
-}
-.static-mask-left-blue {
-  opacity: 0;
-  animation: animStaticLeftBlue 0.01s linear 1.65s forwards;
-}
-@keyframes animDrawLeftBlue {
-  0% { stroke-dashoffset: 750; }
-  100% { stroke-dashoffset: 0; }
-}
-@keyframes animStaticLeftBlue {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-.draw-stroke-left-green {
-  stroke-dasharray: 750;
-  stroke-dashoffset: 750;
-  animation: animDrawLeftGreen 1.10s cubic-bezier(0.2, 0.8, 0.25, 1) 0.70s forwards;
-}
-.static-mask-left-green {
-  opacity: 0;
-  animation: animStaticLeftGreen 0.01s linear 1.80s forwards;
-}
-@keyframes animDrawLeftGreen {
-  0% { stroke-dashoffset: 750; }
-  100% { stroke-dashoffset: 0; }
-}
-@keyframes animStaticLeftGreen {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-.draw-stroke-right-blue {
-  stroke-dasharray: 750;
-  stroke-dashoffset: 750;
-  animation: animDrawRightBlue 1.10s cubic-bezier(0.2, 0.8, 0.25, 1) 0.85s forwards;
-}
-.static-mask-right-blue {
-  opacity: 0;
-  animation: animStaticRightBlue 0.01s linear 1.95s forwards;
-}
-@keyframes animDrawRightBlue {
-  0% { stroke-dashoffset: 750; }
-  100% { stroke-dashoffset: 0; }
-}
-@keyframes animStaticRightBlue {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-.draw-stroke-right-green {
-  stroke-dasharray: 750;
-  stroke-dashoffset: 750;
-  animation: animDrawRightGreen 1.10s cubic-bezier(0.2, 0.8, 0.25, 1) 1.00s forwards;
-}
-.static-mask-right-green {
-  opacity: 0;
-  animation: animStaticRightGreen 0.01s linear 2.10s forwards;
-}
-@keyframes animDrawRightGreen {
-  0% { stroke-dashoffset: 750; }
-  100% { stroke-dashoffset: 0; }
-}
-@keyframes animStaticRightGreen {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-/* Subtle continuous parallax shift in opposite directions */
-.arc-parallax-blue {
-  animation: iplArcBlueParallax 6.0s ease-in-out infinite alternate;
-}
-.arc-parallax-green {
-  animation: iplArcGreenParallax 6.0s ease-in-out infinite alternate;
-}
-
-@keyframes iplArcBlueParallax {
-  0% { transform: translate(0px, 0px); }
-  100% { transform: translate(3.5px, -2.5px); }
-}
-@keyframes iplArcGreenParallax {
-  0% { transform: translate(0px, 0px); }
-  100% { transform: translate(-3.5px, 2.5px); }
-}
-
-/* 7. Background Subtle Breathing */
-#layer-static-back {
-  animation: iplBackSilhouetteBreath 8.0s ease-in-out infinite alternate;
-}
-@keyframes iplBackSilhouetteBreath {
-  0% { opacity: 0.96; }
-  100% { opacity: 1.0; }
-}
-
-/* 8. PEOPLE — 100% STATIC */
-#layer-people-podium-static {
-  transform: none !important;
-  animation: none !important;
-  pointer-events: none;
+#headline {
+  animation: headlinePulse 3s ease-in-out infinite;
 }
