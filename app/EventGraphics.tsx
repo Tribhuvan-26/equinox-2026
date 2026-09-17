@@ -15,7 +15,7 @@ export function InstitutionalHeader({ className = "" }: { className?: string }) 
     <div className={`flex flex-wrap items-center justify-between gap-4 py-4 text-white ${className}`}>
       {/* Left: MLR CIE official lockup */}
       {/* eslint-disable-next-line @next/next/no-img-element -- fixed-ratio brand asset, no next/image benefit */}
-      <img src="/logos/cie-white.png" alt="MLR CIE — Centre for Innovation & Entrepreneurship" className="h-12 w-auto object-contain sm:h-14" />
+      <img src="/logos/cie-full-white.png" alt="MLR CIE — Centre for Innovation & Entrepreneurship" className="h-10 w-auto object-contain sm:h-12" />
 
       {/* Right: MLRIT official lockup */}
       {/* eslint-disable-next-line @next/next/no-img-element -- fixed-ratio brand asset, no next/image benefit */}

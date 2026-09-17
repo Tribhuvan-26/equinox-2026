@@ -101,7 +101,11 @@ export function NavBar({
             className="absolute left-0 hidden items-center sm:flex"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logos/cie-white.png" alt="CIE" className="h-9 w-auto object-contain" />
+            <img
+              src="/logos/cie-full-white.png"
+              alt="MLR CIE — Centre for Innovation & Entrepreneurship"
+              className="h-10 w-auto max-w-[220px] object-contain"
+            />
           </a>
         )}
 
