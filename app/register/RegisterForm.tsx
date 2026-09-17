@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { COLLEGES, DEPARTMENTS, MAX_TEAM_SIZE, REGISTRATION_FEE } from "@/lib/registration/constants";
+import { DEPARTMENTS, MAX_TEAM_SIZE, MIN_TEAM_SIZE, REGISTRATION_FEE } from "@/lib/registration/constants";
 import { emptyParticipant, type Participant } from "@/lib/registration/types";
 import { digitsOnly, isParticipantValid, validateParticipant } from "@/lib/registration/validation";
 
@@ -25,7 +25,7 @@ export function RegisterForm() {
             Registration is open
           </p>
           <h2 className="heading mt-2 text-xl font-black sm:text-3xl">
-            Grab your Equinox 2026 pass
+            Register your team for Equinox 2026
           </h2>
           <p className="mt-2 max-w-xl text-sm text-[#F7F2F6]/80 sm:text-base">
             ₹{REGISTRATION_FEE} per participant. Register your whole team in one go.
@@ -36,8 +36,7 @@ export function RegisterForm() {
             onClick={handleStart}
             className="press w-full shrink-0 rounded-xl bg-[#33FF67] px-5 py-3 text-sm font-black text-[#2A2A2A] shadow-md transition-all hover:scale-[1.02] hover:bg-[#5aff87] sm:w-auto sm:px-8 sm:py-4 sm:text-base"
           >
-            <span className="sm:hidden">Register Now</span>
-            <span className="hidden sm:inline">Register Now / Grab Your Passes</span>
+            Register Now
           </button>
         )}
       </div>
@@ -52,11 +51,12 @@ export function RegisterForm() {
 }
 
 function RegistrationFormBody() {
-  const [participants, setParticipants] = useState<Participant[]>([emptyParticipant()]);
+  const [participants, setParticipants] = useState<Participant[]>(
+    Array.from({ length: MIN_TEAM_SIZE }, emptyParticipant)
+  );
   const [touched, setTouched] = useState<Set<string>>(new Set());
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
   const [utrNumber, setUtrNumber] = useState("");
-  const [utrProof, setUtrProof] = useState<File | null>(null);
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -97,7 +97,7 @@ function RegistrationFormBody() {
   }
 
   function removeParticipant(index: number) {
-    if (participants.length <= 1) return;
+    if (participants.length <= MIN_TEAM_SIZE) return;
     setParticipants((prev) => prev.filter((_, i) => i !== index));
   }
 
@@ -115,7 +115,6 @@ function RegistrationFormBody() {
       body.set("participants", JSON.stringify(participants));
       body.set("utrNumber", utrNumber.trim());
       body.set("paymentScreenshot", paymentScreenshot as File);
-      if (utrProof) body.set("utrProof", utrProof);
 
       const res = await fetch("/api/register", { method: "POST", body });
       const data = await res.json().catch(() => null);
@@ -129,7 +128,7 @@ function RegistrationFormBody() {
 
       setResult({ id: data.id, totalAmount: data.totalAmount });
     } catch {
-      setSubmitError("Network error — please check your connection and try again.");
+      setSubmitError("Network error. Please check your connection and try again.");
       submitLock.current = false;
       setSubmitting(false);
     }
@@ -168,7 +167,7 @@ function RegistrationFormBody() {
             errors={attemptedSubmit ? validateParticipant(p) : filterTouchedErrors(validateParticipant(p), touched, i)}
             onChange={(patch) => updateParticipant(i, patch)}
             onBlurField={(field) => markTouched(i, field)}
-            onRemove={participants.length > 1 ? () => removeParticipant(i) : undefined}
+            onRemove={participants.length > MIN_TEAM_SIZE ? () => removeParticipant(i) : undefined}
           />
         ))}
 
@@ -226,14 +225,6 @@ function RegistrationFormBody() {
               error={attemptedSubmit && !utrValid ? "Enter a valid UTR / transaction number." : undefined}
               placeholder="e.g. 402812345678"
             />
-
-            <FileField
-              label="Upload UTR / Transaction Proof"
-              optional
-              hint="Optional — attach if you have a separate transaction confirmation."
-              file={utrProof}
-              onChange={setUtrProof}
-            />
           </div>
         </div>
       </section>
@@ -247,7 +238,7 @@ function RegistrationFormBody() {
         disabled={!formValid || submitting}
         className="press w-full rounded-xl bg-[#33FF67] px-6 py-4 text-lg font-black text-[#2A2A2A] shadow-md transition-all hover:scale-[1.01] hover:bg-[#5aff87] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100 sm:w-auto"
       >
-        {submitting ? "Submitting…" : `Submit Registration — ${currency(totalAmount)}`}
+        {submitting ? "Submitting..." : `Submit Registration (${currency(totalAmount)})`}
       </button>
     </form>
   );
@@ -315,25 +306,14 @@ function ParticipantFields({
           error={errors.rollNumber}
         />
 
-        <SelectField
+        <TextField
           label="College Name"
           required
           value={participant.college}
-          options={COLLEGES}
           onChange={(v) => onChange({ college: v })}
           onBlur={() => onBlurField("college")}
-          error={participant.college !== "Other" ? errors.college : undefined}
+          error={errors.college}
         />
-        {participant.college === "Other" && (
-          <TextField
-            label="Specify College Name"
-            required
-            value={participant.collegeOther}
-            onChange={(v) => onChange({ collegeOther: v })}
-            onBlur={() => onBlurField("college")}
-            error={errors.college}
-          />
-        )}
 
         <SelectField
           label="Department"
