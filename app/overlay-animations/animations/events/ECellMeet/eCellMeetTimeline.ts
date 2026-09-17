@@ -15,16 +15,23 @@ export interface ECellMeetTimelineOptions {
 /**
  * Master GSAP timeline for "The E-CELL Meet" Animation.
  *
- * User Specifications & Constraints:
- * 1. Base Scene: Single unified static illustration (people 100% untouched,
- *    card 100% untouched, plants 100% untouched, booth and background 100% static).
- * 2. Animated Elements ONLY:
- *    - Title: "THE E-CELL MEET" dynamic entrance.
- *    - Rocket: Eye-grabbing launch trajectory, flame thrust FX, settling at summit.
- *    - Left Top Banner: Physical pendulum swing & info inside it reveals.
- *    - Right Banner: Information rows (E-CELL header, Ideas, Network, Collaborate, Grow) cascade in.
- *    - Stall Info: "IDEAS, NETWORK, GROW" reveals on the booth desk.
- * 3. NO OTHER ANIMATIONS. Components are not divided into separate cutout photos.
+ * Requirements & Constraints:
+ * 1. Title ("THE E-CELL MEET" & Rocket):
+ *    - Clean, authentic artwork with smooth entrance and elegant hover motion.
+ *    - NO artificial rays, speed lines, or flame glowing blobs behind the title.
+ * 2. Top-Left Hanging Banner ("DIFFERENT COLLEGES / SAME VISION"):
+ *    - Physical pendulum sway swinging naturally from suspension string hooks (transformOrigin: 192.5px 0px).
+ *    - Clean animated text reveal and synchronized subtle text dynamics inside it.
+ * 3. Booth/Stall Desk Signage ("IDEAS / NETWORK / GROW"):
+ *    - All 3 words animated cleanly in text with sequential reveal.
+ *    - NO blurry drop-shadow filter or scale distortion on GROW.
+ * 4. Right-Side Banner ("E-CELL" + 4 circular icons):
+ *    - E-CELL heading reveals and green underline draws in.
+ *    - 4 circular icon badges pop in sequentially with an elastic bounce, then sit still.
+ * 5. 100% Static & Frozen:
+ *    - Foreground characters (students exchanging card): 100% static.
+ *    - Corner foliage and plants: 100% static.
+ *    - Booth structure, seamless canopy roof, laptop, background: 100% static.
  */
 export function createECellMeetTimeline(
   targets: ECellMeetTimelineTargets,
@@ -64,15 +71,14 @@ export function createECellMeetTimeline(
   const elBase = q("#layer-base-scene");
   const elTitleMain = q("#ecell-title-main");
   const elRocketContainer = q("#ecell-rocket-container");
-  const elRocketGlow = q("#rocket-thrust-glow");
-  const elRocketFlame = q("#rocket-thrust-flame");
-  const elRocketSpeedLines = q("#rocket-speed-lines");
 
   const elLeftBanner = q("#left-hanging-banner");
   const elHangingDiffColleges = q("#hanging-info-different-colleges");
   const elHangingSameVision = q("#hanging-info-same-vision");
   const elHangingLine = q("#hanging-info-line");
 
+  const elBoardHeader = q("#board-info-header");
+  const elBoardUnderline = q("#board-header-underline");
   const elBoardIdeas = q("#board-info-ideas");
   const elBoardNetwork = q("#board-info-network");
   const elBoardCollaborate = q("#board-info-collaborate");
@@ -81,18 +87,15 @@ export function createECellMeetTimeline(
   const elStallIdeas = q("#stall-info-ideas");
   const elStallNetwork = q("#stall-info-network");
   const elStallGrow = q("#stall-info-grow");
-
-  const elLaptopScreen = q("#stall-laptop-screen");
-  const elGirlIdTag = q("#girl-id-tag");
+  const elStallGrowLine = q("#stall-info-grow-line");
 
   // =========================================================================
   // 1. INITIAL RESTING / HIDDEN STATES (t = 0.0s)
   // =========================================================================
 
-  // Container is instantly visible from frame 0
   gsap.set(container, { opacity: 1 });
 
-  // Base scene (people, plants, booth, background) is strictly 100% static
+  // Base scene (people, plants, canopy, booth, background) is strictly 100% static
   gsap.set(elBase, {
     opacity: 1,
     x: 0,
@@ -105,57 +108,49 @@ export function createECellMeetTimeline(
     gsap.set(skipButton, { opacity: 0, y: -8, pointerEvents: "none" });
   }
 
-  // 1. Hero Rocket: Starts with launch offset down & left along -45deg axis
-  gsap.set(elRocketContainer, {
-    opacity: 0,
-    x: -95,
-    y: 85,
-    scale: 0.75,
-    transformOrigin: "1150px 175px",
-  });
-  gsap.set(elRocketGlow, { opacity: 0 });
-  gsap.set(elRocketFlame, { opacity: 0, scale: 0.3, transformOrigin: "1115px 210px" });
-  gsap.set(elRocketSpeedLines, { opacity: 0 });
-
-  // 2. Main Title Artwork: Starts slightly lower, scaled to 95%, transparent
+  // 1. Main Title & Rocket: Clean artwork, starts slightly offset
   gsap.set(elTitleMain, {
     opacity: 0,
-    y: 24,
+    y: 22,
     scale: 0.95,
     transformOrigin: "822.5px 247.5px",
   });
+  gsap.set(elRocketContainer, {
+    opacity: 0,
+    y: 26,
+    scale: 0.94,
+    transformOrigin: "1150px 175px",
+  });
 
-  // 3. Left Hanging Banner: starts tilted at suspension point
+  // 2. Left Hanging Banner: Suspended from string hooks
   gsap.set(elLeftBanner, {
     opacity: 0,
-    y: -30,
-    rotation: -4.5,
+    y: -24,
+    rotation: -3.5,
     transformOrigin: "192.5px 0px",
   });
   gsap.set(elHangingDiffColleges, { opacity: 0, y: -10 });
-  gsap.set(elHangingSameVision, { opacity: 0, scale: 0.85, transformOrigin: "120px 250px" });
-  gsap.set(elHangingLine, { opacity: 0, scaleX: 0, transformOrigin: "120px 305px" });
+  gsap.set(elHangingSameVision, { opacity: 0, scale: 0.88, y: 6, transformOrigin: "150px 250px" });
+  gsap.set(elHangingLine, { opacity: 0, scaleX: 0, transformOrigin: "110px 305px" });
 
-  // 4. Right Banner Information: starts slid to right with opacity 0
-  gsap.set(elBoardIdeas, { opacity: 0, x: 40, transformOrigin: "1350px 445px" });
-  gsap.set(elBoardNetwork, { opacity: 0, x: 40, transformOrigin: "1350px 535px" });
-  gsap.set(elBoardCollaborate, { opacity: 0, x: 40, transformOrigin: "1350px 625px" });
-  gsap.set(elBoardGrow, { opacity: 0, x: 40, transformOrigin: "1350px 715px" });
+  // 3. Right Banner: Header, drawing line, and cascading circular icons
+  gsap.set(elBoardHeader, { opacity: 0, y: -12 });
+  gsap.set(elBoardUnderline, { scaleX: 0, transformOrigin: "1325px 372px" });
+  gsap.set(elBoardIdeas, { opacity: 0, scale: 0.6, x: 25, transformOrigin: "1340px 425px" });
+  gsap.set(elBoardNetwork, { opacity: 0, scale: 0.6, x: 25, transformOrigin: "1340px 510px" });
+  gsap.set(elBoardCollaborate, { opacity: 0, scale: 0.6, x: 25, transformOrigin: "1340px 595px" });
+  gsap.set(elBoardGrow, { opacity: 0, scale: 0.6, x: 25, transformOrigin: "1340px 680px" });
 
-  // 5. Stall Info: starts slightly lowered
-  gsap.set(elStallIdeas, { opacity: 0, y: 12 });
-  gsap.set(elStallNetwork, { opacity: 0, y: 12 });
-  gsap.set(elStallGrow, { opacity: 0, y: 10, scale: 0.88, transformOrigin: "265px 796px" });
-
-  // 6. Stall Laptop screen starts open with hinge at bottom
-  gsap.set(elLaptopScreen, { scaleY: 1, opacity: 1, transformOrigin: "center bottom" });
-
-  // 7. Girl ID badge starts at resting equilibrium with hinge at top clip
-  gsap.set(elGirlIdTag, { rotation: 0, transformOrigin: "center top" });
+  // 4. Stall Desk Info: Clean 3-word text initial state
+  gsap.set(elStallIdeas, { opacity: 0, y: 8 });
+  gsap.set(elStallNetwork, { opacity: 0, y: 8 });
+  gsap.set(elStallGrow, { opacity: 0, y: 8 });
+  if (elStallGrowLine) {
+    gsap.set(elStallGrowLine, { scaleX: 0, transformOrigin: "265px 808px" });
+  }
 
   // =========================================================================
-  // 2. CHOREOGRAPHED TIMELINE (0.0s – 4.5s)
-  // Timeline duration reduced by 0.5s per user request
+  // 2. CHOREOGRAPHED ENTRANCE TIMELINE (0.0s – 1.6s)
   // =========================================================================
 
   // Skip button reveal
@@ -176,87 +171,9 @@ export function createECellMeetTimeline(
   }
 
   // -------------------------------------------------------------------------
-  // PHASE 1: EYE-GRABBING HERO ROCKET LAUNCH & MAIN TITLE ENTRANCE (0.05s – 0.70s)
+  // PHASE 1: MAIN TITLE & ROCKET CLEAN ENTRANCE (0.10s – 0.65s)
+  // Clean, confident emergence with NO artificial rays behind the letters
   // -------------------------------------------------------------------------
-  // Rocket thruster flash ignition
-  tl.to(
-    elRocketContainer,
-    {
-      opacity: 1,
-      duration: 0.14,
-      ease: "power1.out",
-    },
-    0.05
-  );
-
-  tl.to(
-    [elRocketGlow, elRocketFlame, elRocketSpeedLines],
-    {
-      opacity: 1,
-      scale: 1.15,
-      duration: 0.18,
-      ease: "power2.out",
-    },
-    0.08
-  );
-
-  // Rocket soars up along launch vector with dynamic acceleration curve
-  tl.to(
-    elRocketContainer,
-    {
-      x: 0,
-      y: 0,
-      scale: 1.0,
-      duration: 0.52,
-      ease: "power3.out",
-    },
-    0.10
-  );
-
-  // Rocket arrives at summit with impactful micro-overshoot and settle
-  tl.to(
-    elRocketContainer,
-    {
-      y: -4,
-      duration: 0.15,
-      ease: "sine.out",
-    },
-    0.62
-  );
-
-  tl.to(
-    elRocketContainer,
-    {
-      y: 0,
-      duration: 0.16,
-      ease: "sine.inOut",
-    },
-    0.77
-  );
-
-  // Thruster launch flame recedes into ambient running jet
-  tl.to(
-    elRocketFlame,
-    {
-      opacity: 0.85,
-      scale: 0.85,
-      duration: 0.28,
-      ease: "power2.inOut",
-    },
-    0.62
-  );
-
-  tl.to(
-    elRocketSpeedLines,
-    {
-      opacity: 0,
-      duration: 0.25,
-      ease: "power2.out",
-    },
-    0.65
-  );
-
-  // Main Title Artwork emerges with high impact synchronized to rocket blast
   tl.to(
     elTitleMain,
     {
@@ -266,66 +183,79 @@ export function createECellMeetTimeline(
       duration: 0.55,
       ease: "power2.out",
     },
+    0.10
+  );
+
+  tl.to(
+    elRocketContainer,
+    {
+      opacity: 1,
+      y: 0,
+      scale: 1.0,
+      duration: 0.58,
+      ease: "power2.out",
+    },
     0.12
   );
 
   // -------------------------------------------------------------------------
-  // PHASE 2: LEFT TOP BANNER PHYSICAL PENDULUM & INFO REVEAL (0.20s – 1.10s)
+  // PHASE 2: LEFT HANGING BANNER PENDULUM SWAY & TEXT REVEAL (0.18s – 1.15s)
+  // Hanging banner sways naturally from string hooks and text animates inside
   // -------------------------------------------------------------------------
   tl.to(
     elLeftBanner,
     {
       opacity: 1,
       y: 0,
-      rotation: 3.2,
-      duration: 0.50,
+      rotation: 3.0,
+      duration: 0.55,
       ease: "power2.out",
     },
-    0.20
+    0.18
   );
 
-  // Pendulum natural swing back & settle
   tl.to(
     elLeftBanner,
     {
-      rotation: -1.5,
-      duration: 0.38,
+      rotation: -1.4,
+      duration: 0.42,
       ease: "sine.inOut",
     },
-    0.70
+    0.73
   );
 
   tl.to(
     elLeftBanner,
     {
       rotation: 0,
-      duration: 0.28,
+      duration: 0.32,
       ease: "sine.out",
     },
-    1.08
+    1.15
   );
 
-  // Information inside the left banner reveals
+  // Animate text inside the hanging banner
   tl.to(
     elHangingDiffColleges,
     {
       opacity: 1,
       y: 0,
-      duration: 0.32,
+      duration: 0.35,
       ease: "power2.out",
     },
-    0.42
+    0.38
   );
 
   tl.to(
     elHangingSameVision,
     {
       opacity: 1,
+      y: 0,
       scale: 1.0,
-      duration: 0.35,
-      ease: "back.out(1.4)",
+      duration: 0.40,
+      ease: "back.out(1.5)",
     },
-    0.60
+    0.54
   );
 
   tl.to(
@@ -333,153 +263,95 @@ export function createECellMeetTimeline(
     {
       opacity: 1,
       scaleX: 1.0,
-      duration: 0.28,
+      duration: 0.32,
       ease: "power2.out",
     },
-    0.80
+    0.72
   );
 
   // -------------------------------------------------------------------------
-  // PHASE 3: GIRL ID BADGE SWAY MOMENT (0.35s – 1.20s)
-  // "and make amoment for her id tag which the green dressed girl wored"
+  // PHASE 3: RIGHT SIDE BANNER ("E-CELL" + 4 CIRCULAR ICONS POP IN)
   // -------------------------------------------------------------------------
   tl.to(
-    elGirlIdTag,
+    elBoardHeader,
     {
-      rotation: 12,
-      duration: 0.22,
-      ease: "sine.out",
+      opacity: 1,
+      y: 0,
+      duration: 0.30,
+      ease: "power2.out",
     },
-    0.35
+    0.45
   );
 
   tl.to(
-    elGirlIdTag,
+    elBoardUnderline,
     {
-      rotation: -8,
-      duration: 0.25,
-      ease: "sine.inOut",
+      scaleX: 1.0,
+      duration: 0.35,
+      ease: "power2.out",
     },
-    0.57
+    0.55
   );
 
-  tl.to(
-    elGirlIdTag,
-    {
-      rotation: 5,
-      duration: 0.22,
-      ease: "sine.inOut",
-    },
-    0.82
-  );
-
-  tl.to(
-    elGirlIdTag,
-    {
-      rotation: -2,
-      duration: 0.18,
-      ease: "sine.inOut",
-    },
-    1.04
-  );
-
-  tl.to(
-    elGirlIdTag,
-    {
-      rotation: 0,
-      duration: 0.16,
-      ease: "sine.out",
-    },
-    1.22
-  );
-
-  // -------------------------------------------------------------------------
-  // PHASE 4: STALL LAPTOP OPEN / CLOSE (0.38s – 1.35s)
-  // "and also make the animation of the laptop in side the stall,
-  // just make it open and close"
-  // -------------------------------------------------------------------------
-  // Laptop lid smoothly folds down closed onto keyboard base
-  tl.to(
-    elLaptopScreen,
-    {
-      scaleY: 0.02,
-      opacity: 0.8,
-      duration: 0.25,
-      ease: "power2.in",
-    },
-    0.38
-  );
-
-  // Laptop stays closed until 0.98s, then springs open with crisp vitality
-  tl.to(
-    elLaptopScreen,
-    {
-      scaleY: 1.0,
-      opacity: 1.0,
-      duration: 0.36,
-      ease: "back.out(1.4)",
-    },
-    0.98
-  );
-
-  // -------------------------------------------------------------------------
-  // PHASE 5: RIGHT SIDE BANNER INFORMATION STAGGER (0.52s – 1.35s)
-  // 4 Feature Rows cascade in sequentially (IDEAS, NETWORK, COLLABORATE, GROW)
-  // -------------------------------------------------------------------------
+  // 4 Circular icon badges pop in one after another with elastic bounce
   tl.to(
     elBoardIdeas,
     {
       opacity: 1,
+      scale: 1.0,
       x: 0,
-      duration: 0.32,
-      ease: "power2.out",
+      duration: 0.38,
+      ease: "back.out(1.7)",
     },
-    0.52
+    0.68
   );
 
   tl.to(
     elBoardNetwork,
     {
       opacity: 1,
+      scale: 1.0,
       x: 0,
-      duration: 0.32,
-      ease: "power2.out",
+      duration: 0.38,
+      ease: "back.out(1.7)",
     },
-    0.70
+    0.84
   );
 
   tl.to(
     elBoardCollaborate,
     {
       opacity: 1,
+      scale: 1.0,
       x: 0,
-      duration: 0.32,
-      ease: "power2.out",
+      duration: 0.38,
+      ease: "back.out(1.7)",
     },
-    0.88
+    1.00
   );
 
   tl.to(
     elBoardGrow,
     {
       opacity: 1,
+      scale: 1.0,
       x: 0,
-      duration: 0.32,
-      ease: "power2.out",
+      duration: 0.38,
+      ease: "back.out(1.7)",
     },
-    1.06
+    1.16
   );
 
   // -------------------------------------------------------------------------
-  // PHASE 6: STALL DESK INFO (0.75s – 1.40s)
-  // Stall Words Reveal: IDEAS, NETWORK, GROW
+  // PHASE 4: STALL DESK INFO - 3 WORDS CLEAN TEXT ANIMATION (0.75s – 1.40s)
+  // Sequential clean reveal: IDEAS -> NETWORK -> GROW (no drop shadow filter)
   // -------------------------------------------------------------------------
   tl.to(
     elStallIdeas,
     {
       opacity: 1,
       y: 0,
-      duration: 0.28,
+      duration: 0.30,
       ease: "power2.out",
     },
     0.75
@@ -490,10 +362,10 @@ export function createECellMeetTimeline(
     {
       opacity: 1,
       y: 0,
-      duration: 0.28,
+      duration: 0.30,
       ease: "power2.out",
     },
-    0.92
+    0.95
   );
 
   tl.to(
@@ -501,93 +373,75 @@ export function createECellMeetTimeline(
     {
       opacity: 1,
       y: 0,
-      scale: 1.0,
-      duration: 0.35,
-      ease: "back.out(1.5)",
+      duration: 0.32,
+      ease: "power2.out",
     },
-    1.10
+    1.15
   );
 
-  // -------------------------------------------------------------------------
-  // PHASE 7: HARMONIOUS SETTLED STATE & LIVING AMBIANCE (1.60s – 3.50s)
-  // Overall timeline reduced by 0.5s (settled milestone at 3.50s, exit at 4.50s)
-  // -------------------------------------------------------------------------
-  tl.addLabel("loop-start", 1.60);
+  if (elStallGrowLine) {
+    tl.to(
+      elStallGrowLine,
+      {
+        scaleX: 1.0,
+        duration: 0.30,
+        ease: "power2.out",
+      },
+      1.22
+    );
+  }
 
-  // Left banner gentle ambient sway
-  tl.to(
-    elLeftBanner,
-    {
-      rotation: 1.2,
-      duration: 0.85,
+  // =========================================================================
+  // 3. CONTINUOUS LIVING LOOPS (At t = 1.45s)
+  // - Title: Smooth, subtle hover float (clean, professional, zero rays)
+  // - Hanging sign: Gentle physical pendulum sway from string hooks
+  // - Hanging text: Subtle breathing illumination synchronized to sway
+  // - Stall text: Clean sequential text highlight across all 3 words
+  // =========================================================================
+  tl.add(() => {
+    // 1. Title & Rocket subtle hover float
+    gsap.to([elTitleMain, elRocketContainer], {
+      y: -5,
+      duration: 2.6,
       ease: "sine.inOut",
-    },
-    1.60
-  );
+      yoyo: true,
+      repeat: -1,
+    });
 
-  tl.to(
-    elLeftBanner,
-    {
-      rotation: -1.2,
-      duration: 0.85,
+    // 2. Left hanging banner continuous pendulum sway from hooks
+    gsap.to(elLeftBanner, {
+      rotation: 1.8,
+      duration: 2.8,
       ease: "sine.inOut",
-    },
-    2.45
-  );
+      yoyo: true,
+      repeat: -1,
+      transformOrigin: "192.5px 0px",
+    });
 
-  tl.to(
-    elLeftBanner,
-    {
-      rotation: 0,
-      duration: 0.28,
-      ease: "sine.out",
-    },
-    3.30
-  );
-
-  // Girl ID tag subtle ambient breath
-  tl.to(
-    elGirlIdTag,
-    {
-      rotation: 1.2,
-      duration: 0.85,
+    // 3. Text inside hanging banner subtle breathing highlight
+    gsap.to(elHangingSameVision, {
+      opacity: 0.90,
+      duration: 1.4,
       ease: "sine.inOut",
-    },
-    1.60
-  );
+      yoyo: true,
+      repeat: -1,
+    });
 
-  tl.to(
-    elGirlIdTag,
-    {
-      rotation: -1.2,
-      duration: 0.85,
-      ease: "sine.inOut",
-    },
-    2.45
-  );
+    // 4. Stall desk 3-word clean text animation loop
+    // Staggered subtle luminance wave across IDEAS -> NETWORK -> GROW
+    const stallWordsTl = gsap.timeline({ repeat: -1, repeatDelay: 0.9 });
+    stallWordsTl
+      .to(elStallIdeas, { opacity: 0.65, duration: 0.35, yoyo: true, repeat: 1, ease: "power1.inOut" })
+      .to(elStallNetwork, { opacity: 0.65, duration: 0.35, yoyo: true, repeat: 1, ease: "power1.inOut" }, "-=0.1")
+      .to(elStallGrow, { opacity: 0.75, duration: 0.35, yoyo: true, repeat: 1, ease: "power1.inOut" }, "-=0.1");
+  }, 1.45);
 
-  tl.to(
-    elGirlIdTag,
-    {
-      rotation: 0,
-      duration: 0.28,
-      ease: "sine.out",
-    },
-    3.30
-  );
+  // Settle milestone
+  tl.addLabel("settled", 1.60);
 
-
-  // Exact 3.50s milestone: all elements seamlessly resting (reduced by 0.5s)
-  tl.addLabel("settled", 3.50);
-  tl.addLabel("loop-end", 3.50);
-
-  if (loop) {
-    tl.call(() => {
-      tl.seek("loop-start");
-    }, undefined, 3.50);
-  } else {
-    tl.addLabel("hold", 3.50);
-    tl.addLabel("exit", 4.50);
+  if (!loop) {
+    tl.addLabel("hold", 3.80);
+    tl.addLabel("exit", 5.00);
 
     tl.to(
       container,

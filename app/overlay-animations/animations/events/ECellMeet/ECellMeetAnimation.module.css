@@ -5,15 +5,15 @@
   inset: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 99999;
-  background-color: var(--cream, #F5ECD9);
+  z-index: 1000000;
+  background-color: #1b1c1e;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
   pointer-events: auto;
-  opacity: 0;
+  opacity: 1;
 }
 
 .stageSvg {
@@ -24,14 +24,14 @@
   pointer-events: none;
 }
 
-/* Subtle paper texture overlay (optional accent) */
+/* Subtle dark paper texture overlay */
 .paperNoise {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 2;
-  opacity: 0.12;
-  mix-blend-mode: multiply;
+  z-index: 10;
+  opacity: 0.03;
+  mix-blend-mode: overlay;
 }
 
 /* Skip / Dismiss button */
@@ -49,26 +49,28 @@
   font-weight: 800;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--navy, #0A1F44);
-  background-color: rgba(255, 255, 255, 0.9);
-  border: 2px solid var(--navy, #0A1F44);
+  color: #F7F2F6;
+  background-color: rgba(30, 31, 33, 0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
   border-radius: 9999px;
   cursor: pointer;
-  box-shadow: 2px 2px 0px var(--navy, #0A1F44);
-  backdrop-filter: blur(8px);
-  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(10px);
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
   pointer-events: auto;
 }
 
 .skipButton:hover {
-  background-color: var(--white, #ffffff);
+  background-color: rgba(45, 47, 50, 0.95);
+  border-color: #33FF67;
+  color: #33FF67;
   transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0px var(--navy, #0A1F44);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
 }
 
 .skipButton:active {
   transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px var(--navy, #0A1F44);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 /* Transform Origins and GPU Acceleration for Animated SVG groups */
@@ -96,26 +98,21 @@
   will-change: transform, opacity;
 }
 
-#rocket-thrust-flame {
-  transform-origin: 1115px 210px;
+#right-banner-information {
   will-change: transform, opacity;
 }
 
-#right-banner-information {
-  will-change: transform, opacity;
+#board-header-underline {
+  transform-origin: 1325px 372px;
+  will-change: transform;
 }
 
 #stall-information {
   will-change: transform, opacity;
 }
 
-#stall-laptop-screen {
-  transform-origin: center bottom;
-  will-change: transform;
-}
-
-#girl-id-tag {
-  transform-origin: center top;
+#stall-info-grow {
+  transform-origin: 300px 796px;
   will-change: transform;
 }
 
