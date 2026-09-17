@@ -115,16 +115,6 @@ export default function GallerySection({
       {/* MOBILE GALLERY VIEW: Single Image per View, Touch-Friendly Snap Carousel   */}
       {/* ========================================================================= */}
       <div className="mt-8 block md:hidden">
-        {/* Photo Counter Header */}
-        <div className="flex items-center justify-between pb-2.5">
-          <span className="font-mono text-xs font-black uppercase tracking-wider text-[#33FF67]">
-            Archive Photo {String(currentIndex + 1).padStart(2, "0")} of {String(galleryItems.length).padStart(2, "0")}
-          </span>
-          <span className="font-mono text-[10px] uppercase text-[#F7F2F6]/60">
-            Swipe left/right
-          </span>
-        </div>
-
         {/* Single-Image Snap Carousel (Only 1 full image visible per swipe, no partial cutoffs) */}
         <div
           ref={mobileReelRef}
@@ -151,23 +141,13 @@ export default function GallerySection({
                   style={{ WebkitTouchCallout: "none", userSelect: "none" }}
                   className="h-full w-full object-cover select-none pointer-events-none"
                 />
-
-                {/* Subtle caption overlay */}
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/45 to-transparent p-3 sm:p-4 flex items-end justify-between gap-2">
-                  <span className="font-mono text-xs font-bold text-white/95 truncate">
-                    {photo.title}
-                  </span>
-                  <span className="shrink-0 rounded-full bg-white/15 backdrop-blur-md px-2.5 py-0.5 font-mono text-[10px] font-semibold text-[#33FF67]">
-                    {photo.category}
-                  </span>
-                </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Carousel Navigation Bar (Prev / Progress Track / Next) */}
-        <div className="mt-3 flex items-center justify-between">
+        {/* Carousel Navigation Bar (Prev / Sleek Progress Track / Next) */}
+        <div className="mt-3 flex items-center justify-between px-1">
           <button
             type="button"
             onClick={() => scrollToPhoto(currentIndex - 1)}
@@ -178,24 +158,12 @@ export default function GallerySection({
             <ChevronLeft className="h-5 w-5" />
           </button>
 
-          {/* Progress Indicator Bar */}
-          <div className="flex flex-col items-center gap-1">
-            <div className="flex items-center gap-1">
-              <span className="font-mono text-sm font-black text-[#F7F2F6]">
-                {String(currentIndex + 1).padStart(2, "0")}
-              </span>
-              <span className="font-mono text-xs text-[#F7F2F6]/40">/</span>
-              <span className="font-mono text-xs text-[#F7F2F6]/60">
-                {String(galleryItems.length).padStart(2, "0")}
-              </span>
-            </div>
-            {/* Mini Progress Track */}
-            <div className="h-1 w-24 rounded-full bg-white/10 overflow-hidden">
-              <div
-                className="h-full bg-[#33FF67] transition-all duration-200"
-                style={{ width: `${((currentIndex + 1) / galleryItems.length) * 100}%` }}
-              />
-            </div>
+          {/* Mini Progress Track */}
+          <div className="h-1.5 w-32 rounded-full bg-white/10 overflow-hidden">
+            <div
+              className="h-full bg-[#33FF67] rounded-full transition-all duration-200"
+              style={{ width: `${((currentIndex + 1) / galleryItems.length) * 100}%` }}
+            />
           </div>
 
           <button
