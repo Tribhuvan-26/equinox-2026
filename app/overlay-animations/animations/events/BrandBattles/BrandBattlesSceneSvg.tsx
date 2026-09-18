@@ -8,7 +8,7 @@ export interface BrandBattlesSceneSvgProps {
 export const BrandBattlesSceneSvg = forwardRef<SVGSVGElement, BrandBattlesSceneSvgProps>(
   ({ className = "" }, ref) => {
     return (
-      <svg ref={ref} className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1460 822" width="1460" height="822" preserveAspectRatio="xMidYMid meet" style={{ background: "transparent" }}>
+      <svg ref={ref} className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1460 822" width="1460" height="822" style={{ background: "#FAF6EE" }}>
 
 
         {/* Background wall & lamp interior glow */}

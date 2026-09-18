@@ -24,14 +24,119 @@
   pointer-events: none;
 }
 
-@media (max-width: 767px) {
-  .stageSvg {
-    inset: 20px;
-    width: calc(100% - 40px);
-    height: calc(100% - 40px);
-    transform: scale(1.2);
-    transform-origin: center;
-  }
+/* =========================================================================
+   TOP BRANDING HEADER (Equinox 2.0 & Oct 30-31 MLRIT)
+   ========================================================================= */
+.topBrandingLeft {
+  position: absolute;
+  top: 1.5rem;
+  left: 2rem;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  user-select: none;
+}
+
+.brandTitle {
+  font-family: var(--font-display, 'Outfit', 'Inter', sans-serif);
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  line-height: 1.1;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.brandDotPair {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-right: 0.2rem;
+}
+
+.dotGreen {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background-color: #33FF67;
+  box-shadow: 0 0 6px #33FF67;
+}
+
+.dotViolet {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background-color: #7484FE;
+  box-shadow: 0 0 6px #7484FE;
+}
+
+.brandThe {
+  font-weight: 800;
+  color: #CBD5E1;
+  letter-spacing: 0.12em;
+}
+
+.brandEquinox {
+  font-weight: 900;
+  color: #FFFFFF;
+}
+
+.brandVersion {
+  font-weight: 900;
+  color: #38BDF8;
+  background: linear-gradient(135deg, #7484FE 0%, #38BDF8 50%, #33FF67 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.5));
+  will-change: transform, opacity;
+}
+
+.brandSub {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 0.3rem;
+  margin-left: 1.2rem;
+}
+
+.topBrandingRight {
+  position: absolute;
+  top: 1.5rem;
+  right: 7.5rem;
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.95rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #F7F2F6;
+  background: rgba(20, 22, 28, 0.85);
+  border: 1.5px solid rgba(116, 132, 254, 0.35);
+  border-radius: 9999px;
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+  user-select: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  will-change: transform, opacity;
+}
+
+.dateDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background-color: #38BDF8;
+  box-shadow: 0 0 8px #38BDF8;
 }
 
 /* Skip / Dismiss Button */

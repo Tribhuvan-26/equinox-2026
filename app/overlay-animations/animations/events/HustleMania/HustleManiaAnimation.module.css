@@ -45,6 +45,9 @@
   position: relative;
   width: 100vw;
   height: 100vh;
+  max-width: 1536px;
+  max-height: 1024px;
+  aspect-ratio: 1536 / 1024;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -52,13 +55,4 @@
   border: none;
   box-shadow: none;
   outline: none;
-}
-
-@media (max-width: 767px) {
-  .stageFrame {
-    width: calc(100vw - 40px);
-    height: calc(100vh - 40px);
-    transform: scale(1.2);
-    transform-origin: center;
-  }
 }

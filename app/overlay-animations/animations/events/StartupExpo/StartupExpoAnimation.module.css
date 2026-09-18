@@ -15,12 +15,14 @@
   pointer-events: auto;
 }
 
-/* Fills the viewport; the 1672:941 scene SVG (preserveAspectRatio="xMidYMid slice")
-   covers and crops instead of letterboxing on portrait/mobile screens. */
+/* 1672:941 aspect-ratio responsive stage frame matching Base_Startup_expo.svg */
 .stageFrame {
   position: relative;
   width: 100vw;
-  height: 100vh;
+  height: calc(100vw * (941 / 1672));
+  max-width: calc(100vh * (1672 / 941));
+  max-height: 100vh;
+  aspect-ratio: 1672 / 941;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,15 +31,6 @@
   border: none;
   box-shadow: none;
   outline: none;
-}
-
-@media (max-width: 767px) {
-  .stageFrame {
-    width: calc(100vw - 40px);
-    height: calc(100vh - 40px);
-    transform: scale(1.2);
-    transform-origin: center;
-  }
 }
 
 .stageFrame svg {

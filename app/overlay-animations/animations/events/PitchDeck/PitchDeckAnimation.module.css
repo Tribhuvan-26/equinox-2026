@@ -16,26 +16,19 @@
   opacity: 0;
 }
 
-/* Fills the viewport; the 16:9 scene SVG (preserveAspectRatio="xMidYMid slice")
-   covers and crops instead of letterboxing on portrait/mobile screens. */
+/* 16:9 aspect-ratio responsive stage frame (contain-fit within viewport) */
 .stageFrame {
   position: relative;
   width: 100vw;
-  height: 100vh;
+  height: calc(100vw * (9 / 16));
+  max-width: calc(100vh * (16 / 9));
+  max-height: 100vh;
+  aspect-ratio: 16 / 9;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6);
-}
-
-@media (max-width: 767px) {
-  .stageFrame {
-    width: calc(100vw - 40px);
-    height: calc(100vh - 40px);
-    transform: scale(1.2);
-    transform-origin: center;
-  }
 }
 
 .stageSvg {
