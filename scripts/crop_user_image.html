@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { background: #222; margin: 0; padding: 20px; color: white; font-family: sans-serif; }
+    .row { display: flex; gap: 20px; }
+    .box { border: 2px solid red; overflow: hidden; width: 600px; height: 500px; position: relative; }
+    .box img { position: absolute; }
+    /* Bottom-left corner */
+    .bl img { left: 0; bottom: 0; width: 1920px; }
+    /* Bottom-right corner */
+    .br img { right: 0; bottom: 0; width: 1920px; }
+  </style>
+</head>
+<body>
+  <h2>User Uploaded Image: Bottom-Left vs Bottom-Right</h2>
+  <div class="row">
+    <div>
+      <h3>Bottom Left Corner</h3>
+      <div class="box bl">
+        <img src="file:///C:/Users/nithy/.gemini/antigravity-ide/brain/b868bfc6-d5bb-49d2-93a6-ee85b6b4abb1/.user_uploaded/media_1789570166511.png" />
+      </div>
+    </div>
+    <div>
+      <h3>Bottom Right Corner</h3>
+      <div class="box br">
+        <img src="file:///C:/Users/nithy/.gemini/antigravity-ide/brain/b868bfc6-d5bb-49d2-93a6-ee85b6b4abb1/.user_uploaded/media_1789570166511.png" />
+      </div>
+    </div>
+  </div>
+</body>
+</html>

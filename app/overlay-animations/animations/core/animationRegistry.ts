@@ -69,6 +69,16 @@ export const animationRegistry: AnimationRegistry = {
     id: "e-cell-meet",
     title: "E-Cell Meet",
   },
+  "ecell-meet": {
+    Component: ECellMeetAnimation,
+    id: "e-cell-meet",
+    title: "E-Cell Meet",
+  },
+  "e_cell_meet": {
+    Component: ECellMeetAnimation,
+    id: "e-cell-meet",
+    title: "E-Cell Meet",
+  },
   "e-cell": {
     Component: ECellMeetAnimation,
     id: "e-cell-meet",
@@ -84,6 +94,11 @@ export const animationRegistry: AnimationRegistry = {
     id: "internship-drive",
     title: "Internship Drive",
   },
+  "internship_drive": {
+    Component: InternshipDriveAnimation,
+    id: "internship-drive",
+    title: "Internship Drive",
+  },
   internship: {
     Component: InternshipDriveAnimation,
     id: "internship-drive",
@@ -93,6 +108,16 @@ export const animationRegistry: AnimationRegistry = {
     Component: InternshipDriveAnimation,
     id: "internship-drive",
     title: "Internship Drive",
+  },
+  "ipl_auction": {
+    Component: IplAuctionAnimation,
+    id: "ipl-auction",
+    title: "IPL Auction",
+  },
+  ipl: {
+    Component: IplAuctionAnimation,
+    id: "ipl-auction",
+    title: "IPL Auction",
   },
 };
 

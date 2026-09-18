@@ -6,7 +6,7 @@
   width: 100vw;
   height: 100vh;
   z-index: 1000000;
-  background-color: #F5ECD9;
+  background-color: #000000;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -49,26 +49,53 @@
   font-weight: 800;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #111111;
-  background-color: rgba(255, 255, 255, 0.9);
-  border: 2px solid #111111;
+  color: #F7F2F6;
+  background-color: rgba(30, 31, 33, 0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
   border-radius: 9999px;
   cursor: pointer;
-  box-shadow: 2px 2px 0px #111111;
-  backdrop-filter: blur(8px);
-  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(10px);
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
   pointer-events: auto;
 }
 
 .skipButton:hover {
-  background-color: #ffffff;
+  background-color: rgba(45, 47, 50, 0.95);
+  border-color: #38BDF8;
+  color: #38BDF8;
   transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0px #111111;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
 }
 
 .skipButton:active {
   transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px #111111;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 640px) {
+  .topBrandingLeft {
+    top: 1rem;
+    left: 1rem;
+  }
+  .brandTitle {
+    font-size: 0.95rem;
+  }
+  .brandSub {
+    display: none;
+  }
+  .topBrandingRight {
+    top: 1rem;
+    right: 5.5rem;
+    padding: 0.4rem 0.65rem;
+    font-size: 0.65rem;
+  }
+  .skipButton {
+    top: 1rem;
+    right: 1rem;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.7rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

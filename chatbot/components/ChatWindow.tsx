@@ -14,11 +14,35 @@ interface ChatWindowProps {
   onEventSelect?: (slug: string) => void;
 }
 
+export const SUB_EVENTS = [
+  { name: "Spotlight", slug: "spotlight" },
+  { name: "Crossroads", slug: "crossroads" },
+  { name: "Startup Expo", slug: "startup-expo" },
+  { name: "Brand Battles", slug: "brand-battles" },
+  { name: "IPL Auction", slug: "ipl-auction" },
+  { name: "Hustle Mania", slug: "hustle-mania" },
+  { name: "Internship Drive", slug: "internship-drive" },
+  { name: "Startup Poly", slug: "startup-poly" },
+  { name: "E-Cell Meet", slug: "e-cell-meet" },
+  { name: "Pitch Deck", slug: "pitch-deck" },
+] as const;
+
+const DEFAULT_QUICK_ACTIONS = [
+  "E-Cell Meet",
+  "Hustle Mania",
+  "Startup Poly",
+  "IPL Auction",
+  "Dates & Venue",
+  "Coordinators",
+];
+
 const INITIAL_MESSAGE: MessageData = {
   id: "msg-welcome",
   sender: "bot",
   text: "Welcome to **The Equinox 2.0**!\n\nI am your interactive event assistant, grounded directly in the official event program. Ask me about any of our **10 sub-events**, confirmed dates (**30 - 31 OCT**), MLRIT venue, or coordinators!",
   suggestions: [
+    "Events",
+    "E-Cell Meet",
     "Tell me about Hustle Mania",
     "What is Startup Poly?",
     "How does IPL Auction work?",

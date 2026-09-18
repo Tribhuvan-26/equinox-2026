@@ -113,6 +113,22 @@ export const IPLAuctionAnimation: React.FC<IPLAuctionAnimationProps> = ({
       aria-modal="true"
       aria-label="IPL Auction Event Animation"
     >
+      {/* Top Left Branding: Equinox 2.0 */}
+      <div id="ipl-top-branding-left" className={styles.topBrandingLeft}>
+        <div className={styles.brandTitle}>
+          <span className={styles.brandThe}>THE </span>
+          <span className={styles.brandEquinox}>EQUINOX </span>
+          <span className={styles.brandVersion}>2.0</span>
+        </div>
+        <div className={styles.brandSub}>STRATEGY &#183; AUCTION &#183; TEAMS &#183; GLORY</div>
+      </div>
+
+      {/* Top Right Date & Venue: Oct 30-31 MLRIT */}
+      <div id="ipl-top-branding-right" className={styles.topBrandingRight}>
+        <span className={styles.dateDot} />
+        <span className={styles.dateText}>OCT 30-31 &#183; MLRIT</span>
+      </div>
+
       {/* Skip Button */}
       <button
         ref={skipButtonRef}

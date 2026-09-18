@@ -4,6 +4,7 @@
 
 import {
   event,
+  about,
   subEvents,
   studentCoordinators,
   contact,
