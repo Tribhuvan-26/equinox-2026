@@ -119,7 +119,13 @@ export default function ScrollJourney() {
   const handleGlobeReady = useCallback(() => setIsGlobeReady(true), []);
 
   // ── LENIS + GSAP ─────────────────────────────────────────────────────────────
+  // Scroll is blocked (body overflow: hidden) for the entire SpiderIntro, so
+  // there is nothing for Lenis or the journey ScrollTrigger to do until it
+  // finishes — building them earlier just competes with the intro's own GSAP
+  // timeline for the main thread during the first frames, which is what made
+  // the intro's opening beats stutter.
   useEffect(() => {
+    if (showLoader) return;
     const lenis = new Lenis({ lerp: 0.08, smoothWheel: true });
     lenisRef.current = lenis;
     if (typeof window !== "undefined") (window as any).__lenis = lenis;
@@ -133,7 +139,7 @@ export default function ScrollJourney() {
       lenisRef.current = null;
       if (typeof window !== "undefined") delete (window as any).__lenis;
     };
-  }, []);
+  }, [showLoader]);
 
   // ── VELOCITY-REACTIVE ROCKET IGNITION ───────────────────────────────────────
   useEffect(() => {
@@ -210,7 +216,12 @@ export default function ScrollJourney() {
   }, [showLoader]);
 
   // ── JOURNEY PROGRESS ─────────────────────────────────────────────────────────
+  // Same reasoning as the Lenis effect above: this builds the entire
+  // scroll-scrubbed timeline (dozens of tweens) and forces a synchronous
+  // layout read (getBBox in updateHeaderSpace) — deferred until the intro is
+  // done since scrolling is blocked until then anyway.
   useEffect(() => {
+    if (showLoader) return;
     if (!pathRef.current || !rocketRef.current || !worldRef.current) return;
     const path = pathRef.current;
     const totalPathLen = path.getTotalLength();
@@ -547,7 +558,7 @@ export default function ScrollJourney() {
     }, containerRef);
 
     return () => ctx.revert();
-  }, [subEvents, isMobile]);
+  }, [subEvents, isMobile, showLoader]);
 
   // Force a ScrollTrigger refresh after a short delay to handle font loading
   useEffect(() => {
@@ -654,7 +665,7 @@ export default function ScrollJourney() {
             ref={globeHeroRef}
             /* Phones get a smaller disc: at min(72vh, 88vw) the globe is almost
                the whole screen and the wordmark lands on top of it. */
-            className="absolute flex h-[min(46vh,62vw)] w-[min(46vh,62vw)] items-center justify-center will-change-transform pointer-events-none md:h-[min(72vh,88vw)] md:w-[min(72vh,88vw)]"
+            className="absolute flex h-[min(58vh,80vw)] w-[min(58vh,80vw)] items-center justify-center will-change-transform pointer-events-none md:h-[min(72vh,88vw)] md:w-[min(72vh,88vw)]"
             style={{
               borderRadius: "50%",
               overflow: "hidden",
@@ -662,7 +673,7 @@ export default function ScrollJourney() {
             }}
           >
             <Globe
-              isPaused={isGlobePaused}
+              isPaused={isGlobePaused || showLoader}
               onReady={handleGlobeReady}
               speed={2}
               dots={
@@ -684,7 +695,7 @@ export default function ScrollJourney() {
             className="absolute flex items-center justify-center select-none pointer-events-none"
             style={{ zIndex: 3 }}
           >
-            <GlitchWordmark className="h-[22vh] w-[min(88vw,1100px)] will-change-transform md:h-[34vh] md:w-[min(92vw,1100px)]" />
+            <GlitchWordmark className="h-[26vh] w-[min(96vw,1100px)] will-change-transform md:h-[34vh] md:w-[min(92vw,1100px)]" />
           </div>
         </div>
 
