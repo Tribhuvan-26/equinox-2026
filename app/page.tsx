@@ -13,6 +13,9 @@ import {
   highlights,
   studentCoordinators,
   contact,
+  whatsInStore,
+  whyEquinox,
+  whySponsor,
 } from "@/lib/content";
 import {
   ArrowRight,
@@ -57,7 +60,7 @@ export default function HomePage() {
         />
         <div className="relative max-w-5xl">
           <h2
-            className="font-display-title font-black leading-[0.95] tracking-tight text-[#F7F2F6] break-words hyphens-auto"
+            className="font-display-title font-black leading-[0.95] tracking-tight text-[#F7F2F6] hyphens-none"
             style={{ fontSize: "clamp(1.35rem, 5.2vw, 5.5rem)" }}
           >
             {about.heading}
@@ -163,10 +166,76 @@ export default function HomePage() {
       </section>
 
 
+      {/* =========================================================================
+          WHAT'S IN STORE (Compete / Create / Connect / Learn)
+          ========================================================================= */}
+      <section className="relative mx-auto max-w-[1400px] overflow-hidden px-4 py-16 sm:px-8 sm:py-32">
+        <p className="font-mono text-xs font-black uppercase tracking-widest text-[#33FF67]">
+          {whatsInStore.eyebrow}
+        </p>
+        <h2
+          className="mt-3 font-display-title font-black leading-[0.95] tracking-tight text-[#F7F2F6] hyphens-none"
+          style={{ fontSize: "clamp(1.75rem, 4.4vw, 4rem)" }}
+        >
+          {whatsInStore.heading}
+        </h2>
+        <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#F7F2F6]/85">
+          {whatsInStore.body}
+        </p>
+
+        <ScrollReveal className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" stagger={0.06}>
+          {whatsInStore.pillars.map((pillar, idx) => (
+            <div
+              key={pillar.title}
+              className="program-card rounded-3xl border border-white/10 bg-[#151515] p-7"
+            >
+              <span
+                className="font-mono text-xs font-black uppercase tracking-wider"
+                style={{ color: idx % 2 === 0 ? "#33FF67" : "#7484FE" }}
+              >
+                {pillar.step}
+              </span>
+              <h3 className="mt-3 text-2xl font-black text-[#F7F2F6]">{pillar.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-[#F7F2F6]/80">{pillar.body}</p>
+            </div>
+          ))}
+        </ScrollReveal>
+      </section>
+
       {/* Ten sub-events, running as one continuous strip */}
       <div id="events" className="border-y border-white/10">
         <LogoMarquee slugs={subEvents.map((e) => e.slug)} names={subEvents.map((e) => e.name)} />
       </div>
+
+      {/* =========================================================================
+          WHY EQUINOX?
+          ========================================================================= */}
+      <section className="relative mx-auto max-w-[1400px] overflow-hidden px-4 py-16 sm:px-8 sm:py-32">
+        <p className="font-mono text-xs font-black uppercase tracking-widest text-[#7484FE]">
+          {whyEquinox.eyebrow}
+        </p>
+        <h2
+          className="mt-3 font-display-title font-black leading-[0.95] tracking-tight text-[#F7F2F6] hyphens-none"
+          style={{ fontSize: "clamp(1.75rem, 4.4vw, 4rem)" }}
+        >
+          {whyEquinox.heading}
+        </h2>
+        <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#F7F2F6]/85">
+          {whyEquinox.body}
+        </p>
+
+        <ScrollReveal className="mt-12 grid gap-4 sm:grid-cols-2" stagger={0.06}>
+          {whyEquinox.reasons.map((reason) => (
+            <div
+              key={reason.title}
+              className="program-card rounded-2xl border border-white/10 bg-[#151515] p-6"
+            >
+              <h3 className="text-lg font-bold text-[#33FF67]">{reason.title}</h3>
+              <p className="mt-1 text-sm leading-relaxed text-[#F7F2F6]/85">{reason.body}</p>
+            </div>
+          ))}
+        </ScrollReveal>
+      </section>
 
       {/* =========================================================================
           IMPACT
@@ -183,7 +252,7 @@ export default function HomePage() {
           aside={
             <div>
               <h2
-                className="font-display-title font-black uppercase leading-[0.92] tracking-tight text-[#F7F2F6] break-words"
+                className="font-display-title font-black uppercase leading-[0.92] tracking-tight text-[#F7F2F6] hyphens-none"
                 style={{ fontSize: "clamp(2.5rem, 4.4vw, 4.75rem)" }}
               >
                 Our impact
@@ -239,6 +308,36 @@ export default function HomePage() {
       </section>
 
       {/* =========================================================================
+          WHY SPONSOR EQUINOX?
+          ========================================================================= */}
+      <section className="relative mx-auto max-w-[1400px] overflow-hidden px-4 py-16 sm:px-8 sm:py-32">
+        <p className="font-mono text-xs font-black uppercase tracking-widest text-[#33FF67]">
+          {whySponsor.eyebrow}
+        </p>
+        <h2
+          className="mt-3 font-display-title font-black leading-[0.95] tracking-tight text-[#F7F2F6] hyphens-none"
+          style={{ fontSize: "clamp(1.75rem, 4.4vw, 4rem)" }}
+        >
+          {whySponsor.heading}
+        </h2>
+        <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#F7F2F6]/85">
+          {whySponsor.body}
+        </p>
+
+        <ScrollReveal className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" stagger={0.06}>
+          {whySponsor.reasons.map((reason) => (
+            <div
+              key={reason.title}
+              className="program-card rounded-2xl border border-white/10 bg-[#151515] p-6"
+            >
+              <h3 className="text-lg font-bold text-[#7484FE]">{reason.title}</h3>
+              <p className="mt-1 text-sm leading-relaxed text-[#F7F2F6]/85">{reason.body}</p>
+            </div>
+          ))}
+        </ScrollReveal>
+      </section>
+
+      {/* =========================================================================
           SECTION 5.5: EVENT GALLERY / ARCHIVES (Above Contact Us)
           ========================================================================= */}
       <GallerySection />
@@ -257,7 +356,7 @@ export default function HomePage() {
         {/* Dark Editorial Heading Replicating Page 12 */}
         <div className="relative max-w-3xl">
           <h2
-            className="font-display-title font-black leading-[0.9] tracking-tighter text-[#F7F2F6] break-words hyphens-none"
+            className="font-display-title font-black leading-[0.9] tracking-tighter text-[#F7F2F6] hyphens-none"
             style={{ fontSize: "clamp(1.75rem, 6.5vw, 7rem)" }}
           >
             Contact Us

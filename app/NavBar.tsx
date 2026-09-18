@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -35,6 +35,20 @@ export function NavBar({
   const pathname = usePathname();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(defaultActive);
+  const [hidden, setHidden] = useState(false);
+  const lastY = useRef(0);
+
+  useEffect(() => {
+    lastY.current = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      const scrollingDown = y > lastY.current;
+      setHidden(scrollingDown && y > 80);
+      lastY.current = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   if (pathname.startsWith("/admin")) return null;
 
@@ -90,7 +104,11 @@ export function NavBar({
 
   return (
     <header
-      className={cn("fixed top-4 right-0 left-0 z-[9990] px-4", className)}
+      className={cn(
+        "fixed top-4 right-0 left-0 z-[9990] px-4 transition-transform duration-300",
+        hidden ? "-translate-y-24" : "translate-y-0",
+        className
+      )}
     >
       <div className="relative mx-auto flex max-w-[1400px] items-center justify-center">
         {/* CIE Logo — the homepage hero has its own CIE lockup while it's in view, so skip the duplicate there */}

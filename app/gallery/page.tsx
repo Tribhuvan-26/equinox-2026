@@ -43,7 +43,7 @@ export default function GalleryPage() {
                 </span>
               </div>
               <h1
-                className="mt-3 font-display-title font-black leading-[0.9] tracking-tighter text-[#F7F2F6] break-words hyphens-none"
+                className="mt-3 font-display-title font-black leading-[0.9] tracking-tighter text-[#F7F2F6] hyphens-none"
                 style={{ fontSize: "clamp(1.75rem, 7vw, 6.5rem)" }}
               >
                 Previous Event Gallery

@@ -510,6 +510,50 @@ export const audience = {
   ],
 };
 
+export const whatsInStore = {
+  eyebrow: "What's In Store",
+  heading: "An Experience Beyond the Classroom",
+  body: "Equinox brings together diverse experiences designed to challenge the way you think, create, and compete.",
+  pillars: [
+    { step: "01", title: "Compete", body: "Take on business challenges, simulations, debates, auctions, and high-pressure competitions." },
+    { step: "02", title: "Create", body: "Turn ideas into solutions, startups, pitches, and possibilities." },
+    { step: "03", title: "Connect", body: "Meet entrepreneurs, startups, investors, industry professionals, and E-Cells from across campuses." },
+    { step: "04", title: "Learn", body: "Gain insights from industry experts and discover the realities of entrepreneurship, business, and innovation." },
+  ],
+};
+
+export const whyEquinox = {
+  eyebrow: "Why Equinox?",
+  heading: "More Than an Event",
+  body: "Equinox is a platform built for people who want to experience entrepreneurship rather than simply learn about it. Whether you're an aspiring entrepreneur, a business enthusiast, a student looking for opportunities, or someone who simply loves a good challenge, Equinox gives you a space to explore your potential.",
+  reasons: [
+    { title: "Learn from the Best", body: "Gain perspectives from entrepreneurs, industry professionals, and experts." },
+    { title: "Challenge Yourself", body: "Step into competitions and experiences that test your strategy, creativity, communication, and decision-making." },
+    { title: "Meet Your People", body: "Connect with ambitious students, startups, E-Cells, mentors, and professionals." },
+    { title: "Find Opportunities", body: "Discover startups, internships, pitching opportunities, collaborations, and pathways to turn ideas into action." },
+  ],
+};
+
+export const whySponsor = {
+  eyebrow: "Why Sponsor Equinox?",
+  heading: "Put Your Brand Where Future Leaders Gather",
+  body: "Equinox offers brands an opportunity to engage with a highly driven community of students, aspiring entrepreneurs, innovators, and future professionals. As MLRIT-CIE's flagship E-Summit, Equinox combines scale, engagement, and meaningful interaction through competitions, startup showcases, industry sessions, and networking opportunities.",
+  reasons: [
+    { title: "Brand Visibility", body: "Position your brand in front of a large and engaged student audience." },
+    { title: "Direct Engagement", body: "Create meaningful interactions with participants through event experiences and activations." },
+    { title: "Talent Access", body: "Connect with ambitious students and discover potential talent for internships and future opportunities." },
+    { title: "Innovation & Entrepreneurship", body: "Associate your brand with a platform focused on innovation, entrepreneurship, and future-ready talent." },
+    { title: "Community Presence", body: "Build stronger connections with students, startups, E-Cells, and the wider entrepreneurial ecosystem." },
+  ],
+};
+
+export const previousSponsors = {
+  eyebrow: "Previous Sponsors",
+  heading: "Backing the Future of Entrepreneurship",
+  body: "We are grateful to the organisations and brands that have supported Equinox and MLRIT-CIE in building a stronger entrepreneurial ecosystem.",
+  logos: [] as string[],
+};
+
 export const hosts = {
   eyebrow: "Organizers",
   heading: "Run by CIE MLRIT",

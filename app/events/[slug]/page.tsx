@@ -64,11 +64,11 @@ export default async function EventPage({ params }: PageProps) {
             </span>
 
             {/* Headline with Word-Pair Styling (Off-White + Periwinkle Accent Contrast) */}
-            <h1 className="mt-4 font-display-title text-3xl font-black uppercase tracking-tight break-words hyphens-auto sm:text-6xl lg:text-7xl">
+            <h1 className="mt-4 font-display-title text-3xl font-black uppercase tracking-tight hyphens-none sm:text-6xl lg:text-7xl">
               <span className="mr-2 inline-block bg-[#F7F2F6] px-2.5 py-0.5 text-[#2A2A2A] shadow-[3px_3px_0px_#2A2A2A] sm:mr-3 sm:px-3 sm:shadow-[4px_4px_0px_#2A2A2A]">
                 {item.headlineWordPair.blackWord}
               </span>
-              <span className="break-words text-[#F7F2F6]">{item.headlineWordPair.whiteWord}</span>
+              <span className="text-[#F7F2F6]">{item.headlineWordPair.whiteWord}</span>
             </h1>
           </div>
 
