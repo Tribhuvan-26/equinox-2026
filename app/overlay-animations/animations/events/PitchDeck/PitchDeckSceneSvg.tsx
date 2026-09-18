@@ -55,6 +55,7 @@ export const PitchDeckSceneSvg: React.FC<PitchDeckSceneSvgProps> = ({
       className={className}
       viewBox="0 0 1672 941"
       fill="none"
+      preserveAspectRatio="xMidYMid meet"
       xmlns="http://www.w3.org/2000/svg"
       style={{ width: "100%", height: "100%", display: "block" }}
     >

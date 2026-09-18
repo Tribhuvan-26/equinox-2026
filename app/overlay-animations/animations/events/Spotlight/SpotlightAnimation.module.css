@@ -39,6 +39,19 @@
   pointer-events: none;
 }
 
+/* Breathing room on phones so the scene doesn't bleed edge-to-edge. Uses
+   preserveAspectRatio="meet" (no cropping) plus a modest zoom — slice/cover
+   cropped the centered title text off the sides on tall screens. */
+@media (max-width: 767px) {
+  .stageSvg {
+    inset: 20px;
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    transform: scale(1.15);
+    transform-origin: center;
+  }
+}
+
 /* Faint cinematic vignette */
 .vignette {
   position: absolute;

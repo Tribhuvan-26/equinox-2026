@@ -39,6 +39,16 @@
   pointer-events: none;
 }
 
+@media (max-width: 767px) {
+  .stageSvg {
+    inset: 20px;
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    transform: scale(1.2);
+    transform-origin: center;
+  }
+}
+
 /* Subtle background grain / paper texture effect */
 .paperNoise {
   position: absolute;
