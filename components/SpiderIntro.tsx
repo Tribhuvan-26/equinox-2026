@@ -129,7 +129,12 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
       const unit = Math.min(26, Math.max(5, cieWidth * 0.035));
       const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
 
-      const tl = gsap.timeline({ onComplete: () => onDone?.() });
+      const tl = gsap.timeline({
+        onComplete: () => {
+          onDone?.();
+          window.dispatchEvent(new Event("equinox:intro-done"));
+        },
+      });
       activeTl = tl;
 
       // Act 1 — CIE reads clean, one letter at a time. No blur, no scale-in —

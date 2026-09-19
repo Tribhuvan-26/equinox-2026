@@ -5,6 +5,7 @@ import { NavBar } from "./NavBar";
 import { Footer } from "./Footer";
 import { Chatbot } from "./Chatbot";
 import { OverlayAnimationHost } from "./overlay-animations";
+import PreIntroCover from "@/components/PreIntroCover";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <link rel="preload" as="image" href="/logos/cie-mark-white.png" />
       </head>
       <body className="night flex min-h-full flex-col">
+        <PreIntroCover />
         <NavBar
           items={nav.map((item) => ({ name: item.label, url: item.href }))}
         />
