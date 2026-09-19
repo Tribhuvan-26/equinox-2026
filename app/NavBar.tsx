@@ -130,7 +130,7 @@ export function NavBar({
         {/* Center Nav Navigation */}
         <motion.nav
           aria-label="Primary"
-          className="hidden md:flex items-center gap-1 rounded-full border-2 border-white/40 bg-[#0B2D6D]/90 p-1.5 shadow-2xl backdrop-blur-md"
+          className="hidden md:flex items-center gap-1 rounded-full border-2 border-white/20 bg-[#151515]/90 p-1.5 shadow-2xl backdrop-blur-md"
           initial={{ y: -16, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.3 }}
@@ -168,7 +168,7 @@ export function NavBar({
                 className={cn(
                   "relative flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-bold transition sm:px-4",
                   isActive
-                    ? "bg-[#F9D47B] text-[#282828] shadow-md"
+                    ? "bg-[#7484FE] text-[#2A2A2A] shadow-md"
                     : "text-white/90 hover:bg-white/15 hover:text-white"
                 )}
               >

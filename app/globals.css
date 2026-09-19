@@ -7,22 +7,19 @@
 
 /* ---------------------------------------------------------------------------
    THE EQUINOX 2.0 — Official Design System
-   Color Ground: Electric Royal Cobalt Blue (#2074d5)
-   Accents: Stark White (#ffffff), Bold Editorial Black (#282828)
+   Color Ground: Charcoal Black (#2A2A2A)
+   Accents: Periwinkle Blue (#7484FE), Signal Green (#33FF67)
+   Foreground: Off-White (#F7F2F6)
    Textures: Risograph paper grain, blueprint grid lines, page timelines
 --------------------------------------------------------------------------- */
 
 @theme {
-  --color-equinox-blue: #2074D5;
-  --color-equinox-blue-dark: #16529E;
-  --color-equinox-blue-deep: #0B2D6D;
-  --color-equinox-blue-light: #3577EC;
-  --color-equinox-yellow: #F9D47B;
-  --color-equinox-coral: #EB547C;
-  --color-equinox-coral-dark: #C93D62;
-  --color-equinox-black: #282828;
-  --color-equinox-charcoal: #1f222e;
-  --color-equinox-white: #ffffff;
+  --color-equinox-charcoal: #2A2A2A;
+  --color-equinox-charcoal-deep: #151515;
+  --color-equinox-charcoal-darker: #101010;
+  --color-equinox-blue: #7484FE;
+  --color-equinox-green: #33FF67;
+  --color-equinox-white: #F7F2F6;
   --color-equinox-card: rgba(255, 255, 255, 0.08);
 
   --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
@@ -31,36 +28,34 @@
 }
 
 :root {
-  --equinox-blue: #2074D5;
-  --equinox-blue-dark: #16529E;
-  --equinox-blue-deep: #0B2D6D;
-  --equinox-yellow: #F9D47B;
-  --equinox-coral: #EB547C;
-  --equinox-white: #ffffff;
-  --equinox-black: #282828;
+  --equinox-charcoal: #2A2A2A;
+  --equinox-charcoal-deep: #151515;
+  --equinox-blue: #7484FE;
+  --equinox-green: #33FF67;
+  --equinox-white: #F7F2F6;
 
   /* Legacy & compatibility variables */
-  --bg-cobalt: var(--equinox-blue);
-  --bg-cobalt-dark: var(--equinox-blue-dark);
-  --fg-white: #ffffff;
-  --fg-black: #282828;
-  --ground: var(--equinox-blue);
+  --bg-cobalt: var(--equinox-charcoal);
+  --bg-cobalt-dark: var(--equinox-charcoal-deep);
+  --fg-white: #F7F2F6;
+  --fg-black: #2A2A2A;
+  --ground: var(--equinox-charcoal);
   --surface: rgba(255, 255, 255, 0.1);
   --surface-2: rgba(255, 255, 255, 0.18);
-  --fg: #ffffff;
-  --accent: var(--equinox-yellow);
+  --fg: #F7F2F6;
+  --accent: var(--equinox-green);
 }
 
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
-  background-color: #2074D5;
-  color: #ffffff;
+  background-color: #2A2A2A;
+  color: #F7F2F6;
 }
 
 body {
-  background-color: #2074D5;
-  color: #ffffff;
+  background-color: #2A2A2A;
+  color: #F7F2F6;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
@@ -85,7 +80,7 @@ body {
 /* Graph paper grid line pattern from the brochure overlaid on bright royal blue */
 .riso-texture,
 .brochure-grid {
-  background-color: var(--equinox-blue);
+  background-color: var(--equinox-charcoal);
   background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.12) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
@@ -93,7 +88,7 @@ body {
 }
 
 .brochure-grid-dense {
-  background-color: var(--equinox-blue);
+  background-color: var(--equinox-charcoal-deep);
   background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
@@ -117,9 +112,9 @@ body {
 /* The Equinox Cover Drop Shadow Effect (Dark drop shadow behind golden yellow EQUINOX) */
 .display-title-shadow {
   text-shadow:
-    3px 3px 0 #282828,
-    5px 5px 0 #282828,
-    6px 7px 0 rgba(11, 45, 109, 0.95);
+    3px 3px 0 #101010,
+    5px 5px 0 #101010,
+    6px 7px 0 rgba(116, 132, 254, 0.5);
 }
 
 /* Gentle up-down float, e.g. the cover pop-up book illustration */
@@ -175,7 +170,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--equinox-blue-deep);
+  background: var(--equinox-charcoal-deep);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -184,7 +179,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--equinox-yellow);
+  background: var(--equinox-green);
 }
 
 /* White outline pill badge */
@@ -203,7 +198,7 @@ body {
 
 .badge-pill-white:hover {
   background-color: #ffffff;
-  color: #2074d5;
+  color: #2A2A2A;
   transform: translateY(-2px);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 }
