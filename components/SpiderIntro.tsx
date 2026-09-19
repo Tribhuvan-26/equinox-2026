@@ -304,10 +304,12 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
           />
         </div>
 
-        {/* EQUINOX lockup, official artwork */}
+        {/* EQUINOX lockup, official artwork. Hidden by plain CSS (not just the
+            GSAP tl.set below) so it can never flash on top of the CIE mark
+            during the decode/rAF gap before the timeline builds. */}
         <div
           ref={wordRef}
-          className="absolute"
+          className="absolute opacity-0"
           style={{ width: "clamp(260px, 78vw, 900px)", aspectRatio: "2824 / 1187" }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- fixed-ratio brand asset */}
