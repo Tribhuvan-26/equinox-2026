@@ -66,9 +66,14 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
     //     hidden either never advances or, once the tab is later focused,
     //     can jump by the whole elapsed background time — either way the
     //     user never actually sees the intro play.
-    //  3. one extra double-rAF so the browser gets a full frame to paint the
-    //     now-decoded, now-visible overlay BEFORE the first tween runs,
-    //     instead of painting and animating in the same frame.
+    //  3. promote the plates that will animate to their own compositing
+    //     layers, then wait a double-rAF before the first tween runs.
+    //     Layer promotion (willChange on mask-image elements) forces the
+    //     browser to rasterize a GPU texture for each one — that allocation
+    //     is what was still stuttering the C reveal even after gates 1-2,
+    //     because it was previously done in the same synchronous tick as
+    //     building and starting the timeline, so the layer-creation cost
+    //     landed on the first animated frame instead of before it.
     let cancelled = false;
     let ctx: gsap.Context | null = null;
     let activeTl: gsap.core.Timeline | null = null;
@@ -94,11 +99,31 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
     const begin = () => {
       if (cancelled) return;
       whenVisible(() => {
-        if (cancelled) return;
+        if (cancelled || !rootRef.current || !cieRef.current) return;
+
+        // Promote layers and take the one unavoidable layout read now, on
+        // their own tick — not inside the same call that builds and plays
+        // the timeline.
+        const ciePlates = ciePlatesRef.current.filter(Boolean) as HTMLDivElement[];
+        const wordPlates = wordPlatesRef.current.filter(Boolean) as HTMLDivElement[];
+        const [, cieBlue, cieGreen] = ciePlates;
+        const [, wordBlue, wordGreen] = wordPlates;
+        gsap.set(cieRef.current, { willChange: "transform" });
+        gsap.set([coverRef.current, cieBlue, cieGreen, wordBlue, wordGreen, flashRef.current], {
+          willChange: "transform, opacity",
+        });
+        // Measured once, up front — never re-measured mid-timeline. The glitch
+        // displacement scales with the logo's actual rendered width so it reads
+        // the same proportionally on a phone and a laptop, and small enough on
+        // narrow screens that it never throws the mark off-screen.
+        const cieWidth = cieRef.current.getBoundingClientRect().width || 300;
+
+        // Now give the browser a full double-rAF to actually create and
+        // paint those GPU layers (everything but the cover starts invisible,
+        // so this paints nothing new) before the first tween runs.
         requestAnimationFrame(() => requestAnimationFrame(() => {
           if (cancelled || !rootRef.current) return;
-          const built = buildTimeline();
-          ctx = built;
+          ctx = buildTimeline(cieWidth);
         }));
       });
     };
@@ -109,23 +134,13 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
       begin();
     }
 
-    function buildTimeline() {
+    function buildTimeline(cieWidth: number) {
       return gsap.context(() => {
       const ciePlates = ciePlatesRef.current.filter(Boolean) as HTMLDivElement[];
       const wordPlates = wordPlatesRef.current.filter(Boolean) as HTMLDivElement[];
       const [ciePaper, cieBlue, cieGreen] = ciePlates;
       const [wordPaper, wordBlue, wordGreen] = wordPlates;
 
-      gsap.set(cieRef.current, { willChange: "transform" });
-      gsap.set([coverRef.current, cieBlue, cieGreen, wordBlue, wordGreen, flashRef.current], {
-        willChange: "transform, opacity",
-      });
-
-      // Measured once, up front — never re-measured mid-timeline. The glitch
-      // displacement scales with the logo's actual rendered width so it reads
-      // the same proportionally on a phone and a laptop, and small enough on
-      // narrow screens that it never throws the mark off-screen.
-      const cieWidth = cieRef.current!.getBoundingClientRect().width || 300;
       const unit = Math.min(26, Math.max(5, cieWidth * 0.035));
       const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
 
