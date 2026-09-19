@@ -77,7 +77,22 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
     let cancelled = false;
     let ctx: gsap.Context | null = null;
     let activeTl: gsap.core.Timeline | null = null;
+    let finished = false;
     const img = cieArtRef.current;
+
+    // Whatever finishes the intro — the timeline's own onComplete, or this
+    // failsafe — runs through here exactly once, so the site can never be
+    // left permanently stuck behind the overlay (a dev hot-reload
+    // interrupting the timeline mid-tween, a decode/visibility gate that
+    // never resolves, or any other stall all recover the same way).
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(failsafe);
+      onDone?.();
+      window.dispatchEvent(new Event("equinox:intro-done"));
+    };
+    const failsafe = setTimeout(finish, 7000);
 
     const onVisibilityChange = () => {
       if (!activeTl) return;
@@ -144,12 +159,7 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
       const unit = Math.min(26, Math.max(5, cieWidth * 0.035));
       const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
 
-      const tl = gsap.timeline({
-        onComplete: () => {
-          onDone?.();
-          window.dispatchEvent(new Event("equinox:intro-done"));
-        },
-      });
+      const tl = gsap.timeline({ onComplete: finish });
       activeTl = tl;
 
       // Act 1 — CIE reads clean, one letter at a time. No blur, no scale-in —
@@ -240,6 +250,7 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
 
     return () => {
       cancelled = true;
+      clearTimeout(failsafe);
       document.removeEventListener("visibilitychange", onVisibilityChange);
       ctx?.revert();
     };
