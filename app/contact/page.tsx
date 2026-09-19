@@ -41,7 +41,7 @@ function Particulars() {
         <div className="grid gap-2 border-t border-white/20 py-7 sm:grid-cols-[14rem_1fr] sm:gap-10">
           <dt className="font-display-title text-2xl text-white">General enquiries</dt>
           <dd className="data max-w-2xl text-white/85">
-            <a href={`mailto:${contact.email}`} className="text-[#F9D47B] font-bold hover:underline">
+            <a href={`mailto:${contact.email}`} className="text-[#33FF67] font-bold hover:underline">
               {contact.email}
             </a>
           </dd>
@@ -54,10 +54,10 @@ function Particulars() {
 
       <a
         href="/register"
-        className="press mt-12 flex w-max items-center gap-2 rounded-full border-2 border-[#282828] bg-[#F9D47B] py-2 pr-2 pl-6 font-bold text-[#282828] shadow-[4px_4px_0px_#282828] transition hover:bg-[#ffe17d]"
+        className="press mt-12 flex w-max items-center gap-2 rounded-full border-2 border-white/15 bg-[#151515] py-2 pr-2 pl-6 font-bold text-[#F7F2F6] shadow-[4px_4px_0px_rgba(0,0,0,0.4)] transition hover:border-[#33FF67]"
       >
         Register instead
-        <span className="grid h-9 w-9 place-items-center rounded-full bg-[#EB547C] text-white">
+        <span className="grid h-9 w-9 place-items-center rounded-full bg-[#33FF67] text-[#2A2A2A]">
           <Arrow />
         </span>
       </a>
@@ -68,7 +68,7 @@ function Particulars() {
 export default function ContactPage() {
   return (
     <PageTransition>
-      <main className="riso-texture brochure-grid min-h-screen bg-[#2074D5] text-white selection:bg-[#F9D47B] selection:text-[#282828]">
+      <main className="riso-texture brochure-grid min-h-screen bg-[#2A2A2A] text-white selection:bg-[#7484FE] selection:text-[#2A2A2A]">
         <ContactHero />
         <Board />
         <Particulars />
