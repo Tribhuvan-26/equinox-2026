@@ -68,6 +68,19 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
   const pillX = -pillWidth / 2;
   const pillStroke = index === 9 ? "#7484FE" : index % 2 === 0 ? "#7484FE" : "#33FF67";
 
+  // Individual scale factors to remove transparent/black boundaries baked into the PNGs
+  const IMAGE_SCALES: Record<number, number> = {
+    0: 1.3,  // Spotlight (increased to hide bottom gap)
+    3: 1.25, // Brand Battles
+    4: 1.25, // IPL Auction
+    5: 1.2,  // Hustle Mania
+    6: 1.3,  // Internship Drive
+    7: 1.45, // Startup Poly
+  };
+  const scale = IMAGE_SCALES[index] || 1.05;
+  const imgSize = 250 * scale;
+  const imgOffset = -125 * scale;
+
   return (
     <g
       transform={`translate(${x}, ${y})`}
@@ -84,9 +97,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
             ======================================================== */}
           {index === 0 && (
             <g>
-              <circle cx="0" cy="0" r="140" fill="none" stroke="#7484FE" strokeWidth="1" strokeDasharray="4 6" opacity="0.4" />
-              <circle cx="0" cy="0" r="115" fill="none" stroke="#F7F2F6" strokeWidth="0.8" opacity="0.3" />
-              <ellipse cx="0" cy="0" rx="130" ry="40" fill="none" stroke="#7484FE" strokeWidth="1.5" transform="rotate(-25)" opacity="0.7" />
+              <ellipse cx="0" cy="0" rx="131" ry="39" fill="none" stroke="#7484FE" strokeWidth="1.5" transform="rotate(24)" opacity="0.7" />
 
               <defs>
                 <clipPath id={`planet-clip-${index}`}>
@@ -97,14 +108,17 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={`/planets/${event.slug}.png`}
-                  x="-125"
-                  y="-125"
-                  width="250"
-                  height="250"
+                  x={imgOffset}
+                  y={imgOffset}
+                  width={imgSize}
+                  height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#7484FE" strokeWidth="1.5" opacity="0.8" />
+              </g>
+              <g clipPath="url(#front-orbit-clip)">
+                <ellipse cx="0" cy="0" rx="131" ry="39" fill="none" stroke="#7484FE" strokeWidth="1.5" transform="rotate(24)" opacity="0.7" />
               </g>
             </g>
           )}
@@ -114,9 +128,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
             ======================================================== */}
           {index === 1 && (
             <g>
-              <circle cx="0" cy="0" r="135" fill="none" stroke="#7484FE" strokeWidth="1" strokeDasharray="6 6" opacity="0.35" />
-              <ellipse cx="0" cy="0" rx="130" ry="38" fill="none" stroke="#F7F2F6" strokeWidth="1.2" transform="rotate(35)" opacity="0.6" />
-              <ellipse cx="0" cy="0" rx="130" ry="38" fill="none" stroke="#7484FE" strokeWidth="1.2" transform="rotate(-35)" opacity="0.6" />
+              <ellipse cx="0" cy="0" rx="141" ry="48" fill="none" stroke="#F7F2F6" strokeWidth="1.5" transform="rotate(30)" opacity="0.7" />
               <defs>
                 <clipPath id={`planet-clip-${index}`}>
                   <circle cx="0" cy="0" r="85" />
@@ -126,14 +138,17 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={`/planets/${event.slug}.png`}
-                  x="-125"
-                  y="-125"
-                  width="250"
-                  height="250"
+                  x={imgOffset}
+                  y={imgOffset}
+                  width={imgSize}
+                  height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#7484FE" strokeWidth="1.5" opacity="0.8" />
+              </g>
+              <g clipPath="url(#front-orbit-clip)">
+                <ellipse cx="0" cy="0" rx="141" ry="48" fill="none" stroke="#F7F2F6" strokeWidth="1.5" transform="rotate(30)" opacity="0.7" />
               </g>
             </g>
           )}
@@ -143,9 +158,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
             ======================================================== */}
           {index === 2 && (
             <g>
-              <circle cx="0" cy="0" r="145" fill="none" stroke="#33FF67" strokeWidth="1" strokeDasharray="2 8" opacity="0.4" />
-              <circle cx="0" cy="0" r="120" fill="none" stroke="#7484FE" strokeWidth="1.2" opacity="0.5" />
-              <ellipse cx="0" cy="0" rx="140" ry="42" fill="none" stroke="#33FF67" strokeWidth="1.5" transform="rotate(-15)" opacity="0.7" />
+              <ellipse cx="0" cy="0" rx="120" ry="44" fill="none" stroke="#33FF67" strokeWidth="1.5" transform="rotate(27)" opacity="0.7" />
               <defs>
                 <clipPath id={`planet-clip-${index}`}>
                   <circle cx="0" cy="0" r="85" />
@@ -155,14 +168,17 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={`/planets/${event.slug}.png`}
-                  x="-125"
-                  y="-125"
-                  width="250"
-                  height="250"
+                  x={imgOffset}
+                  y={imgOffset}
+                  width={imgSize}
+                  height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#33FF67" strokeWidth="1.5" opacity="0.8" />
+              </g>
+              <g clipPath="url(#front-orbit-clip)">
+                <ellipse cx="0" cy="0" rx="120" ry="44" fill="none" stroke="#33FF67" strokeWidth="1.5" transform="rotate(27)" opacity="0.7" />
               </g>
             </g>
           )}
@@ -172,8 +188,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
             ======================================================== */}
           {index === 3 && (
             <g>
-              <circle cx="0" cy="0" r="140" fill="none" stroke="#33FF67" strokeWidth="1" strokeDasharray="3 6" opacity="0.35" />
-              <ellipse cx="0" cy="0" rx="135" ry="40" fill="none" stroke="#33FF67" strokeWidth="2.5" opacity="0.65" transform="rotate(-18)" />
+              <ellipse cx="0" cy="0" rx="135" ry="40" fill="none" stroke="#33FF67" strokeWidth="2.5" opacity="0.65" transform="rotate(22)" />
               <defs>
                 <clipPath id={`planet-clip-${index}`}>
                   <circle cx="0" cy="0" r="85" />
@@ -183,14 +198,17 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={`/planets/${event.slug}.png`}
-                  x="-125"
-                  y="-125"
-                  width="250"
-                  height="250"
+                  x={imgOffset}
+                  y={imgOffset}
+                  width={imgSize}
+                  height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#33FF67" strokeWidth="1.5" opacity="0.8" />
+              </g>
+              <g clipPath="url(#front-orbit-clip)">
+                <ellipse cx="0" cy="0" rx="135" ry="40" fill="none" stroke="#33FF67" strokeWidth="2.5" opacity="0.65" transform="rotate(22)" />
               </g>
             </g>
           )}
@@ -200,8 +218,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
             ======================================================== */}
           {index === 4 && (
             <g>
-              <circle cx="0" cy="0" r="145" fill="none" stroke="#38BDF8" strokeWidth="1" strokeDasharray="4 4" opacity="0.4" />
-              <ellipse cx="0" cy="0" rx="140" ry="44" fill="none" stroke="#38BDF8" strokeWidth="2" transform="rotate(22)" opacity="0.75" />
+              <ellipse cx="0" cy="0" rx="127" ry="42" fill="none" stroke="#38BDF8" strokeWidth="2" transform="rotate(23)" opacity="0.75" />
               <defs>
                 <clipPath id={`planet-clip-${index}`}>
                   <circle cx="0" cy="0" r="85" />
@@ -211,14 +228,17 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={`/planets/${event.slug}.png`}
-                  x="-125"
-                  y="-125"
-                  width="250"
-                  height="250"
+                  x={imgOffset}
+                  y={imgOffset}
+                  width={imgSize}
+                  height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#38BDF8" strokeWidth="1.5" opacity="0.8" />
+              </g>
+              <g clipPath="url(#front-orbit-clip)">
+                <ellipse cx="0" cy="0" rx="127" ry="42" fill="none" stroke="#38BDF8" strokeWidth="2" transform="rotate(23)" opacity="0.75" />
               </g>
             </g>
           )}
@@ -228,8 +248,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
             ======================================================== */}
           {index === 5 && (
             <g>
-              <circle cx="0" cy="0" r="140" fill="none" stroke="#33FF67" strokeWidth="1" strokeDasharray="5 5" opacity="0.4" />
-              <ellipse cx="0" cy="0" rx="130" ry="36" fill="none" stroke="#7484FE" strokeWidth="2" transform="rotate(-30)" opacity="0.7" />
+              <ellipse cx="0" cy="0" rx="129" ry="38" fill="none" stroke="#7484FE" strokeWidth="2" transform="rotate(26)" opacity="0.7" />
               <defs>
                 <clipPath id={`planet-clip-${index}`}>
                   <circle cx="0" cy="0" r="85" />
@@ -239,14 +258,17 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={`/planets/${event.slug}.png`}
-                  x="-125"
-                  y="-125"
-                  width="250"
-                  height="250"
+                  x={imgOffset}
+                  y={imgOffset}
+                  width={imgSize}
+                  height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#33FF67" strokeWidth="1.5" opacity="0.8" />
+              </g>
+              <g clipPath="url(#front-orbit-clip)">
+                <ellipse cx="0" cy="0" rx="129" ry="38" fill="none" stroke="#7484FE" strokeWidth="2" transform="rotate(26)" opacity="0.7" />
               </g>
             </g>
           )}
@@ -256,8 +278,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
             ======================================================== */}
           {index === 6 && (
             <g>
-              <circle cx="0" cy="0" r="140" fill="none" stroke="#7484FE" strokeWidth="1" strokeDasharray="4 8" opacity="0.4" />
-              <ellipse cx="0" cy="0" rx="135" ry="35" fill="none" stroke="#F7F2F6" strokeWidth="1.5" transform="rotate(10)" opacity="0.6" />
+              <ellipse cx="0" cy="0" rx="125" ry="47" fill="none" stroke="#F7F2F6" strokeWidth="1.5" transform="rotate(26)" opacity="0.6" />
               <defs>
                 <clipPath id={`planet-clip-${index}`}>
                   <circle cx="0" cy="0" r="85" />
@@ -267,14 +288,17 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={`/planets/${event.slug}.png`}
-                  x="-125"
-                  y="-125"
-                  width="250"
-                  height="250"
+                  x={imgOffset}
+                  y={imgOffset}
+                  width={imgSize}
+                  height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#7484FE" strokeWidth="1.5" opacity="0.8" />
+              </g>
+              <g clipPath="url(#front-orbit-clip)">
+                <ellipse cx="0" cy="0" rx="125" ry="47" fill="none" stroke="#F7F2F6" strokeWidth="1.5" transform="rotate(26)" opacity="0.6" />
               </g>
             </g>
           )}
@@ -284,9 +308,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
             ======================================================== */}
           {index === 7 && (
             <g>
-              <circle cx="0" cy="0" r="140" fill="none" stroke="#A78BFA" strokeWidth="1" strokeDasharray="6 4" opacity="0.4" />
-              <rect x="-95" y="-95" width="190" height="190" fill="none" stroke="#7484FE" strokeWidth="1" strokeDasharray="4 8" transform="rotate(45)" opacity="0.3" />
-              <ellipse cx="0" cy="0" rx="135" ry="42" fill="none" stroke="#A78BFA" strokeWidth="2" transform="rotate(-20)" opacity="0.7" />
+              <ellipse cx="0" cy="0" rx="142" ry="44" fill="none" stroke="#A78BFA" strokeWidth="2" transform="rotate(25)" opacity="0.7" />
               <defs>
                 <clipPath id={`planet-clip-${index}`}>
                   <circle cx="0" cy="0" r="85" />
@@ -296,14 +318,17 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={`/planets/${event.slug}.png`}
-                  x="-125"
-                  y="-125"
-                  width="250"
-                  height="250"
+                  x={imgOffset}
+                  y={imgOffset}
+                  width={imgSize}
+                  height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#A78BFA" strokeWidth="1.5" opacity="0.8" />
+              </g>
+              <g clipPath="url(#front-orbit-clip)">
+                <ellipse cx="0" cy="0" rx="142" ry="44" fill="none" stroke="#A78BFA" strokeWidth="2" transform="rotate(25)" opacity="0.7" />
               </g>
             </g>
           )}
@@ -313,8 +338,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
             ======================================================== */}
           {index === 8 && (
             <g>
-              <circle cx="0" cy="0" r="145" fill="none" stroke="#A78BFA" strokeWidth="1" strokeDasharray="3 6" opacity="0.4" />
-              <ellipse cx="0" cy="0" rx="135" ry="40" fill="none" stroke="#A78BFA" strokeWidth="1.8" transform="rotate(28)" opacity="0.75" />
+              <ellipse cx="0" cy="0" rx="140" ry="48" fill="none" stroke="#A78BFA" strokeWidth="1.8" transform="rotate(29)" opacity="0.75" />
               <defs>
                 <clipPath id={`planet-clip-${index}`}>
                   <circle cx="0" cy="0" r="85" />
@@ -324,14 +348,17 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={`/planets/${event.slug}.png`}
-                  x="-125"
-                  y="-125"
-                  width="250"
-                  height="250"
+                  x={imgOffset}
+                  y={imgOffset}
+                  width={imgSize}
+                  height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#A78BFA" strokeWidth="1.5" opacity="0.8" />
+              </g>
+              <g clipPath="url(#front-orbit-clip)">
+                <ellipse cx="0" cy="0" rx="140" ry="48" fill="none" stroke="#A78BFA" strokeWidth="1.8" transform="rotate(29)" opacity="0.75" />
               </g>
             </g>
           )}
@@ -341,10 +368,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
             ======================================================== */}
           {index === 9 && (
             <g>
-              <circle cx="0" cy="0" r="155" fill="none" stroke="#38BDF8" strokeWidth="1" strokeDasharray="3 8" opacity="0.4" />
-              <circle cx="0" cy="0" r="135" fill="none" stroke="#7484FE" strokeWidth="1.5" strokeDasharray="6 6" opacity="0.5" />
-              <ellipse cx="0" cy="0" rx="145" ry="46" fill="none" stroke="#7484FE" strokeWidth="2.5" transform="rotate(-15)" opacity="0.8" />
-              <ellipse cx="0" cy="0" rx="145" ry="46" fill="none" stroke="#38BDF8" strokeWidth="1" transform="rotate(-15)" opacity="0.6" />
+              <ellipse cx="0" cy="0" rx="137" ry="48" fill="none" stroke="#7484FE" strokeWidth="2.5" transform="rotate(30)" opacity="0.8" />
               <defs>
                 <clipPath id={`planet-clip-${index}`}>
                   <circle cx="0" cy="0" r="85" />
@@ -354,14 +378,17 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href="/planets/pitch-deck.svg"
-                  x="-125"
-                  y="-125"
-                  width="250"
-                  height="250"
+                  x={imgOffset}
+                  y={imgOffset}
+                  width={imgSize}
+                  height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#7484FE" strokeWidth="1.5" opacity="0.85" />
+              </g>
+              <g clipPath="url(#front-orbit-clip)">
+                <ellipse cx="0" cy="0" rx="137" ry="48" fill="none" stroke="#7484FE" strokeWidth="2.5" transform="rotate(30)" opacity="0.8" />
               </g>
             </g>
           )}
@@ -403,6 +430,11 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
 export const PlanetGradients: React.FC = () => {
   return (
     <defs>
+      {/* Clip path for the front half of the 3D orbit rings */}
+      <clipPath id="front-orbit-clip">
+        <rect x="-200" y="0" width="400" height="200" />
+      </clipPath>
+
       {/* 01. Spotlight */}
       <radialGradient id="p01-grad" cx="35%" cy="35%" r="65%">
         <stop offset="0%" stopColor="#FFFFFF" />

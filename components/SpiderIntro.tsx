@@ -37,12 +37,10 @@ const MOBILE_BREAKPOINT = 640;
 export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const cieRef = useRef<HTMLDivElement>(null);
-  const cieArtRef = useRef<HTMLImageElement>(null);
   const ciePlatesRef = useRef<(HTMLDivElement | null)[]>([]);
   const wordRef = useRef<HTMLDivElement>(null);
   const wordArtRef = useRef<HTMLImageElement>(null);
   const wordPlatesRef = useRef<(HTMLDivElement | null)[]>([]);
-  const coverRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const flashRef = useRef<HTMLDivElement>(null);
   // Rendered into <body>: inside the journey tree, transformed ancestors trap a
@@ -78,8 +76,6 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
     let ctx: gsap.Context | null = null;
     let activeTl: gsap.core.Timeline | null = null;
     let finished = false;
-    const img = cieArtRef.current;
-
     // Whatever finishes the intro — the timeline's own onComplete, or this
     // failsafe — runs through here exactly once, so the site can never be
     // left permanently stuck behind the overlay (a dev hot-reload
@@ -124,7 +120,7 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
         const [, cieBlue, cieGreen] = ciePlates;
         const [, wordBlue, wordGreen] = wordPlates;
         gsap.set(cieRef.current, { willChange: "transform" });
-        gsap.set([coverRef.current, cieBlue, cieGreen, wordBlue, wordGreen, flashRef.current], {
+        gsap.set([cieBlue, cieGreen, wordBlue, wordGreen, flashRef.current], {
           willChange: "transform, opacity",
         });
         // Measured once, up front — never re-measured mid-timeline. The glitch
@@ -143,11 +139,7 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
       });
     };
 
-    if (img && !img.complete && typeof img.decode === "function") {
-      img.decode().catch(() => {}).then(begin);
-    } else {
-      begin();
-    }
+    begin();
 
     function buildTimeline(cieWidth: number) {
       return gsap.context(() => {
@@ -162,22 +154,18 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
       const tl = gsap.timeline({ onComplete: finish });
       activeTl = tl;
 
-      // Act 1 — CIE reads clean, one letter at a time. No blur, no scale-in —
-      // an opaque cover retreats from left to right, timed to each glyph's
-      // real edge, held between letters so the mark is fully legible before
-      // anything destabilizes it. This is a `scaleX` on a plain cover div
-      // (transform-origin pinned to the right edge) rather than animating
-      // clip-path on cieRef: clip-path on a container whose children use
-      // mask-image isn't reliably compositor-only, and cost showed up as a
-      // stutter on exactly the first tween (the C reveal) where the browser
-      // had to establish that paint/compositing layer for the first time.
+      // Act 1 — CIE reads clean, one letter at a time.
+      // We animate the opacity of each character span sequentially.
+      const chars = gsap.utils.toArray<HTMLElement>(".char", cieRef.current);
+      
       tl.set([cieBlue, cieGreen, wordRef.current], { opacity: 0 })
-        .set(ciePaper, { opacity: 0 })
+        .set(ciePaper, { opacity: 1 })
         .set(cieRef.current, { opacity: 1 }, 0)
-        .set(coverRef.current, { scaleX: 1 }, 0)
-        .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.c), duration: 0.55, ease: "power2.out" }, 0) // C
-        .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.i), duration: 0.4, ease: "power2.out" }, 0.75) // I
-        .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.e), duration: 0.45, ease: "power2.out" }, 1.35); // E.
+        .set(chars, { opacity: 0 }, 0)
+        .to(chars[0], { opacity: 1, duration: 0.1 }, 0)       // C
+        .to(chars[1], { opacity: 1, duration: 0.1 }, 0.5)     // I
+        .to(chars[2], { opacity: 1, duration: 0.1 }, 0.9)     // E
+        .to(chars[3], { opacity: 1, duration: 0.1 }, 1.35);   // .
       // CIE. now holds fully visible, untouched, until "glitch" at 2.4.
 
       // Act 2 — the tear. A fixed, small set of discrete jumps (deterministic:
@@ -214,7 +202,6 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
       // breaks apart and EQUINOX lands through the same disturbed position.
       tl.addLabel("tear", `glitch+=${t + 0.05}`)
         .to(ciePaper, { opacity: 1, duration: 0.03 }, "tear")
-        .to(cieArtRef.current, { opacity: 0, duration: 0.03 }, "tear")
         .to(cieRef.current, { scale: 1.04, duration: 0.08, ease: "steps(2)" }, "tear")
         .to(flashRef.current, { opacity: 0.85, duration: 0.05 }, "tear+=0.08")
         .to(flashRef.current, { opacity: 0, duration: 0.12 }, "tear+=0.14")
@@ -256,7 +243,7 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
     };
   }, [mounted, onDone]);
 
-  const plate = (src: string, color: string | null, ref: (el: HTMLDivElement | null) => void) => (
+  const wordPlate = (src: string, color: string | null, ref: (el: HTMLDivElement | null) => void) => (
     <div
       ref={ref}
       aria-hidden
@@ -304,30 +291,27 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
           same markup and timeline are correct from a 320px phone to a 4K
           desktop — no separate mobile/desktop layout branch. */}
       <div className="absolute inset-0 flex items-center justify-center px-6">
-        {/* CIE mark */}
+        {/* CIE mark as text */}
         <div
           ref={cieRef}
-          className="relative"
-          style={{ width: "clamp(220px, 60vw, 620px)", aspectRatio: "1532 / 652" }}
+          className="relative flex items-center justify-center font-black tracking-tight"
+          style={{ fontFamily: "var(--font-geist-sans), 'Arial Black', sans-serif", fontSize: "clamp(6rem, 20vw, 16rem)", lineHeight: 1, letterSpacing: "-0.02em" }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element -- fixed-ratio brand asset */}
-          <img
-            ref={cieArtRef}
-            src="/logos/cie-mark-white.png"
-            alt="MLR Centre for Innovation and Entrepreneurship"
-            className="absolute inset-0 h-full w-full object-contain"
-          />
-          {plate("/logos/cie-mark-white.png", null, (el) => { ciePlatesRef.current[0] = el; })}
-          {plate("/logos/cie-mark-white.png", BLUE, (el) => { ciePlatesRef.current[1] = el; })}
-          {plate("/logos/cie-mark-white.png", GREEN, (el) => { ciePlatesRef.current[2] = el; })}
-          {/* opaque cover, retreats left-to-right via scaleX (GPU-only —
-              never clip-path) to reveal C, then I, then E. */}
-          <div
-            ref={coverRef}
-            aria-hidden
-            className="absolute inset-0 bg-[#2A2A2A]"
-            style={{ transformOrigin: "100% 50%" }}
-          />
+          {/* Paper plate (main visible text) */}
+          <div ref={(el) => { ciePlatesRef.current[0] = el; }} className="relative z-10 flex text-[#F7F2F6]">
+             <span className="char opacity-0">C</span>
+             <span className="char opacity-0">I</span>
+             <span className="char opacity-0">E</span>
+             <span className="char opacity-0 text-[#C17743]">.</span>
+          </div>
+          {/* Blue plate for glitch */}
+          <div ref={(el) => { ciePlatesRef.current[1] = el; }} className="absolute inset-0 z-0 flex text-[#0000FF] opacity-0 mix-blend-screen" aria-hidden>
+             <span>C</span><span>I</span><span>E</span><span className="text-[#C17743]">.</span>
+          </div>
+          {/* Green plate for glitch */}
+          <div ref={(el) => { ciePlatesRef.current[2] = el; }} className="absolute inset-0 z-0 flex text-[#00FF00] opacity-0 mix-blend-screen" aria-hidden>
+             <span>C</span><span>I</span><span>E</span><span className="text-[#C17743]">.</span>
+          </div>
         </div>
 
         {/* EQUINOX lockup, official artwork. Hidden by plain CSS (not just the
@@ -345,9 +329,9 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
             alt="The Equinox 2.0 E-Summit 2K26"
             className="absolute inset-0 h-full w-full object-contain opacity-0"
           />
-          {plate("/equinox-logo.svg", null, (el) => { wordPlatesRef.current[0] = el; })}
-          {plate("/equinox-logo.svg", BLUE, (el) => { wordPlatesRef.current[1] = el; })}
-          {plate("/equinox-logo.svg", GREEN, (el) => { wordPlatesRef.current[2] = el; })}
+          {wordPlate("/equinox-logo.svg", null, (el) => { wordPlatesRef.current[0] = el; })}
+          {wordPlate("/equinox-logo.svg", BLUE, (el) => { wordPlatesRef.current[1] = el; })}
+          {wordPlate("/equinox-logo.svg", GREEN, (el) => { wordPlatesRef.current[2] = el; })}
         </div>
       </div>
 
