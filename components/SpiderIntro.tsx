@@ -116,40 +116,34 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
       whenVisible(() => {
         if (cancelled || !rootRef.current || !cieRef.current) return;
 
-        // Promote layers and take the one unavoidable layout read now, on
-        // their own tick — not inside the same call that builds and plays
-        // the timeline.
-        const ciePlates = ciePlatesRef.current.filter(Boolean) as HTMLDivElement[];
-        const wordPlates = wordPlatesRef.current.filter(Boolean) as HTMLDivElement[];
-        const [, cieBlue, cieGreen] = ciePlates;
-        const [, wordBlue, wordGreen] = wordPlates;
+        // Configure GSAP ticker so it never skips initial frames even if mobile frame drops
+        gsap.ticker.lagSmoothing(500, 33);
+
+        // Promote ONLY the elements active during Act 1 (the CIE reveal).
+        // The chromatic glitch plates (cieBlue, cieGreen, wordBlue, wordGreen)
+        // use heavy CSS mask-image and mix-blend-mode; allocating all 6 GPU textures
+        // simultaneously on mobile GPUs right at mount causes a massive frame drop
+        // exactly when the "C" begins revealing. They are promoted at Act 2 instead.
         gsap.set([cieRef.current, cieArtRef.current], { willChange: "transform", force3D: true });
-        gsap.set([coverRef.current, cieBlue, cieGreen, wordBlue, wordGreen, flashRef.current], {
+        gsap.set([coverRef.current, flashRef.current], {
           willChange: "transform, opacity",
           force3D: true,
         });
+
         // Measured once, up front — never re-measured mid-timeline. The glitch
         // displacement scales with the logo's actual rendered width so it reads
         // the same proportionally on a phone and a laptop, and small enough on
         // narrow screens that it never throws the mark off-screen.
         const cieWidth = cieRef.current.getBoundingClientRect().width || 300;
 
-        // Now give the browser a full double-rAF to actually create and
-        // paint those GPU layers (everything but the cover starts invisible,
-        // so this paints nothing new) before the first tween runs.
+        // Double-rAF ensures the browser compositor has finished rasterizing
+        // the initial layers and painting the cover before the timeline begins.
         const startIntro = () => {
           if (cancelled || !rootRef.current) return;
           ctx = buildTimeline(cieWidth);
         };
 
-        // On mobile, start immediately on next frame so there is zero perceptible lag.
-        // On desktop, use double-rAF to guarantee rasterization.
-        const isMobileScreen = window.innerWidth < MOBILE_BREAKPOINT;
-        if (isMobileScreen) {
-          requestAnimationFrame(startIntro);
-        } else {
-          requestAnimationFrame(() => requestAnimationFrame(startIntro));
-        }
+        requestAnimationFrame(() => requestAnimationFrame(startIntro));
       });
     };
 
@@ -177,14 +171,15 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
       activeTl = tl;
 
       // Act 1 — CIE reads clean, one letter at a time.
-      // On mobile, make timing snappy: start at 0.02s, quicker letter reveals, shorter hold.
-      const startDelay = isMobile ? 0.02 : 0.15;
-      const cDur = isMobile ? 0.38 : 0.55;
-      const iStart = isMobile ? 0.48 : 0.90;
-      const iDur = isMobile ? 0.30 : 0.40;
-      const eStart = isMobile ? 0.86 : 1.50;
-      const eDur = isMobile ? 0.35 : 0.45;
-      const glitchTime = isMobile ? 1.45 : 2.55;
+      // On mobile, give a clean 0.20s baseline settling delay so the first
+      // frame never hits mid-paint, and pace the letters smoothly.
+      const startDelay = isMobile ? 0.20 : 0.15;
+      const cDur = isMobile ? 0.45 : 0.55;
+      const iStart = isMobile ? 0.70 : 0.90;
+      const iDur = isMobile ? 0.32 : 0.40;
+      const eStart = isMobile ? 1.10 : 1.50;
+      const eDur = isMobile ? 0.38 : 0.45;
+      const glitchTime = isMobile ? 1.65 : 2.55;
 
       tl.set([cieBlue, cieGreen, wordRef.current], { opacity: 0 })
         .set(ciePaper, { opacity: 0 })
@@ -201,6 +196,10 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
         : [{ reach: unit * 0.4, opacity: 0.4 }, { reach: unit * 0.9, opacity: 0.7 }, { reach: unit * 1.6, opacity: 0.95 }];
 
       tl.addLabel("glitch", glitchTime);
+      // Promote chromatic glitch plates now right before the glitch runs
+      tl.call(() => {
+        gsap.set([cieBlue, cieGreen, wordBlue, wordGreen], { willChange: "transform, opacity", force3D: true });
+      }, undefined, "glitch-=0.1");
       tl.to(gridRef.current, { opacity: 1, duration: isMobile ? 0.25 : 0.35, ease: "power1.out" }, "glitch");
       let t = 0;
       steps.forEach((step, i) => {
