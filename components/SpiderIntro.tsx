@@ -137,15 +137,28 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
         // Now give the browser a full double-rAF to actually create and
         // paint those GPU layers (everything but the cover starts invisible,
         // so this paints nothing new) before the first tween runs.
-        requestAnimationFrame(() => requestAnimationFrame(() => {
+        const startIntro = () => {
           if (cancelled || !rootRef.current) return;
           ctx = buildTimeline(cieWidth);
-        }));
+        };
+
+        // On mobile, start immediately on next frame so there is zero perceptible lag.
+        // On desktop, use double-rAF to guarantee rasterization.
+        const isMobileScreen = window.innerWidth < MOBILE_BREAKPOINT;
+        if (isMobileScreen) {
+          requestAnimationFrame(startIntro);
+        } else {
+          requestAnimationFrame(() => requestAnimationFrame(startIntro));
+        }
       });
     };
 
     if (img && !img.complete && typeof img.decode === "function") {
-      img.decode().catch(() => {}).then(begin);
+      // Race image decode with a fast 150ms timeout so a slow decode on mobile doesn't stall startup
+      Promise.race([
+        img.decode(),
+        new Promise((resolve) => setTimeout(resolve, 150)),
+      ]).catch(() => {}).then(begin);
     } else {
       begin();
     }
@@ -163,37 +176,32 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
       const tl = gsap.timeline({ onComplete: finish });
       activeTl = tl;
 
-      // Act 1 — CIE reads clean, one letter at a time. No blur, no scale-in —
-      // an opaque cover retreats from left to right, timed to each glyph's
-      // real edge, held between letters so the mark is fully legible before
-      // anything destabilizes it.
-      // A brief 0.15s settling delay ensures the browser's initial paint/rasterization
-      // has completely cleared so the C reveal starts with zero dropped frames.
+      // Act 1 — CIE reads clean, one letter at a time.
+      // On mobile, make timing snappy: start at 0.02s, quicker letter reveals, shorter hold.
+      const startDelay = isMobile ? 0.02 : 0.15;
+      const cDur = isMobile ? 0.38 : 0.55;
+      const iStart = isMobile ? 0.48 : 0.90;
+      const iDur = isMobile ? 0.30 : 0.40;
+      const eStart = isMobile ? 0.86 : 1.50;
+      const eDur = isMobile ? 0.35 : 0.45;
+      const glitchTime = isMobile ? 1.45 : 2.55;
+
       tl.set([cieBlue, cieGreen, wordRef.current], { opacity: 0 })
         .set(ciePaper, { opacity: 0 })
         .set(cieRef.current, { opacity: 1 }, 0)
         .set(coverRef.current, { scaleX: 1 }, 0)
-        .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.c), duration: 0.55, ease: "power2.out" }, 0.15) // C
-        .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.i), duration: 0.4, ease: "power2.out" }, 0.90) // I
-        .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.e), duration: 0.45, ease: "power2.out" }, 1.50); // E.
-      // CIE. now holds fully visible, untouched, until "glitch" at 2.55.
+        .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.c), duration: cDur, ease: "power2.out" }, startDelay) // C
+        .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.i), duration: iDur, ease: "power2.out" }, iStart) // I
+        .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.e), duration: eDur, ease: "power2.out" }, eStart); // E.
 
-      // Act 2 — the tear. A fixed, small set of discrete jumps (deterministic:
-      // any randomness is resolved once here, not re-rolled during playback),
-      // animating only transform + opacity on the two colour plates, plus one
-      // clip-path swap and one flash. Mobile skips the smallest "micro" jump
-      // so the whole beat reads faster with less visual noise on small screens.
+      // Act 2 — the tear.
       const jitter = () => gsap.utils.random(-2, 2, 1);
       const steps = isMobile
         ? [{ reach: unit * 0.8, opacity: 0.65 }, { reach: unit * 1.6, opacity: 0.95 }]
         : [{ reach: unit * 0.4, opacity: 0.4 }, { reach: unit * 0.9, opacity: 0.7 }, { reach: unit * 1.6, opacity: 0.95 }];
 
-      tl.addLabel("glitch", 2.55);
-      // Backdrop shifts from the plain CIE-hold background to this site's own
-      // grid texture (same pattern as .riso-texture/.brochure-grid — 34px
-      // lines, same dark base colour) as the transition kicks off, so by the
-      // time EQUINOX lands the backdrop already matches the page underneath.
-      tl.to(gridRef.current, { opacity: 1, duration: 0.35, ease: "power1.out" }, "glitch");
+      tl.addLabel("glitch", glitchTime);
+      tl.to(gridRef.current, { opacity: 1, duration: isMobile ? 0.25 : 0.35, ease: "power1.out" }, "glitch");
       let t = 0;
       steps.forEach((step, i) => {
         const jx = jitter();
@@ -202,14 +210,12 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
           .to(cieGreen, { opacity: step.opacity, x: step.reach - jx, y: -jy, duration: 0.05, ease: "steps(1)" }, `glitch+=${t}`);
         const isLast = i === steps.length - 1;
         if (!isLast) {
-          tl.to([cieBlue, cieGreen], { opacity: 0, x: 0, y: 0, duration: 0.05, ease: "steps(1)" }, `glitch+=${t + 0.1}`);
+          tl.to([cieBlue, cieGreen], { opacity: 0, x: 0, y: 0, duration: 0.05, ease: "steps(1)" }, `glitch+=${t + (isMobile ? 0.08 : 0.1)}`);
         }
-        t += 0.18;
+        t += isMobile ? 0.12 : 0.18;
       });
 
-      // the tear: hardest plate separation already applied above, now the
-      // paper plate flashes in, the art hides, one flash frame, then CIE
-      // breaks apart and EQUINOX lands through the same disturbed position.
+      // the tear
       tl.addLabel("tear", `glitch+=${t + 0.05}`)
         .to(ciePaper, { opacity: 1, duration: 0.03 }, "tear")
         .to(cieArtRef.current, { opacity: 0, duration: 0.03 }, "tear")
@@ -219,30 +225,33 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
         .set(cieRef.current, { opacity: 0 }, "tear+=0.13")
         .set(wordRef.current, { opacity: 1 }, "tear+=0.13");
 
-      // Act 3 — EQUINOX settles clean and stable, then a brief hold before the
-      // whole sheet lifts.
+      // Act 3 — EQUINOX settles clean and stable, then lifts
+      const settleDur = isMobile ? 0.25 : 0.32;
+      const liftHold = isMobile ? 0.25 : 0.45;
+      const liftFade = isMobile ? 0.38 : 0.5;
+
       tl.fromTo(
         wordPaper,
         { scale: 1.15, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.32, ease: "power4.out" },
+        { scale: 1, opacity: 1, duration: settleDur, ease: "power4.out" },
         "tear+=0.13",
       )
         .fromTo(
           wordBlue,
           { x: -unit * 1.8, y: unit * 0.5, opacity: 0.9 },
-          { x: 0, y: 0, opacity: 0, duration: 0.38, ease: "power3.out" },
+          { x: 0, y: 0, opacity: 0, duration: settleDur + 0.06, ease: "power3.out" },
           "tear+=0.13",
         )
         .fromTo(
           wordGreen,
           { x: unit * 1.8, y: -unit * 0.5, opacity: 0.9 },
-          { x: 0, y: 0, opacity: 0, duration: 0.38, ease: "power3.out" },
+          { x: 0, y: 0, opacity: 0, duration: settleDur + 0.06, ease: "power3.out" },
           "tear+=0.13",
         )
-        .to(wordArtRef.current, { opacity: 1, duration: 0.28, ease: "power2.out" }, "tear+=0.18")
-        .to(wordPaper, { opacity: 0, duration: 0.28, ease: "power2.out" }, "tear+=0.18")
-        .to({}, { duration: 0.45 })
-        .to(rootRef.current, { opacity: 0, duration: 0.5, ease: "power2.inOut" });
+        .to(wordArtRef.current, { opacity: 1, duration: 0.25, ease: "power2.out" }, "tear+=0.18")
+        .to(wordPaper, { opacity: 0, duration: 0.25, ease: "power2.out" }, "tear+=0.18")
+        .to({}, { duration: liftHold })
+        .to(rootRef.current, { opacity: 0, duration: liftFade, ease: "power2.inOut" });
       }, rootRef);
     }
 

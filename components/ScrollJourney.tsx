@@ -369,106 +369,143 @@ export default function ScrollJourney() {
         },
       });
 
-      // --- PHASE 1 (0%–10%): Hero to Wordmark ---
-      mainTl.fromTo(heroSubtitleRef.current,
-        { scale: 1 },
-        { opacity: 0, y: -20, scale: 1.35, duration: 0.1, ease: "power1.in" },
-        0
-      );
+      if (isMobile) {
+        // --- MOBILE SCROLL BEHAVIOR ---
+        // 0% - 40%: Tagline fades out and scales up; globe shrinks & fades
+        mainTl.fromTo(
+          heroSubtitleRef.current,
+          { scale: 1, opacity: 1 },
+          { opacity: 0, y: -24, scale: 1.25, duration: 0.4, ease: "power1.in" },
+          0
+        );
+        mainTl.to(
+          globeHeroRef.current,
+          { scale: 0.25, autoAlpha: 0, duration: 0.4, ease: "power1.in" },
+          0
+        );
 
-      // The lockup is on screen from the first frame; scroll only settles its scale.
-      mainTl.fromTo(heroWordmarkRef.current,
-        { scale: 1.06 },
-        { scale: 1, duration: 0.1 },
-        0
-      );
+        // 35% - 85%: EQUINOX wordmark scales down to a sleek docked size and slides to top of screen
+        mainTl.to(
+          persistentHeaderRef.current,
+          {
+            y: () => {
+              if (!heroWordmarkRef.current) return -window.innerHeight * 0.35;
+              const unscaledWordmarkHeight = heroWordmarkRef.current.offsetHeight || 100;
+              const targetScale = 0.28;
+              const scaledWordmarkHeight = unscaledWordmarkHeight * targetScale;
+              // Dock comfortably near top with 24px clearance for mobile status bar / header
+              const targetTop = 24;
+              const wordmarkCenterY = window.innerHeight / 2;
+              const scaledWordmarkTopBeforeTranslate = wordmarkCenterY - scaledWordmarkHeight / 2;
+              return targetTop - scaledWordmarkTopBeforeTranslate;
+            },
+            scale: 0.28,
+            autoAlpha: 1,
+            duration: 0.5,
+            ease: "power2.out",
+          },
+          0.35
+        );
 
-      mainTl.to(globeHeroRef.current, {
-        scale: 0.18,
-        autoAlpha: 0,
-        duration: 0.1,
-      }, 0);
+        // 80% - 100%: Smoothly blend wordmark as mobile user scrolls directly into MobileJourney
+        mainTl.to(
+          persistentHeaderRef.current,
+          {
+            autoAlpha: 0,
+            y: "-=30",
+            duration: 0.2,
+            ease: "power2.in",
+          },
+          0.85
+        );
+      } else {
+        // --- DESKTOP SCROLL BEHAVIOR ---
+        // --- PHASE 1 (0%–10%): Hero to Wordmark ---
+        mainTl.fromTo(heroSubtitleRef.current,
+          { scale: 1 },
+          { opacity: 0, y: -20, scale: 1.35, duration: 0.1, ease: "power1.in" },
+          0
+        );
 
-      // --- PHASE 2 (10%–15%): Move Wordmark UP to Sticky Header ---
-      mainTl.to(persistentHeaderRef.current, {
-        y: () => {
-          if (!navbarWrapperRef.current || !heroWordmarkRef.current) return 0;
-          const navBottom = navbarWrapperRef.current.offsetHeight || 80;
-          const unscaledWordmarkHeight = heroWordmarkRef.current.offsetHeight || 120;
+        // The lockup is on screen from the first frame; scroll only settles its scale.
+        mainTl.fromTo(heroWordmarkRef.current,
+          { scale: 1.06 },
+          { scale: 1, duration: 0.1 },
+          0
+        );
 
-          // Target scale for the container
-          const targetScale = window.innerWidth < 768 ? 0.22 : window.innerWidth < 1280 ? 0.28 : 0.35;
+        mainTl.to(globeHeroRef.current, {
+          scale: 0.18,
+          autoAlpha: 0,
+          duration: 0.1,
+        }, 0);
 
-          // The visual height of the text after scaling the container
-          const scaledWordmarkHeight = unscaledWordmarkHeight * targetScale;
+        // --- PHASE 2 (10%–15%): Move Wordmark UP to Sticky Header ---
+        mainTl.to(persistentHeaderRef.current, {
+          y: () => {
+            if (!navbarWrapperRef.current || !heroWordmarkRef.current) return 0;
+            const navBottom = navbarWrapperRef.current.offsetHeight || 80;
+            const unscaledWordmarkHeight = heroWordmarkRef.current.offsetHeight || 120;
 
-          // We want the TOP of the scaled text to sit just below the navbar + some padding (e.g. 16px)
-          const targetWordmarkTop = navBottom + 16;
+            // Target scale for the container
+            const targetScale = window.innerWidth < 1280 ? 0.28 : 0.35;
+            const scaledWordmarkHeight = unscaledWordmarkHeight * targetScale;
+            const targetWordmarkTop = navBottom + 16;
+            const wordmarkCenterY = window.innerHeight / 2;
+            const scaledWordmarkTopBeforeTranslate = wordmarkCenterY - (scaledWordmarkHeight / 2);
 
-          // The container (persistentHeaderRef) scales from its center (50% 50%).
-          // So the text (which is in the center) will also scale down around its center.
-          // Its visual center doesn't change relative to the screen before translation.
-          const wordmarkCenterY = window.innerHeight / 2;
+            return targetWordmarkTop - scaledWordmarkTopBeforeTranslate;
+          },
+          scale: () => window.innerWidth < 1280 ? 0.28 : 0.35,
+          autoAlpha: 1,
+          duration: 0.05,
+          ease: "power2.inOut"
+        }, 0.1);
 
-          // Its un-translated scaled top is:
-          const scaledWordmarkTopBeforeTranslate = wordmarkCenterY - (scaledWordmarkHeight / 2);
+        // --- PHASE 3 (15%–20%): Journey layer fades in ---
+        mainTl.to(journeyLayerRef.current, { autoAlpha: 1, duration: 0.05 }, 0.15);
+        mainTl.to(scrollIndicatorRef.current, { autoAlpha: 1, duration: 0.05 }, 0.15);
 
-          // The translation needed is the difference:
-          return targetWordmarkTop - scaledWordmarkTopBeforeTranslate;
-        },
-        scale: () => window.innerWidth < 768 ? 0.22 : window.innerWidth < 1280 ? 0.28 : 0.35,
-        autoAlpha: 1,
-        duration: 0.05,
-        ease: "power2.inOut"
-      }, 0.1);
+        // --- PHASE 4 (20%–90%): Horizontal journey ---
+        const journeyProxy = { progress: 0 };
+        mainTl.to(journeyProxy, {
+          progress: 1,
+          ease: "none",
+          duration: 0.70,
+          onUpdate: function () {
+            updateJourneyProgress(this.targets()[0].progress);
+          }
+        }, 0.2);
 
-      // --- PHASE 3 (15%–20%): Journey layer fades in ---
-      if (!isMobile) {
-      mainTl.to(journeyLayerRef.current, { autoAlpha: 1, duration: 0.05 }, 0.15);
-      mainTl.to(scrollIndicatorRef.current, { autoAlpha: 1, duration: 0.05 }, 0.15);
+        // --- PHASE 5 (90%–100%): Clean exit as journey ends ---
+        mainTl.to(persistentHeaderRef.current, {
+          autoAlpha: 0,
+          y: "-=40",
+          duration: 0.07,
+          ease: "power2.in"
+        }, 0.91);
 
-      // --- PHASE 4 (20%–90%): Horizontal journey ---
-      const journeyProxy = { progress: 0 };
-      mainTl.to(journeyProxy, {
-        progress: 1,
-        ease: "none",
-        duration: 0.70,
-        onUpdate: function () {
-          updateJourneyProgress(this.targets()[0].progress);
-        }
-      }, 0.2);
+        mainTl.to(navbarWrapperRef.current, {
+          autoAlpha: 0,
+          y: "-=20",
+          duration: 0.07,
+          ease: "power2.in"
+        }, 0.91);
+
+        mainTl.to(scrollIndicatorRef.current, {
+          autoAlpha: 0,
+          duration: 0.05,
+          ease: "power2.in"
+        }, 0.89);
+
+        mainTl.to(journeyLayerRef.current, {
+          autoAlpha: 0,
+          duration: 0.07,
+          ease: "power2.in"
+        }, 0.91);
+
+        updateJourneyProgress(0);
       }
-
-      // --- PHASE 5 (90%–100%): Clean exit as journey ends ---
-      // At the end of the scroll journey, the persistent EQUINOX title, institutional header,
-      // and scroll indicator completely disappear before the next section appears.
-      mainTl.to(persistentHeaderRef.current, {
-        autoAlpha: 0,
-        y: "-=40",
-        duration: 0.07,
-        ease: "power2.in"
-      }, 0.91);
-
-      mainTl.to(navbarWrapperRef.current, {
-        autoAlpha: 0,
-        y: "-=20",
-        duration: 0.07,
-        ease: "power2.in"
-      }, 0.91);
-
-      mainTl.to(scrollIndicatorRef.current, {
-        autoAlpha: 0,
-        duration: 0.05,
-        ease: "power2.in"
-      }, 0.89);
-
-      mainTl.to(journeyLayerRef.current, {
-        autoAlpha: 0,
-        duration: 0.07,
-        ease: "power2.in"
-      }, 0.91);
-
-      updateJourneyProgress(0);
 
       // Store header space in CSS variable for journey centering
       const updateHeaderSpace = () => {
@@ -571,7 +608,7 @@ export default function ScrollJourney() {
 
   return (
     <>
-    <div ref={containerRef} className="relative w-full" style={{ height: isMobile ? "115vh" : "1500vh" }}>
+    <div ref={containerRef} className="relative w-full" style={{ height: isMobile ? "175vh" : "1500vh" }}>
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#2A2A2A]">
 
         {/* ── SPARSE STAR FIELD WITH MINIMAL TWINKLING STARS ──────────────── */}
