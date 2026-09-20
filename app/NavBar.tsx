@@ -23,6 +23,16 @@ const ICONS: Record<string, LucideIcon> = {
   Register: Ticket,
 };
 
+const SHORT_NAMES: Record<string, string> = {
+  Homepage: "Home",
+  Home: "Home",
+  Overview: "Home",
+  "Sub-Events": "Events",
+  Gallery: "Gallery",
+  Registration: "Register",
+  Register: "Register",
+};
+
 export function NavBar({
   items,
   className,
@@ -53,13 +63,13 @@ export function NavBar({
   if (pathname.startsWith("/admin")) return null;
 
   const isActiveItem = (name: string) => {
-    if (pathname.startsWith("/events")) return name === "Sub-Events";
+    if (pathname.startsWith("/events")) return name === "Sub-Events" || name === "Events";
     if (pathname.startsWith("/gallery")) return name === "Gallery";
     if (pathname.startsWith("/register")) return name === "Registration" || name === "Register";
     if (pathname !== "/") return false;
     return (
       activeTab === name ||
-      ((name.toLowerCase() === "homepage" || name.toLowerCase() === "overview") &&
+      ((name.toLowerCase() === "homepage" || name.toLowerCase() === "overview" || name.toLowerCase() === "home") &&
         (activeTab === "Homepage" || activeTab === "Overview" || activeTab === "Home"))
     );
   };
@@ -105,7 +115,7 @@ export function NavBar({
   return (
     <header
       className={cn(
-        "fixed top-4 right-0 left-0 z-[9990] px-4 transition-transform duration-300",
+        "fixed top-4 right-0 left-0 z-[9990] px-2 sm:px-4 transition-transform duration-300",
         hidden ? "-translate-y-24" : "translate-y-0",
         className
       )}
@@ -116,7 +126,7 @@ export function NavBar({
           <a
             href="/"
             aria-label="Centre for Innovation & Entrepreneurship"
-            className="absolute left-0 hidden items-center sm:flex"
+            className="absolute left-0 hidden items-center lg:flex"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -127,10 +137,10 @@ export function NavBar({
           </a>
         )}
 
-        {/* Center Nav Navigation */}
+        {/* Center Nav Navigation — now visible across mobile and desktop */}
         <motion.nav
           aria-label="Primary"
-          className="hidden md:flex items-center gap-1 rounded-full border-2 border-white/20 bg-[#151515]/90 p-1.5 shadow-2xl backdrop-blur-md"
+          className="flex items-center gap-0.5 sm:gap-1 rounded-full border border-white/20 sm:border-2 bg-[#151515]/90 p-1 sm:p-1.5 shadow-2xl backdrop-blur-md max-w-[96vw] overflow-x-auto"
           initial={{ y: -16, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.3 }}
@@ -147,14 +157,15 @@ export function NavBar({
                   href={item.url}
                   onClick={(e) => handleNavClick(e, item)}
                   className={cn(
-                    "relative ml-1 flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-black transition-all shadow-md sm:px-4",
+                    "relative ml-0.5 sm:ml-1 flex items-center gap-1 sm:gap-1.5 rounded-full px-2.5 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs font-black transition-all shadow-md shrink-0",
                     isActive
                       ? "bg-[#33FF67] text-[#141414] ring-2 ring-[#33FF67]/50 scale-[1.02]"
                       : "bg-[#33FF67] text-[#141414] hover:bg-[#5aff87] hover:scale-[1.02] active:scale-[0.98]"
                   )}
                 >
-                  <Icon className="h-3.5 w-3.5" />
-                  <span>{item.name}</span>
+                  <Icon className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" />
+                  <span className="sm:hidden">{SHORT_NAMES[item.name] ?? item.name}</span>
+                  <span className="hidden sm:inline">{item.name}</span>
                 </a>
               );
             }
@@ -166,13 +177,14 @@ export function NavBar({
                 onClick={(e) => handleNavClick(e, item)}
                 aria-label={item.name}
                 className={cn(
-                  "relative flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-bold transition sm:px-4",
+                  "relative flex items-center gap-1 sm:gap-1.5 rounded-full px-2 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs font-bold transition shrink-0",
                   isActive
-                    ? "bg-[#7484FE] text-[#2A2A2A] shadow-md"
+                    ? "bg-[#7484FE] text-[#2A2A2A] shadow-md font-black"
                     : "text-white/90 hover:bg-white/15 hover:text-white"
                 )}
               >
-                <Icon className="h-3.5 w-3.5" />
+                <Icon className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" />
+                <span className="sm:hidden">{SHORT_NAMES[item.name] ?? item.name}</span>
                 <span className="hidden sm:inline">{item.name}</span>
               </a>
             );
