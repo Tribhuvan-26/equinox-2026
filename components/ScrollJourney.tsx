@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import Link from "next/link";
 import { ArrowRight, Mouse } from "lucide-react";
-import Globe from "./Globe";
+import dynamic from "next/dynamic";
 import { InstitutionalHeader } from "../app/EventGraphics";
 import { subEvents } from "@/lib/content";
 import SpiderIntro from "./SpiderIntro";
@@ -22,6 +22,12 @@ import {
   PlanetSVG,
   PlanetGradients,
 } from "./JourneyPlanets";
+
+/* three + d3-geo (~1.5MB) stay out of the initial bundle. The chunk is
+   prefetched on mount (see ScrollJourney) so it loads during the intro loader,
+   before the globe is first rendered. */
+const loadGlobe = () => import("./Globe");
+const Globe = dynamic(loadGlobe, { ssr: false });
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -104,6 +110,9 @@ export default function ScrollJourney() {
   const journeyScaleRef = useRef(0.65);
 
   const [isGlobeReady, setIsGlobeReady] = useState(false);
+  useEffect(() => {
+    void loadGlobe();
+  }, []);
   // Globe keeps rendering every frame while it spins; it is a few pixels wide once
   // the journey starts, so pause it there and give those frames to the scroll.
   const [isGlobePaused, setIsGlobePaused] = useState(false);
@@ -803,7 +812,7 @@ export default function ScrollJourney() {
               className="relative flex flex-col items-center gap-4 pointer-events-none"
               style={{ zIndex: 2 }}
             >
-              <h2 className="font-sans text-2xl font-bold tracking-tight text-white md:text-3xl lg:text-4xl drop-shadow-md">
+              <h2 className="max-w-full px-4 text-center font-sans text-[5vw] font-bold tracking-tight text-white sm:text-2xl md:text-3xl lg:text-4xl drop-shadow-md">
                 #Where<span className="text-[#7484FE]">Passion</span>Meets<span className="text-[#33FF67]">Perseverance</span>
               </h2>
             </div>

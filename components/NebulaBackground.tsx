@@ -1,23 +1,41 @@
-import { useMemo } from "react";
+// Small seeded PRNG (mulberry32). Math.random() gave the server and the client
+// different star positions, which is what caused the hydration mismatch.
+function seededRandom(seed: number) {
+  let a = seed;
+  return () => {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
 
 // Generate a dense, static starfield using CSS box-shadow
-function generateStarfield(count: number, maxSize: number, opacityRange: [number, number], color = "255, 255, 255") {
+function generateStarfield(
+  seed: number,
+  count: number,
+  maxSize: number,
+  opacityRange: [number, number],
+  color = "255, 255, 255"
+) {
+  const random = seededRandom(seed);
   let shadow = "";
   for (let i = 0; i < count; i++) {
-    const x = Math.floor(Math.random() * 100);
-    const y = Math.floor(Math.random() * 100);
-    const opacity = (Math.random() * (opacityRange[1] - opacityRange[0]) + opacityRange[0]).toFixed(2);
-    const size = Math.random() * maxSize;
+    const x = Math.floor(random() * 100);
+    const y = Math.floor(random() * 100);
+    const opacity = (random() * (opacityRange[1] - opacityRange[0]) + opacityRange[0]).toFixed(2);
+    const size = (random() * maxSize).toFixed(2);
     shadow += `${x}vw ${y}vh 0 ${size}px rgba(${color}, ${opacity})${i < count - 1 ? "," : ""}`;
   }
   return shadow;
 }
 
-export default function NebulaBackground() {
-  const starsBackground = useMemo(() => generateStarfield(400, 0.5, [0.1, 0.4]), []);
-  const starsMidground = useMemo(() => generateStarfield(150, 1.2, [0.4, 0.8]), []);
-  const starsForeground = useMemo(() => generateStarfield(40, 2, [0.6, 1], "200, 230, 255"), []);
+// Deterministic, so computed once at module load and identical on server + client.
+const starsBackground = generateStarfield(1, 400, 0.5, [0.1, 0.4]);
+const starsMidground = generateStarfield(2, 150, 1.2, [0.4, 0.8]);
+const starsForeground = generateStarfield(3, 40, 2, [0.6, 1], "200, 230, 255");
 
+export default function NebulaBackground() {
   return (
     <div className="absolute inset-0 overflow-hidden bg-[#0A0A0C] pointer-events-none z-[-10]">
       

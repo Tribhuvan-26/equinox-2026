@@ -150,12 +150,21 @@ export default function ContinuousComet() {
       maxDevicePixelRatio: 1.5
     };
 
-    const renderer = new Renderer({
-      canvas,
-      alpha: true,
-      dpr: Math.min(window.devicePixelRatio || 1, config.maxDevicePixelRatio)
-    });
-    
+    // ogl throws a TypeError when the browser refuses a WebGL context (blocked,
+    // low-power mode, GPU blocklist). The comet is decorative, so skip it
+    // instead of taking the whole page down with an uncaught error.
+    let renderer: Renderer;
+    try {
+      renderer = new Renderer({
+        canvas,
+        alpha: true,
+        dpr: Math.min(window.devicePixelRatio || 1, config.maxDevicePixelRatio)
+      });
+    } catch (err) {
+      console.warn('[ContinuousComet] WebGL unavailable, skipping comet:', err);
+      return;
+    }
+
     const gl = renderer.gl;
     gl.clearColor(0, 0, 0, 0);
 
