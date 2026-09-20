@@ -51,7 +51,7 @@ export function ChatInput({
             onKeyDown={handleKeyDown}
             disabled={disabled}
             placeholder={placeholder}
-            className="flex-1 bg-transparent py-0.5 font-mono text-xs sm:text-[13px] text-[#F7F2F6] placeholder-white/40 outline-hidden disabled:opacity-50"
+            className="flex-1 bg-transparent py-0.5 text-xs sm:text-[13px] text-[#F7F2F6] placeholder-white/40 outline-hidden disabled:opacity-50"
           />
           {text.trim().length > 0 && (
             <button

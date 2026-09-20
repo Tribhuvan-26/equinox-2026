@@ -38,7 +38,7 @@ export function EventCard({ event, onSelect }: EventCardProps) {
             <h4 className="font-mono text-sm font-black tracking-tight text-[#F7F2F6] uppercase sm:text-base">
               {event.name}
             </h4>
-            <p className="mt-0.5 text-[11.5px] text-[#F7F2F6]/75 font-medium line-clamp-2 font-mono">
+            <p className="mt-0.5 text-[11.5px] text-[#F7F2F6]/75 font-medium line-clamp-2">
               {event.tagline}
             </p>
           </div>

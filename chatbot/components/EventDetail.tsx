@@ -57,7 +57,7 @@ export function EventDetail({ event, onClose }: EventDetailProps) {
           <h3 className="mt-2 font-mono text-2xl font-black uppercase tracking-tight text-[#F7F2F6]">
             {event.name}
           </h3>
-          <p className="mt-1 text-xs text-[#F7F2F6]/75 font-mono">
+          <p className="mt-1 text-xs text-[#F7F2F6]/75 font-medium">
             {event.tagline}
           </p>
         </div>

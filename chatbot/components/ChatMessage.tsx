@@ -70,7 +70,7 @@ export function ChatMessage({
       <div
         className={`max-w-[92%] rounded-none px-3.5 py-2.5 text-xs sm:text-[13px] ${
           isUser
-            ? "border-2 border-white bg-[#7484FE] text-[#121212] font-mono font-bold shadow-[3px_3px_0px_#33FF67]"
+            ? "border-2 border-white bg-[#7484FE] text-[#121212] font-medium shadow-[3px_3px_0px_#33FF67]"
             : "border-2 border-white/30 bg-[#1E1E1E] text-[#F7F2F6] shadow-[3px_3px_0px_#000000]"
         }`}
       >
@@ -90,7 +90,7 @@ export function ChatMessage({
 
         {isUser ? (
           <div>
-            <p className="leading-relaxed font-mono font-bold">{message.text}</p>
+            <p className="leading-relaxed">{message.text}</p>
             {message.timestamp && (
               <span className="block mt-1 text-right text-[8.5px] text-[#121212]/60 font-mono font-normal">
                 {message.timestamp}
