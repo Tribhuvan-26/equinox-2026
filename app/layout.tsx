@@ -46,7 +46,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             mounts. Preloading it here starts the fetch/decode during initial
             page load instead of when the intro's own effect runs, which is
             what was causing the stutter on the very first reveal (the C). */}
-        <link rel="preload" as="image" href="/logos/cie-mark-white.png" />
+        <link rel="preload" as="image" href="/equinox-logo.svg" />
       </head>
       <body className="night flex min-h-full flex-col">
         <PreIntroCover />
