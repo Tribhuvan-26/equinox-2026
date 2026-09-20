@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Calendar, MapPin, Mail, ArrowRight } from "lucide-react";
 import { contact, event, registration } from "@/lib/content";
 import { PageTransition } from "../ui";
+import { RegisterForm } from "./RegisterForm";
 
 export const metadata: Metadata = {
   title: `Register - ${event.name} ${event.year}`,
@@ -40,12 +41,16 @@ export default function RegisterPage() {
             className="font-display-title mt-4 max-w-4xl leading-[0.95] text-[#F7F2F6]"
             style={{ fontSize: "clamp(2.5rem, 8vw, 6rem)" }}
           >
-            Coming <span className="text-[#7484FE]">Soon</span>
+            Register <span className="text-[#33FF67]">Now</span>
           </h1>
 
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#F7F2F6]/85">
             {registration.body}
           </p>
+
+          <div className="mt-12 w-full max-w-4xl text-left">
+            <RegisterForm />
+          </div>
 
           <div className="mt-16 grid w-full gap-4 sm:grid-cols-3">
             {details.map(({ icon: Icon, label, value, accent }) => (

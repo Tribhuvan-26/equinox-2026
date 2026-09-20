@@ -180,7 +180,7 @@ export default async function EventPage({ params }: PageProps) {
                   Summit Registration
                 </span>
                 <span className="rounded bg-[#33FF67] px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-[#2A2A2A]">
-                  Open Soon
+                  Register Now
                 </span>
               </div>
               <h3 className="mt-2 font-display-title text-xl font-bold uppercase text-[#F7F2F6] sm:text-2xl">

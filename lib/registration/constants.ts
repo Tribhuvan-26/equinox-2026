@@ -1,4 +1,4 @@
-export const REGISTRATION_FEE = 869;
+export const REGISTRATION_FEE = 769;
 
 export const DEPARTMENTS = [
   "CSE",

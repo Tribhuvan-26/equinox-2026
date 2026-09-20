@@ -105,7 +105,7 @@ def match_event_card(top_chunks: List[Dict[str, Any]], query: str = "") -> Optio
                 "category": meta.get("category", "Sub-Event"),
                 "venueRoom": meta.get("venue", "MLRIT"),
                 "timing": meta.get("timing", "30 - 31 Oct"),
-                "registrationStatus": "Open Soon",
+                "registrationStatus": "Register Now",
             }
     return None
 

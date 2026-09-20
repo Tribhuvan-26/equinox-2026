@@ -761,7 +761,7 @@ export function detectFalsePremise(query: string): FalsePremiseResult {
       isFalsePremise: true,
       eventSlug: "pitch-deck",
       correction:
-        "Pitch Deck registration is not closed. The official Equinox 2.0 program lists registration status as Open Soon.",
+        "Pitch Deck registration is not closed. The official Equinox 2.0 program lists registration status as Register Now.",
     };
   }
 
