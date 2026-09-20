@@ -97,8 +97,11 @@ export const DraggableContainer = ({
 
         const wrapperEl = wrapperRef.current;
         const handleWheelScroll = (event: WheelEvent) => {
-            if (isDragging) return;
+            // Unconditionally stop default scroll & propagation so photo canvas scroll never moves the page
             event.preventDefault();
+            event.stopPropagation();
+
+            if (isDragging) return;
 
             // Check if trackpad gesture (continuous small deltas) vs stepped mouse wheel
             const isContinuousTrackpad =
@@ -131,8 +134,13 @@ export const DraggableContainer = ({
             }
         };
 
+        const handleTouchMove = (event: TouchEvent) => {
+            event.stopPropagation();
+        };
+
         if (wrapperEl) {
             wrapperEl.addEventListener("wheel", handleWheelScroll, { passive: false });
+            wrapperEl.addEventListener("touchmove", handleTouchMove, { passive: false });
         }
 
         return () => {
@@ -141,6 +149,7 @@ export const DraggableContainer = ({
             yDrag();
             if (wrapperEl) {
                 wrapperEl.removeEventListener("wheel", handleWheelScroll);
+                wrapperEl.removeEventListener("touchmove", handleTouchMove);
             }
         };
     }, [x, y, isDragging]);

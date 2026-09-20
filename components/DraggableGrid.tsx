@@ -382,6 +382,7 @@ function __OriginkitBase_DraggableGrid(props: DraggableGridProps) {
 
         const onWheel = (e: WheelEvent) => {
             e.preventDefault()
+            e.stopPropagation()
             const curX = x.get()
             const curY = y.get()
             const targetX = clamp(curX - e.deltaX, minX, maxX)
