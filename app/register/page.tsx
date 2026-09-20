@@ -18,7 +18,7 @@ const details = [
 export default function RegisterPage() {
   return (
     <PageTransition>
-      <section className="relative min-h-screen overflow-hidden bg-[#2A2A2A] pt-40 pb-24 text-[#F7F2F6]">
+      <section className="riso-texture brochure-grid relative min-h-screen overflow-hidden bg-[#2A2A2A] pt-40 pb-24 text-[#F7F2F6]">
         <div
           aria-hidden
           className="pointer-events-none absolute -top-40 left-1/2 h-[36rem] w-[60rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(116,132,254,0.22),transparent)] blur-3xl"
