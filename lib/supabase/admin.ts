@@ -1,45 +1,39 @@
 import "server-only";
 import { createClient } from "@supabase/supabase-js";
 import type { RegistrationRecord } from "@/lib/registration/types";
-import type {
-  AuthRateLimitRow,
-  AuthTokenRow,
-  PlatformUserRow,
-  TeamMemberRow,
-  TeamRow,
-} from "@/lib/teams/types";
+import type { AuthRateLimitRow, RegistrationTeamRow } from "@/lib/teams/types";
+
+/** The full pass_registrations row, including columns that must never reach a browser. */
+export type RegistrationRow = RegistrationRecord & {
+  member_email: string | null;
+  access_token_hash: string | null;
+};
 
 export interface Database {
   public: {
     Tables: {
       pass_registrations: {
-        Row: RegistrationRecord;
-        Insert: Omit<RegistrationRecord, "created_at" | "updated_at" | "admin_note" | "team_seq" | "team_id"> & {
+        Row: RegistrationRow;
+        Insert: Omit<
+          RegistrationRow,
+          "created_at" | "updated_at" | "admin_note" | "team_seq" | "team_id" | "team_role" | "member_email" | "access_token_hash"
+        > & {
           created_at?: string;
           updated_at?: string;
           admin_note?: string | null;
           team_seq?: number;
           team_id?: string | null;
+          team_role?: "leader" | "member" | null;
+          member_email?: string | null;
+          access_token_hash?: string | null;
         };
-        Update: Partial<RegistrationRecord>;
+        Update: Partial<RegistrationRow>;
         Relationships: [];
       };
-      platform_users: {
-        Row: PlatformUserRow;
-        Insert: Pick<PlatformUserRow, "name" | "email" | "password_hash"> & Partial<PlatformUserRow>;
-        Update: Partial<PlatformUserRow>;
-        Relationships: [];
-      };
-      teams: {
-        Row: TeamRow;
-        Insert: Pick<TeamRow, "name" | "code" | "leader_id"> & Partial<TeamRow>;
-        Update: Partial<TeamRow>;
-        Relationships: [];
-      };
-      auth_tokens: {
-        Row: AuthTokenRow;
-        Insert: Pick<AuthTokenRow, "user_id" | "purpose" | "token_hash" | "expires_at"> & Partial<AuthTokenRow>;
-        Update: Partial<AuthTokenRow>;
+      registration_teams: {
+        Row: RegistrationTeamRow;
+        Insert: Pick<RegistrationTeamRow, "name" | "code"> & Partial<RegistrationTeamRow>;
+        Update: Partial<RegistrationTeamRow>;
         Relationships: [];
       };
       auth_rate_limits: {
@@ -48,22 +42,12 @@ export interface Database {
         Update: Partial<AuthRateLimitRow>;
         Relationships: [];
       };
-      team_members: {
-        Row: TeamMemberRow;
-        Insert: Pick<TeamMemberRow, "team_id" | "user_id"> & Partial<TeamMemberRow>;
-        Update: Partial<TeamMemberRow>;
-        Relationships: [];
-      };
     };
     Views: Record<string, never>;
     Functions: {
       auth_rate_limit_hit: {
         Args: { p_key: string; p_window_seconds: number };
         Returns: number;
-      };
-      create_team_with_leader: {
-        Args: { p_user_id: string; p_name: string; p_code: string; p_max_members: number };
-        Returns: TeamRow;
       };
     };
   };

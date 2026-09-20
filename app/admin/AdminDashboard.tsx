@@ -12,7 +12,7 @@ import { RegistrationList } from "./components/RegistrationList";
 export interface RegistrationWithUrls extends RegistrationRecord {
   screenshotUrl: string | null;
   utrProofUrl: string | null;
-  /** Name of the platform team this registration is tied to, if any. */
+  /** Name of the team this registration belongs to, if any. */
   teamName?: string | null;
 }
 

@@ -4,8 +4,6 @@ import { supabaseAdmin, PAYMENT_PROOFS_BUCKET } from "@/lib/supabase/admin";
 import { REGISTRATION_FEE, MAX_TEAM_SIZE, MIN_TEAM_SIZE } from "@/lib/registration/constants";
 import { isParticipantValid, participantForStorage } from "@/lib/registration/validation";
 import type { Participant } from "@/lib/registration/types";
-import { getCurrentUser } from "@/lib/auth/session";
-import { getMyTeam } from "@/lib/teams/service";
 
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_TYPES = new Set(["image/png", "image/jpeg", "image/webp", "application/pdf"]);
@@ -56,43 +54,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "UTR proof must be a PNG/JPG/WEBP/PDF under 5MB." }, { status: 400 });
   }
 
-  // Optional: the leader of a platform team can register that team. The team
-  // is always taken from the signed-in session, never from the request.
-  let teamId: string | null = null;
-  if (form.get("linkTeam") === "1") {
-    const user = await getCurrentUser();
-    if (!user) return NextResponse.json({ error: "Sign in to register your team." }, { status: 401 });
-
-    let team;
-    try {
-      team = await getMyTeam(user.id);
-    } catch (err) {
-      console.error("[register] could not load team", err);
-      return NextResponse.json({ error: "Could not check your team. Please try again." }, { status: 500 });
-    }
-
-    if (!team) return NextResponse.json({ error: "You are not in a team." }, { status: 409 });
-    if (!team.isLeader) {
-      return NextResponse.json({ error: "Only the team leader can register the team." }, { status: 403 });
-    }
-    if (team.registration && team.registration.status !== "rejected") {
-      return NextResponse.json({ error: "Your team already has a registration." }, { status: 409 });
-    }
-    if (team.memberCount < MIN_TEAM_SIZE) {
-      return NextResponse.json(
-        { error: `Your team needs at least ${MIN_TEAM_SIZE} members to register.` },
-        { status: 409 }
-      );
-    }
-    if (participants.length !== team.memberCount) {
-      return NextResponse.json(
-        { error: `Register all ${team.memberCount} members of your team.` },
-        { status: 400 }
-      );
-    }
-    teamId = team.id;
-  }
-
   const supabase = supabaseAdmin();
   const registrationId = randomUUID();
 
@@ -131,7 +92,6 @@ export async function POST(request: Request) {
         utr_proof_path: utrProofPath,
         status: "pending",
         confirmation_number: confirmationNumber,
-        ...(teamId ? { team_id: teamId } : {}),
       })
       .select("team_seq")
       .single();
@@ -145,10 +105,6 @@ export async function POST(request: Request) {
     if (isConfirmationCollision && attempt === 0) {
       confirmationNumber = generateConfirmationNumber();
       continue;
-    }
-
-    if (error.code === "23505" && error.message.includes("pass_registrations_active_team_key")) {
-      return NextResponse.json({ error: "Your team already has a registration." }, { status: 409 });
     }
 
     console.error("[register] insert failed", error);

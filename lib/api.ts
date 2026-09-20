@@ -1,6 +1,5 @@
 import "server-only";
 import { NextResponse } from "next/server";
-import { getCurrentUser, type SessionUser } from "@/lib/auth/session";
 
 export class ApiError extends Error {
   constructor(
@@ -29,11 +28,7 @@ export async function respond<T>(fn: () => Promise<T>, okStatus = 200): Promise<
   }
 }
 
-/**
- * Parse a JSON body. Requiring the JSON content type means a cross-site HTML
- * form (which can only send form encodings) cannot trigger these endpoints —
- * a cheap CSRF guard on top of the SameSite=Lax cookie.
- */
+/** Parse a JSON body (must be sent as application/json). */
 export async function readJson(request: Request): Promise<Record<string, unknown>> {
   const type = request.headers.get("content-type") ?? "";
   if (!type.toLowerCase().startsWith("application/json")) {
@@ -46,19 +41,12 @@ export async function readJson(request: Request): Promise<Record<string, unknown
   return body as Record<string, unknown>;
 }
 
-export async function requireUser(): Promise<SessionUser> {
-  const user = await getCurrentUser();
-  if (!user) throw new ApiError(401, "Please sign in to continue.");
-  return user;
-}
-
-/** Signed in AND email confirmed. Gate for creating or joining teams. */
-export async function requireVerifiedUser(): Promise<SessionUser> {
-  const user = await requireUser();
-  if (!user.emailVerified) {
-    throw new ApiError(403, "Please verify your email before creating or joining a team.", "emailNotVerified");
-  }
-  return user;
+/** The secret access token from "Authorization: Bearer <token>". */
+export function bearerToken(request: Request): string {
+  const header = request.headers.get("authorization") ?? "";
+  const match = /^Bearer\s+([A-Za-z0-9_-]{20,200})$/.exec(header);
+  if (!match) throw new ApiError(401, "Open your personal registration link to continue.");
+  return match[1];
 }
 
 export function str(value: unknown): string {

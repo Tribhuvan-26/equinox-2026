@@ -1,185 +1,161 @@
 import "server-only";
 import { ApiError } from "@/lib/api";
-import { supabaseAdmin } from "@/lib/supabase/admin";
-import { generateTeamCode } from "./code";
-import { getTeamRegistration, hasLiveRegistration, registeredTeamIds } from "./registration";
-import { DEFAULT_MAX_MEMBERS, NAME_TAKEN_MESSAGE } from "./constants";
-import type { TeamRow, TeamSearchResult, TeamView } from "./types";
 import {
-  escapeLike,
-  looksLikeTeamCode,
-  normalizeTeamCode,
-  normalizeTeamName,
-  validateMaxMembers,
-  validateTeamName,
-} from "./validation";
+  emailAlreadyInTeam,
+  EMAIL_IN_TEAM_MESSAGE,
+  insertTeamRegistration,
+  type InsertedRegistration,
+  type ParsedRegistrationForm,
+} from "@/lib/registration/team-submit";
+import { supabaseAdmin, type RegistrationRow } from "@/lib/supabase/admin";
+import { hashAccessToken, newAccessToken } from "./access";
+import { generateTeamCode } from "./code";
+import { DEFAULT_MAX_MEMBERS, NAME_TAKEN_MESSAGE } from "./constants";
+import type { MyRegistrationView, RegistrationTeamRow, TeamSearchResult, TeamView } from "./types";
+import { escapeLike, looksLikeTeamCode, normalizeTeamCode, normalizeTeamName, validateMaxMembers, validateTeamName } from "./validation";
+
+const COLS = "id, team_id, team_role, status, participants, confirmation_number, team_seq, admin_note, created_at";
+type Reg = Pick<
+  RegistrationRow,
+  "id" | "team_id" | "team_role" | "status" | "participants" | "confirmation_number" | "team_seq" | "admin_note" | "created_at"
+>;
 
 type PgError = { code?: string; message: string; details?: string | null };
+const isUnique = (err: PgError, constraint: string) =>
+  err.code === "23505" && `${err.message} ${err.details ?? ""}`.includes(constraint);
 
-// Postgres unique violations name the constraint; use it to say what collided.
-function isUniqueViolation(err: PgError, constraint: string): boolean {
-  return err.code === "23505" && `${err.message} ${err.details ?? ""}`.includes(constraint);
-}
+const APPROVED_LOCK =
+  "This registration is already approved. Contact the organisers if something needs to change.";
 
-function hasMessage(err: PgError, text: string): boolean {
-  return err.message.includes(text);
-}
+const nameOf = (reg: Pick<Reg, "participants">) => reg.participants[0]?.name ?? "Unknown";
 
-const ALREADY_IN_TEAM = "You are already in a team. Leave it before joining or creating another.";
-const TEAM_FULL = "This team is full.";
-const TEAM_REGISTERED =
-  "This team has a registration, so its roster is locked. Contact the organisers if something needs to change.";
-const TEAM_REGISTERED_JOIN = "This team is already registered and is not taking new members.";
+/* ------------------------------------------------------------------ */
+/* Who is calling? (the secret link)                                   */
+/* ------------------------------------------------------------------ */
 
-async function assertRosterOpen(teamId: string): Promise<void> {
-  if (await hasLiveRegistration(teamId)) throw new ApiError(409, TEAM_REGISTERED);
-}
-
-/**
- * Translate database constraint failures into user-facing errors. Every rule
- * is enforced in Postgres; this only picks the wording.
- */
-function mapMembershipError(err: PgError): ApiError {
-  if (isUniqueViolation(err, "team_members_team_user_key")) {
-    return new ApiError(409, "You are already a member of this team.");
-  }
-  if (isUniqueViolation(err, "team_members_user_key")) return new ApiError(409, ALREADY_IN_TEAM);
-  if (hasMessage(err, "team_full")) return new ApiError(409, TEAM_FULL);
-  if (hasMessage(err, "team_registered")) return new ApiError(409, TEAM_REGISTERED_JOIN);
-  if (hasMessage(err, "team_not_found")) return new ApiError(404, "Team not found.");
-  console.error("[teams] membership error", err);
-  return new ApiError(500, "Something went wrong. Please try again.");
-}
-
-async function loadTeam(teamId: string): Promise<TeamRow> {
-  const { data, error } = await supabaseAdmin().from("teams").select("*").eq("id", teamId).maybeSingle();
+export async function authenticate(token: string): Promise<Reg> {
+  const { data, error } = await supabaseAdmin()
+    .from("pass_registrations")
+    .select(COLS)
+    .eq("access_token_hash", hashAccessToken(token))
+    .maybeSingle();
   if (error) {
-    console.error("[teams] loadTeam", error);
+    console.error("[teams] authenticate", error);
     throw new ApiError(500, "Something went wrong. Please try again.");
   }
-  if (!data) throw new ApiError(404, "Team not found.");
+  if (!data) {
+    throw new ApiError(401, "This link is not valid any more. Use “Find my registration” to get a new one.");
+  }
   return data;
 }
 
-async function loadLeaderTeam(userId: string, teamId: string): Promise<TeamRow> {
-  const team = await loadTeam(teamId);
-  if (team.leader_id !== userId) {
-    throw new ApiError(403, "Only the team leader can do this.");
-  }
-  return team;
+function requireLeader(reg: Reg): string {
+  if (reg.team_role !== "leader" || !reg.team_id) throw new ApiError(403, "Only the team leader can do this.");
+  return reg.team_id;
 }
 
-async function buildTeamView(team: TeamRow, viewerId: string): Promise<TeamView> {
-  const supabase = supabaseAdmin();
-  const { data: members, error } = await supabase
-    .from("team_members")
-    .select("user_id, role, joined_at")
-    .eq("team_id", team.id)
-    .order("joined_at", { ascending: true });
+async function loadTeam(teamId: string): Promise<RegistrationTeamRow | null> {
+  const { data, error } = await supabaseAdmin().from("registration_teams").select("*").eq("id", teamId).maybeSingle();
   if (error) throw error;
-
-  const ids = (members ?? []).map((m) => m.user_id);
-  const { data: users, error: usersError } = await supabase
-    .from("platform_users")
-    .select("id, name")
-    .in("id", ids);
-  if (usersError) throw usersError;
-  const names = new Map((users ?? []).map((u) => [u.id, u.name]));
-
-  const list = (members ?? [])
-    .map((m) => ({
-      userId: m.user_id,
-      name: names.get(m.user_id) ?? "Unknown",
-      role: m.role,
-      joinedAt: m.joined_at,
-    }))
-    // Leader first, then by join time.
-    .sort((a, b) => (a.role === b.role ? 0 : a.role === "leader" ? -1 : 1));
-
-  return {
-    id: team.id,
-    name: team.name,
-    code: team.code,
-    maxMembers: team.max_members,
-    memberCount: list.length,
-    leaderId: team.leader_id,
-    createdAt: team.created_at,
-    members: list,
-    isLeader: team.leader_id === viewerId,
-    registration: await getTeamRegistration(team.id),
-  };
+  return data;
 }
 
-export async function getMyTeam(userId: string): Promise<TeamView | null> {
-  const { data: membership, error } = await supabaseAdmin()
-    .from("team_members")
-    .select("team_id")
-    .eq("user_id", userId)
-    .maybeSingle();
-  if (error) throw error;
-  if (!membership) return null;
+/* ------------------------------------------------------------------ */
+/* Create / join                                                       */
+/* ------------------------------------------------------------------ */
 
-  return buildTeamView(await loadTeam(membership.team_id), userId);
-}
+export type CreatedTeam = { registration: InsertedRegistration; team: { id: string; name: string; code: string } };
 
-async function isInAnyTeam(userId: string): Promise<boolean> {
-  const { data, error } = await supabaseAdmin()
-    .from("team_members")
-    .select("id")
-    .eq("user_id", userId)
-    .maybeSingle();
-  if (error) throw error;
-  return Boolean(data);
-}
-
-export async function createTeam(userId: string, rawName: string): Promise<TeamView> {
+/** The leader registers + pays for themselves; that creates the team and its code. */
+export async function createTeamWithLeader(parsed: ParsedRegistrationForm, rawName: string): Promise<CreatedTeam> {
   const nameError = validateTeamName(rawName);
-  if (nameError) throw new ApiError(400, nameError, "name");
+  if (nameError) throw new ApiError(400, nameError, "teamName");
   const name = normalizeTeamName(rawName);
 
-  // Friendly early exit; the unique(user_id) constraint is the real guard.
-  if (await isInAnyTeam(userId)) throw new ApiError(409, ALREADY_IN_TEAM);
+  if (await emailAlreadyInTeam(parsed.participant.email)) throw new ApiError(409, EMAIL_IN_TEAM_MESSAGE, "email");
 
-  // A generated code can (rarely) collide with an existing one. The unique
-  // constraint catches it and we simply draw a new code.
-  for (let attempt = 0; attempt < 8; attempt++) {
-    const { data, error } = await supabaseAdmin().rpc("create_team_with_leader", {
-      p_user_id: userId,
-      p_name: name,
-      p_code: generateTeamCode(),
-      p_max_members: DEFAULT_MAX_MEMBERS,
-    });
+  const supabase = supabaseAdmin();
+  let team: RegistrationTeamRow | null = null;
 
-    if (!error) return buildTeamView(data, userId);
+  // A generated code can (rarely) collide; the unique constraint catches it and we draw again.
+  for (let attempt = 0; attempt < 8 && !team; attempt++) {
+    const { data, error } = await supabase
+      .from("registration_teams")
+      .insert({ name, code: generateTeamCode(), max_members: DEFAULT_MAX_MEMBERS })
+      .select("*")
+      .single();
 
-    if (isUniqueViolation(error, "teams_name_key") || isUniqueViolation(error, "teams_name_lower_key")) {
-      throw new ApiError(409, NAME_TAKEN_MESSAGE, "name");
+    if (!error) {
+      team = data;
+      break;
     }
-    if (isUniqueViolation(error, "team_members_user_key")) throw new ApiError(409, ALREADY_IN_TEAM);
-    if (isUniqueViolation(error, "teams_code_key")) continue;
-
-    console.error("[teams] createTeam", error);
+    if (isUnique(error, "registration_teams_name_key") || isUnique(error, "registration_teams_name_lower_key")) {
+      throw new ApiError(409, NAME_TAKEN_MESSAGE, "teamName");
+    }
+    if (isUnique(error, "registration_teams_code_key")) continue;
+    console.error("[teams] create team", error);
     throw new ApiError(500, "Could not create the team. Please try again.");
   }
-  throw new ApiError(500, "Could not generate a unique team code. Please try again.");
+  if (!team) throw new ApiError(500, "Could not generate a unique team code. Please try again.");
+
+  try {
+    const registration = await insertTeamRegistration({ parsed, teamId: team.id, role: "leader" });
+    return { registration, team: { id: team.id, name: team.name, code: team.code } };
+  } catch (err) {
+    // No leader registration = no team. Don't leave the name/code reserved.
+    await supabase.from("registration_teams").delete().eq("id", team.id);
+    throw err;
+  }
 }
+
+async function liveCount(teamId: string): Promise<number> {
+  const { count, error } = await supabaseAdmin()
+    .from("pass_registrations")
+    .select("id", { count: "exact", head: true })
+    .eq("team_id", teamId)
+    .neq("status", "rejected");
+  if (error) throw error;
+  return count ?? 0;
+}
+
+/** A teammate registers + pays for themselves and takes a seat in an existing team. */
+export async function joinTeamWithRegistration(
+  parsed: ParsedRegistrationForm,
+  teamId: string
+): Promise<{ registration: InsertedRegistration; team: { id: string; name: string; code: string } }> {
+  const team = await loadTeam(teamId);
+  if (!team) throw new ApiError(404, "Team not found.");
+  if ((await liveCount(team.id)) >= team.max_members) throw new ApiError(409, "This team is full.");
+  if (await emailAlreadyInTeam(parsed.participant.email)) throw new ApiError(409, EMAIL_IN_TEAM_MESSAGE, "email");
+
+  const registration = await insertTeamRegistration({ parsed, teamId: team.id, role: "member" });
+  return { registration, team: { id: team.id, name: team.name, code: team.code } };
+}
+
+/* ------------------------------------------------------------------ */
+/* Search                                                              */
+/* ------------------------------------------------------------------ */
 
 export async function searchTeams(query: string): Promise<TeamSearchResult[]> {
   const q = normalizeTeamName(query);
   if (q.length < 3) throw new ApiError(400, "Enter a team name or team code.");
 
   const supabase = supabaseAdmin();
-  const found = new Map<string, TeamRow>();
+  const found = new Map<string, RegistrationTeamRow>();
 
   if (looksLikeTeamCode(q)) {
-    const { data, error } = await supabase.from("teams").select("*").eq("code", normalizeTeamCode(q)).maybeSingle();
+    const { data, error } = await supabase
+      .from("registration_teams")
+      .select("*")
+      .eq("code", normalizeTeamCode(q))
+      .maybeSingle();
     if (error) throw error;
     if (data) found.set(data.id, data);
   }
 
-  // Exact (case-insensitive) name match. Names are unique ignoring case.
+  // Exact (case-insensitive) name match; names are unique ignoring case.
   const { data: byName, error: nameError } = await supabase
-    .from("teams")
+    .from("registration_teams")
     .select("*")
     .ilike("name", escapeLike(q))
     .limit(2);
@@ -189,162 +165,203 @@ export async function searchTeams(query: string): Promise<TeamSearchResult[]> {
   const teams = [...found.values()];
   if (teams.length === 0) return [];
 
-  const teamIds = teams.map((t) => t.id);
-  const { data: members, error: membersError } = await supabase
-    .from("team_members")
-    .select("team_id")
-    .in("team_id", teamIds);
-  if (membersError) throw membersError;
-
-  const counts = new Map<string, number>();
-  for (const m of members ?? []) counts.set(m.team_id, (counts.get(m.team_id) ?? 0) + 1);
-
-  const { data: leaders, error: leadersError } = await supabase
-    .from("platform_users")
-    .select("id, name")
-    .in("id", teams.map((t) => t.leader_id));
-  if (leadersError) throw leadersError;
-  const leaderNames = new Map((leaders ?? []).map((u) => [u.id, u.name]));
-  const registered = await registeredTeamIds(teamIds);
+  const { data: regs, error } = await supabase
+    .from("pass_registrations")
+    .select("team_id, team_role, participants")
+    .in("team_id", teams.map((t) => t.id))
+    .neq("status", "rejected");
+  if (error) throw error;
 
   return teams.map((t) => {
-    const memberCount = counts.get(t.id) ?? 0;
+    const members = (regs ?? []).filter((r) => r.team_id === t.id);
+    const leader = members.find((r) => r.team_role === "leader");
     return {
       id: t.id,
       name: t.name,
-      leaderName: leaderNames.get(t.leader_id) ?? "Unknown",
-      memberCount,
+      leaderName: leader ? nameOf(leader) : "—",
+      memberCount: members.length,
       maxMembers: t.max_members,
-      isFull: memberCount >= t.max_members,
-      isRegistered: registered.has(t.id),
+      isFull: members.length >= t.max_members,
     };
   });
 }
 
-export async function joinTeam(userId: string, teamId: string): Promise<TeamView> {
-  const team = await loadTeam(teamId);
-  if (await hasLiveRegistration(team.id)) throw new ApiError(409, TEAM_REGISTERED_JOIN);
+/* ------------------------------------------------------------------ */
+/* My registration + team                                              */
+/* ------------------------------------------------------------------ */
 
-  // Friendly early exits. Duplicate / one-team / capacity are all enforced by
-  // the database too, so a race between these checks and the insert is safe.
-  const { data: existing, error } = await supabaseAdmin()
-    .from("team_members")
-    .select("team_id")
-    .eq("user_id", userId)
-    .maybeSingle();
-  if (error) throw error;
-  if (existing) {
-    throw new ApiError(
-      409,
-      existing.team_id === team.id ? "You are already a member of this team." : ALREADY_IN_TEAM
-    );
+export async function getMyRegistration(reg: Reg): Promise<MyRegistrationView> {
+  const isLeader = reg.team_role === "leader";
+  let team: TeamView | null = null;
+
+  if (reg.team_id) {
+    const row = await loadTeam(reg.team_id);
+    if (row) {
+      const { data: regs, error } = await supabaseAdmin()
+        .from("pass_registrations")
+        .select("id, team_role, status, participants, created_at")
+        .eq("team_id", row.id)
+        .neq("status", "rejected")
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+
+      const members = (regs ?? [])
+        .map((r) => ({
+          registrationId: r.id,
+          name: nameOf(r),
+          role: (r.team_role ?? "member") as "leader" | "member",
+          // Payment status is between the person and the organisers, plus the leader.
+          ...(isLeader ? { status: r.status } : {}),
+          isYou: r.id === reg.id,
+        }))
+        .sort((a, b) => (a.role === b.role ? 0 : a.role === "leader" ? -1 : 1));
+
+      team = { id: row.id, name: row.name, code: row.code, maxMembers: row.max_members, memberCount: members.length, members };
+    }
   }
 
-  const { error: insertError } = await supabaseAdmin()
-    .from("team_members")
-    .insert({ team_id: team.id, user_id: userId, role: "member" });
-  if (insertError) throw mapMembershipError(insertError);
-
-  return buildTeamView(team, userId);
+  return {
+    registration: {
+      id: reg.id,
+      name: nameOf(reg),
+      status: reg.status,
+      confirmationNumber: reg.confirmation_number,
+      teamNumber: `EQ-${String(reg.team_seq).padStart(3, "0")}`,
+      adminNote: reg.admin_note,
+      createdAt: reg.created_at,
+    },
+    team,
+    isLeader,
+  };
 }
 
-export async function leaveTeam(userId: string): Promise<void> {
-  const { data: membership, error } = await supabaseAdmin()
-    .from("team_members")
-    .select("team_id, role")
-    .eq("user_id", userId)
-    .maybeSingle();
-  if (error) throw error;
-  if (!membership) throw new ApiError(404, "You are not in a team.");
-  if (membership.role === "leader") {
-    throw new ApiError(403, "The team leader cannot leave. Delete the team instead.");
-  }
-  await assertRosterOpen(membership.team_id);
+/* ------------------------------------------------------------------ */
+/* Leader / member actions                                             */
+/* ------------------------------------------------------------------ */
 
-  const { error: deleteError } = await supabaseAdmin()
-    .from("team_members")
-    .delete()
-    .eq("user_id", userId)
-    .eq("role", "member");
-  if (deleteError) throw mapMembershipError(deleteError);
-}
-
-export async function updateTeam(
-  userId: string,
-  teamId: string,
-  input: { name?: string; maxMembers?: unknown }
-): Promise<TeamView> {
-  const team = await loadLeaderTeam(userId, teamId);
-  const patch: Partial<Pick<TeamRow, "name" | "max_members">> = {};
+export async function updateTeam(reg: Reg, input: { name?: string; maxMembers?: unknown }): Promise<void> {
+  const teamId = requireLeader(reg);
+  const patch: Partial<Pick<RegistrationTeamRow, "name" | "max_members">> = {};
 
   if (input.name !== undefined) {
     const nameError = validateTeamName(input.name);
     if (nameError) throw new ApiError(400, nameError, "name");
     patch.name = normalizeTeamName(input.name);
   }
-
   if (input.maxMembers !== undefined) {
     const max = validateMaxMembers(input.maxMembers);
     if (max === null) throw new ApiError(400, "Choose a valid team size.", "maxMembers");
     patch.max_members = max;
   }
-
   if (Object.keys(patch).length === 0) throw new ApiError(400, "Nothing to update.");
 
-  const { data, error } = await supabaseAdmin()
-    .from("teams")
-    .update(patch)
-    .eq("id", team.id)
-    .eq("leader_id", userId)
-    .select("*")
-    .maybeSingle();
-
+  const { error } = await supabaseAdmin().from("registration_teams").update(patch).eq("id", teamId);
   if (error) {
-    if (isUniqueViolation(error, "teams_name_key") || isUniqueViolation(error, "teams_name_lower_key")) {
+    if (isUnique(error, "registration_teams_name_key") || isUnique(error, "registration_teams_name_lower_key")) {
       throw new ApiError(409, NAME_TAKEN_MESSAGE, "name");
     }
-    if (hasMessage(error, "team_size_below_members")) {
+    if (error.message.includes("team_size_below_members")) {
       throw new ApiError(409, "Team size cannot be lower than the current number of members.", "maxMembers");
     }
     console.error("[teams] updateTeam", error);
     throw new ApiError(500, "Could not update the team. Please try again.");
   }
-  if (!data) throw new ApiError(403, "Only the team leader can do this.");
-
-  return buildTeamView(data, userId);
 }
 
-export async function deleteTeam(userId: string, teamId: string): Promise<void> {
-  const team = await loadLeaderTeam(userId, teamId);
-  await assertRosterOpen(team.id);
-
-  // Members go with it (ON DELETE CASCADE).
-  const { error } = await supabaseAdmin().from("teams").delete().eq("id", team.id).eq("leader_id", userId);
-  if (error) {
-    if (hasMessage(error, "team_registered")) throw new ApiError(409, TEAM_REGISTERED);
-    console.error("[teams] deleteTeam", error);
-    throw new ApiError(500, "Could not delete the team. Please try again.");
-  }
+/** Take a registration out of its team; it stays a valid, paid registration. */
+async function unlink(where: { id?: string; team_id?: string }): Promise<void> {
+  let query = supabaseAdmin().from("pass_registrations").update({ team_id: null, team_role: null });
+  if (where.id) query = query.eq("id", where.id);
+  if (where.team_id) query = query.eq("team_id", where.team_id);
+  const { error } = await query;
+  if (error) throw error;
 }
 
-export async function removeMember(userId: string, teamId: string, targetUserId: string): Promise<void> {
-  const team = await loadLeaderTeam(userId, teamId);
-  if (targetUserId === team.leader_id) {
-    throw new ApiError(400, "The team leader cannot be removed. Delete the team instead.");
-  }
-  await assertRosterOpen(team.id);
+export async function deleteTeam(reg: Reg): Promise<void> {
+  const teamId = requireLeader(reg);
 
-  const { data, error } = await supabaseAdmin()
-    .from("team_members")
-    .delete()
-    .eq("team_id", team.id)
-    .eq("user_id", targetUserId)
-    .eq("role", "member")
-    .select("id");
-  if (error) {
-    if (hasMessage(error, "team_registered")) throw new ApiError(409, TEAM_REGISTERED);
-    console.error("[teams] removeMember", error);
-    throw new ApiError(500, "Could not remove the member. Please try again.");
+  const { data: approved, error } = await supabaseAdmin()
+    .from("pass_registrations")
+    .select("id")
+    .eq("team_id", teamId)
+    .eq("status", "approved")
+    .limit(1);
+  if (error) throw error;
+  if ((approved ?? []).length > 0) {
+    throw new ApiError(409, "Someone on this team is already approved, so the team can't be deleted. Contact the organisers.");
   }
-  if (!data || data.length === 0) throw new ApiError(404, "That person is not a member of this team.");
+
+  // Everyone keeps their (paid) registration; they just stop being grouped.
+  await unlink({ team_id: teamId });
+  const { error: deleteError } = await supabaseAdmin().from("registration_teams").delete().eq("id", teamId);
+  if (deleteError) throw deleteError;
+}
+
+export async function removeMember(reg: Reg, targetRegistrationId: string): Promise<void> {
+  const teamId = requireLeader(reg);
+
+  const { data: target, error } = await supabaseAdmin()
+    .from("pass_registrations")
+    .select("id, team_role, status")
+    .eq("id", targetRegistrationId)
+    .eq("team_id", teamId)
+    .maybeSingle();
+  if (error) throw error;
+  if (!target) throw new ApiError(404, "That person is not on this team.");
+  if (target.team_role === "leader") throw new ApiError(400, "The team leader cannot be removed. Delete the team instead.");
+  if (target.status === "approved") throw new ApiError(409, APPROVED_LOCK);
+
+  await unlink({ id: target.id });
+}
+
+export async function leaveTeam(reg: Reg): Promise<void> {
+  if (!reg.team_id) throw new ApiError(404, "You are not in a team.");
+  if (reg.team_role === "leader") {
+    throw new ApiError(403, "The team leader cannot leave. Delete the team instead.");
+  }
+  if (reg.status === "approved") throw new ApiError(409, APPROVED_LOCK);
+  await unlink({ id: reg.id });
+}
+
+/* ------------------------------------------------------------------ */
+/* Lost link                                                           */
+/* ------------------------------------------------------------------ */
+
+export type RotatedAccess = {
+  token: string;
+  name: string;
+  email: string;
+  confirmationNumber: string;
+  role: "leader" | "member" | null;
+  team: { name: string; code: string } | null;
+};
+
+/**
+ * Someone lost their link. Proof = the email on the registration plus its
+ * confirmation number. Issues a brand-new token, which cuts off the old link.
+ */
+export async function rotateAccessToken(email: string, confirmation: string): Promise<RotatedAccess | null> {
+  const supabase = supabaseAdmin();
+  const { data: reg, error } = await supabase
+    .from("pass_registrations")
+    .select("id, team_id, team_role, participants, confirmation_number, member_email")
+    .eq("member_email", email.trim().toLowerCase())
+    .eq("confirmation_number", confirmation.trim().toUpperCase())
+    .maybeSingle();
+  if (error) throw error;
+  if (!reg || !reg.member_email) return null;
+
+  const { token, hash } = newAccessToken();
+  const { error: updateError } = await supabase.from("pass_registrations").update({ access_token_hash: hash }).eq("id", reg.id);
+  if (updateError) throw updateError;
+
+  const team = reg.team_id ? await loadTeam(reg.team_id) : null;
+  return {
+    token,
+    name: nameOf(reg),
+    email: reg.member_email,
+    confirmationNumber: reg.confirmation_number,
+    role: reg.team_role,
+    team: team ? { name: team.name, code: team.code } : null,
+  };
 }

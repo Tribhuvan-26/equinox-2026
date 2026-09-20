@@ -32,7 +32,10 @@ export function RegistrationList({
                 Submitted {new Date(r.created_at).toLocaleString("en-IN")}
               </p>
               {r.teamName && (
-                <p className="mt-1 text-sm font-bold text-[#7484FE]">Team: {r.teamName}</p>
+                <p className="mt-1 text-sm font-bold text-[#7484FE]">
+                  Team: {r.teamName}
+                  {r.team_role ? ` · ${r.team_role === "leader" ? "Leader" : "Member"}` : ""}
+                </p>
               )}
             </div>
             <StatusBadge status={r.status} />

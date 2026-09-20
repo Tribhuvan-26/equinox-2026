@@ -57,10 +57,10 @@ export function Footer() {
                 ))}
                 <li>
                   <a
-                    href="/dashboard"
+                    href="/my-registration"
                     className="text-sm font-medium text-white/80 transition hover:text-[#33FF67] hover:underline"
                   >
-                    My Team
+                    My Registration
                   </a>
                 </li>
               </ul>

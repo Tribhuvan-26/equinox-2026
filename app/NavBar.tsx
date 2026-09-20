@@ -9,7 +9,6 @@ import {
   Ticket,
   Circle,
   Image as ImageIcon,
-  User,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -62,9 +61,6 @@ export function NavBar({
   }, []);
 
   if (pathname.startsWith("/admin")) return null;
-
-  const isAccountPage =
-    pathname.startsWith("/dashboard") || pathname.startsWith("/login") || pathname.startsWith("/signup");
 
   const isActiveItem = (name: string) => {
     if (pathname.startsWith("/events")) return name === "Sub-Events" || name === "Events";
@@ -193,21 +189,6 @@ export function NavBar({
               </a>
             );
           })}
-
-          {/* Account / team dashboard. Icon-only on phones so the pill still fits. */}
-          <a
-            href="/dashboard"
-            aria-label="My team"
-            className={cn(
-              "relative flex items-center gap-1.5 rounded-full p-2 sm:px-4 sm:py-2 text-[11px] sm:text-xs font-bold transition shrink-0",
-              isAccountPage
-                ? "bg-[#7484FE] text-[#2A2A2A] shadow-md font-black"
-                : "text-white/90 hover:bg-white/15 hover:text-white"
-            )}
-          >
-            <User className="h-3.5 w-3.5 shrink-0" />
-            <span className="hidden sm:inline">Team</span>
-          </a>
         </motion.nav>
       </div>
     </header>
