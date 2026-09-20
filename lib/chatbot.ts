@@ -322,14 +322,17 @@ export function getMockEquinoxResponse(
   if (
     q.includes("total prize pool") ||
     q.includes("overall prize money") ||
+    q.includes("prize money") ||
     q.includes("how much money can i win") ||
-    (q.includes("prize pool") && !context.resolvedEntity)
+    q.includes("what are the prizes") ||
+    q.includes("cash prize") ||
+    ((q.includes("prize pool") || q === "prizes" || q === "prize") && !context.resolvedEntity)
   ) {
     return {
       answer:
-        "I don't have information about an overall summit prize pool in the official Equinox 2.0 program. Individual sub-events feature dedicated prizes such as seed funding and incubation (Pitch Deck), winner trophies and retaining sales profits (Hustle Mania), and champion purses and medals (IPL Auction).",
-      suggestions: ["Pitch Deck prizes", "Hustle Mania prizes", "Explore Sub-Events"],
-      links: [{ label: "Explore Sub-Events", url: "#events" }],
+        "The Equinox 2.0 program features dedicated prizes across its sub-events:\n\n• **Brand Battles**: Cash prizes & trophies\n• **IPL Auction**: Champion purse & team medals\n• **Hustle Mania**: Retain sales profits + Winner Trophy\n• **Pitch Deck**: Seed funding & incubation support\n• **Startup Poly**: Equinox Board Champion Shield\n• **Crossroads**: Exciting awards & certificates\n• **Spotlight**: Exclusive mentor connections\n• **Internship Drive**: Paid internship offers\n\nAsk about any specific event to view its complete rules, timing, and coordinator contacts!",
+      suggestions: ["Brand Battles prizes", "IPL Auction prizes", "Hustle Mania prizes", "Pitch Deck prizes"],
+      links: [{ label: "Explore Sub-Events", url: "/events" }],
       grounded: true,
     };
   }

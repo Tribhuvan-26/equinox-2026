@@ -40,6 +40,7 @@ export interface SubEventInfo {
     | "e-cell-meet"
     | "pitch-deck";
   badgeAccent: string;
+  prize?: string;
   spocs?: EventSPOC[];
 }
 
@@ -168,6 +169,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "spotlight",
     badgeAccent: "#3b82f6",
+    prize: "Exclusive mentor connections",
     spocs: EVENT_SPOCS["spotlight"],
   },
   {
@@ -187,6 +189,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "crossroads",
     badgeAccent: "#10b981",
+    prize: "Exciting awards & certificates",
     spocs: EVENT_SPOCS["crossroads"],
   },
   {
@@ -206,6 +209,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "startup-expo",
     badgeAccent: "#f59e0b",
+    prize: "Investor visibility & user signups",
     spocs: EVENT_SPOCS["startup-expo"],
   },
   {
@@ -225,6 +229,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "brand-battles",
     badgeAccent: "#ef4444",
+    prize: "Cash prizes & trophies",
     spocs: EVENT_SPOCS["brand-battles"],
   },
   {
@@ -244,6 +249,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "ipl-auction",
     badgeAccent: "#8b5cf6",
+    prize: "Champion purse & team medals",
     spocs: EVENT_SPOCS["ipl-auction"],
   },
 
@@ -265,6 +271,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "hustle-mania",
     badgeAccent: "#ec4899",
+    prize: "Retain profits + Winner Trophy",
     spocs: EVENT_SPOCS["hustle-mania"],
   },
   {
@@ -284,6 +291,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "internship-drive",
     badgeAccent: "#06b6d4",
+    prize: "Paid internship offers",
     spocs: EVENT_SPOCS["internship-drive"],
   },
   {
@@ -303,6 +311,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "startup-poly",
     badgeAccent: "#eab308",
+    prize: "Equinox Board Champion Shield",
     spocs: EVENT_SPOCS["startup-poly"],
   },
   {
@@ -322,6 +331,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "e-cell-meet",
     badgeAccent: "#6366f1",
+    prize: "Institutional collaboration MOUs",
     spocs: EVENT_SPOCS["e-cell-meet"],
   },
   {
@@ -341,6 +351,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     registrationStatus: "Open Soon",
     animationType: "pitch-deck",
     badgeAccent: "#14b8a6",
+    prize: "Seed funding & incubation support",
     spocs: EVENT_SPOCS["pitch-deck"],
   },
 ];
