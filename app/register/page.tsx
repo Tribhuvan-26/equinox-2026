@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Calendar, MapPin, Mail, ArrowRight } from "lucide-react";
+import { Calendar, MapPin, Mail, ArrowRight, ArrowLeft } from "lucide-react";
 import { contact, event, registration } from "@/lib/content";
 import { PageTransition } from "../ui";
 import { RegisterForm } from "./RegisterForm";
@@ -19,7 +19,7 @@ const details = [
 export default function RegisterPage() {
   return (
     <PageTransition>
-      <section className="riso-texture brochure-grid relative min-h-screen overflow-hidden bg-[#2A2A2A] pt-40 pb-24 text-[#F7F2F6]">
+      <section className="riso-texture brochure-grid relative min-h-screen overflow-hidden bg-[#2A2A2A] pt-28 pb-24 text-[#F7F2F6] sm:pt-40">
         <div
           aria-hidden
           className="pointer-events-none absolute -top-40 left-1/2 h-[36rem] w-[60rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(116,132,254,0.22),transparent)] blur-3xl"
@@ -28,6 +28,16 @@ export default function RegisterPage() {
           aria-hidden
           className="pointer-events-none absolute top-1/2 right-0 h-[26rem] w-[26rem] rounded-full bg-[radial-gradient(closest-side,rgba(51,255,103,0.14),transparent)] blur-3xl"
         />
+
+        <div className="relative mx-auto mb-6 flex w-full max-w-[1400px] justify-start px-4 sm:px-8">
+          <Link
+            href="/"
+            className="group inline-flex items-center gap-2 rounded-full border-2 border-white/30 bg-[#151515] px-4 py-2 font-mono text-xs font-black uppercase tracking-wider text-[#F7F2F6] shadow-[3px_3px_0px_#7484FE] transition-all hover:border-[#33FF67] hover:bg-[#202020] hover:text-[#33FF67] hover:shadow-[3px_3px_0px_#33FF67] active:scale-95"
+          >
+            <ArrowLeft className="h-4 w-4 text-[#33FF67] transition-transform group-hover:-translate-x-1" />
+            <span>Back to Homepage</span>
+          </Link>
+        </div>
 
         <div className="relative mx-auto flex max-w-[1400px] flex-col items-center px-4 text-center sm:px-8">
           <span className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(90deg,#7484FE,#33FF67)] px-4 py-1 text-xs font-black uppercase tracking-wider text-[#2A2A2A]">

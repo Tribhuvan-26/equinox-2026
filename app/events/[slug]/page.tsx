@@ -34,21 +34,31 @@ export default async function EventPage({ params }: PageProps) {
   if (!item) notFound();
 
   const spocs = EVENT_SPOCS[slug] || [];
+  const isInternshipDrive = slug === "internship-drive";
+  const bgClasses = isInternshipDrive ? "riso-texture brochure-grid" : "";
 
   return (
-    <main className="riso-texture brochure-grid min-h-screen w-full max-w-full overflow-x-clip bg-[#2A2A2A] px-4 pt-24 pb-16 text-[#F7F2F6] sm:px-8 sm:pt-32 sm:pb-20 md:pt-36 selection:bg-[#7484FE] selection:text-[#2A2A2A]">
+    <main className={`${bgClasses} min-h-screen w-full max-w-full overflow-x-clip bg-[#2A2A2A] px-4 pt-24 pb-16 text-[#F7F2F6] sm:px-8 sm:pt-32 sm:pb-20 md:pt-36 selection:bg-[#7484FE] selection:text-[#2A2A2A]`}>
       <AutoPlayAnimation slug={slug} />
 
       <div className="mx-auto max-w-[1200px]">
         {/* Top Institutional & Navigation Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/20 pb-5">
-          <Link
-            href="/events"
-            className="inline-flex items-center gap-2 border-2 border-white/40 bg-[#7484FE] px-4 py-1.5 font-mono text-xs font-black uppercase tracking-wider text-[#F7F2F6] shadow-[2px_2px_0px_#2A2A2A] transition hover:bg-[#5868DF]"
-          >
-            <span>&larr;</span>
-            <span>All Sub-Events</span>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/events"
+              className="inline-flex items-center gap-2 border-2 border-white/40 bg-[#7484FE] px-3.5 py-1.5 font-mono text-xs font-black uppercase tracking-wider text-[#F7F2F6] shadow-[2px_2px_0px_#2A2A2A] transition hover:bg-[#5868DF] active:scale-95"
+            >
+              <span>&larr;</span>
+              <span>All Sub-Events</span>
+            </Link>
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 border border-white/20 bg-[#151515] px-3 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-[#F7F2F6]/80 shadow-[2px_2px_0px_#2A2A2A] transition hover:border-[#33FF67] hover:bg-white/10 hover:text-white active:scale-95"
+            >
+              <span>Home</span>
+            </Link>
+          </div>
 
           <div className="flex items-center gap-3">
             <span className="font-mono text-xs font-bold tracking-widest text-[#2A2A2A] bg-[#33FF67] px-2 py-0.5 uppercase">

@@ -6,7 +6,7 @@ import React from "react";
 // program materials (public/logos) — one shared renderer for every badge.
 function EventLogo({ slug, alt, className = "" }: { slug: string; alt: string; className?: string }) {
   // eslint-disable-next-line @next/next/no-img-element -- real intrinsic aspect ratio per logo, no next/image benefit here
-  return <img src={`/logos/${slug}.png`} alt={alt} className={`h-full w-auto object-contain ${className}`} />;
+  return <img src={`/logos/${slug}.png`} alt={alt} className={`h-full max-w-full w-auto object-contain ${className}`} />;
 }
 
 // 1. Institutional Lockup (Top of Cover)

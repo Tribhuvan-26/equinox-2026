@@ -125,7 +125,7 @@ export default function MobileJourney() {
               turns the nose down the spine. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/LukeSpaceship.svg"
+            src="/spaceship.svg"
             alt=""
             className={`h-10 w-10 drop-shadow-[0_0_10px_rgba(51,255,103,0.55)] transition-transform duration-300 ${
               nosingDown ? "rotate-180" : "rotate-0"
