@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { canonicalSlugs, eventsData } from "../eventsData";
 import { SubEventBadge } from "../../EventGraphics";
 import { AutoPlayAnimation } from "../AutoPlayAnimation";
+import { EVENT_SPOCS } from "@/chatbot/data/events";
+import { Phone, ArrowUpRight, Ticket } from "lucide-react";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -30,6 +32,8 @@ export default async function EventPage({ params }: PageProps) {
   const { slug } = await params;
   const item = eventsData[slug];
   if (!item) notFound();
+
+  const spocs = EVENT_SPOCS[slug] || [];
 
   return (
     <main className="riso-texture brochure-grid min-h-screen w-full max-w-full overflow-x-clip bg-[#2A2A2A] px-4 pt-24 pb-16 text-[#F7F2F6] sm:px-8 sm:pt-32 sm:pb-20 md:pt-36 selection:bg-[#7484FE] selection:text-[#2A2A2A]">
@@ -87,7 +91,7 @@ export default async function EventPage({ params }: PageProps) {
           <div className="absolute -top-1.5 right-0 h-3 w-[2px] bg-white/40" />
         </div>
 
-        {/* Main Event Overview: Dark Section matching Brochure Sections */}
+        {/* 1. Main Event Overview: Dark Section matching Brochure Sections */}
         <section className="rounded-3xl border-2 border-white/20 bg-[#2A2A2A]/90 p-5 text-[#F7F2F6] shadow-[6px_6px_0px_rgba(0,0,0,0.35)] backdrop-blur-xs sm:p-10">
           <div className="flex items-center gap-2 font-mono text-xs font-black uppercase tracking-wider text-[#33FF67]">
             <span className="inline-block h-2.5 w-2.5 bg-[#7484FE]" />
@@ -99,76 +103,103 @@ export default async function EventPage({ params }: PageProps) {
         </section>
 
         {/* Section Divider with Blueprint Tick Marks */}
-        <div className="relative my-8 border-t border-white/20 sm:my-12">
+        <div className="relative my-8 border-t border-white/20 sm:my-10">
           <div className="absolute -top-1.5 left-0 h-3 w-[2px] bg-white/40" />
           <div className="absolute -top-1.5 left-1/2 h-3 w-[2px] -translate-x-1/2 bg-white/40" />
           <div className="absolute -top-1.5 right-0 h-3 w-[2px] bg-white/40" />
         </div>
 
-        {/* Logistics Placeholders (Clearly marked TODO, zero invented rules/dates) */}
+        {/* 2. Event SPOCs / Contacts Section */}
         <section>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
-            <h2 className="font-display-title text-2xl font-black uppercase tracking-tight text-[#F7F2F6] sm:text-5xl">
-              Event Logistics
+            <h2 className="font-display-title text-2xl font-black uppercase tracking-tight text-[#F7F2F6] sm:text-4xl">
+              Event SPOCs
             </h2>
-            <span className="font-mono text-xs uppercase tracking-wider text-[#F7F2F6]/70">
-              Official Details · Pending CIE Scheduling
+            <span className="font-mono text-xs uppercase tracking-wider text-[#33FF67]">
+              Official Points of Contact · Direct Coordination
             </span>
           </div>
 
-          <div className="mt-6 grid grid-flow-dense gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-            {/* Date & Timing Placeholder */}
-            <div className="rounded-2xl border-2 border-white/20 bg-[#2A2A2A]/90 p-5 shadow-[4px_4px_0px_rgba(0,0,0,0.35)] backdrop-blur-xs sm:p-6">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#7484FE]">
-                  Schedule
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {spocs.map((spoc, index) => {
+              const telHref = `tel:${spoc.phoneRaw || spoc.phone.replace(/[^0-9+]/g, "")}`;
+              const spocNum = String(index + 1).padStart(2, "0");
+              return (
+                <div
+                  key={`${spoc.name}-${spoc.phone}`}
+                  className="group relative flex flex-col justify-between rounded-2xl border-2 border-white/20 bg-[#2A2A2A]/90 p-5 shadow-[4px_4px_0px_rgba(0,0,0,0.35)] backdrop-blur-xs transition hover:border-[#7484FE]/80 sm:p-6"
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#7484FE]">
+                        SPOC {spocNum}
+                      </span>
+                      <span className="flex items-center gap-1.5 border border-white/10 bg-[#1E1E1E] px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-[#33FF67]">
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#33FF67] animate-pulse" />
+                        Direct Contact
+                      </span>
+                    </div>
+
+                    <h3 className="mt-4 font-display-title text-xl font-bold uppercase text-[#F7F2F6] sm:text-2xl">
+                      {spoc.name}
+                    </h3>
+                    <p className="mt-1 font-mono text-xs uppercase tracking-wider text-[#F7F2F6]/60">
+                      Sub-Event Coordinator
+                    </p>
+                  </div>
+
+                  <a
+                    href={telHref}
+                    className="mt-6 flex items-center justify-between rounded-xl border border-white/20 bg-[#1E1E1E] px-4 py-3 font-mono text-sm font-bold text-[#33FF67] transition group-hover:border-[#33FF67] group-hover:bg-[#33FF67]/10"
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <Phone className="h-4 w-4 text-[#7484FE]" />
+                      <span>{spoc.phone}</span>
+                    </span>
+                    <ArrowUpRight className="h-4 w-4 text-white/50 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#33FF67]" />
+                  </a>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Section Divider with Blueprint Tick Marks */}
+        <div className="relative my-8 border-t border-white/20 sm:my-10">
+          <div className="absolute -top-1.5 left-0 h-3 w-[2px] bg-white/40" />
+          <div className="absolute -top-1.5 left-1/2 h-3 w-[2px] -translate-x-1/2 bg-white/40" />
+          <div className="absolute -top-1.5 right-0 h-3 w-[2px] bg-white/40" />
+        </div>
+
+        {/* 3. Summit Registration / Action Area */}
+        <section className="rounded-3xl border-2 border-white/20 bg-[#2A2A2A]/90 p-5 shadow-[6px_6px_0px_rgba(0,0,0,0.35)] backdrop-blur-xs sm:p-8">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-xs font-black uppercase tracking-wider text-[#7484FE]">
+                  Summit Registration
                 </span>
-                <span className="border border-transparent bg-[#33FF67] px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-[#2A2A2A]">
-                  TODO
+                <span className="rounded bg-[#33FF67] px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-[#2A2A2A]">
+                  Open Soon
                 </span>
               </div>
-              <h3 className="mt-3 font-display-title text-xl font-bold uppercase text-[#F7F2F6]">
-                Date &amp; Timing
+              <h3 className="mt-2 font-display-title text-xl font-bold uppercase text-[#F7F2F6] sm:text-2xl">
+                Participate in {item.title}
               </h3>
-              <p className="mt-3 font-mono text-sm leading-relaxed text-[#F7F2F6]/85">
-                {item.logistics.dateTime}
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#F7F2F6]/75 sm:text-base">
+                Official registrations for The Equinox 2.0 summit passes and sub-event delegate spots are centralized through the official registration portal.
               </p>
             </div>
 
-            {/* Venue Placeholder */}
-            <div className="rounded-2xl border-2 border-white/20 bg-[#2A2A2A]/90 p-5 shadow-[4px_4px_0px_rgba(0,0,0,0.35)] backdrop-blur-xs sm:p-6">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#7484FE]">
-                  Location
-                </span>
-                <span className="border border-transparent bg-[#33FF67] px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-[#2A2A2A]">
-                  TODO
-                </span>
-              </div>
-              <h3 className="font-display-title mt-3 text-xl font-bold uppercase text-[#F7F2F6]">
-                Venue
-              </h3>
-              <p className="mt-3 font-mono text-sm leading-relaxed text-[#F7F2F6]/85">
-                {item.logistics.venue}
-              </p>
-            </div>
-
-            {/* Rules & Guidelines Placeholder */}
-            <div className="rounded-2xl border-2 border-white/20 bg-[#2A2A2A]/90 p-5 shadow-[4px_4px_0px_rgba(0,0,0,0.35)] backdrop-blur-xs sm:p-6 sm:col-span-2 lg:col-span-1">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#7484FE]">
-                  Regulations
-                </span>
-                <span className="border border-transparent bg-[#33FF67] px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-[#2A2A2A]">
-                  TODO
-                </span>
-              </div>
-              <h3 className="font-display-title mt-3 text-xl font-bold uppercase text-[#F7F2F6]">
-                Rules &amp; Guidelines
-              </h3>
-              <p className="mt-3 font-mono text-sm leading-relaxed text-[#F7F2F6]/85">
-                {item.logistics.rules}
-              </p>
+            <div className="shrink-0">
+              <Link
+                href="/register"
+                className="inline-flex items-center gap-2.5 border-2 border-white/40 bg-[#7484FE] px-6 py-3.5 font-mono text-xs font-black uppercase tracking-wider text-[#F7F2F6] shadow-[3px_3px_0px_#2A2A2A] transition hover:bg-[#5868DF] hover:shadow-[4px_4px_0px_#33FF67]"
+              >
+                <Ticket className="h-4 w-4" />
+                <span>Registration Desk</span>
+                <ArrowUpRight className="h-4 w-4" />
+              </Link>
             </div>
           </div>
         </section>

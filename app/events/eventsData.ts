@@ -8,11 +8,6 @@ export interface EventDetail {
     whiteWord: string;
   };
   description: string;
-  logistics: {
-    dateTime: string;
-    venue: string;
-    rules: string;
-  };
 }
 
 export const eventsData: Record<string, EventDetail> = {
@@ -27,11 +22,6 @@ export const eventsData: Record<string, EventDetail> = {
     },
     description:
       "Spotlight features talk sessions by industry experts covering the latest trends across various fields. It gives students valuable insights into emerging ideas, industry developments, and new opportunities.",
-    logistics: {
-      dateTime: "[TODO] Date and schedule to be announced",
-      venue: "[TODO] Venue and location to be announced",
-      rules: "[TODO] Official rules and guidelines to be announced",
-    },
   },
   crossroads: {
     slug: "crossroads",
@@ -44,11 +34,6 @@ export const eventsData: Record<string, EventDetail> = {
     },
     description:
       "Crossroads is a business case-study competition where teams analyse real-world business challenges and develop practical strategies. It helps participants improve their problem-solving, decision-making, and business skills.",
-    logistics: {
-      dateTime: "[TODO] Date and schedule to be announced",
-      venue: "[TODO] Venue and location to be announced",
-      rules: "[TODO] Official rules and guidelines to be announced",
-    },
   },
   "startup-expo": {
     slug: "startup-expo",
@@ -61,11 +46,6 @@ export const eventsData: Record<string, EventDetail> = {
     },
     description:
       "Startup Expo provides a platform for startups to showcase their products, business ideas, and solutions to students. It helps startups gain visibility while giving students an opportunity to explore new ideas and businesses.",
-    logistics: {
-      dateTime: "[TODO] Date and schedule to be announced",
-      venue: "[TODO] Venue and location to be announced",
-      rules: "[TODO] Official rules and guidelines to be announced",
-    },
   },
   "brand-battles": {
     slug: "brand-battles",
@@ -78,11 +58,6 @@ export const eventsData: Record<string, EventDetail> = {
     },
     description:
       "Brand Battles is a competitive debate between teams representing rival brands from the same sector. Participants defend their brands using real-time examples, data, and case studies while challenging their opponents' strategies.",
-    logistics: {
-      dateTime: "[TODO] Date and schedule to be announced",
-      venue: "[TODO] Venue and location to be announced",
-      rules: "[TODO] Official rules and guidelines to be announced",
-    },
   },
   "ipl-auction": {
     slug: "ipl-auction",
@@ -95,11 +70,6 @@ export const eventsData: Record<string, EventDetail> = {
     },
     description:
       "IPL Auction is a simulated cricket auction where participants take on the role of team owners. They bid for players, manage their budgets, and build their own teams through strategic decision-making.",
-    logistics: {
-      dateTime: "[TODO] Date and schedule to be announced",
-      venue: "[TODO] Venue and location to be announced",
-      rules: "[TODO] Official rules and guidelines to be announced",
-    },
   },
   "hustle-mania": {
     slug: "hustle-mania",
@@ -112,11 +82,6 @@ export const eventsData: Record<string, EventDetail> = {
     },
     description:
       "Hustle Mania is a student-organized stall event where students sell products of their choice. Participants compete with others while developing their communication, persuasion, and business skills.",
-    logistics: {
-      dateTime: "[TODO] Date and schedule to be announced",
-      venue: "[TODO] Venue and location to be announced",
-      rules: "[TODO] Official rules and guidelines to be announced",
-    },
   },
   "internship-drive": {
     slug: "internship-drive",
@@ -129,11 +94,6 @@ export const eventsData: Record<string, EventDetail> = {
     },
     description:
       "Internship Drive connects students with startups and companies offering internship opportunities. It helps students explore career options, gain practical experience, build professional connections, and develop useful skills.",
-    logistics: {
-      dateTime: "[TODO] Date and schedule to be announced",
-      venue: "[TODO] Venue and location to be announced",
-      rules: "[TODO] Official rules and guidelines to be announced",
-    },
   },
   "startup-poly": {
     slug: "startup-poly",
@@ -146,11 +106,6 @@ export const eventsData: Record<string, EventDetail> = {
     },
     description:
       "Startup Poly is a fast-paced business simulation game inspired by Monopoly. Participants build startups, compete in markets, manage finances, handle risks, and make strategic decisions based on real-world business situations.",
-    logistics: {
-      dateTime: "[TODO] Date and schedule to be announced",
-      venue: "[TODO] Venue and location to be announced",
-      rules: "[TODO] Official rules and guidelines to be announced",
-    },
   },
   "e-cell-meet": {
     slug: "e-cell-meet",
@@ -163,11 +118,6 @@ export const eventsData: Record<string, EventDetail> = {
     },
     description:
       "E-Cell Meet brings together E-Cells from different colleges to connect, share ideas, and exchange experiences. It provides opportunities for students to build relationships, collaborate, and explore partnerships across campuses.",
-    logistics: {
-      dateTime: "[TODO] Date and schedule to be announced",
-      venue: "[TODO] Venue and location to be announced",
-      rules: "[TODO] Official rules and guidelines to be announced",
-    },
   },
   "pitch-deck": {
     slug: "pitch-deck",
@@ -180,11 +130,6 @@ export const eventsData: Record<string, EventDetail> = {
     },
     description:
       "Pitch Deck is a startup pitching platform where students present their ideas to investors, startup mentors, and industry experts. Participants receive valuable feedback and insights to help improve and develop their ideas.",
-    logistics: {
-      dateTime: "[TODO] Date and schedule to be announced",
-      venue: "[TODO] Venue and location to be announced",
-      rules: "[TODO] Official rules and guidelines to be announced",
-    },
   },
 };
 
