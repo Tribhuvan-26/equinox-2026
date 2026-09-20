@@ -11,7 +11,8 @@ import { InstitutionalHeader } from "../app/EventGraphics";
 import { subEvents } from "@/lib/content";
 import SpiderIntro from "./SpiderIntro";
 import GlitchWordmark from "./GlitchWordmark";
-import Comet from "./Comet";
+import NebulaBackground from "./NebulaBackground";
+import ContinuousComet from "./ContinuousComet";
 import MobileJourney from "./MobileJourney";
 
 import {
@@ -617,12 +618,13 @@ export default function ScrollJourney() {
   return (
     <>
       <div ref={containerRef} className="relative w-full" style={{ height: isMobile ? "115vh" : "1500vh" }}>
-        <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#2A2A2A]">
+        <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
+          <NebulaBackground />
+          <ContinuousComet />
 
           {/* ── SPARSE STAR FIELD WITH MINIMAL TWINKLING STARS ──────────────── */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
             {/* Faint static backdrop pattern */}
-            <Comet />
             <svg width="100%" height="100%" className="absolute inset-0">
               <pattern id="static-stars" x="0" y="0" width="180" height="180" patternUnits="userSpaceOnUse">
                 <circle fill="#F7F2F6" cx="28" cy="22" r="2.2" opacity="0.45" />
@@ -761,13 +763,9 @@ export default function ScrollJourney() {
               className="relative flex flex-col items-center gap-4 pointer-events-none"
               style={{ zIndex: 2 }}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/tagline-lockup.png"
-                alt="# Where Passion Meets Perseverance"
-                className="h-auto w-[min(94vw,880px)] object-contain"
-                draggable={false}
-              />
+              <h2 className="font-sans text-2xl font-bold tracking-tight text-white md:text-3xl lg:text-4xl drop-shadow-md">
+                #Where<span className="text-[#7484FE]">Passion</span>Meets<span className="text-[#33FF67]">Perseverance</span>
+              </h2>
             </div>
           </div>
 
