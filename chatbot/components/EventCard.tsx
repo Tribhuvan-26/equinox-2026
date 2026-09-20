@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import { SubEventInfo } from "../data/events";
 import { triggerEventAnimation } from "../animations/eventAnimations";
-import { ArrowRight, Calendar, MapPin, Sparkles, Gavel, Tag, Handshake, DollarSign, Dices } from "lucide-react";
+import { ArrowRight, Calendar, MapPin, Sparkles, Gavel, Tag, Handshake, DollarSign, Dices, Trophy } from "lucide-react";
 
 interface EventCardProps {
   event: SubEventInfo;
@@ -20,13 +20,13 @@ export function EventCard({ event, onSelect }: EventCardProps) {
   }, [event]);
 
   return (
-    <div className="event-card-container mt-2 overflow-hidden rounded-xl border border-white/40 bg-[#0d2d99] text-white shadow-md">
+    <div className="event-card-container mt-2.5 overflow-hidden rounded-none border-2 border-white/40 bg-[#181818] text-[#F7F2F6] shadow-[4px_4px_0px_#7484FE]">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-white/20 bg-[#0a2377] px-3 py-1.5">
-        <span className="font-mono text-[9.5px] font-black uppercase tracking-wider text-white/80">
-          PAGE {event.pageNumber} · {event.category}
+      <div className="flex items-center justify-between border-b-2 border-white/20 bg-[#222222] px-3 py-1.5">
+        <span className="font-mono text-[9.5px] font-black uppercase tracking-wider text-[#7484FE]">
+          PAGE {event.pageNumber} // {event.category}
         </span>
-        <span className="rounded bg-white px-1 py-0.2 font-mono text-[8.5px] font-black text-[#282828]">
+        <span className="rounded-none border border-black bg-[#33FF67] px-1.5 py-0.2 font-mono text-[8.5px] font-black text-[#121212] shadow-[1px_1px_0px_#000000]">
           EQUINOX 2.0
         </span>
       </div>
@@ -35,14 +35,22 @@ export function EventCard({ event, onSelect }: EventCardProps) {
       <div className="p-3">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <h4 className="font-mono text-sm font-black tracking-tight text-white uppercase sm:text-base">
+            <h4 className="font-mono text-sm font-black tracking-tight text-[#F7F2F6] uppercase sm:text-base">
               {event.name}
             </h4>
-            <p className="mt-0.5 text-[11.5px] text-white/80 font-medium line-clamp-2">
+            <p className="mt-0.5 text-[11.5px] text-[#F7F2F6]/75 font-medium line-clamp-2 font-mono">
               {event.tagline}
             </p>
           </div>
         </div>
+
+        {/* Prize Money / Award Badge */}
+        {event.prize && (
+          <div className="mt-2.5 flex items-center gap-1.5 rounded-none border-2 border-[#33FF67] bg-[#33FF67]/10 px-2.5 py-1 text-xs text-[#33FF67] shadow-[2px_2px_0px_rgba(51,255,103,0.3)]">
+            <Trophy className="h-3.5 w-3.5 shrink-0" />
+            <span className="font-mono text-[11px] font-black tracking-wide uppercase">PRIZE: {event.prize}</span>
+          </div>
+        )}
 
         {/* GSAP Event Animation Canvas */}
         <div
@@ -148,7 +156,7 @@ export function EventCard({ event, onSelect }: EventCardProps) {
                   className="intern-connect-line"
                 />
               </svg>
-              <div className="intern-offer-badge rounded-full border border-white bg-cyan-500 px-2 py-1 font-mono text-[10px] font-black text-[#282828]">
+              <div className="intern-offer-badge rounded-none border border-white bg-cyan-500 px-2 py-1 font-mono text-[10px] font-black text-[#121212]">
                 Startup
               </div>
             </div>
@@ -157,7 +165,7 @@ export function EventCard({ event, onSelect }: EventCardProps) {
           {/* Startup Poly Animation Elements */}
           {event.animationType === "startup-poly" && (
             <div className="relative flex h-full w-full items-center justify-center gap-4">
-              <div className="poly-dice-icon flex h-8 w-8 items-center justify-center rounded-lg border-2 border-white bg-yellow-400 text-[#282828] shadow-md">
+              <div className="poly-dice-icon flex h-8 w-8 items-center justify-center rounded-none border-2 border-white bg-yellow-400 text-[#121212] shadow-[2px_2px_0px_#000000]">
                 <Dices className="h-4 w-4" />
               </div>
               <div className="poly-board-tile rounded border border-yellow-300/60 bg-yellow-500/20 px-3 py-1 font-mono text-xs font-bold text-yellow-200">
@@ -193,18 +201,18 @@ export function EventCard({ event, onSelect }: EventCardProps) {
         </div>
 
         {/* Footer Meta & Action */}
-        <div className="mt-3 flex items-center justify-between border-t border-white/15 pt-2.5">
-          <div className="flex items-center gap-1.5 text-[11px] text-white/80">
-            <Calendar className="h-3 w-3" />
+        <div className="mt-3 flex items-center justify-between border-t-2 border-white/20 pt-2.5">
+          <div className="flex items-center gap-1.5 font-mono text-[11px] text-[#F7F2F6]/80">
+            <Calendar className="h-3 w-3 text-[#7484FE]" />
             <span>{event.timing.split("(")[0]}</span>
           </div>
 
           <button
             onClick={() => onSelect(event)}
-            className="flex items-center gap-1 rounded-full border border-white bg-white px-3 py-1 font-mono text-xs font-black text-[#2074d5] transition hover:bg-white/90"
+            className="flex items-center gap-1.5 rounded-none border-2 border-white bg-[#7484FE] px-3 py-1 font-mono text-xs font-black uppercase text-[#121212] shadow-[2px_2px_0px_#33FF67] hover:bg-[#33FF67] hover:shadow-[1px_1px_0px_#7484FE] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
           >
-            <span>View Details</span>
-            <ArrowRight className="h-3 w-3" />
+            <span>DETAILS</span>
+            <ArrowRight className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>

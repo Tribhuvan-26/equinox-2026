@@ -131,15 +131,15 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
   return (
     <div
       data-lenis-prevent
-      className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl sm:rounded-3xl border border-white/50 bg-[#2074d5] text-white shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_25px_rgba(32,116,213,0.35)]"
+      className="relative flex h-full w-full flex-col overflow-hidden rounded-none border-2 border-white/70 bg-[#161616] text-[#F7F2F6] shadow-[6px_6px_0px_#000000,8px_8px_0px_#7484FE]"
     >
       {/* Header */}
-      <div className="chatbot-riso-bg shrink-0 flex items-center justify-between border-b border-white/20 px-3.5 py-2.5 sm:px-4 sm:py-3">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg border border-white/40 bg-[#161622] shadow-xs">
+      <div className="chatbot-riso-bg shrink-0 flex items-center justify-between border-b-2 border-white/20 px-3.5 py-2.5 sm:px-4 sm:py-3 bg-[#1C1C1C]">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-8.5 w-8.5 items-center justify-center overflow-hidden rounded-none border-2 border-[#7484FE] bg-[#101014] shadow-[2px_2px_0px_#000000]">
             <Image
               src="/chatbot-mascot.png"
-              alt=""
+              alt="Equinox Mascot"
               width={64}
               height={90}
               className="h-[88%] w-auto object-contain"
@@ -147,23 +147,24 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-mono text-xs font-black tracking-wider uppercase text-white sm:text-sm">
+              <span className="font-mono text-xs font-black tracking-wider uppercase text-[#F7F2F6] sm:text-sm">
                 EQUINOX AI
               </span>
-              <span className="rounded bg-white px-1 py-0.2 font-mono text-[8.5px] font-black text-[#282828]">
+              <span className="rounded-none border border-black bg-[#33FF67] px-1.5 py-0.2 font-mono text-[8.5px] font-black text-[#121212] shadow-[1px_1px_0px_#000000]">
                 2.0
               </span>
             </div>
-            <p className="text-[9.5px] text-white/75 font-mono">
-              Grounded In Official Details
+            <p className="text-[9.5px] text-[#F7F2F6]/75 font-mono tracking-wide flex items-center gap-1.5 mt-0.5">
+              <span className="inline-block h-1.5 w-1.5 bg-[#33FF67] animate-pulse" />
+              <span>GROUNDED // OFFICIAL SPEC</span>
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-0.5">
+        <div className="flex items-center gap-1.5">
           <button
             onClick={handleReset}
-            className="rounded-full p-1.5 text-white/70 transition hover:bg-white/15 hover:text-white"
+            className="flex h-7 w-7 items-center justify-center rounded-none border border-white/20 bg-[#222222] text-[#F7F2F6] shadow-[2px_2px_0px_#000000] hover:bg-[#7484FE] hover:text-[#121212] hover:border-white hover:shadow-[1px_1px_0px_#000000] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
             title="Reset conversation"
             aria-label="Reset chat"
           >
@@ -171,10 +172,10 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
           </button>
           <button
             onClick={onClose}
-            className="rounded-full p-1.5 text-white/70 transition hover:bg-white/15 hover:text-white"
+            className="flex h-7 w-7 items-center justify-center rounded-none border border-white/20 bg-[#222222] text-[#F7F2F6] shadow-[2px_2px_0px_#000000] hover:bg-[#FF4545] hover:text-white hover:border-white hover:shadow-[1px_1px_0px_#000000] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
             aria-label="Close chat window"
           >
-            <X className="h-4.5 w-4.5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
       </div>
@@ -198,10 +199,10 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
 
         {/* Typing Loading State */}
         {isTyping && (
-          <div className="flex items-center gap-1.5 rounded-2xl border border-white/30 bg-[#0c2b94]/80 px-3.5 py-2 text-white/80 max-w-[80px]">
-            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white [animation-delay:-0.3s]" />
-            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white [animation-delay:-0.15s]" />
-            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white" />
+          <div className="flex items-center gap-1.5 rounded-none border-2 border-white/25 bg-[#222222] px-3.5 py-2 text-[#F7F2F6]/80 shadow-[2px_2px_0px_#000000] max-w-[85px]">
+            <span className="h-1.5 w-1.5 bg-[#7484FE] animate-pulse" />
+            <span className="h-1.5 w-1.5 bg-[#33FF67] animate-pulse [animation-delay:-0.15s]" />
+            <span className="h-1.5 w-1.5 bg-[#F7F2F6] animate-pulse [animation-delay:-0.3s]" />
           </div>
         )}
       </div>

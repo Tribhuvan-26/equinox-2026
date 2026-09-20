@@ -66,25 +66,37 @@ export function ChatMessage({
       ref={containerRef}
       className={`flex flex-col ${isUser ? "items-end" : "items-start"} space-y-1.5`}
     >
-      {/* Bubble */}
+      {/* Brutalist Message Box */}
       <div
-        className={`max-w-[90%] rounded-2xl px-3 py-2 text-xs sm:text-[13px] ${
+        className={`max-w-[92%] rounded-none px-3.5 py-2.5 text-xs sm:text-[13px] ${
           isUser
-            ? "border border-white/80 bg-white text-[#282828] shadow-xs font-medium"
-            : "border border-white/25 bg-[#0c2b94]/95 text-white/95 shadow-xs backdrop-blur-xs"
+            ? "border-2 border-white bg-[#7484FE] text-[#121212] font-mono font-bold shadow-[3px_3px_0px_#33FF67]"
+            : "border-2 border-white/30 bg-[#1E1E1E] text-[#F7F2F6] shadow-[3px_3px_0px_#000000]"
         }`}
       >
         {!isUser && (
-          <div className="mb-1 flex items-center gap-1.5 text-[9.5px] font-mono font-bold tracking-wider uppercase text-white/70">
-            <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-white text-[#2074d5]">
-              <Bot className="h-2 w-2" />
-            </span>
-            <span>EQUINOX 2.0 AI</span>
+          <div className="mb-2 flex items-center justify-between border-b border-white/10 pb-1 text-[9.5px] font-mono font-bold uppercase tracking-wider text-[#7484FE]">
+            <div className="flex items-center gap-1.5">
+              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-none border border-[#7484FE] bg-[#101014] text-[#7484FE]">
+                <Bot className="h-2 w-2" />
+              </span>
+              <span className="text-[#F7F2F6]/90">[ EQUINOX 2.0 AI ]</span>
+            </div>
+            {message.timestamp && (
+              <span className="text-[#F7F2F6]/40 text-[9px] font-mono">{message.timestamp}</span>
+            )}
           </div>
         )}
 
         {isUser ? (
-          <p className="leading-relaxed">{message.text}</p>
+          <div>
+            <p className="leading-relaxed font-mono font-bold">{message.text}</p>
+            {message.timestamp && (
+              <span className="block mt-1 text-right text-[8.5px] text-[#121212]/60 font-mono font-normal">
+                {message.timestamp}
+              </span>
+            )}
+          </div>
         ) : (
           <div className="leading-relaxed">{renderFormattedText(message.text)}</div>
         )}
@@ -97,7 +109,7 @@ export function ChatMessage({
 
       {/* Suggested Follow-up Action Chips */}
       {!isUser && message.suggestions && message.suggestions.length > 0 && isLast && (
-        <div className="pl-1 pt-1 max-w-[95%]">
+        <div className="pl-0.5 pt-1 max-w-[98%]">
           <QuickActions
             actions={message.suggestions}
             onSelect={onSelectSuggestion}
