@@ -143,6 +143,7 @@ export default function ScrollJourney() {
 
   // ── VELOCITY-REACTIVE ROCKET IGNITION ───────────────────────────────────────
   useEffect(() => {
+    if (showLoader) return;
     let currentIntensity = 0;
     let lastScrollY = typeof window !== "undefined" ? window.scrollY : 0;
 
@@ -199,7 +200,7 @@ export default function ScrollJourney() {
     return () => {
       gsap.ticker.remove(flameTick);
     };
-  }, []);
+  }, [showLoader]);
 
   useEffect(() => {
     const t = setTimeout(() => setIsGlobeReady(true), 2500);

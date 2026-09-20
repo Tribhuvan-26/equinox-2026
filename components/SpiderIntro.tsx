@@ -123,9 +123,10 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
         const wordPlates = wordPlatesRef.current.filter(Boolean) as HTMLDivElement[];
         const [, cieBlue, cieGreen] = ciePlates;
         const [, wordBlue, wordGreen] = wordPlates;
-        gsap.set(cieRef.current, { willChange: "transform" });
+        gsap.set([cieRef.current, cieArtRef.current], { willChange: "transform", force3D: true });
         gsap.set([coverRef.current, cieBlue, cieGreen, wordBlue, wordGreen, flashRef.current], {
           willChange: "transform, opacity",
+          force3D: true,
         });
         // Measured once, up front — never re-measured mid-timeline. The glitch
         // displacement scales with the logo's actual rendered width so it reads
@@ -165,20 +166,17 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
       // Act 1 — CIE reads clean, one letter at a time. No blur, no scale-in —
       // an opaque cover retreats from left to right, timed to each glyph's
       // real edge, held between letters so the mark is fully legible before
-      // anything destabilizes it. This is a `scaleX` on a plain cover div
-      // (transform-origin pinned to the right edge) rather than animating
-      // clip-path on cieRef: clip-path on a container whose children use
-      // mask-image isn't reliably compositor-only, and cost showed up as a
-      // stutter on exactly the first tween (the C reveal) where the browser
-      // had to establish that paint/compositing layer for the first time.
+      // anything destabilizes it.
+      // A brief 0.15s settling delay ensures the browser's initial paint/rasterization
+      // has completely cleared so the C reveal starts with zero dropped frames.
       tl.set([cieBlue, cieGreen, wordRef.current], { opacity: 0 })
         .set(ciePaper, { opacity: 0 })
         .set(cieRef.current, { opacity: 1 }, 0)
         .set(coverRef.current, { scaleX: 1 }, 0)
-        .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.c), duration: 0.55, ease: "power2.out" }, 0) // C
-        .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.i), duration: 0.4, ease: "power2.out" }, 0.75) // I
-        .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.e), duration: 0.45, ease: "power2.out" }, 1.35); // E.
-      // CIE. now holds fully visible, untouched, until "glitch" at 2.4.
+        .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.c), duration: 0.55, ease: "power2.out" }, 0.15) // C
+        .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.i), duration: 0.4, ease: "power2.out" }, 0.90) // I
+        .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.e), duration: 0.45, ease: "power2.out" }, 1.50); // E.
+      // CIE. now holds fully visible, untouched, until "glitch" at 2.55.
 
       // Act 2 — the tear. A fixed, small set of discrete jumps (deterministic:
       // any randomness is resolved once here, not re-rolled during playback),
@@ -190,7 +188,7 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
         ? [{ reach: unit * 0.8, opacity: 0.65 }, { reach: unit * 1.6, opacity: 0.95 }]
         : [{ reach: unit * 0.4, opacity: 0.4 }, { reach: unit * 0.9, opacity: 0.7 }, { reach: unit * 1.6, opacity: 0.95 }];
 
-      tl.addLabel("glitch", 2.4);
+      tl.addLabel("glitch", 2.55);
       // Backdrop shifts from the plain CIE-hold background to this site's own
       // grid texture (same pattern as .riso-texture/.brochure-grid — 34px
       // lines, same dark base colour) as the transition kicks off, so by the
@@ -316,6 +314,7 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
             src="/logos/cie-mark-white.png"
             alt="MLR Centre for Innovation and Entrepreneurship"
             className="absolute inset-0 h-full w-full object-contain"
+            style={{ transform: "translateZ(0)" }}
           />
           {plate("/logos/cie-mark-white.png", null, (el) => { ciePlatesRef.current[0] = el; })}
           {plate("/logos/cie-mark-white.png", BLUE, (el) => { ciePlatesRef.current[1] = el; })}
@@ -326,7 +325,7 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
             ref={coverRef}
             aria-hidden
             className="absolute inset-0 bg-[#2A2A2A]"
-            style={{ transformOrigin: "100% 50%" }}
+            style={{ transformOrigin: "100% 50%", transform: "translateZ(0)" }}
           />
         </div>
 
