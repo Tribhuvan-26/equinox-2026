@@ -23,6 +23,8 @@ export function AutoPlayAnimation({ slug }: AutoPlayAnimationProps) {
     // Deferred one tick so OverlayAnimationHost (mounted in the same commit)
     // has finished subscribing before this dispatches.
     const id = setTimeout(() => {
+      // Don't auto-play heavy overlays on mobile to prevent lag
+      if (window.innerWidth < 768) return;
       triggerAnimation({ type: "event", event: slug as AnimationEventKey });
     }, 0);
 

@@ -171,15 +171,15 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
       activeTl = tl;
 
       // Act 1 — CIE reads clean, one letter at a time.
-      // On mobile, give a clean 0.20s baseline settling delay so the first
-      // frame never hits mid-paint, and pace the letters smoothly.
-      const startDelay = isMobile ? 0.20 : 0.15;
-      const cDur = isMobile ? 0.45 : 0.55;
-      const iStart = isMobile ? 0.70 : 0.90;
-      const iDur = isMobile ? 0.32 : 0.40;
-      const eStart = isMobile ? 1.10 : 1.50;
-      const eDur = isMobile ? 0.38 : 0.45;
-      const glitchTime = isMobile ? 1.65 : 2.55;
+      // On mobile, give a clean settling delay so the first
+      // frame never hits mid-paint, and pace the letters faster.
+      const startDelay = isMobile ? 0.05 : 0.15;
+      const cDur = isMobile ? 0.25 : 0.55;
+      const iStart = isMobile ? 0.35 : 0.90;
+      const iDur = isMobile ? 0.20 : 0.40;
+      const eStart = isMobile ? 0.60 : 1.50;
+      const eDur = isMobile ? 0.20 : 0.45;
+      const glitchTime = isMobile ? 0.90 : 2.55;
 
       tl.set([cieBlue, cieGreen, wordRef.current], { opacity: 0 })
         .set(ciePaper, { opacity: 0 })
@@ -225,9 +225,9 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
         .set(wordRef.current, { opacity: 1 }, "tear+=0.13");
 
       // Act 3 — EQUINOX settles clean and stable, then lifts
-      const settleDur = isMobile ? 0.25 : 0.32;
-      const liftHold = isMobile ? 0.25 : 0.45;
-      const liftFade = isMobile ? 0.38 : 0.5;
+      const settleDur = isMobile ? 0.15 : 0.32;
+      const liftHold = isMobile ? 0.15 : 0.45;
+      const liftFade = isMobile ? 0.25 : 0.5;
 
       tl.fromTo(
         wordPaper,
