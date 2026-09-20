@@ -62,20 +62,27 @@ export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOv
           onClick={toggleOpen}
           onMouseEnter={() => animateTriggerHover(triggerRef.current)}
           onMouseLeave={() => animateTriggerLeave(triggerRef.current)}
-          className="chatbot-launcher-btn"
+          className="chatbot-launcher-btn relative"
           aria-label={isOpen ? "Close Equinox AI Assistant" : "Open Equinox AI Assistant"}
           title={isOpen ? "Close Equinox AI" : "Chat with Equinox AI"}
         >
+          {/* Active status beacon */}
+          {!isOpen && (
+            <span className="absolute top-1 right-1 flex h-2 w-2">
+              <span className="h-full w-full bg-[#33FF67] border border-black animate-pulse" />
+            </span>
+          )}
+
           {isOpen ? (
-            <X className="h-6 w-6 text-white stroke-[2.2] sm:h-7 sm:w-7" />
+            <X className="h-6 w-6 text-white stroke-[2.5] sm:h-7 sm:w-7" />
           ) : (
             <Image
               src="/chatbot-mascot.png"
-              alt=""
+              alt="Equinox AI Mascot"
               width={160}
               height={225}
               priority
-              className="h-[86%] w-auto object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.45)]"
+              className="h-[86%] w-auto object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
             />
           )}
         </button>
