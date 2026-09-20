@@ -3,7 +3,11 @@ import Link from "next/link";
 import { Calendar, MapPin, Mail, ArrowRight, ArrowLeft } from "lucide-react";
 import { contact, event, registration } from "@/lib/content";
 import { PageTransition } from "../ui";
-import { RegisterForm } from "./RegisterForm";
+import { getCurrentUser } from "@/lib/auth/session";
+import { MIN_TEAM_SIZE } from "@/lib/registration/constants";
+import { getMemberContacts } from "@/lib/teams/registration";
+import { getMyTeam } from "@/lib/teams/service";
+import { RegisterForm, type RegistrationNotice, type TeamRegistration } from "./RegisterForm";
 
 export const metadata: Metadata = {
   title: `Register - ${event.name} ${event.year}`,
@@ -16,7 +20,56 @@ const details = [
   { icon: Mail, label: "Reach Us", value: contact.email, accent: "#7484FE" },
 ];
 
-export default function RegisterPage() {
+export const dynamic = "force-dynamic";
+
+/** Work out, for whoever is looking, whether they can register a platform team. */
+async function teamRegistrationContext(): Promise<{
+  team: TeamRegistration | null;
+  notice: RegistrationNotice | null;
+}> {
+  const user = await getCurrentUser();
+  if (!user) {
+    return {
+      team: null,
+      notice: { text: "Have a team on Equinox?", href: "/login", label: "Sign in to register it as a team." },
+    };
+  }
+
+  try {
+    const team = await getMyTeam(user.id);
+    const dashboard = { href: "/dashboard", label: "Open dashboard" };
+    if (!team) {
+      return { team: null, notice: { text: "Create or join a team to register as a team.", ...dashboard } };
+    }
+    if (!team.isLeader) {
+      return { team: null, notice: { text: "Only your team leader can register the team.", ...dashboard } };
+    }
+    if (team.registration && team.registration.status !== "rejected") {
+      return {
+        team: null,
+        notice: { text: `Your team "${team.name}" already has a registration (${team.registration.status}).`, ...dashboard },
+      };
+    }
+    if (team.memberCount < MIN_TEAM_SIZE) {
+      return {
+        team: null,
+        notice: {
+          text: `Your team has ${team.memberCount} member${team.memberCount === 1 ? "" : "s"}; a team needs at least ${MIN_TEAM_SIZE} to register as a team.`,
+          ...dashboard,
+        },
+      };
+    }
+    return { team: { name: team.name, members: await getMemberContacts(team.id) }, notice: null };
+  } catch (err) {
+    // Team lookup is a convenience; the plain registration form still works.
+    console.error("[register] team context failed", err);
+    return { team: null, notice: null };
+  }
+}
+
+export default async function RegisterPage() {
+  const { team, notice } = await teamRegistrationContext();
+
   return (
     <PageTransition>
       <section className="riso-texture brochure-grid relative min-h-screen overflow-hidden bg-[#2A2A2A] pt-28 pb-24 text-[#F7F2F6] sm:pt-40">
@@ -59,7 +112,7 @@ export default function RegisterPage() {
           </p>
 
           <div className="mt-12 w-full max-w-4xl text-left">
-            <RegisterForm />
+            <RegisterForm team={team} notice={notice} />
           </div>
 
           <div className="mt-16 grid w-full gap-4 sm:grid-cols-3">

@@ -55,6 +55,14 @@ export function Footer() {
                     </a>
                   </li>
                 ))}
+                <li>
+                  <a
+                    href="/dashboard"
+                    className="text-sm font-medium text-white/80 transition hover:text-[#33FF67] hover:underline"
+                  >
+                    My Team
+                  </a>
+                </li>
               </ul>
             </div>
 

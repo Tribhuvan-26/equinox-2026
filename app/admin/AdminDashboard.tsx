@@ -12,6 +12,8 @@ import { RegistrationList } from "./components/RegistrationList";
 export interface RegistrationWithUrls extends RegistrationRecord {
   screenshotUrl: string | null;
   utrProofUrl: string | null;
+  /** Name of the platform team this registration is tied to, if any. */
+  teamName?: string | null;
 }
 
 const VIEW_TITLES: Record<AdminView, string> = {

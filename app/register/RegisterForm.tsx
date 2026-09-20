@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { DEPARTMENTS, MAX_TEAM_SIZE, MIN_TEAM_SIZE, REGISTRATION_FEE } from "@/lib/registration/constants";
@@ -8,7 +9,21 @@ import { digitsOnly, isParticipantValid, validateParticipant } from "@/lib/regis
 
 const currency = (n: number) => `₹${n.toLocaleString("en-IN")}`;
 
-export function RegisterForm() {
+/** A team leader who can register their platform team (worked out on the server). */
+export type TeamRegistration = { name: string; members: { name: string; email: string }[] };
+export type RegistrationNotice = { text: string; href: string; label: string };
+
+function participantsFromTeam(team: TeamRegistration): Participant[] {
+  return team.members.map((m) => ({ ...emptyParticipant(), name: m.name, email: m.email }));
+}
+
+export function RegisterForm({
+  team,
+  notice,
+}: {
+  team: TeamRegistration | null;
+  notice: RegistrationNotice | null;
+}) {
   const [started, setStarted] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
 
@@ -41,19 +56,38 @@ export function RegisterForm() {
         )}
       </div>
 
+      {notice && !started && (
+        <p className="mt-4 rounded-xl border border-white/15 bg-black/20 p-4 text-sm text-[#F7F2F6]/80">
+          {notice.text}{" "}
+          <Link href={notice.href} className="font-bold text-[#33FF67] hover:underline">
+            {notice.label}
+          </Link>
+        </p>
+      )}
+
       {started && (
         <div ref={formRef} className="mt-10 scroll-mt-24">
-          <RegistrationFormBody />
+          <RegistrationFormBody team={team} />
         </div>
       )}
     </div>
   );
 }
 
-function RegistrationFormBody() {
+function RegistrationFormBody({ team }: { team: TeamRegistration | null }) {
+  // When the leader has a team, register it as a team by default: the roster is
+  // fixed to the team's members and the registration is tied to the team.
+  const [linked, setLinked] = useState(team !== null);
   const [participants, setParticipants] = useState<Participant[]>(
-    Array.from({ length: MIN_TEAM_SIZE }, emptyParticipant)
+    team ? participantsFromTeam(team) : Array.from({ length: MIN_TEAM_SIZE }, emptyParticipant)
   );
+
+  function toggleLinked(next: boolean) {
+    if (!team) return;
+    setLinked(next);
+    setTouched(new Set());
+    setParticipants(next ? participantsFromTeam(team) : Array.from({ length: MIN_TEAM_SIZE }, emptyParticipant));
+  }
   const [touched, setTouched] = useState<Set<string>>(new Set());
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
   const [utrNumber, setUtrNumber] = useState("");
@@ -118,6 +152,7 @@ function RegistrationFormBody() {
       const body = new FormData();
       body.set("participants", JSON.stringify(participants));
       body.set("utrNumber", utrNumber.trim());
+      if (linked) body.set("linkTeam", "1");
       body.set("paymentScreenshot", paymentScreenshot as File);
 
       const res = await fetch("/api/register", { method: "POST", body });
@@ -162,6 +197,24 @@ function RegistrationFormBody() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-10">
+      {team && (
+        <label className="flex cursor-pointer items-start gap-3 rounded-2xl border-2 border-[#7484FE]/50 bg-[#7484FE]/10 p-4 sm:p-5">
+          <input
+            type="checkbox"
+            checked={linked}
+            onChange={(e) => toggleLinked(e.target.checked)}
+            className="mt-1 h-4 w-4 accent-[#33FF67]"
+          />
+          <span className="text-sm">
+            <span className="block font-black">Register as team &ldquo;{team.name}&rdquo;</span>
+            <span className="mt-1 block text-[#F7F2F6]/70">
+              Uses your team&apos;s {team.members.length} members and links this registration to the team. Their names and
+              emails are filled in; add the rest. The roster locks once you submit.
+            </span>
+          </span>
+        </label>
+      )}
+
       <section className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <h3 className="heading text-xl font-black">Team members</h3>
@@ -178,10 +231,11 @@ function RegistrationFormBody() {
             errors={attemptedSubmit ? validateParticipant(p) : filterTouchedErrors(validateParticipant(p), touched, i)}
             onChange={(patch) => updateParticipant(i, patch)}
             onBlurField={(field) => markTouched(i, field)}
-            onRemove={participants.length > MIN_TEAM_SIZE ? () => removeParticipant(i) : undefined}
+            onRemove={!linked && participants.length > MIN_TEAM_SIZE ? () => removeParticipant(i) : undefined}
           />
         ))}
 
+        {!linked && (
         <button
           type="button"
           onClick={addParticipant}
@@ -190,6 +244,7 @@ function RegistrationFormBody() {
         >
           + Add Team Member
         </button>
+        )}
       </section>
 
       <section className="rounded-2xl border border-white/15 bg-black/20 p-6">

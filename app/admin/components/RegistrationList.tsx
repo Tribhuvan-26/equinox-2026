@@ -31,6 +31,9 @@ export function RegistrationList({
               <p className="mt-1 text-sm text-[#F7F2F6]/70">
                 Submitted {new Date(r.created_at).toLocaleString("en-IN")}
               </p>
+              {r.teamName && (
+                <p className="mt-1 text-sm font-bold text-[#7484FE]">Team: {r.teamName}</p>
+              )}
             </div>
             <StatusBadge status={r.status} />
           </div>

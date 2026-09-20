@@ -33,6 +33,8 @@ export type RegistrationRecord = {
   updated_at: string;
   team_seq: number;
   confirmation_number: string;
+  /** Set when a team leader registered their platform team; null otherwise. */
+  team_id: string | null;
 };
 
 export function emptyParticipant(): Participant {

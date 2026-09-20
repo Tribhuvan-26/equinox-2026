@@ -17,9 +17,17 @@ export default async function AdminPage() {
 
   const registrations = (data ?? []) as RegistrationRecord[];
 
+  // Registrations made by a team leader carry the team's id; show its name.
+  const teamIds = [...new Set(registrations.map((r) => r.team_id).filter((id): id is string => Boolean(id)))];
+  const { data: teams } = teamIds.length
+    ? await supabase.from("teams").select("id, name").in("id", teamIds)
+    : { data: [] };
+  const teamNames = new Map((teams ?? []).map((t) => [t.id, t.name]));
+
   const withUrls: RegistrationWithUrls[] = await Promise.all(
     registrations.map(async (r) => ({
       ...r,
+      teamName: r.team_id ? (teamNames.get(r.team_id) ?? null) : null,
       screenshotUrl: await signedUrl(r.payment_screenshot_path),
       utrProofUrl: r.utr_proof_path ? await signedUrl(r.utr_proof_path) : null,
     }))
