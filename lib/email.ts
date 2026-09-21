@@ -7,8 +7,16 @@ function mailConfigured(): boolean {
   return Boolean(process.env.BREVO_API_KEY && process.env.BREVO_FROM_EMAIL);
 }
 
-/** One transactional send via Brevo's REST API. Never throws; false on failure. */
-async function sendMail(to: string, subject: string, html: string): Promise<boolean> {
+/** Replies to a send-only sender land here, so a confused registrant reaches a human. */
+function replyTo(): { email: string } {
+  return { email: process.env.BREVO_REPLY_TO ?? "24r21a05hg@mlrit.ac.in" };
+}
+
+/**
+ * One transactional send via Brevo's REST API. Never throws; false on failure.
+ * Always pass `text`: an HTML-only body is a well-known spam signal.
+ */
+async function sendMail(to: string, subject: string, html: string, text: string): Promise<boolean> {
   try {
     const res = await fetch(BREVO_ENDPOINT, {
       method: "POST",
@@ -22,9 +30,11 @@ async function sendMail(to: string, subject: string, html: string): Promise<bool
           email: process.env.BREVO_FROM_EMAIL,
           name: process.env.BREVO_FROM_NAME ?? "Equinox 2.0",
         },
+        replyTo: replyTo(),
         to: [{ email: to }],
         subject,
         htmlContent: html,
+        textContent: text,
       }),
     });
     if (!res.ok) {
@@ -43,6 +53,7 @@ export async function sendApprovalEmails(registration: RegistrationRecord) {
 
   const subject = `Equinox 2026 — Registration Confirmed (${registration.id})`;
   const html = renderApprovalEmail(registration);
+  const text = renderApprovalText(registration);
 
   if (!mailConfigured()) {
     console.warn(
@@ -51,11 +62,33 @@ export async function sendApprovalEmails(registration: RegistrationRecord) {
     return { sent: false as const, recipients: emails };
   }
 
-  const results = await Promise.all(emails.map((to) => sendMail(to, subject, html)));
+  const results = await Promise.all(emails.map((to) => sendMail(to, subject, html, text)));
   const failed = emails.filter((_, i) => !results[i]);
   if (failed.length) console.error(`[email] approval send failed for ${failed.join(", ")}`);
 
   return { sent: failed.length === 0, recipients: emails };
+}
+
+function renderApprovalText(registration: RegistrationRecord): string {
+  const people = registration.participants
+    .map((p) => `  - ${p.name} (${p.rollNumber}), ${p.college}, ${p.department}`)
+    .join("\n");
+
+  return [
+    "Registration Confirmed",
+    "",
+    "Your Equinox 2.0 registration has been verified and approved.",
+    "",
+    `Registration ID: ${registration.id}`,
+    `Total participants: ${registration.participant_count}`,
+    `Amount paid: Rs ${registration.total_amount.toLocaleString("en-IN")}`,
+    "",
+    "Participants:",
+    people,
+    "",
+    "Keep your registration ID handy - you will need it at check-in.",
+    "See you at Equinox 2.0!",
+  ].join("\n");
 }
 
 function renderApprovalEmail(registration: RegistrationRecord): string {
@@ -146,5 +179,30 @@ export async function sendRegistrationLinkEmail(opts: {
       <span style="word-break:break-all;">${href}</span></p>
     </div>`;
 
-  return sendMail(opts.to, subject, html);
+  const text = [
+    opts.reissued ? "Your new link" : "Registration received",
+    "",
+    opts.reissued
+      ? `Hi ${opts.name}, here is your new private link. The old one no longer works.`
+      : `Hi ${opts.name}, we got your registration and payment proof. The organisers will verify it and email you once it is approved.`,
+    "",
+    `Confirmation number: ${opts.confirmationNumber}`,
+    ...(opts.team
+      ? [
+          `Team: ${opts.team.name}`,
+          `Team code: ${opts.team.code}`,
+          `Your role: ${opts.role === "leader" ? "Team leader" : "Member"}`,
+          ...(opts.role === "leader"
+            ? ["", "Share the team code with your teammates. They join with it and pay their own fee."]
+            : []),
+        ]
+      : []),
+    "",
+    "Open your registration:",
+    opts.link,
+    "",
+    `This link is private: anyone who has it can see and change your registration${opts.role === "leader" ? " and manage the team" : ""}. Do not forward it.`,
+  ].join("\n");
+
+  return sendMail(opts.to, subject, html, text);
 }

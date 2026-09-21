@@ -108,6 +108,8 @@ export async function POST(request: Request) {
     }
 
     console.error("[register] insert failed", error);
+    // Files are uploaded before the row exists; drop them if the row never lands.
+    await removeUploads(utrProofPath ? [screenshotPath, utrProofPath] : [screenshotPath]);
     return NextResponse.json({ error: "Could not save your registration. Please try again." }, { status: 500 });
   }
 
@@ -117,6 +119,11 @@ export async function POST(request: Request) {
     { id: registrationId, totalAmount, confirmationNumber, teamNumber },
     { status: 201 }
   );
+
+  async function removeUploads(paths: string[]): Promise<void> {
+    const { error } = await supabase.storage.from(PAYMENT_PROOFS_BUCKET).remove(paths);
+    if (error) console.error("[register] could not clean up uploads", error);
+  }
 
   async function uploadFile(file: File, path: string): Promise<string> {
     const ext = extensionFor(file.type);
