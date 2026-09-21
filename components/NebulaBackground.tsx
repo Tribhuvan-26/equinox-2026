@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+﻿import { useMemo } from "react";
 
 // Generate a dense, static starfield using CSS box-shadow
 function generateStarfield(count: number, maxSize: number, opacityRange: [number, number], color = "255, 255, 255") {
@@ -23,7 +23,7 @@ export default function NebulaBackground() {
       
       {/* 1. Distant Background Stars */}
       <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-[2px] h-[2px] rounded-full" style={{ boxShadow: starsBackground }} />
+        <div className="absolute top-0 left-0 w-[2px] h-[2px] rounded-full" style={{ boxShadow: "0 0 8px rgba(255,255,255,0.18)" }} />
       </div>
 
       {/* 2. Very Subtle, Localized Diagonal Nebula Band */}
@@ -62,12 +62,12 @@ export default function NebulaBackground() {
 
       {/* 3. Midground Stars */}
       <div className="absolute inset-0 z-10" style={{ mixBlendMode: "screen" }}>
-        <div className="absolute top-0 left-0 w-[3px] h-[3px] rounded-full" style={{ boxShadow: starsMidground }} />
+        <div className="absolute top-0 left-0 w-[3px] h-[3px] rounded-full" suppressHydrationWarning suppressHydrationWarning style={{ boxShadow: starsMidground }} />
       </div>
 
       {/* 4. Large Foreground Stars */}
       <div className="absolute inset-0 z-20" style={{ mixBlendMode: "screen" }}>
-        <div className="absolute top-0 left-0 w-[4px] h-[4px] rounded-full animate-pulse" style={{ boxShadow: starsForeground }} />
+        <div className="absolute top-0 left-0 w-[4px] h-[4px] rounded-full animate-pulse" suppressHydrationWarning suppressHydrationWarning style={{ boxShadow: starsForeground }} />
       </div>
 
       {/* Atmospheric deep haze mask for the very bottom transition */}
@@ -80,3 +80,4 @@ export default function NebulaBackground() {
     </div>
   );
 }
+
