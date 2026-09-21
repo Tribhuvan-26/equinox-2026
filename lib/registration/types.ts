@@ -52,10 +52,20 @@ export function emptyParticipant(): Participant {
   };
 }
 
+/**
+ * Participants arrive as JSON from the browser, so a field can be missing or of
+ * the wrong type. Read every one through this instead of assuming a string.
+ */
+export function asText(value: unknown): string {
+  return typeof value === "string" ? value : "";
+}
+
 export function resolvedCollege(p: Participant): string {
-  return p.college === "Other" ? p.collegeOther.trim() : p.college;
+  const college = asText(p.college);
+  return college === "Other" ? asText(p.collegeOther).trim() : college.trim();
 }
 
 export function resolvedDepartment(p: Participant): string {
-  return p.department === "Other" ? p.departmentOther.trim() : p.department;
+  const department = asText(p.department);
+  return department === "Other" ? asText(p.departmentOther).trim() : department.trim();
 }
