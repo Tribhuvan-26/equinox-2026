@@ -1,5 +1,12 @@
+import { COLLEGES, DEPARTMENTS } from "./constants";
 import type { Participant, StoredParticipant } from "./types";
-import { resolvedCollege, resolvedDepartment } from "./types";
+import { asText, resolvedCollege, resolvedDepartment } from "./types";
+
+/** Keeps a hand-written request from stuffing a novel into the participants JSON. */
+export const MAX_FIELD_LENGTH = 120;
+
+const COLLEGE_SET: ReadonlySet<string> = new Set(COLLEGES);
+const DEPARTMENT_SET: ReadonlySet<string> = new Set(DEPARTMENTS);
 
 export const MOBILE_REGEX = /^[6-9]\d{9}$/;
 
@@ -30,23 +37,42 @@ export type ParticipantErrors = Partial<
 export function validateParticipant(p: Participant): ParticipantErrors {
   const errors: ParticipantErrors = {};
 
-  if (!p.name.trim()) errors.name = "Name is required.";
-  if (!p.rollNumber.trim()) errors.rollNumber = "Roll number is required.";
+  const name = asText(p.name).trim();
+  const rollNumber = asText(p.rollNumber).trim();
+  const college = asText(p.college);
+  const collegeOther = asText(p.collegeOther).trim();
+  const department = asText(p.department);
+  const departmentOther = asText(p.departmentOther).trim();
+  const mobile = asText(p.mobile).trim();
+  const email = asText(p.email).trim();
 
-  if (!p.college) errors.college = "Select a college.";
-  else if (p.college === "Other" && !p.collegeOther.trim())
-    errors.college = "Specify your college.";
+  if (!name) errors.name = "Name is required.";
+  else if (name.length > MAX_FIELD_LENGTH) errors.name = `Name must be at most ${MAX_FIELD_LENGTH} characters.`;
 
-  if (!p.department) errors.department = "Select a department.";
-  else if (p.department === "Other" && !p.departmentOther.trim())
-    errors.department = "Specify your department.";
+  if (!rollNumber) errors.rollNumber = "Roll number is required.";
+  else if (rollNumber.length > MAX_FIELD_LENGTH)
+    errors.rollNumber = `Roll number must be at most ${MAX_FIELD_LENGTH} characters.`;
 
-  if (!p.mobile.trim()) errors.mobile = "Mobile number is required.";
-  else if (!isValidMobile(p.mobile))
+  // The dropdown is only a hint: check the value server-side too.
+  if (!college) errors.college = "Select a college.";
+  else if (!COLLEGE_SET.has(college)) errors.college = "Select a college from the list.";
+  else if (college === "Other" && !collegeOther) errors.college = "Specify your college.";
+  else if (collegeOther.length > MAX_FIELD_LENGTH)
+    errors.college = `College must be at most ${MAX_FIELD_LENGTH} characters.`;
+
+  if (!department) errors.department = "Select a department.";
+  else if (!DEPARTMENT_SET.has(department)) errors.department = "Select a department from the list.";
+  else if (department === "Other" && !departmentOther) errors.department = "Specify your department.";
+  else if (departmentOther.length > MAX_FIELD_LENGTH)
+    errors.department = `Department must be at most ${MAX_FIELD_LENGTH} characters.`;
+
+  if (!mobile) errors.mobile = "Mobile number is required.";
+  else if (!isValidMobile(mobile))
     errors.mobile = "Enter a valid 10-digit Indian mobile number starting with 6-9.";
 
-  if (!p.email.trim()) errors.email = "Email is required.";
-  else if (!isValidEmail(p.email)) errors.email = "Enter a valid email address.";
+  if (!email) errors.email = "Email is required.";
+  else if (email.length > MAX_FIELD_LENGTH) errors.email = `Email must be at most ${MAX_FIELD_LENGTH} characters.`;
+  else if (!isValidEmail(email)) errors.email = "Enter a valid email address.";
 
   return errors;
 }
@@ -57,11 +83,11 @@ export function isParticipantValid(p: Participant): boolean {
 
 export function participantForStorage(p: Participant): StoredParticipant {
   return {
-    name: p.name.trim(),
-    rollNumber: p.rollNumber.trim(),
+    name: asText(p.name).trim(),
+    rollNumber: asText(p.rollNumber).trim(),
     college: resolvedCollege(p),
     department: resolvedDepartment(p),
-    mobile: p.mobile.trim(),
-    email: p.email.trim().toLowerCase(),
+    mobile: asText(p.mobile).trim(),
+    email: asText(p.email).trim().toLowerCase(),
   };
 }

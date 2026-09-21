@@ -22,6 +22,31 @@ function validFile(file: File): boolean {
   return file.size > 0 && file.size <= MAX_FILE_BYTES && ALLOWED_TYPES.has(file.type);
 }
 
+function startsWith(bytes: Uint8Array, signature: number[], offset = 0): boolean {
+  return signature.every((byte, i) => bytes[offset + i] === byte);
+}
+
+/**
+ * The declared Content-Type is whatever the browser (or a hand-written request)
+ * says it is, so check the first bytes really are the format they claim.
+ */
+async function contentMatchesType(file: File): Promise<boolean> {
+  const head = new Uint8Array(await file.slice(0, 12).arrayBuffer());
+  switch (file.type) {
+    case "image/png":
+      return startsWith(head, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+    case "image/jpeg":
+      return startsWith(head, [0xff, 0xd8, 0xff]);
+    case "application/pdf":
+      return startsWith(head, [0x25, 0x50, 0x44, 0x46]);
+    case "image/webp":
+      // "RIFF" .... "WEBP"
+      return startsWith(head, [0x52, 0x49, 0x46, 0x46]) && startsWith(head, [0x57, 0x45, 0x42, 0x50], 8);
+    default:
+      return false;
+  }
+}
+
 /** Read + validate the single-person registration form (details, UTR, screenshot). */
 export async function readRegistrationForm(request: Request): Promise<ParsedRegistrationForm> {
   let form: FormData;
@@ -50,14 +75,16 @@ export async function readRegistrationForm(request: Request): Promise<ParsedRegi
   if (!(paymentScreenshot instanceof File) || paymentScreenshot.size === 0) {
     throw new ApiError(400, "Upload the payment screenshot.", "paymentScreenshot");
   }
-  if (!validFile(paymentScreenshot)) {
+  if (!validFile(paymentScreenshot) || !(await contentMatchesType(paymentScreenshot))) {
     throw new ApiError(400, "Payment screenshot must be a PNG/JPG/WEBP/PDF under 5MB.", "paymentScreenshot");
   }
 
   const proof = form.get("utrProof");
   let utrProof: File | null = null;
   if (proof instanceof File && proof.size > 0) {
-    if (!validFile(proof)) throw new ApiError(400, "UTR proof must be a PNG/JPG/WEBP/PDF under 5MB.");
+    if (!validFile(proof) || !(await contentMatchesType(proof))) {
+      throw new ApiError(400, "UTR proof must be a PNG/JPG/WEBP/PDF under 5MB.");
+    }
     utrProof = proof;
   }
 
@@ -107,6 +134,13 @@ async function uploadFile(file: File, path: string): Promise<string> {
   return fullPath;
 }
 
+/** Files are uploaded before the row exists; drop them if the row never lands. */
+async function removeUploads(paths: string[]): Promise<void> {
+  if (paths.length === 0) return;
+  const { error } = await supabaseAdmin().storage.from(PAYMENT_PROOFS_BUCKET).remove(paths);
+  if (error) console.error("[team-registration] could not clean up uploads", error);
+}
+
 function confirmationNumber(): string {
   return `CNF-${randomUUID().replace(/-/g, "").slice(0, 6).toUpperCase()}`;
 }
@@ -144,50 +178,56 @@ export async function insertTeamRegistration(opts: {
 
   const stored = participantForStorage(parsed.participant);
   const { token, hash } = newAccessToken();
+  const uploaded = proofPath ? [screenshotPath, proofPath] : [screenshotPath];
 
-  let number = confirmationNumber();
-  for (let attempt = 0; attempt < 2; attempt++) {
-    const { data, error } = await supabase
-      .from("pass_registrations")
-      .insert({
-        id,
-        participants: [stored],
-        participant_count: 1,
-        total_amount: REGISTRATION_FEE,
-        payment_screenshot_path: screenshotPath,
-        utr_number: parsed.utrNumber,
-        utr_proof_path: proofPath,
-        status: "pending",
-        confirmation_number: number,
-        team_id: teamId,
-        team_role: role,
-        member_email: stored.email,
-        access_token_hash: hash,
-      })
-      .select("team_seq")
-      .single();
+  try {
+    let number = confirmationNumber();
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const { data, error } = await supabase
+        .from("pass_registrations")
+        .insert({
+          id,
+          participants: [stored],
+          participant_count: 1,
+          total_amount: REGISTRATION_FEE,
+          payment_screenshot_path: screenshotPath,
+          utr_number: parsed.utrNumber,
+          utr_proof_path: proofPath,
+          status: "pending",
+          confirmation_number: number,
+          team_id: teamId,
+          team_role: role,
+          member_email: stored.email,
+          access_token_hash: hash,
+        })
+        .select("team_seq")
+        .single();
 
-    if (!error) {
-      return {
-        id,
-        confirmationNumber: number,
-        teamNumber: `EQ-${String(data.team_seq).padStart(3, "0")}`,
-        accessToken: token,
-      };
+      if (!error) {
+        return {
+          id,
+          confirmationNumber: number,
+          teamNumber: `EQ-${String(data.team_seq).padStart(3, "0")}`,
+          accessToken: token,
+        };
+      }
+
+      if (error.code === "23505" && error.message.includes("confirmation_number") && attempt === 0) {
+        number = confirmationNumber();
+        continue;
+      }
+      if (error.code === "23505" && error.message.includes("pass_registrations_one_team_per_email_key")) {
+        throw new ApiError(409, EMAIL_IN_TEAM_MESSAGE, "email");
+      }
+      if (error.message.includes("team_full")) throw new ApiError(409, TEAM_FULL_MESSAGE);
+      if (error.message.includes("team_not_found")) throw new ApiError(404, "Team not found.");
+
+      console.error("[team-registration] insert failed", error);
+      throw new ApiError(500, "Could not save your registration. Please try again.");
     }
-
-    if (error.code === "23505" && error.message.includes("confirmation_number") && attempt === 0) {
-      number = confirmationNumber();
-      continue;
-    }
-    if (error.code === "23505" && error.message.includes("pass_registrations_one_team_per_email_key")) {
-      throw new ApiError(409, EMAIL_IN_TEAM_MESSAGE, "email");
-    }
-    if (error.message.includes("team_full")) throw new ApiError(409, TEAM_FULL_MESSAGE);
-    if (error.message.includes("team_not_found")) throw new ApiError(404, "Team not found.");
-
-    console.error("[team-registration] insert failed", error);
     throw new ApiError(500, "Could not save your registration. Please try again.");
+  } catch (err) {
+    await removeUploads(uploaded);
+    throw err;
   }
-  throw new ApiError(500, "Could not save your registration. Please try again.");
 }
