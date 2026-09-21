@@ -2,13 +2,11 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { RegisterForm } from "./RegisterForm";
 import { CreateTeam, JoinTeam } from "./TeamForms";
 
 const TABS = [
   { id: "create", label: "Create a Team", blurb: "You pay for yourself, get a team code, and teammates join with it." },
   { id: "join", label: "Join a Team", blurb: "Have a team name or code? Register and pay your own fee." },
-  { id: "group", label: "Whole Team, One Payment", blurb: "One person registers and pays for the entire team at once." },
 ] as const;
 
 type Tab = (typeof TABS)[number]["id"];
@@ -19,7 +17,7 @@ export function RegisterHub() {
 
   return (
     <div>
-      <div role="tablist" className="grid gap-2 rounded-2xl border border-white/15 bg-black/20 p-1.5 sm:grid-cols-3">
+      <div role="tablist" className="grid gap-2 rounded-2xl border border-white/15 bg-black/20 p-1.5 sm:grid-cols-2">
         {TABS.map((t) => (
           <button
             key={t.id}
@@ -39,7 +37,6 @@ export function RegisterHub() {
       <div className="mt-8">
         {tab === "create" && <CreateTeam />}
         {tab === "join" && <JoinTeam />}
-        {tab === "group" && <RegisterForm />}
       </div>
 
       <p className="mt-8 text-sm text-[#F7F2F6]/70">
