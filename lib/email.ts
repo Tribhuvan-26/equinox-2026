@@ -1,28 +1,61 @@
 import "server-only";
-import { Resend } from "resend";
 import type { RegistrationRecord } from "./registration/types";
 
+const BREVO_ENDPOINT = "https://api.brevo.com/v3/smtp/email";
+
+function mailConfigured(): boolean {
+  return Boolean(process.env.BREVO_API_KEY && process.env.BREVO_FROM_EMAIL);
+}
+
+/** One transactional send via Brevo's REST API. Never throws; false on failure. */
+async function sendMail(to: string, subject: string, html: string): Promise<boolean> {
+  try {
+    const res = await fetch(BREVO_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "api-key": process.env.BREVO_API_KEY as string,
+        "content-type": "application/json",
+        accept: "application/json",
+      },
+      body: JSON.stringify({
+        sender: {
+          email: process.env.BREVO_FROM_EMAIL,
+          name: process.env.BREVO_FROM_NAME ?? "Equinox 2.0",
+        },
+        to: [{ email: to }],
+        subject,
+        htmlContent: html,
+      }),
+    });
+    if (!res.ok) {
+      console.error(`[email] Brevo ${res.status} for ${to}: ${await res.text().catch(() => "")}`);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error("[email] Brevo request threw", err);
+    return false;
+  }
+}
+
 export async function sendApprovalEmails(registration: RegistrationRecord) {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM_EMAIL ?? "Equinox 2026 <registrations@equinox2026.dev>";
   const emails = Array.from(new Set(registration.participants.map((p) => p.email)));
 
   const subject = `Equinox 2026 — Registration Confirmed (${registration.id})`;
   const html = renderApprovalEmail(registration);
 
-  if (!apiKey) {
+  if (!mailConfigured()) {
     console.warn(
-      `[email] RESEND_API_KEY not set — skipping send. Would have emailed ${emails.join(", ")}:\n${subject}`
+      `[email] BREVO_API_KEY / BREVO_FROM_EMAIL not set — skipping send. Would have emailed ${emails.join(", ")}:\n${subject}`
     );
     return { sent: false as const, recipients: emails };
   }
 
-  const resend = new Resend(apiKey);
-  await Promise.all(
-    emails.map((to) => resend.emails.send({ from, to, subject, html }))
-  );
+  const results = await Promise.all(emails.map((to) => sendMail(to, subject, html)));
+  const failed = emails.filter((_, i) => !results[i]);
+  if (failed.length) console.error(`[email] approval send failed for ${failed.join(", ")}`);
 
-  return { sent: true as const, recipients: emails };
+  return { sent: failed.length === 0, recipients: emails };
 }
 
 function renderApprovalEmail(registration: RegistrationRecord): string {
@@ -78,18 +111,16 @@ export async function sendRegistrationLinkEmail(opts: {
   /** True when the link was re-issued because the old one was lost. */
   reissued?: boolean;
 }): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM_EMAIL ?? "Equinox 2026 <registrations@equinox2026.dev>";
   const subject = opts.reissued
     ? "Equinox 2026 — your new registration link"
     : "Equinox 2026 — registration received";
 
-  if (!apiKey) {
+  if (!mailConfigured()) {
     // The link is a credential. Only print it when developing locally.
     if (process.env.NODE_ENV !== "production") {
-      console.warn(`[email] RESEND_API_KEY not set. ${subject} for ${opts.to}: ${opts.link}`);
+      console.warn(`[email] Brevo not configured. ${subject} for ${opts.to}: ${opts.link}`);
     } else {
-      console.error(`[email] RESEND_API_KEY not set, could not send "${subject}".`);
+      console.error(`[email] Brevo not configured, could not send "${subject}".`);
     }
     return false;
   }
@@ -115,15 +146,5 @@ export async function sendRegistrationLinkEmail(opts: {
       <span style="word-break:break-all;">${href}</span></p>
     </div>`;
 
-  try {
-    const { error } = await new Resend(apiKey).emails.send({ from, to: opts.to, subject, html });
-    if (error) {
-      console.error("[email] send failed", error);
-      return false;
-    }
-    return true;
-  } catch (err) {
-    console.error("[email] send threw", err);
-    return false;
-  }
+  return sendMail(opts.to, subject, html);
 }
