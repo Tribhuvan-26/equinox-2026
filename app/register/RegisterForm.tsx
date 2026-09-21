@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { DEPARTMENTS, MAX_TEAM_SIZE, MIN_TEAM_SIZE, REGISTRATION_FEE } from "@/lib/registration/constants";
+import { COLLEGES, DEPARTMENTS, MAX_TEAM_SIZE, MIN_TEAM_SIZE, REGISTRATION_FEE } from "@/lib/registration/constants";
 import { emptyParticipant, type Participant } from "@/lib/registration/types";
 import { digitsOnly, isParticipantValid, validateParticipant } from "@/lib/registration/validation";
 
@@ -320,14 +320,25 @@ export function ParticipantFields({
           error={errors.rollNumber}
         />
 
-        <TextField
+        <SelectField
           label="College Name"
           required
           value={participant.college}
+          options={COLLEGES}
           onChange={(v) => onChange({ college: v })}
           onBlur={() => onBlurField("college")}
-          error={errors.college}
+          error={participant.college !== "Other" ? errors.college : undefined}
         />
+        {participant.college === "Other" && (
+          <TextField
+            label="Specify College"
+            required
+            value={participant.collegeOther}
+            onChange={(v) => onChange({ collegeOther: v })}
+            onBlur={() => onBlurField("college")}
+            error={errors.college}
+          />
+        )}
 
         <SelectField
           label="Department"

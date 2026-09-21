@@ -2,6 +2,7 @@ export type Participant = {
   name: string;
   rollNumber: string;
   college: string;
+  collegeOther: string;
   department: string;
   departmentOther: string;
   mobile: string;
@@ -43,6 +44,7 @@ export function emptyParticipant(): Participant {
     name: "",
     rollNumber: "",
     college: "",
+    collegeOther: "",
     department: "",
     departmentOther: "",
     mobile: "",
@@ -51,7 +53,7 @@ export function emptyParticipant(): Participant {
 }
 
 export function resolvedCollege(p: Participant): string {
-  return p.college.trim();
+  return p.college === "Other" ? p.collegeOther.trim() : p.college;
 }
 
 export function resolvedDepartment(p: Participant): string {
