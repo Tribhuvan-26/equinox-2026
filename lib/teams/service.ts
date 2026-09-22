@@ -159,21 +159,29 @@ export async function liveCount(teamId: string): Promise<number> {
  * Ask a team to take you in. A request holds no seat: the seat is taken only
  * when the leader accepts, so several people may queue for the same last place.
  */
-export async function requestToJoin(reg: Reg, teamId: string): Promise<RegistrationTeamRow> {
+export async function requestToJoin(
+  reg: Reg,
+  teamId: string
+): Promise<{ team: RegistrationTeamRow; changed: boolean }> {
   if (reg.team_id) throw new ApiError(409, "You are already on a team. Leave it before asking to join another.");
   const team = await loadTeam(teamId);
   if (!team) throw new ApiError(404, "Team not found.");
   if ((await liveCount(team.id)) >= team.max_members) throw new ApiError(409, "This team is full.");
 
-  const { error } = await supabaseAdmin()
+  // Only write when the request actually moves. Postgres re-checks the filter
+  // after the row lock clears, so of two simultaneous clicks exactly one
+  // matches -- and a repeat click on the same team matches nothing at all.
+  const { data: asked, error } = await supabaseAdmin()
     .from("pass_registrations")
     .update({ requested_team_id: team.id })
-    .eq("id", reg.id);
+    .eq("id", reg.id)
+    .or(`requested_team_id.is.null,requested_team_id.neq.${team.id}`)
+    .select("id");
   if (error) {
     console.error("[teams] requestToJoin", error);
     throw new ApiError(500, "Could not send your request. Please try again.");
   }
-  return team;
+  return { team, changed: (asked ?? []).length > 0 };
 }
 
 /** Withdraw the outstanding request, whoever it was to. */
