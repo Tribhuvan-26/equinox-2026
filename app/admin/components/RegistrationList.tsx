@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { formatTeamNumber } from "@/lib/registration/team-number";
 import type { RegistrationStatus } from "@/lib/registration/types";
 import type { RegistrationWithUrls } from "../AdminDashboard";
 
@@ -33,7 +34,7 @@ export function RegistrationList({
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <p className="font-mono text-sm font-bold text-[#33FF67]">
-                {`EQ-${String(r.team_seq).padStart(3, "0")}`} · {r.confirmation_number}
+                {formatTeamNumber(r.team_seq)} · {r.confirmation_number}
               </p>
               <p className="mt-1 text-sm text-[#F7F2F6]/70">
                 Submitted {new Date(r.created_at).toLocaleString("en-IN")}
