@@ -21,8 +21,9 @@ const VIEW_TITLES: Record<AdminView, string> = {
   participants: "All Teams",
   analytics: "Analytics",
   pending: "Pending Verification",
+  "no-team": "Paid, No Team Yet",
   approved: "Approved",
-  rejected: "Rejected",
+  rejected: "Not Approved",
 };
 
 export function AdminDashboard({ registrations }: { registrations: RegistrationWithUrls[] }) {
@@ -34,6 +35,8 @@ export function AdminDashboard({ registrations }: { registrations: RegistrationW
 
   const statusFilteredForView: RegistrationWithUrls[] = useMemo(() => {
     if (view === "pending") return filtered.filter((r) => r.status === "pending");
+    // Paid, but still deciding on a team. They can't be approved until they pick one.
+    if (view === "no-team") return filtered.filter((r) => !r.team_id && r.status !== "rejected");
     if (view === "approved") return filtered.filter((r) => r.status === "approved");
     if (view === "rejected") return filtered.filter((r) => r.status === "rejected");
     return filtered;
@@ -154,7 +157,7 @@ export function AdminDashboard({ registrations }: { registrations: RegistrationW
           </div>
         )}
 
-        {(view === "participants" || view === "pending" || view === "approved" || view === "rejected") && (
+        {(view === "participants" || view === "pending" || view === "no-team" || view === "approved" || view === "rejected") && (
           <div className="mt-6 flex flex-col gap-6">
             <FilterPanel registrations={items} onFilterChange={setFiltered} />
             <RegistrationList

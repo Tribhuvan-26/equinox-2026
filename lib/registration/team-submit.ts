@@ -91,13 +91,12 @@ export async function readRegistrationForm(request: Request): Promise<ParsedRegi
   return { participant, utrNumber, paymentScreenshot, utrProof, form };
 }
 
-/** Is this email already on a live (not rejected) team registration? */
-export async function emailAlreadyInTeam(email: string): Promise<boolean> {
+/** Is this email already on a live (not rejected) registration, team or not? */
+export async function emailAlreadyRegistered(email: string): Promise<boolean> {
   const { data, error } = await supabaseAdmin()
     .from("pass_registrations")
     .select("id")
     .eq("member_email", email.trim().toLowerCase())
-    .not("team_id", "is", null)
     .neq("status", "rejected")
     .limit(1);
   if (error) throw error;
@@ -105,7 +104,7 @@ export async function emailAlreadyInTeam(email: string): Promise<boolean> {
 }
 
 export const EMAIL_IN_TEAM_MESSAGE =
-  "This email is already registered in a team. Open your registration link to manage it, or use a different email.";
+  "This email is already registered. Open your registration link to manage it, or use a different email.";
 
 const TEAM_FULL_MESSAGE = "This team is full.";
 
@@ -153,13 +152,15 @@ export type InsertedRegistration = {
 };
 
 /**
- * Save one person's registration (their details + their own payment proof) as a
- * member of a team. The database decides capacity and one-team-per-email.
+ * Save one person's registration (their details + their own payment proof).
+ *
+ * `teamId` is null when they have only paid and not picked a team yet; they
+ * attach to one afterwards. The database decides capacity and one-per-email.
  */
 export async function insertTeamRegistration(opts: {
   parsed: ParsedRegistrationForm;
-  teamId: string;
-  role: "leader" | "member";
+  teamId: string | null;
+  role: "leader" | "member" | null;
 }): Promise<InsertedRegistration> {
   const { parsed, teamId, role } = opts;
   const supabase = supabaseAdmin();
@@ -213,7 +214,7 @@ export async function insertTeamRegistration(opts: {
         number = confirmationNumber();
         continue;
       }
-      if (error.code === "23505" && error.message.includes("pass_registrations_one_team_per_email_key")) {
+      if (error.code === "23505" && error.message.includes("pass_registrations_one_live_per_email_key")) {
         throw new ApiError(409, EMAIL_IN_TEAM_MESSAGE, "email");
       }
       if (error.message.includes("team_full")) throw new ApiError(409, TEAM_FULL_MESSAGE);

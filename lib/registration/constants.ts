@@ -83,3 +83,6 @@ export const COLLEGES = [
 
 export const MIN_TEAM_SIZE = 4;
 export const MAX_TEAM_SIZE = 5;
+
+/** Where the browser keeps the private registration token between visits. */
+export const TOKEN_STORAGE_KEY = "equinox_registration_token";

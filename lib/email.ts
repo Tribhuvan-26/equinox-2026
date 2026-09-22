@@ -206,3 +206,47 @@ export async function sendRegistrationLinkEmail(opts: {
 
   return sendMail(opts.to, subject, html, text);
 }
+
+/* ------------------------------------------------------------------ */
+/* Team join requests                                                  */
+/* ------------------------------------------------------------------ */
+
+/**
+ * One template for every join-request notice. They differ only in wording, so
+ * they share a shape rather than four near-identical copies.
+ */
+export async function sendTeamNoticeEmail(opts: {
+  to: string;
+  subject: string;
+  heading: string;
+  lines: string[];
+  link: string;
+  action: string;
+}): Promise<boolean> {
+  if (!mailConfigured()) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn(`[email] Brevo not configured. "${opts.subject}" for ${opts.to}`);
+    } else {
+      console.error(`[email] Brevo not configured, could not send "${opts.subject}".`);
+    }
+    return false;
+  }
+
+  const href = escapeHtml(opts.link);
+  const html = `
+    <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#2A2A2A;">
+      <h1 style="color:#2A2A2A;">${escapeHtml(opts.heading)}</h1>
+      ${opts.lines.map((l) => `<p>${escapeHtml(l)}</p>`).join("\n      ")}
+      <p style="margin:24px 0;">
+        <a href="${href}" style="background:#33FF67;color:#2A2A2A;padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;">${escapeHtml(opts.action)}</a>
+      </p>
+      <p style="font-size:13px;color:#555;">This link is private. Don't forward it.<br>
+      <span style="word-break:break-all;">${href}</span></p>
+    </div>`;
+
+  const text = [opts.heading, "", ...opts.lines, "", `${opts.action}:`, opts.link, "", "This link is private. Do not forward it."].join(
+    "\n"
+  );
+
+  return sendMail(opts.to, opts.subject, html, text);
+}
