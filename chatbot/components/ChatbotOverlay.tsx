@@ -68,8 +68,8 @@ export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOv
         >
           {/* Active status beacon */}
           {!isOpen && (
-            <span className="absolute top-1 right-1 flex h-2 w-2">
-              <span className="h-full w-full bg-[#33FF67] border border-black animate-pulse" />
+            <span className="absolute top-[16%] right-[16%] flex h-2 w-2">
+              <span className="h-full w-full rounded-full bg-[#33FF67] border border-black animate-pulse" />
             </span>
           )}
 
