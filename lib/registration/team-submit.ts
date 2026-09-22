@@ -106,6 +106,9 @@ export async function emailAlreadyRegistered(email: string): Promise<boolean> {
 export const EMAIL_IN_TEAM_MESSAGE =
   "This email is already registered. Open your registration link to manage it, or use a different email.";
 
+export const UTR_REUSED_MESSAGE =
+  "This UTR / transaction number is already on another registration. Check the number on your payment receipt.";
+
 const TEAM_FULL_MESSAGE = "This team is full.";
 
 function extensionFor(mime: string): string {
@@ -216,6 +219,11 @@ export async function insertTeamRegistration(opts: {
       }
       if (error.code === "23505" && error.message.includes("pass_registrations_one_live_per_email_key")) {
         throw new ApiError(409, EMAIL_IN_TEAM_MESSAGE, "email");
+      }
+      // One payment, one registration. Nothing here can check a UTR against a
+      // bank, so re-using a screenshot is caught by the index or not at all.
+      if (error.code === "23505" && error.message.includes("pass_registrations_one_live_per_utr_key")) {
+        throw new ApiError(409, UTR_REUSED_MESSAGE, "utrNumber");
       }
       if (error.message.includes("team_full")) throw new ApiError(409, TEAM_FULL_MESSAGE);
       if (error.message.includes("team_not_found")) throw new ApiError(404, "Team not found.");
