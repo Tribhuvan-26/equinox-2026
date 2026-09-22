@@ -477,13 +477,20 @@ export async function decideJoinRequest(
   // leave them waiting on a seat that no longer exists.
   let crowdedOut: { name: string; email: string }[] = [];
   if ((await liveCount(teamId)) >= team.max_members) {
+    // Same filter as the leader's inbox: a rejected registration was never a
+    // real applicant, so it must not be told its payment still stands.
     const { data: waiting } = await supabase
       .from("pass_registrations")
       .select("id, participants, member_email")
-      .eq("requested_team_id", teamId);
+      .eq("requested_team_id", teamId)
+      .neq("status", "rejected");
     crowdedOut = (waiting ?? []).map((r) => ({ name: nameOf(r), email: r.member_email ?? "" }));
     if (crowdedOut.length > 0) {
-      await supabase.from("pass_registrations").update({ requested_team_id: null }).eq("requested_team_id", teamId);
+      await supabase
+        .from("pass_registrations")
+        .update({ requested_team_id: null })
+        .eq("requested_team_id", teamId)
+        .neq("status", "rejected");
     }
   }
 
