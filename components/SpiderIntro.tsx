@@ -147,10 +147,20 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
       });
     };
 
-    if (img && !img.complete && typeof img.decode === "function") {
+    const cieImg = cieArtRef.current;
+    const wordImg = wordArtRef.current;
+    const decodePromises: Promise<unknown>[] = [];
+    if (cieImg && !cieImg.complete && typeof cieImg.decode === "function") {
+      decodePromises.push(cieImg.decode());
+    }
+    if (wordImg && !wordImg.complete && typeof wordImg.decode === "function") {
+      decodePromises.push(wordImg.decode());
+    }
+
+    if (decodePromises.length > 0) {
       // Race image decode with a fast 150ms timeout so a slow decode on mobile doesn't stall startup
       Promise.race([
-        img.decode(),
+        Promise.all(decodePromises),
         new Promise((resolve) => setTimeout(resolve, 150)),
       ]).catch(() => {}).then(begin);
     } else {
@@ -162,7 +172,7 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
       const ciePlates = ciePlatesRef.current.filter(Boolean) as HTMLDivElement[];
       const wordPlates = wordPlatesRef.current.filter(Boolean) as HTMLDivElement[];
       const [ciePaper, cieBlue, cieGreen] = ciePlates;
-      const [wordPaper, wordBlue, wordGreen] = wordPlates;
+      const [wordBlue, wordGreen] = wordPlates;
 
       const unit = Math.min(26, Math.max(5, cieWidth * 0.035));
       const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
@@ -185,6 +195,8 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
         .set(ciePaper, { opacity: 0 })
         .set(cieRef.current, { opacity: 1 }, 0)
         .set(coverRef.current, { scaleX: 1 }, 0)
+        .set([wordBlue, wordGreen], { opacity: 0 }, 0)
+        .set(wordArtRef.current, { opacity: 0 }, 0)
         .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.c), duration: cDur, ease: "power2.out" }, startDelay) // C
         .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.i), duration: iDur, ease: "power2.out" }, iStart) // I
         .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.e), duration: eDur, ease: "power2.out" }, eStart); // E.
@@ -198,7 +210,7 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
       tl.addLabel("glitch", glitchTime);
       // Promote chromatic glitch plates now right before the glitch runs
       tl.call(() => {
-        gsap.set([cieBlue, cieGreen, wordBlue, wordGreen], { willChange: "transform, opacity", force3D: true });
+        gsap.set([cieBlue, cieGreen, wordBlue, wordGreen, wordArtRef.current], { willChange: "transform, opacity", force3D: true });
       }, undefined, "glitch-=0.1");
       tl.to(gridRef.current, { opacity: 1, duration: isMobile ? 0.25 : 0.35, ease: "power1.out" }, "glitch");
       let t = 0;
@@ -230,25 +242,23 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
       const liftFade = isMobile ? 0.25 : 0.5;
 
       tl.fromTo(
-        wordPaper,
+        wordArtRef.current,
         { scale: 1.15, opacity: 0 },
         { scale: 1, opacity: 1, duration: settleDur, ease: "power4.out" },
         "tear+=0.13",
       )
         .fromTo(
           wordBlue,
-          { x: -unit * 1.8, y: unit * 0.5, opacity: 0.9 },
-          { x: 0, y: 0, opacity: 0, duration: settleDur + 0.06, ease: "power3.out" },
+          { x: -unit * 1.8, y: unit * 0.5, opacity: 0.9, scale: 1.15 },
+          { x: 0, y: 0, opacity: 0, scale: 1, duration: settleDur + 0.06, ease: "power3.out" },
           "tear+=0.13",
         )
         .fromTo(
           wordGreen,
-          { x: unit * 1.8, y: -unit * 0.5, opacity: 0.9 },
-          { x: 0, y: 0, opacity: 0, duration: settleDur + 0.06, ease: "power3.out" },
+          { x: unit * 1.8, y: -unit * 0.5, opacity: 0.9, scale: 1.15 },
+          { x: 0, y: 0, opacity: 0, scale: 1, duration: settleDur + 0.06, ease: "power3.out" },
           "tear+=0.13",
         )
-        .to(wordArtRef.current, { opacity: 1, duration: 0.25, ease: "power2.out" }, "tear+=0.18")
-        .to(wordPaper, { opacity: 0, duration: 0.25, ease: "power2.out" }, "tear+=0.18")
         .to({}, { duration: liftHold })
         .to(rootRef.current, { opacity: 0, duration: liftFade, ease: "power2.inOut" });
       }, rootRef);
@@ -345,16 +355,17 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
           className="absolute opacity-0"
           style={{ width: "clamp(260px, 78vw, 900px)", aspectRatio: "2824 / 1187" }}
         >
+          {/* Chromatic aberration plates sit BEHIND the artwork */}
+          {plate("/equinox-logo.svg", BLUE, (el) => { wordPlatesRef.current[0] = el; })}
+          {plate("/equinox-logo.svg", GREEN, (el) => { wordPlatesRef.current[1] = el; })}
           {/* eslint-disable-next-line @next/next/no-img-element -- fixed-ratio brand asset */}
           <img
             ref={wordArtRef}
             src="/equinox-logo.svg"
             alt="The Equinox 2.0 E-Summit 2K26"
             className="absolute inset-0 h-full w-full object-contain opacity-0"
+            style={{ transform: "translateZ(0)" }}
           />
-          {plate("/equinox-logo.svg", null, (el) => { wordPlatesRef.current[0] = el; })}
-          {plate("/equinox-logo.svg", BLUE, (el) => { wordPlatesRef.current[1] = el; })}
-          {plate("/equinox-logo.svg", GREEN, (el) => { wordPlatesRef.current[2] = el; })}
         </div>
       </div>
 
