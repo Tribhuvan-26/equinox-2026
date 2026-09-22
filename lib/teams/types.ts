@@ -54,7 +54,6 @@ export type MyRegistrationView = {
     name: string;
     status: RegistrationStatus;
     confirmationNumber: string;
-    teamNumber: string;
     adminNote: string | null;
     createdAt: string;
   };

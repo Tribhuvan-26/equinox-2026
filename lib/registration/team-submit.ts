@@ -148,7 +148,6 @@ function confirmationNumber(): string {
 export type InsertedRegistration = {
   id: string;
   confirmationNumber: string;
-  teamNumber: string;
   /** The raw secret token. Shown once and emailed; never stored. */
   accessToken: string;
 };
@@ -183,7 +182,7 @@ export async function insertTeamRegistration(opts: {
   try {
     let number = confirmationNumber();
     for (let attempt = 0; attempt < 2; attempt++) {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("pass_registrations")
         .insert({
           id,
@@ -200,14 +199,12 @@ export async function insertTeamRegistration(opts: {
           member_email: stored.email,
           access_token_hash: hash,
         })
-        .select("team_seq")
         .single();
 
       if (!error) {
         return {
           id,
           confirmationNumber: number,
-          teamNumber: `EQ-${String(data.team_seq).padStart(3, "0")}`,
           accessToken: token,
         };
       }

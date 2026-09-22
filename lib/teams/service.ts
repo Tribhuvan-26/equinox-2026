@@ -226,7 +226,6 @@ export async function getMyRegistration(reg: Reg): Promise<MyRegistrationView> {
       name: nameOf(reg),
       status: reg.status,
       confirmationNumber: reg.confirmation_number,
-      teamNumber: `EQ-${String(reg.team_seq).padStart(3, "0")}`,
       adminNote: reg.admin_note,
       createdAt: reg.created_at,
     },

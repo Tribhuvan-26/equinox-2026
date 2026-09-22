@@ -77,10 +77,9 @@ export async function POST(request: Request) {
   const totalAmount = participants.length * REGISTRATION_FEE;
 
   let confirmationNumber = generateConfirmationNumber();
-  let teamSeq: number | null = null;
 
   for (let attempt = 0; attempt < 2; attempt++) {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("pass_registrations")
       .insert({
         id: registrationId,
@@ -93,13 +92,9 @@ export async function POST(request: Request) {
         status: "pending",
         confirmation_number: confirmationNumber,
       })
-      .select("team_seq")
       .single();
 
-    if (!error) {
-      teamSeq = data.team_seq;
-      break;
-    }
+    if (!error) break;
 
     const isConfirmationCollision = error.code === "23505" && error.message.includes("confirmation_number");
     if (isConfirmationCollision && attempt === 0) {
@@ -113,10 +108,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Could not save your registration. Please try again." }, { status: 500 });
   }
 
-  const teamNumber = `EQ-${String(teamSeq).padStart(3, "0")}`;
-
   return NextResponse.json(
-    { id: registrationId, totalAmount, confirmationNumber, teamNumber },
+    { id: registrationId, totalAmount, confirmationNumber },
     { status: 201 }
   );
 

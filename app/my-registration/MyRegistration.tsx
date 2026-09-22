@@ -168,7 +168,7 @@ function Ready({
           </span>
         </div>
         <p className="mt-2 font-mono text-sm font-bold text-[#33FF67]">
-          {reg.teamNumber} · {reg.confirmationNumber}
+          {reg.confirmationNumber}
         </p>
         <p className="mt-3 text-sm text-[#F7F2F6]/70">
           {reg.status === "pending" && "Your payment is being verified by the organisers. You'll get an email once it's approved."}

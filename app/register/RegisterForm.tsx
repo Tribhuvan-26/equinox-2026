@@ -63,7 +63,6 @@ function RegistrationFormBody() {
   const [result, setResult] = useState<{
     totalAmount: number;
     confirmationNumber: string;
-    teamNumber: string;
   } | null>(null);
   const submitLock = useRef(false);
 
@@ -133,7 +132,6 @@ function RegistrationFormBody() {
       setResult({
         totalAmount: data.totalAmount,
         confirmationNumber: data.confirmationNumber,
-        teamNumber: data.teamNumber,
       });
     } catch {
       setSubmitError("Network error. Please check your connection and try again.");
@@ -154,7 +152,6 @@ function RegistrationFormBody() {
         </p>
         <div className="mt-4 flex flex-col items-center gap-1 font-mono text-sm text-[#F7F2F6]/60">
           <p>Confirmation Number: <span className="text-[#33FF67]">{result.confirmationNumber}</span></p>
-          <p>Team Number: <span className="text-[#33FF67]">{result.teamNumber}</span></p>
         </div>
       </div>
     );

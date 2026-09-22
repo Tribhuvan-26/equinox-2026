@@ -28,7 +28,6 @@ export async function POST(request: Request) {
 
     return {
       confirmationNumber: registration.confirmationNumber,
-      teamNumber: registration.teamNumber,
       accessToken: registration.accessToken,
       team: { name: team.name, code: team.code },
     };

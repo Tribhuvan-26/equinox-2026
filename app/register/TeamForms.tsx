@@ -144,7 +144,6 @@ function PersonAndPayment({ f }: { f: Person }) {
 
 type Done = {
   confirmationNumber: string;
-  teamNumber: string;
   accessToken: string;
   team: { name: string; code?: string };
 };
@@ -206,9 +205,6 @@ function SuccessCard({ done, kind }: { done: Done; kind: "create" | "join" }) {
       <div className="mt-6 flex flex-col gap-1 font-mono text-sm text-[#F7F2F6]/70">
         <p>
           Confirmation Number: <span className="text-[#33FF67]">{done.confirmationNumber}</span>
-        </p>
-        <p>
-          Registration Number: <span className="text-[#33FF67]">{done.teamNumber}</span>
         </p>
       </div>
 
