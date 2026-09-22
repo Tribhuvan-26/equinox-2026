@@ -19,7 +19,7 @@ export function InstitutionalHeader({ className = "" }: { className?: string }) 
 
       {/* Right: MLRIT official lockup */}
       {/* eslint-disable-next-line @next/next/no-img-element -- fixed-ratio brand asset, no next/image benefit */}
-      <img src="/logos/mlrit-white.png" alt="MLR Institute of Technology" className="h-9 w-auto object-contain sm:h-11" />
+      <img src="/logos/mlrit.png" alt="MLR Institute of Technology" className="h-9 w-auto object-contain sm:h-11" />
     </div>
   );
 }
