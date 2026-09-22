@@ -37,6 +37,9 @@ const isUnique = (err: PgError, constraint: string) =>
 export const APPROVED_LOCK =
   "This registration is already approved. Contact the organisers if something needs to change.";
 
+export const REJECTED_LOCK =
+  "This registration was not approved, so it cannot join a team. Contact the organisers.";
+
 export const nameOf = (reg: Pick<Reg, "participants">) => reg.participants[0]?.name ?? "Unknown";
 
 /* ------------------------------------------------------------------ */
@@ -123,6 +126,7 @@ async function reserveTeam(rawName: string): Promise<RegistrationTeamRow> {
  */
 export async function createTeamFor(reg: Reg, rawName: string): Promise<{ id: string; name: string; code: string }> {
   if (reg.team_id) throw new ApiError(409, "You are already on a team.");
+  if (reg.status === "rejected") throw new ApiError(409, REJECTED_LOCK);
   const team = await reserveTeam(rawName);
 
   const { data: claimed, error } = await supabaseAdmin()
@@ -164,6 +168,9 @@ export async function requestToJoin(
   teamId: string
 ): Promise<{ team: RegistrationTeamRow; changed: boolean }> {
   if (reg.team_id) throw new ApiError(409, "You are already on a team. Leave it before asking to join another.");
+  // A rejected registration never reaches the leader's inbox (it filters them
+  // out), so letting it queue would park the person on "waiting" for ever.
+  if (reg.status === "rejected") throw new ApiError(409, REJECTED_LOCK);
   const team = await loadTeam(teamId);
   if (!team) throw new ApiError(404, "Team not found.");
   if ((await liveCount(team.id)) >= team.max_members) throw new ApiError(409, "This team is full.");
