@@ -33,6 +33,33 @@ alter table public.pass_registrations
 -- when a registration could not exist without one. Now that paying comes first,
 -- that gap would let the same person pay twice while teamless. Dropping the
 -- team clause closes it and leaves a simpler rule.
+-- The old rule allowed what the new one forbids, so a database with real
+-- traffic may already hold duplicates (someone who left a team, or whose team
+-- was deleted, could pay again under the same email). Those are real paid
+-- registrations: name them and stop, rather than drop the working index or
+-- delete a row on the operator's behalf. Runs before the drop so a database
+-- that needs attention is left exactly as it was.
+do $$
+declare
+  dupes text;
+begin
+  select string_agg(member_email || ' (' || n || ' rows)', ', ' order by member_email)
+    into dupes
+    from (
+      select member_email, count(*) as n
+        from public.pass_registrations
+       where member_email is not null and status <> 'rejected'
+       group by member_email
+      having count(*) > 1
+    ) d;
+
+  if dupes is not null then
+    raise exception
+      'pass_registrations_one_live_per_email_key needs one live registration per email, but these have more: %. Reject or refund the extra rows, then re-run this file.',
+      dupes;
+  end if;
+end $$;
+
 drop index if exists public.pass_registrations_one_team_per_email_key;
 create unique index if not exists pass_registrations_one_live_per_email_key
   on public.pass_registrations (member_email)
