@@ -92,7 +92,7 @@ export function FilterPanel<T extends RegistrationRecord>({
               <option value="">All Status</option>
               <option value="pending">Pending</option>
               <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
+              <option value="rejected">Not Approved</option>
             </select>
           </div>
           <div>

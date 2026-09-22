@@ -2,43 +2,12 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { Check, Copy, Crown, Users } from "lucide-react";
+import { Check, Copy, Crown, UserPlus, Users } from "lucide-react";
 import { TEAM_MAX_MEMBERS, TEAM_MIN_MEMBERS_LIMIT, TEAM_NAME_MAX } from "@/lib/teams/constants";
 import type { MyRegistrationView } from "@/lib/teams/types";
-import { TOKEN_STORAGE_KEY } from "../register/TeamForms";
-
-type Result<T> = { ok: true; data: T } | { ok: false; error: string; status: number };
-
-async function api<T>(token: string, url: string, init?: RequestInit): Promise<Result<T>> {
-  try {
-    const res = await fetch(url, {
-      ...init,
-      headers: { Authorization: `Bearer ${token}`, ...(init?.body ? { "Content-Type": "application/json" } : {}) },
-    });
-    const body = await res.json().catch(() => null);
-    if (res.ok) return { ok: true, data: body as T };
-    return { ok: false, error: body?.error ?? "Something went wrong.", status: res.status };
-  } catch {
-    return { ok: false, error: "Network error. Check your connection and try again.", status: 0 };
-  }
-}
-
-const card = "rounded-2xl border-2 border-white/20 bg-[#151515]/90 p-5 shadow-[6px_6px_0px_#7484FE] sm:p-8";
-const inputClass =
-  "mt-2 w-full rounded-xl border border-white/20 bg-black/20 px-4 py-3 text-[#F7F2F6] outline-none transition focus:border-[#7484FE]";
-const labelClass = "block text-xs font-bold uppercase tracking-wider text-[#F7F2F6]/70";
-const primaryBtn =
-  "press inline-flex items-center justify-center gap-2 rounded-xl bg-[#33FF67] px-5 py-3 text-sm font-black text-[#2A2A2A] transition-all hover:bg-[#5aff87] disabled:cursor-not-allowed disabled:opacity-50";
-const secondaryBtn =
-  "press inline-flex items-center justify-center gap-2 rounded-xl border-2 border-white/30 bg-[#151515] px-5 py-3 text-sm font-black text-[#F7F2F6] transition-all hover:border-[#33FF67] hover:text-[#33FF67] disabled:cursor-not-allowed disabled:opacity-50";
-const dangerBtn =
-  "press inline-flex items-center justify-center gap-2 rounded-xl border-2 border-red-400/60 bg-transparent px-5 py-3 text-sm font-black text-red-300 transition-all hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50";
-
-const STATUS_STYLE: Record<string, string> = {
-  pending: "bg-[#7484FE] text-[#2A2A2A]",
-  approved: "bg-[#33FF67] text-[#2A2A2A]",
-  rejected: "bg-red-400 text-[#2A2A2A]",
-};
+import { TOKEN_STORAGE_KEY } from "@/lib/registration/constants";
+import { NoTeam } from "./NoTeam";
+import { api, card, dangerBtn, inputClass, labelClass, primaryBtn, secondaryBtn, STATUS_LABEL, STATUS_STYLE, type Result } from "./ui";
 
 function readStoredToken(): string | null {
   try {
@@ -157,6 +126,10 @@ function Ready({
   const leave = () => run(() => api(token, "/api/my-registration/leave", { method: "POST" }));
   const destroy = () => run(() => api(token, "/api/my-registration/team", { method: "DELETE" }));
   const remove = (id: string) => run(() => api(token, `/api/my-registration/team/members/${id}`, { method: "DELETE" }));
+  const decide = (id: string, accept: boolean) =>
+    run(() =>
+      api(token, `/api/my-registration/team/requests/${id}`, { method: "POST", body: JSON.stringify({ accept }) })
+    );
 
   return (
     <div className="space-y-5">
@@ -164,7 +137,7 @@ function Ready({
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="heading break-words text-2xl font-black sm:text-4xl">Hi, {reg.name.split(" ")[0]}</h1>
           <span className={`rounded-full px-3 py-1 font-mono text-[11px] font-black uppercase ${STATUS_STYLE[reg.status]}`}>
-            {reg.status}
+            {STATUS_LABEL[reg.status]}
           </span>
         </div>
         <p className="mt-2 font-mono text-sm font-bold text-[#33FF67]">
@@ -174,7 +147,7 @@ function Ready({
           {reg.status === "pending" && "Your payment is being verified by the organisers. You'll get an email once it's approved."}
           {reg.status === "approved" && "You're confirmed for Equinox 2026. See you there!"}
           {reg.status === "rejected" &&
-            `Your registration was rejected${reg.adminNote ? `: ${reg.adminNote}` : "."} You can register again from the register page.`}
+            `Your registration was not approved${reg.adminNote ? `: ${reg.adminNote}` : "."} You can register again from the register page.`}
         </p>
       </div>
 
@@ -217,7 +190,7 @@ function Ready({
                 <span className="flex flex-wrap items-center gap-3">
                   {m.status && (
                     <span className={`rounded-full px-2.5 py-0.5 font-mono text-[10px] font-black uppercase ${STATUS_STYLE[m.status]}`}>
-                      {m.status}
+                      {STATUS_LABEL[m.status]}
                     </span>
                   )}
                   <span
@@ -246,8 +219,51 @@ function Ready({
           </p>
           {team.memberCount < team.maxMembers && (
             <p className="mt-1 text-sm text-[#F7F2F6]/60">
-              Teammates join at <span className="font-bold">/register</span> with the team code and pay their own fee.
+              Teammates register and pay at <span className="font-bold">/register</span>, then ask to join with your
+              team name or code. You approve them here.
             </p>
+          )}
+
+          {isLeader && team.joinRequests && team.joinRequests.length > 0 && (
+            <>
+              <h3 className="mt-8 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#F7F2F6]/70">
+                <UserPlus className="h-4 w-4" /> Requests to join ({team.joinRequests.length})
+              </h3>
+              <p className="mt-2 text-sm text-[#F7F2F6]/60">
+                These people have paid and want to be on your team. A seat is only taken when you accept.
+              </p>
+              <ul className="mt-3 divide-y divide-white/10 rounded-xl border border-[#7484FE]/40 bg-[#7484FE]/5">
+                {team.joinRequests.map((r) => (
+                  <li
+                    key={r.registrationId}
+                    className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 py-3"
+                  >
+                    <span className="min-w-0 break-words font-bold">{r.name}</span>
+                    <span className="flex flex-wrap items-center gap-2">
+                      <button
+                        onClick={() => decide(r.registrationId, true)}
+                        disabled={busy || team.memberCount >= team.maxMembers}
+                        className={`${primaryBtn} !px-4 !py-2`}
+                      >
+                        Accept
+                      </button>
+                      <button
+                        onClick={() => decide(r.registrationId, false)}
+                        disabled={busy}
+                        className={`${secondaryBtn} !px-4 !py-2`}
+                      >
+                        Decline
+                      </button>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              {team.memberCount >= team.maxMembers && (
+                <p className="mt-2 text-xs text-[#F7F2F6]/50">
+                  Your team is full, so these requests can&apos;t be accepted. Decline them, or remove a member first.
+                </p>
+              )}
+            </>
           )}
 
           {confirm && (
@@ -300,17 +316,7 @@ function Ready({
           )}
         </div>
       ) : (
-        <div className={card}>
-          <p className="font-mono text-xs font-black uppercase tracking-[0.25em] text-[#33FF67]">My Team</p>
-          <p className="mt-2 text-sm text-[#F7F2F6]/70">
-            You are not on a team. Your registration is still valid. To be on a team, ask a team leader for their code
-            and{" "}
-            <Link href="/register" className="font-bold text-[#33FF67] hover:underline">
-              join from the register page
-            </Link>
-            .
-          </p>
-        </div>
+        <NoTeam token={token} requestedTeam={view.requestedTeam} onChange={onChange} />
       )}
 
       <button onClick={onForget} className="text-sm font-bold text-[#F7F2F6]/60 underline">

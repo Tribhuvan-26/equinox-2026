@@ -53,3 +53,6 @@ __pycache__/
 # raw camera assets
 components/equinox gallery/
 *.ARW
+
+# Playwright MCP scratch output
+.playwright-mcp/

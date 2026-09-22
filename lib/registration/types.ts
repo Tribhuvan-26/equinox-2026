@@ -34,9 +34,11 @@ export type RegistrationRecord = {
   updated_at: string;
   team_seq: number;
   confirmation_number: string;
-  /** Set when the person registered through a team (create / join). */
+  /** Set once the person has a team; null while they have only paid. */
   team_id: string | null;
   team_role: "leader" | "member" | null;
+  /** The team they have asked to join, if any. One column, so one ask at a time. */
+  requested_team_id: string | null;
 };
 
 export function emptyParticipant(): Participant {

@@ -1,7 +1,7 @@
 import "server-only";
 import { ApiError } from "@/lib/api";
 import {
-  emailAlreadyInTeam,
+  emailAlreadyRegistered,
   EMAIL_IN_TEAM_MESSAGE,
   insertTeamRegistration,
   type InsertedRegistration,
@@ -14,20 +14,30 @@ import { DEFAULT_MAX_MEMBERS, NAME_TAKEN_MESSAGE } from "./constants";
 import type { MyRegistrationView, RegistrationTeamRow, TeamSearchResult, TeamView } from "./types";
 import { escapeLike, looksLikeTeamCode, normalizeTeamCode, normalizeTeamName, validateMaxMembers, validateTeamName } from "./validation";
 
-const COLS = "id, team_id, team_role, status, participants, confirmation_number, team_seq, admin_note, created_at";
-type Reg = Pick<
+const COLS =
+  "id, team_id, team_role, requested_team_id, status, participants, confirmation_number, team_seq, admin_note, created_at";
+export type Reg = Pick<
   RegistrationRow,
-  "id" | "team_id" | "team_role" | "status" | "participants" | "confirmation_number" | "team_seq" | "admin_note" | "created_at"
+  | "id"
+  | "team_id"
+  | "team_role"
+  | "requested_team_id"
+  | "status"
+  | "participants"
+  | "confirmation_number"
+  | "team_seq"
+  | "admin_note"
+  | "created_at"
 >;
 
 type PgError = { code?: string; message: string; details?: string | null };
 const isUnique = (err: PgError, constraint: string) =>
   err.code === "23505" && `${err.message} ${err.details ?? ""}`.includes(constraint);
 
-const APPROVED_LOCK =
+export const APPROVED_LOCK =
   "This registration is already approved. Contact the organisers if something needs to change.";
 
-const nameOf = (reg: Pick<Reg, "participants">) => reg.participants[0]?.name ?? "Unknown";
+export const nameOf = (reg: Pick<Reg, "participants">) => reg.participants[0]?.name ?? "Unknown";
 
 /* ------------------------------------------------------------------ */
 /* Who is calling? (the secret link)                                   */
@@ -54,7 +64,7 @@ function requireLeader(reg: Reg): string {
   return reg.team_id;
 }
 
-async function loadTeam(teamId: string): Promise<RegistrationTeamRow | null> {
+export async function loadTeam(teamId: string): Promise<RegistrationTeamRow | null> {
   const { data, error } = await supabaseAdmin().from("registration_teams").select("*").eq("id", teamId).maybeSingle();
   if (error) throw error;
   return data;
@@ -64,15 +74,22 @@ async function loadTeam(teamId: string): Promise<RegistrationTeamRow | null> {
 /* Create / join                                                       */
 /* ------------------------------------------------------------------ */
 
-export type CreatedTeam = { registration: InsertedRegistration; team: { id: string; name: string; code: string } };
+/**
+ * Step one, and the only step that takes money: the person pays for themselves
+ * and gets a registration with no team. Picking a team comes later.
+ */
+export async function registerPaid(parsed: ParsedRegistrationForm): Promise<InsertedRegistration> {
+  if (await emailAlreadyRegistered(parsed.participant.email)) {
+    throw new ApiError(409, EMAIL_IN_TEAM_MESSAGE, "email");
+  }
+  return insertTeamRegistration({ parsed, teamId: null, role: null });
+}
 
-/** The leader registers + pays for themselves; that creates the team and its code. */
-export async function createTeamWithLeader(parsed: ParsedRegistrationForm, rawName: string): Promise<CreatedTeam> {
+/** Reserve a team name + code. The caller decides who becomes its leader. */
+async function reserveTeam(rawName: string): Promise<RegistrationTeamRow> {
   const nameError = validateTeamName(rawName);
   if (nameError) throw new ApiError(400, nameError, "teamName");
   const name = normalizeTeamName(rawName);
-
-  if (await emailAlreadyInTeam(parsed.participant.email)) throw new ApiError(409, EMAIL_IN_TEAM_MESSAGE, "email");
 
   const supabase = supabaseAdmin();
   let team: RegistrationTeamRow | null = null;
@@ -97,18 +114,32 @@ export async function createTeamWithLeader(parsed: ParsedRegistrationForm, rawNa
     throw new ApiError(500, "Could not create the team. Please try again.");
   }
   if (!team) throw new ApiError(500, "Could not generate a unique team code. Please try again.");
-
-  try {
-    const registration = await insertTeamRegistration({ parsed, teamId: team.id, role: "leader" });
-    return { registration, team: { id: team.id, name: team.name, code: team.code } };
-  } catch (err) {
-    // No leader registration = no team. Don't leave the name/code reserved.
-    await supabase.from("registration_teams").delete().eq("id", team.id);
-    throw err;
-  }
+  return team;
 }
 
-async function liveCount(teamId: string): Promise<number> {
+/**
+ * An already-paid, teamless person starts a team and leads it. If claiming the
+ * team fails, the name and code are released rather than left reserved.
+ */
+export async function createTeamFor(reg: Reg, rawName: string): Promise<{ id: string; name: string; code: string }> {
+  if (reg.team_id) throw new ApiError(409, "You are already on a team.");
+  const team = await reserveTeam(rawName);
+
+  const { error } = await supabaseAdmin()
+    .from("pass_registrations")
+    .update({ team_id: team.id, team_role: "leader", requested_team_id: null })
+    .eq("id", reg.id)
+    .is("team_id", null);
+  if (error) {
+    await supabaseAdmin().from("registration_teams").delete().eq("id", team.id);
+    console.error("[teams] createTeamFor", error);
+    throw new ApiError(500, "Could not create the team. Please try again.");
+  }
+
+  return { id: team.id, name: team.name, code: team.code };
+}
+
+export async function liveCount(teamId: string): Promise<number> {
   const { count, error } = await supabaseAdmin()
     .from("pass_registrations")
     .select("id", { count: "exact", head: true })
@@ -118,18 +149,34 @@ async function liveCount(teamId: string): Promise<number> {
   return count ?? 0;
 }
 
-/** A teammate registers + pays for themselves and takes a seat in an existing team. */
-export async function joinTeamWithRegistration(
-  parsed: ParsedRegistrationForm,
-  teamId: string
-): Promise<{ registration: InsertedRegistration; team: { id: string; name: string; code: string } }> {
+/**
+ * Ask a team to take you in. A request holds no seat: the seat is taken only
+ * when the leader accepts, so several people may queue for the same last place.
+ */
+export async function requestToJoin(reg: Reg, teamId: string): Promise<RegistrationTeamRow> {
+  if (reg.team_id) throw new ApiError(409, "You are already on a team. Leave it before asking to join another.");
   const team = await loadTeam(teamId);
   if (!team) throw new ApiError(404, "Team not found.");
   if ((await liveCount(team.id)) >= team.max_members) throw new ApiError(409, "This team is full.");
-  if (await emailAlreadyInTeam(parsed.participant.email)) throw new ApiError(409, EMAIL_IN_TEAM_MESSAGE, "email");
 
-  const registration = await insertTeamRegistration({ parsed, teamId: team.id, role: "member" });
-  return { registration, team: { id: team.id, name: team.name, code: team.code } };
+  const { error } = await supabaseAdmin()
+    .from("pass_registrations")
+    .update({ requested_team_id: team.id })
+    .eq("id", reg.id);
+  if (error) {
+    console.error("[teams] requestToJoin", error);
+    throw new ApiError(500, "Could not send your request. Please try again.");
+  }
+  return team;
+}
+
+/** Withdraw the outstanding request, whoever it was to. */
+export async function cancelJoinRequest(reg: Reg): Promise<void> {
+  const { error } = await supabaseAdmin()
+    .from("pass_registrations")
+    .update({ requested_team_id: null })
+    .eq("id", reg.id);
+  if (error) throw error;
 }
 
 /* ------------------------------------------------------------------ */
@@ -172,18 +219,20 @@ export async function searchTeams(query: string): Promise<TeamSearchResult[]> {
     .neq("status", "rejected");
   if (error) throw error;
 
-  return teams.map((t) => {
-    const members = (regs ?? []).filter((r) => r.team_id === t.id);
-    const leader = members.find((r) => r.team_role === "leader");
-    return {
-      id: t.id,
-      name: t.name,
-      leaderName: leader ? nameOf(leader) : "—",
-      memberCount: members.length,
-      maxMembers: t.max_members,
-      isFull: members.length >= t.max_members,
-    };
-  });
+  // A full team can't take anyone, so it isn't a search result at all.
+  return teams
+    .map((t) => {
+      const members = (regs ?? []).filter((r) => r.team_id === t.id);
+      const leader = members.find((r) => r.team_role === "leader");
+      return {
+        id: t.id,
+        name: t.name,
+        leaderName: leader ? nameOf(leader) : "—",
+        memberCount: members.length,
+        maxMembers: t.max_members,
+      };
+    })
+    .filter((t) => t.memberCount < t.maxMembers);
 }
 
 /* ------------------------------------------------------------------ */
@@ -217,6 +266,36 @@ export async function getMyRegistration(reg: Reg): Promise<MyRegistrationView> {
         .sort((a, b) => (a.role === b.role ? 0 : a.role === "leader" ? -1 : 1));
 
       team = { id: row.id, name: row.name, code: row.code, maxMembers: row.max_members, memberCount: members.length, members };
+
+      // Only the leader answers requests, so only the leader is shown them.
+      if (isLeader) {
+        const { data: asking, error: askError } = await supabaseAdmin()
+          .from("pass_registrations")
+          .select("id, participants, created_at")
+          .eq("requested_team_id", row.id)
+          .neq("status", "rejected")
+          .order("created_at", { ascending: true });
+        if (askError) throw askError;
+        team.joinRequests = (asking ?? []).map((r) => ({
+          registrationId: r.id,
+          name: nameOf(r),
+          requestedAt: r.created_at,
+        }));
+      }
+    }
+  }
+
+  let requestedTeam: MyRegistrationView["requestedTeam"] = null;
+  if (!reg.team_id && reg.requested_team_id) {
+    const row = await loadTeam(reg.requested_team_id);
+    if (row) {
+      const { data: leader } = await supabaseAdmin()
+        .from("pass_registrations")
+        .select("participants")
+        .eq("team_id", row.id)
+        .eq("team_role", "leader")
+        .maybeSingle();
+      requestedTeam = { id: row.id, name: row.name, leaderName: leader ? nameOf(leader) : "—" };
     }
   }
 
@@ -231,6 +310,7 @@ export async function getMyRegistration(reg: Reg): Promise<MyRegistrationView> {
       createdAt: reg.created_at,
     },
     team,
+    requestedTeam,
     isLeader,
   };
 }
@@ -312,6 +392,82 @@ export async function removeMember(reg: Reg, targetRegistrationId: string): Prom
   if (target.status === "approved") throw new ApiError(409, APPROVED_LOCK);
 
   await unlink({ id: target.id });
+}
+
+export type DecidedRequest = {
+  team: RegistrationTeamRow;
+  accepted: boolean;
+  person: { name: string; email: string };
+  /** Others whose request was dropped because the team filled up. */
+  crowdedOut: { name: string; email: string }[];
+};
+
+/**
+ * The leader answers one request. Accepting moves the person into the team; the
+ * capacity trigger is what actually guarantees the seat exists, so two leaders
+ * (or two clicks) racing for the last place cannot both win.
+ */
+export async function decideJoinRequest(
+  reg: Reg,
+  targetRegistrationId: string,
+  accept: boolean
+): Promise<DecidedRequest> {
+  const teamId = requireLeader(reg);
+  const team = await loadTeam(teamId);
+  if (!team) throw new ApiError(404, "Team not found.");
+
+  const supabase = supabaseAdmin();
+  const { data: target, error: findError } = await supabase
+    .from("pass_registrations")
+    .select("id, participants, member_email")
+    .eq("id", targetRegistrationId)
+    .eq("requested_team_id", teamId)
+    .maybeSingle();
+  if (findError) throw findError;
+  if (!target) throw new ApiError(404, "That request is no longer open.");
+
+  const person = { name: nameOf(target), email: target.member_email ?? "" };
+
+  if (!accept) {
+    const { error } = await supabase
+      .from("pass_registrations")
+      .update({ requested_team_id: null })
+      .eq("id", target.id);
+    if (error) throw error;
+    return { team, accepted: false, person, crowdedOut: [] };
+  }
+
+  const { data: moved, error } = await supabase
+    .from("pass_registrations")
+    .update({ team_id: teamId, team_role: "member", requested_team_id: null })
+    .eq("id", target.id)
+    .is("team_id", null)
+    .select("id");
+  if (error) {
+    if (error.message.includes("team_full")) throw new ApiError(409, "This team is full.");
+    if (error.code === "23505") throw new ApiError(409, "That person is already on a team.");
+    console.error("[teams] decideJoinRequest", error);
+    throw new ApiError(500, "Could not accept the request. Please try again.");
+  }
+  // No error but no row means they landed somewhere else between the read and
+  // the write. Nothing happened, so don't tell the leader (or them) otherwise.
+  if ((moved ?? []).length === 0) throw new ApiError(409, "That person has already joined another team.");
+
+  // A full team can't answer anyone else, so withdraw the rest rather than
+  // leave them waiting on a seat that no longer exists.
+  let crowdedOut: { name: string; email: string }[] = [];
+  if ((await liveCount(teamId)) >= team.max_members) {
+    const { data: waiting } = await supabase
+      .from("pass_registrations")
+      .select("id, participants, member_email")
+      .eq("requested_team_id", teamId);
+    crowdedOut = (waiting ?? []).map((r) => ({ name: nameOf(r), email: r.member_email ?? "" }));
+    if (crowdedOut.length > 0) {
+      await supabase.from("pass_registrations").update({ requested_team_id: null }).eq("requested_team_id", teamId);
+    }
+  }
+
+  return { team, accepted: true, person, crowdedOut };
 }
 
 export async function leaveTeam(reg: Reg): Promise<void> {

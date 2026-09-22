@@ -16,7 +16,15 @@ export interface Database {
         Row: RegistrationRow;
         Insert: Omit<
           RegistrationRow,
-          "created_at" | "updated_at" | "admin_note" | "team_seq" | "team_id" | "team_role" | "member_email" | "access_token_hash"
+          | "created_at"
+          | "updated_at"
+          | "admin_note"
+          | "team_seq"
+          | "team_id"
+          | "team_role"
+          | "requested_team_id"
+          | "member_email"
+          | "access_token_hash"
         > & {
           created_at?: string;
           updated_at?: string;
@@ -24,6 +32,7 @@ export interface Database {
           team_seq?: number;
           team_id?: string | null;
           team_role?: "leader" | "member" | null;
+          requested_team_id?: string | null;
           member_email?: string | null;
           access_token_hash?: string | null;
         };

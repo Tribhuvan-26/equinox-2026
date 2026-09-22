@@ -21,6 +21,19 @@ export async function PATCH(request: Request, ctx: { params: Promise<{ id: strin
   }
 
   const supabase = supabaseAdmin();
+
+  // Approving freezes a registration, and a frozen one can never pick a team.
+  // Someone who has only paid isn't refusable either -- they are just not ready.
+  if (status === "approved") {
+    const { data: current } = await supabase.from("pass_registrations").select("team_id").eq("id", id).maybeSingle();
+    if (current && !current.team_id) {
+      return NextResponse.json(
+        { error: "This person has paid but isn't on a team yet. Approve them once they've joined one." },
+        { status: 409 }
+      );
+    }
+  }
+
   const { data, error } = await supabase
     .from("pass_registrations")
     .update({ status, admin_note: note, updated_at: new Date().toISOString() })

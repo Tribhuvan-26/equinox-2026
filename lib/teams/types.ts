@@ -26,7 +26,13 @@ export type TeamSearchResult = {
   leaderName: string;
   memberCount: number;
   maxMembers: number;
-  isFull: boolean;
+};
+
+/** Someone waiting for this team's leader to let them in. */
+export type JoinRequestView = {
+  registrationId: string;
+  name: string;
+  requestedAt: string;
 };
 
 export type TeamMemberView = {
@@ -46,6 +52,8 @@ export type TeamView = {
   maxMembers: number;
   memberCount: number;
   members: TeamMemberView[];
+  /** People asking to join. Only sent to the team leader. */
+  joinRequests?: JoinRequestView[];
 };
 
 export type MyRegistrationView = {
@@ -60,5 +68,7 @@ export type MyRegistrationView = {
   };
   /** null once the person has left / been removed / the team was deleted. */
   team: TeamView | null;
+  /** The team this person is waiting on, while they have no team of their own. */
+  requestedTeam: { id: string; name: string; leaderName: string } | null;
   isLeader: boolean;
 };
