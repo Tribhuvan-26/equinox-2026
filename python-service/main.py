@@ -133,7 +133,7 @@ async def chat_endpoint(req: ChatRequest):
     if not query:
         raise HTTPException(status_code=400, detail="Message cannot be empty")
         
-    current_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY_BACKUP")
+    current_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY_BACKUP") or os.environ.get("GEMINI_API_KEY_BACKUP_2")
     if not current_key:
         raise HTTPException(status_code=500, detail="GEMINI_API_KEY is not configured on service")
     ai_client = client or genai.Client(api_key=current_key)

@@ -47,6 +47,7 @@ export function getAvailableApiKeys(): string[] {
   const keys: string[] = [];
   if (process.env.GEMINI_API_KEY) keys.push(process.env.GEMINI_API_KEY);
   if (process.env.GEMINI_API_KEY_BACKUP) keys.push(process.env.GEMINI_API_KEY_BACKUP);
+  if (process.env.GEMINI_API_KEY_BACKUP_2) keys.push(process.env.GEMINI_API_KEY_BACKUP_2);
 
   try {
     const fs = require("fs");
@@ -59,7 +60,7 @@ export function getAvailableApiKeys(): string[] {
         if (match) {
           const varName = match[1];
           const val = match[2]?.trim().replace(/^['"]|['"]$/g, "");
-          if (val && (varName === "GEMINI_API_KEY" || varName === "GEMINI_API_KEY_BACKUP")) {
+          if (val && varName.startsWith("GEMINI_API_KEY")) {
             if (!keys.includes(val)) {
               keys.push(val);
             }
