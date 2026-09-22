@@ -4,9 +4,17 @@ import { ArrowLeft } from "lucide-react";
 import { event, events } from "@/lib/content";
 import { EventCard, PageTransition, SectionHeading } from "../ui";
 
+const eventsDescription = `The 10 official sub-events at ${event.name} ${event.edition}: Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, and Pitch Deck.`;
+
 export const metadata: Metadata = {
-  title: `Sub-Events — ${event.name} ${event.edition}`,
-  description: `The 10 official sub-events at The Equinox 2.0: Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, and Pitch Deck.`,
+  title: "Sub-Events",
+  description: eventsDescription,
+  alternates: { canonical: "/events" },
+  openGraph: {
+    title: `Sub-Events — ${event.name} ${event.edition}`,
+    description: eventsDescription,
+    url: "/events",
+  },
 };
 
 export default function EventsPage() {

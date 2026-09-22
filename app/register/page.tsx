@@ -6,8 +6,14 @@ import { PageTransition } from "../ui";
 import { RegisterHub } from "./RegisterHub";
 
 export const metadata: Metadata = {
-  title: `Register - ${event.name} ${event.year}`,
+  title: "Register",
   description: registration.body,
+  alternates: { canonical: "/register" },
+  openGraph: {
+    title: `Register — ${event.name} ${event.edition}`,
+    description: registration.body,
+    url: "/register",
+  },
 };
 
 const details = [

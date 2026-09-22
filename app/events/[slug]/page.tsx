@@ -6,6 +6,7 @@ import { SubEventBadge } from "../../EventGraphics";
 import { AutoPlayAnimation } from "../AutoPlayAnimation";
 import { EVENT_SPOCS } from "@/chatbot/data/events";
 import { Phone, ArrowUpRight, Ticket } from "lucide-react";
+import { SITE_NAME, subEventJsonLd } from "@/lib/seo";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -23,8 +24,14 @@ export async function generateMetadata({
   if (!item) return {};
 
   return {
-    title: `${item.title} — The Equinox 2026`,
+    title: item.title,
     description: item.description,
+    alternates: { canonical: `/events/${slug}` },
+    openGraph: {
+      title: `${item.title} — ${SITE_NAME}`,
+      description: item.description,
+      url: `/events/${slug}`,
+    },
   };
 }
 
@@ -39,6 +46,13 @@ export default async function EventPage({ params }: PageProps) {
 
   return (
     <main className={`${bgClasses} min-h-screen w-full max-w-full overflow-x-clip bg-[#2A2A2A] px-4 pt-24 pb-16 text-[#F7F2F6] sm:px-8 sm:pt-32 sm:pb-20 md:pt-36 selection:bg-[#7484FE] selection:text-[#2A2A2A]`}>
+      {/* Sub-event structured data, linked to the summit as its superEvent. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(subEventJsonLd({ name: item.title, slug, description: item.description })),
+        }}
+      />
       <AutoPlayAnimation slug={slug} />
 
       <div className="mx-auto max-w-[1200px]">

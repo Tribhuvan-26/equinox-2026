@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { event } from "@/lib/content";
 import { PageTransition } from "../ui";
 import { MyRegistration } from "./MyRegistration";
 
 export const metadata: Metadata = {
-  title: `My registration - ${event.name} ${event.year}`,
+  title: "My registration",
   // The private token lives in the URL fragment; keep it out of Referer headers anyway.
   referrer: "no-referrer",
   robots: { index: false },
