@@ -2,7 +2,7 @@
 // End-to-end RAG response generation grounded in Equinox 2026 knowledge base
 
 import { GoogleGenAI } from "@google/genai";
-import { retrieveRelevantChunks, RetrievedChunk } from "./retrieve";
+import { retrieveRelevantChunks, RetrievedChunk, getAvailableApiKeys } from "./retrieve";
 import { EQUINOX_SUB_EVENTS, SubEventInfo, EVENT_SPOCS, OVERALL_COORDINATORS } from "@/chatbot/data/events";
 import { getMockEquinoxResponse } from "@/lib/chatbot";
 import { evaluateGuardrails } from "./guardrails";
@@ -35,30 +35,9 @@ const GENERATION_MODELS = [
 ];
 
 function getAiClient(): GoogleGenAI | null {
-  let apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    try {
-      const fs = require("fs");
-      const path = require("path");
-      const envPath = path.resolve(process.cwd(), ".env.local");
-      if (fs.existsSync(envPath)) {
-        const lines = fs.readFileSync(envPath, "utf-8").split("\n");
-        for (const line of lines) {
-          const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
-          if (match && match[1] === "GEMINI_API_KEY") {
-            apiKey = match[2].trim().replace(/^['"]|['"]$/g, "");
-            process.env.GEMINI_API_KEY = apiKey;
-            break;
-          }
-        }
-      }
-    } catch {
-      // Ignore
-    }
-  }
-
-  if (!apiKey) return null;
-  return new GoogleGenAI({ apiKey });
+  const keys = getAvailableApiKeys();
+  if (keys.length === 0) return null;
+  return new GoogleGenAI({ apiKey: keys[0] });
 }
 
 /**
@@ -136,6 +115,15 @@ function matchEventCard(
   }
 
   return EQUINOX_SUB_EVENTS.find((e) => e.slug === resolvedSlug);
+}
+
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms)
+    ),
+  ]);
 }
 
 /**
@@ -361,27 +349,35 @@ ${retrieval.contextText}
 
 Answer:`;
 
-    // 5. Generation with model fallback
+    // 5. Generation with key and model fallback
     let answerText = "";
     let lastError: any = null;
+    const availableKeys = getAvailableApiKeys();
 
-    for (const model of GENERATION_MODELS) {
-      try {
-        const response = await ai.models.generateContent({
-          model,
-          contents: prompt,
-          config: {
-            systemInstruction,
-            temperature: 0.1,
-          },
-        });
-        if (response.text) {
-          answerText = response.text.trim();
-          break;
+    keyLoop: for (const apiKey of availableKeys) {
+      const client = new GoogleGenAI({ apiKey });
+      for (const model of GENERATION_MODELS) {
+        try {
+          const response = await withTimeout(
+            client.models.generateContent({
+              model,
+              contents: prompt,
+              config: {
+                systemInstruction,
+                temperature: 0.1,
+              },
+            }),
+            5000,
+            `Model ${model}`
+          );
+          if (response.text) {
+            answerText = response.text.trim();
+            break keyLoop;
+          }
+        } catch (err: any) {
+          lastError = err;
+          console.warn(`Model ${model} failed with key (trying fallback if available):`, err?.status || err?.message || err);
         }
-      } catch (err: any) {
-        lastError = err;
-        console.warn(`Model ${model} failed:`, err?.status || err?.message || err);
       }
     }
 
