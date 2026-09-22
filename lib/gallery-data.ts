@@ -36,7 +36,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Opening ceremonies graced by college leadership, distinguished dignitaries, and startup founders welcoming delegates to Equinox.",
     stats: "Keynote Hall",
     image: {
-      src: "/equinox-gallery/photo-1.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/a4a1ae70a905b4d2c325609cffd8251bfd1cf896-1600x1066.jpg?auto=format",
       alt: "Inaugural Keynote & Lighting Ceremony at Equinox",
     },
   },
@@ -50,7 +50,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Student founders presenting their innovative solutions to institutional investors and angel syndicate partners.",
     stats: "45+ Pitches",
     image: {
-      src: "/equinox-gallery/photo-2.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/2bf984933fb98af7ade46583840680f28c1e85ee-1600x1066.jpg?auto=format",
       alt: "Founder Pitch Off & Jury Deliberation",
     },
   },
@@ -64,7 +64,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Over a thousand eager delegates filling the main auditorium to absorb insights from unicorn founders and tech leaders.",
     stats: "1,500+ Attendees",
     image: {
-      src: "/equinox-gallery/photo-3.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/2be58cf1ce310c1ad31f8ad1606abd0fd3c78fb4-1600x1066.jpg?auto=format",
       alt: "Auditorium Packed Keynote Session",
     },
   },
@@ -78,7 +78,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Teams hacking past 2 AM, building breakthrough spatial AR/VR and decentralized apps with mentors on standby.",
     stats: "36-Hour Sprint",
     image: {
-      src: "/equinox-gallery/photo-4.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/5a0f26750133d69b5d942c478b2955030fa1bd37-1600x1066.jpg?auto=format",
       alt: "Midnight Hackathon War Room",
     },
   },
@@ -92,7 +92,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Engineers soldering microcontrollers and configuring IoT sensors during the rigorous hardware innovation track.",
     stats: "Rapid Prototyping",
     image: {
-      src: "/equinox-gallery/photo-5.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/575466cea1e030909a6d9fea2dc96cefdd2782ae-1600x1066.jpg?auto=format",
       alt: "Hardware Lab Prototyping Rush",
     },
   },
@@ -106,7 +106,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Student ventures exhibiting working prototypes, receiving live customer feedback, and connecting with early adopters.",
     stats: "30+ Stalls",
     image: {
-      src: "/equinox-gallery/photo-6.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/4387f0b27e5361f6800bd04b3f374e7a82da9417-1066x1600.jpg?auto=format",
       alt: "Startup Expo Pavilion Showcase",
     },
   },
@@ -120,7 +120,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Strategy teams crunching analytics, statistical models, and budget limits in the high-stakes bidding war.",
     stats: "₹100 Cr Purse",
     image: {
-      src: "/equinox-gallery/photo-7.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/6b2e1ec759b06b2ccc8f7139177ddabb952a0800-1600x1066.jpg?auto=format",
       alt: "IPL Mock Auction Heated Bidding",
     },
   },
@@ -134,7 +134,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Trailblazing women leaders in tech and venture capital discussing the next frontier of student-led innovation.",
     stats: "Panel Discussion",
     image: {
-      src: "/equinox-gallery/photo-8.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/91e1f176b21ece15996fc92b54911dd1f0b196d8-1600x1066.jpg?auto=format",
       alt: "Women in Tech & Leadership Panel",
     },
   },
@@ -148,7 +148,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Curated closed-door feedback sessions between shortlisted teams and venture partners evaluating term sheets.",
     stats: "Angel Round",
     image: {
-      src: "/equinox-gallery/photo-9.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/d2c2eb3df04a906e20016e9bec591afe6bf30887-1600x1066.jpg?auto=format",
       alt: "Investor One-on-One Office Hours",
     },
   },
@@ -162,7 +162,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Mentors reviewing code architecture and API integrations before teams enter the final development phase.",
     stats: "Checkpoint 02",
     image: {
-      src: "/equinox-gallery/photo-10.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/fd99d0cf860e0d93de80532e7266367348fa3bb9-1600x1066.jpg?auto=format",
       alt: "Code Jam Sprint Check-in",
     },
   },
@@ -176,7 +176,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "The winning team receiving their ceremonial cheque and trophy amidst cheers from the entire congregation.",
     stats: "₹1,50,000 Award",
     image: {
-      src: "/equinox-gallery/photo-11.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/6cd39ea99f9edf1bf0b1a53579a828c6032d5085-1600x1066.jpg?auto=format",
       alt: "Grand Stage Cash Prize Distribution",
     },
   },
@@ -190,7 +190,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Finalist teams dissecting complex market entry scenarios in front of seasoned corporate judges.",
     stats: "Case Finals",
     image: {
-      src: "/equinox-gallery/photo-12.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/5469bdc38173f493e3d7a609baf05896b7dc93db-1600x1066.jpg?auto=format",
       alt: "Case Study Strategy Presentation",
     },
   },
@@ -204,7 +204,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Autonomous robotics and drone prototypes being tested on obstacle courses in the open innovation arena.",
     stats: "Hardware Track",
     image: {
-      src: "/equinox-gallery/photo-13.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/54697a1c8c6c8c6f057d34ecfbda57531787d67b-1600x1066.jpg?auto=format",
       alt: "Interactive Robotics Demo Arena",
     },
   },
@@ -218,7 +218,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Cross-functional teams mapping wireframes, user journeys, and system schemas on whiteboard glass walls.",
     stats: "Design Sprint",
     image: {
-      src: "/equinox-gallery/photo-14.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/be836b7121ef61a86571d1be252ab232e399c0d6-1066x1600.jpg?auto=format",
       alt: "Collaborative Brainstorming Pods",
     },
   },
@@ -232,7 +232,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Entrepreneurship leaders from colleges across South India collaborating on inter-institutional ecosystems.",
     stats: "25+ Colleges",
     image: {
-      src: "/equinox-gallery/photo-15.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/5355b635b7a5221a82f2f8a6301b5c9467baa746-1600x1066.jpg?auto=format",
       alt: "E-Cell Conclave Leadership Round",
     },
   },
@@ -246,7 +246,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Joy, high-fives, and celebration as organizers and participants mark the triumphant conclusion of the summit.",
     stats: "Closing Gala",
     image: {
-      src: "/equinox-gallery/photo-16.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/faf07344ba5063841a9e399a8afe62defd9bdbfc-1600x1066.jpg?auto=format",
       alt: "Valedictory Celebrations & Cheers",
     },
   },
@@ -260,7 +260,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "An intimate conversation exploring the commercialization of cutting-edge AI and robotics research.",
     stats: "DeepTech Stage",
     image: {
-      src: "/equinox-gallery/photo-17.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/ed7ba9ebf9359b269fab7b2b55a49c7f99589153-1600x1066.jpg?auto=format",
       alt: "Fireside Chat on DeepTech Ventures",
     },
   },
@@ -274,7 +274,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Developers, designers, and marketers discovering co-founders and finding teammates for the hackathon tracks.",
     stats: "200+ Connects",
     image: {
-      src: "/equinox-gallery/photo-18.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/3f9852b5cb36d364603d58efb3ca5d9b2a260eb9-1600x1066.jpg?auto=format",
       alt: "Speed Networking & Teaming Arena",
     },
   },
@@ -288,7 +288,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Audience members and judges interacting firsthand with consumer tech prototypes and SaaS dashboards.",
     stats: "Live Testing",
     image: {
-      src: "/equinox-gallery/photo-19.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/f5dcf779c42102c8fa8bcbc7afaad01369b6791e-1600x1066.jpg?auto=format",
       alt: "Product Demo Day Live Reactions",
     },
   },
@@ -302,7 +302,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Tireless developers troubleshooting build pipelines and fine-tuning shader performance in the early dawn.",
     stats: "Git Push Sprint",
     image: {
-      src: "/equinox-gallery/photo-20.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/8bef37b0f58b0b6a252a7b487df35aa334530322-1600x1066.jpg?auto=format",
       alt: "Late-Night Debugging Session",
     },
   },
@@ -316,7 +316,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Dramatic laser unveilings and keynote visuals setting an electric tone for the two-day summit.",
     stats: "Mainstage FX",
     image: {
-      src: "/equinox-gallery/photo-21.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/2f1fa3981685979e6cb4b13836943922588fb935-1600x1066.jpg?auto=format",
       alt: "Stage Lighting & Opening Reveal",
     },
   },
@@ -330,7 +330,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Industry veterans offering direct architectural advice, pitch coaching, and production tips to hackers.",
     stats: "Mentorship",
     image: {
-      src: "/equinox-gallery/photo-22.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/7d0988ba7fe5684ae855fe85c9c7a1420e019ba9-1600x1064.jpg?auto=format",
       alt: "Mentor Desk One-on-One Reviews",
     },
   },
@@ -344,7 +344,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Team captains conferring under countdown clocks before raising the paddle for marquee player acquisitions.",
     stats: "Tactical Room",
     image: {
-      src: "/equinox-gallery/photo-23.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/00dc8777791138f4fb86a1b0572fa6331cd8bd89-1600x1064.jpg?auto=format",
       alt: "Bidding War Strategy Room",
     },
   },
@@ -358,7 +358,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Dignitaries and visiting university vice chancellors touring student project exhibits across the atrium.",
     stats: "Campus Walkway",
     image: {
-      src: "/equinox-gallery/photo-24.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/db00b57e8780232b525b7c986081987406804053-1600x1064.jpg?auto=format",
       alt: "Student Innovations Showcase Walk",
     },
   },
@@ -372,7 +372,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Founders deftly defending unit economics, traction metrics, and customer acquisition costs under fire.",
     stats: "Jury Defense",
     image: {
-      src: "/equinox-gallery/photo-25.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/e3b4c0e289c9f6322b73c1b56a49256ba6044dad-1600x1064.jpg?auto=format",
       alt: "High-Energy Final Pitch Defense",
     },
   },
@@ -386,7 +386,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Gold medalists hoisting their championship trophies with jubilant smiles in front of flash cameras.",
     stats: "Podium Finish",
     image: {
-      src: "/equinox-gallery/photo-26.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/21c21c494ee70c6dc4275613f7408d43b0240381-1600x1064.jpg?auto=format",
       alt: "Trophy Moment & Winner Accolades",
     },
   },
@@ -400,7 +400,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Final wire terminations and microcontroller flashing minutes before the project submission deadline.",
     stats: "Final Assembly",
     image: {
-      src: "/equinox-gallery/photo-27.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/8ff9064f8904040810ec8e88a57e0073eb3af5d3-1600x1064.jpg?auto=format",
       alt: "Hardware Assembly Under Pressure",
     },
   },
@@ -414,7 +414,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "The student core team and faculty coordinators celebrating another flawless event execution.",
     stats: "CIE Crew",
     image: {
-      src: "/equinox-gallery/photo-28.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/0f24c796359a2bc848bc095149419489840d465a-1600x1064.jpg?auto=format",
       alt: "Organizing Committee High-Fives",
     },
   },
@@ -428,7 +428,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "College leadership felicitating distinguished guest speakers with handcrafted commemorative mementos.",
     stats: "Speaker Honor",
     image: {
-      src: "/equinox-gallery/photo-29.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/c544cc127967d04500bbad206c2129f78da5c5cd-1064x1600.jpg?auto=format",
       alt: "Keynote Speaker Honor & Memento",
     },
   },
@@ -442,7 +442,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "Judges testing immersive virtual reality applications built completely from scratch over 36 hours.",
     stats: "Oculus Demo",
     image: {
-      src: "/equinox-gallery/photo-30.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/ac7cc45c4e122f83a35d02bc7a503f28833c814f-1600x1064.jpg?auto=format",
       alt: "VR Spatial Experience Live Test",
     },
   },
@@ -456,7 +456,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "A roaring round of applause as the final pitch of the day concludes with exceptional audience enthusiasm.",
     stats: "Standing Ovation",
     image: {
-      src: "/equinox-gallery/photo-31.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/21f6a0a000a62967a9304e3c7c25d594c16e9229-1600x1064.jpg?auto=format",
       alt: "Audience Applause & Ovation",
     },
   },
@@ -470,7 +470,7 @@ export const PREVIOUS_EVENT_PHOTOS: GalleryPhoto[] = [
     description: "All participants, judges, mentors, and organizing team gathering on the grand lawn for the official summit photo.",
     stats: "All Cohorts",
     image: {
-      src: "/equinox-gallery/photo-32.jpg",
+      src: "https://cdn.sanity.io/images/ekb34j9w/equinox/5f8ec7e99b06866a05e1f4b33424e994e84d4c2c-1600x1064.jpg?auto=format",
       alt: "Equinox Commemorative Cohort Photo",
     },
   },

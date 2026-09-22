@@ -1011,8 +1011,13 @@ function Globe({
 
         const raycaster = new Raycaster();
         const mouse = new Vector2();
+        let lastMoveTime = 0;
         const handleMouseMove = (event: MouseEvent) => {
-            if (!stopOnHover) return;
+            if (!stopOnHover || isPausedRef.current) return;
+            const now = Date.now();
+            if (now - lastMoveTime < 50) return; // Throttle to ~20Hz
+            lastMoveTime = now;
+            
             const rect = canvas.getBoundingClientRect();
             mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
             mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;

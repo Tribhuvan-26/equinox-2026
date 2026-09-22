@@ -72,6 +72,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
          it during route transitions instead of warning. */
       data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} ${display.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <head>
         {/* SpiderIntro (the CIE->EQUINOX opener) animates this the instant it
@@ -86,7 +87,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(summitJsonLd()) }}
         />
       </head>
-      <body className="night flex min-h-full flex-col">
+      <body className="night flex min-h-full flex-col" suppressHydrationWarning>
         <PreIntroCover />
         <NavBar
           items={nav.map((item) => ({ name: item.label, url: item.href }))}

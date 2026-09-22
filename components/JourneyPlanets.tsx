@@ -3,6 +3,8 @@
 import React from "react";
 import Link from "next/link";
 import { SubEvent } from "@/lib/content";
+import { urlForImage } from "@/sanity/lib/image";
+import { sanityAssets } from "@/lib/sanity-assets";
 
 export interface PlanetLayout {
   index: number;
@@ -81,6 +83,10 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
   const imgSize = 250 * scale;
   const imgOffset = -125 * scale;
 
+  const assetKey = `planets/${event.slug}.png`;
+  const sanityId = sanityAssets[assetKey];
+  const imgHref = sanityId ? urlForImage(sanityId).url() : `/${assetKey}`;
+
   return (
     <g
       transform={`translate(${x}, ${y})`}
@@ -107,7 +113,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 35px rgba(116,132,254,0.45))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.png`}
+                  href={imgHref}
                   x={imgOffset}
                   y={imgOffset}
                   width={imgSize}
@@ -137,7 +143,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 30px rgba(116,132,254,0.3))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.png`}
+                  href={imgHref}
                   x={imgOffset}
                   y={imgOffset}
                   width={imgSize}
@@ -167,7 +173,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 35px rgba(51,255,103,0.35))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.png`}
+                  href={imgHref}
                   x={imgOffset}
                   y={imgOffset}
                   width={imgSize}
@@ -197,7 +203,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 45px rgba(51,255,103,0.45))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.png`}
+                  href={imgHref}
                   x={imgOffset}
                   y={imgOffset}
                   width={imgSize}
@@ -227,7 +233,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 40px rgba(56,189,248,0.4))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.png`}
+                  href={imgHref}
                   x={imgOffset}
                   y={imgOffset}
                   width={imgSize}
@@ -257,7 +263,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 35px rgba(51,255,103,0.35))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.png`}
+                  href={imgHref}
                   x={imgOffset}
                   y={imgOffset}
                   width={imgSize}
@@ -287,7 +293,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 30px rgba(116,132,254,0.35))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.png`}
+                  href={imgHref}
                   x={imgOffset}
                   y={imgOffset}
                   width={imgSize}
@@ -317,7 +323,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 35px rgba(167,139,250,0.35))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.png`}
+                  href={imgHref}
                   x={imgOffset}
                   y={imgOffset}
                   width={imgSize}
@@ -347,7 +353,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 35px rgba(167,139,250,0.35))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href={`/planets/${event.slug}.png`}
+                  href={imgHref}
                   x={imgOffset}
                   y={imgOffset}
                   width={imgSize}
@@ -377,7 +383,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               <g filter="drop-shadow(0 0 50px rgba(116,132,254,0.55))">
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
-                  href="/planets/pitch-deck.svg"
+                  href={imgHref}
                   x={imgOffset}
                   y={imgOffset}
                   width={imgSize}

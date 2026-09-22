@@ -125,11 +125,26 @@ const clamp = (value: number, min: number, max: number) => Math.min(Math.max(val
 export default function ContinuousComet() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const isVisibleRef = useRef(true);
 
   useEffect(() => {
     const container = containerRef.current;
     const canvas = canvasRef.current;
     if (!container || !canvas) return;
+
+    // IntersectionObserver to pause rendering when offscreen
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisibleRef.current = entry.isIntersecting;
+        if (entry.isIntersecting && !destroyed && !raf) {
+          lastFrameTime = performance.now();
+          lastRenderTime = performance.now();
+          raf = requestAnimationFrame(render);
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(container);
 
     // Subtler, thinner trail configuration matching request
     const config = {
@@ -210,6 +225,10 @@ export default function ContinuousComet() {
     let startTime = performance.now();
     let duration = 6000;
     
+    const FPS_CAP = 30;
+    const FRAME_MIN_TIME = 1000 / FPS_CAP;
+    let lastRenderTime = 0;
+    
     let startX = 0, startY = 0;
     let ctrl1X = 0, ctrl1Y = 0;
     let ctrl2X = 0, ctrl2Y = 0;
@@ -251,6 +270,17 @@ export default function ContinuousComet() {
 
     const render = (now: number) => {
       if (destroyed) return;
+      if (!isVisibleRef.current) {
+        raf = 0;
+        return; // Pause the RAF loop completely
+      }
+
+      raf = requestAnimationFrame(render);
+
+      const elapsed = now - lastRenderTime;
+      if (elapsed < FRAME_MIN_TIME) return;
+      lastRenderTime = now - (elapsed % FRAME_MIN_TIME);
+
       const delta = Math.min((now - lastFrameTime) / 16.667, 3);
       lastFrameTime = now;
       
@@ -331,18 +361,20 @@ export default function ContinuousComet() {
       program.uniforms.uFade.value = fade;
 
       renderer.render({ scene: mesh });
-      if (!destroyed) raf = requestAnimationFrame(render);
     };
 
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(container);
     resize();
-    raf = requestAnimationFrame(render);
+    if (isVisibleRef.current) {
+      raf = requestAnimationFrame(render);
+    }
 
     return () => {
       destroyed = true;
       cancelAnimationFrame(raf);
       resizeObserver.disconnect();
+      observer.disconnect();
       mesh.geometry.remove();
       program.remove();
     };

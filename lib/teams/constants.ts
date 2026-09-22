@@ -2,7 +2,7 @@ import { MAX_TEAM_SIZE } from "@/lib/registration/constants";
 
 // A team seats at most as many people as one full registration.
 export const TEAM_MAX_MEMBERS = MAX_TEAM_SIZE;
-export const TEAM_MIN_MEMBERS_LIMIT = 2;
+export const TEAM_MIN_MEMBERS_LIMIT = 4;
 export const DEFAULT_MAX_MEMBERS = MAX_TEAM_SIZE;
 
 export const TEAM_NAME_MIN = 3;

@@ -10,6 +10,8 @@ import {
   skipECellMeetTimelineToExit,
 } from "./eCellMeetTimeline";
 import styles from "./ECellMeetAnimation.module.css";
+import { urlForImage } from "@/sanity/lib/image";
+import { sanityAssets } from "@/lib/sanity-assets";
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -132,7 +134,11 @@ export const ECellMeetAnimation: React.FC<AnimationComponentProps> = ({
         {/* ============================================================ */}
         <g id="layer-base-scene">
           <image
-            href="/assets/events/ecell/1_base_scene.png"
+            href={
+              sanityAssets["assets/events/ecell/1_base_scene.png"]
+                ? urlForImage(sanityAssets["assets/events/ecell/1_base_scene.png"]).url()
+                : "/assets/events/ecell/1_base_scene.png"
+            }
             x="0"
             y="0"
             width="1670"

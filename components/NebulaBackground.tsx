@@ -44,39 +44,36 @@ export default function NebulaBackground() {
         <div className="absolute top-0 left-0 w-[2px] h-[2px] rounded-full" style={{ boxShadow: starsBackground }} />
       </div>
 
-      {/* 2. Very Subtle, Localized Diagonal Nebula Band */}
-      {/* Global opacity bumped up slightly so the structure is visible */}
-      <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 w-full h-full z-0 opacity-55">
-        <defs>
-          <filter id="heavy-blur" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="80" />
-          </filter>
-          <filter id="medium-blur" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="40" />
-          </filter>
-          <filter id="dust-texture">
-            <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="4" />
-            <feColorMatrix type="matrix" values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.6 -0.05" />
-          </filter>
-        </defs>
-
+      {/* 2. Very Subtle, Localized Diagonal Nebula Band using fast CSS radial gradients */}
+      <div className="absolute inset-0 z-0 opacity-55 mix-blend-screen pointer-events-none">
         {/* Deep Teal / Navy Base - Localized to the center diagonal */}
-        <g filter="url(#heavy-blur)" opacity="0.75">
-          <ellipse cx="300" cy="700" rx="200" ry="80" fill="#0F766E" transform="rotate(-35 300 700)" />
-          <ellipse cx="500" cy="500" rx="300" ry="100" fill="#1E3A8A" transform="rotate(-35 500 500)" />
-          <ellipse cx="700" cy="300" rx="200" ry="80" fill="#115E59" transform="rotate(-35 700 300)" />
-        </g>
+        <div 
+          className="absolute rounded-[100%] opacity-75 blur-[80px]"
+          style={{ width: "400px", height: "160px", backgroundColor: "#0F766E", top: "70%", left: "30%", transform: "translate(-50%, -50%) rotate(-35deg)", willChange: "transform" }}
+        />
+        <div 
+          className="absolute rounded-[100%] opacity-75 blur-[80px]"
+          style={{ width: "600px", height: "200px", backgroundColor: "#1E3A8A", top: "50%", left: "50%", transform: "translate(-50%, -50%) rotate(-35deg)", willChange: "transform" }}
+        />
+        <div 
+          className="absolute rounded-[100%] opacity-75 blur-[80px]"
+          style={{ width: "400px", height: "160px", backgroundColor: "#115E59", top: "30%", left: "70%", transform: "translate(-50%, -50%) rotate(-35deg)", willChange: "transform" }}
+        />
 
         {/* Soft Cyan / Violet Hints - Boosted opacity to define the clouds */}
-        <g filter="url(#medium-blur)" opacity="0.6">
-          <ellipse cx="400" cy="600" rx="150" ry="50" fill="#0891B2" transform="rotate(-35 400 600)" />
-          <ellipse cx="600" cy="400" rx="150" ry="40" fill="#4C1D95" transform="rotate(-35 600 400)" />
-          <ellipse cx="750" cy="250" rx="100" ry="30" fill="#0284C7" transform="rotate(-35 750 250)" />
-        </g>
-
-        {/* Wispy dust texture overlay - increased intensity to make clouds read as dust */}
-        <rect width="1000" height="1000" filter="url(#dust-texture)" opacity="0.3" style={{ mixBlendMode: "screen" }} />
-      </svg>
+        <div 
+          className="absolute rounded-[100%] opacity-60 blur-[40px]"
+          style={{ width: "300px", height: "100px", backgroundColor: "#0891B2", top: "60%", left: "40%", transform: "translate(-50%, -50%) rotate(-35deg)", willChange: "transform" }}
+        />
+        <div 
+          className="absolute rounded-[100%] opacity-60 blur-[40px]"
+          style={{ width: "300px", height: "80px", backgroundColor: "#4C1D95", top: "40%", left: "60%", transform: "translate(-50%, -50%) rotate(-35deg)", willChange: "transform" }}
+        />
+        <div 
+          className="absolute rounded-[100%] opacity-60 blur-[40px]"
+          style={{ width: "200px", height: "60px", backgroundColor: "#0284C7", top: "25%", left: "75%", transform: "translate(-50%, -50%) rotate(-35deg)", willChange: "transform" }}
+        />
+      </div>
 
       {/* 3. Midground Stars */}
       <div className="absolute inset-0 z-10" style={{ mixBlendMode: "screen" }}>
@@ -84,7 +81,7 @@ export default function NebulaBackground() {
       </div>
 
       {/* 4. Large Foreground Stars */}
-      <div className="absolute inset-0 z-20" style={{ mixBlendMode: "screen" }}>
+      <div className="absolute inset-0 z-20 will-change-[opacity]" style={{ mixBlendMode: "screen", transform: "translateZ(0)" }}>
         <div className="absolute top-0 left-0 w-[4px] h-[4px] rounded-full animate-pulse" style={{ boxShadow: starsForeground }} />
       </div>
 

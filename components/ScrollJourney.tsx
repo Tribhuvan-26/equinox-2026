@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import Link from "next/link";
-import { ArrowRight, Mouse } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import dynamic from "next/dynamic";
 import { InstitutionalHeader } from "../app/EventGraphics";
 import { subEvents } from "@/lib/content";
@@ -108,6 +108,7 @@ export default function ScrollJourney() {
   const indicatorEventRef = useRef<HTMLSpanElement>(null);
   const lenisRef = useRef<Lenis | null>(null);
   const journeyScaleRef = useRef(0.65);
+  const targetScreenXRef = useRef(420);
 
   const [isGlobeReady, setIsGlobeReady] = useState(false);
   useEffect(() => {
@@ -159,15 +160,10 @@ export default function ScrollJourney() {
   useEffect(() => {
     if (showLoader) return;
     let currentIntensity = 0;
-    let lastScrollY = typeof window !== "undefined" ? window.scrollY : 0;
 
     const flameTick = () => {
-      const currentScrollY = window.scrollY;
-      const scrollDelta = Math.abs(currentScrollY - lastScrollY);
-      lastScrollY = currentScrollY;
-
       const lenisVelocity = Math.abs(lenisRef.current?.velocity || 0);
-      const effectiveSpeed = Math.max(lenisVelocity, scrollDelta);
+      const effectiveSpeed = lenisVelocity;
 
       // Thresholds:
       // Slow/normal scroll has effectiveSpeed < 10 -> 0 ignition.
@@ -187,6 +183,11 @@ export default function ScrollJourney() {
         currentIntensity = 0;
       }
 
+      // Optimization: Only update DOM if not idle
+      if (currentIntensity === 0 && targetIntensity === 0 && (flameTrailRef.current?.style.opacity === "0" || !flameTrailRef.current)) {
+        return;
+      }
+
       if (flameTrailRef.current) {
         if (currentIntensity > 0) {
           // Dynamic flame flare with natural high-speed plasma jitter
@@ -198,7 +199,7 @@ export default function ScrollJourney() {
 
           flameTrailRef.current.style.transform = `scale3d(${scaleX.toFixed(3)}, ${scaleY.toFixed(3)}, 1)`;
           flameTrailRef.current.style.opacity = opacity.toFixed(3);
-        } else {
+        } else if (flameTrailRef.current.style.opacity !== "0") {
           flameTrailRef.current.style.opacity = "0";
         }
       }
@@ -206,7 +207,9 @@ export default function ScrollJourney() {
       if (idleFlameRef.current) {
         // Idle pilot flame is subtle at rest and gently yields when the main afterburner ignites
         const idleOpacity = Math.max(0, 0.75 - currentIntensity * 1.5);
-        idleFlameRef.current.style.opacity = idleOpacity.toFixed(3);
+        if (idleFlameRef.current.style.opacity !== idleOpacity.toFixed(3)) {
+          idleFlameRef.current.style.opacity = idleOpacity.toFixed(3);
+        }
       }
     };
 
@@ -246,6 +249,10 @@ export default function ScrollJourney() {
     let rocketDirection: 1 | -1 = 1;
     const turnRotation = { value: 0 };
     let currentRocketState = { x: 360, y: 690, baseAngle: 0, scale: 1, opacity: 1 };
+    
+    // Cache for DOM reads/writes to prevent thrashing
+    const pointerEventsCache = new Map<number, string>();
+    let lastHUDTitle = "";
 
     const applyRocketTransform = () => {
       if (!rocketRef.current) return;
@@ -362,38 +369,73 @@ export default function ScrollJourney() {
         scale: blackHoleScale,
         opacity: blackHoleOpacity,
       };
-      applyRocketTransform();
 
       // Scale is recomputed only on resize (updateHeaderSpace); reading it from a ref
       // keeps this scroll callback write-only, so it never forces a style flush per frame.
       const currentScale = journeyScaleRef.current;
       const inverseScale = 1 / currentScale;
 
-      const targetScreenX = Math.min(window.innerWidth * 0.28, 420);
-      const unscaledTargetScreenX = targetScreenX / currentScale;
-
+      const unscaledTargetScreenX = targetScreenXRef.current / currentScale;
       const worldX = pt.x > unscaledTargetScreenX ? -(pt.x - unscaledTargetScreenX) : 0;
-      worldRef.current.style.transform = `translate3d(${worldX}px, 0, 0)`;
 
       let currentEventTitle = "";
-      PLANET_LAYOUTS.forEach((layout, idx) => {
+      
+      // Read Phase: Calculate all target states without mutating DOM
+      const cardUpdates = PLANET_LAYOUTS.map((layout, idx) => {
         const cardEl = cardRefs.current[idx];
-        if (!cardEl) return;
+        if (!cardEl) return null;
         const dist = Math.abs(pt.x - layout.x);
+        
+        let opacity = "0";
+        let transformY = 20;
+        let pointerEvents = "none";
+        
         if (dist < 480) {
           const t = Math.max(0, 1 - dist / 420);
-          cardEl.style.opacity = `${t}`;
-          cardEl.style.transform = `translate3d(0, ${(1 - t) * 20}px, 0) scale3d(${inverseScale}, ${inverseScale}, 1)`;
-          cardEl.style.pointerEvents = t > 0.4 ? "auto" : "none";
+          opacity = `${t}`;
+          transformY = (1 - t) * 20;
+          pointerEvents = t > 0.4 ? "auto" : "none";
           if (t > 0.3) currentEventTitle = `${layout.badge} · ${subEvents[idx]?.name || ""}`;
-        } else if (cardEl.style.opacity !== "0") {
-          cardEl.style.opacity = "0";
-          cardEl.style.pointerEvents = "none";
+        }
+        
+        return {
+          cardEl,
+          idx,
+          opacity,
+          transformY,
+          pointerEvents,
+          visibility: dist < 1200 ? "visible" : "hidden",
+          isActive: dist < 480
+        };
+      });
+
+      // Write Phase: Apply all mutations at once
+      applyRocketTransform();
+      worldRef.current.style.transform = `translate3d(${worldX}px, 0, 0)`;
+
+      cardUpdates.forEach((update) => {
+        if (!update) return;
+        const { cardEl, idx, opacity, transformY, pointerEvents, visibility, isActive } = update;
+        
+        if (isActive || cardEl.style.opacity !== "0") {
+          cardEl.style.opacity = opacity;
+          cardEl.style.transform = `translate3d(0, ${transformY}px, 0) scale3d(${inverseScale}, ${inverseScale}, 1)`;
+        }
+        
+        if (pointerEventsCache.get(idx) !== pointerEvents) {
+          cardEl.style.pointerEvents = pointerEvents;
+          pointerEventsCache.set(idx, pointerEvents);
+        }
+
+        // Apply visibility for performance optimization
+        if (cardEl.style.visibility !== visibility) {
+          cardEl.style.visibility = visibility;
         }
       });
 
-      if (indicatorEventRef.current && currentEventTitle) {
+      if (indicatorEventRef.current && currentEventTitle !== lastHUDTitle) {
         indicatorEventRef.current.textContent = currentEventTitle;
+        lastHUDTitle = currentEventTitle;
       }
     };
 
@@ -576,28 +618,16 @@ export default function ScrollJourney() {
         // Dynamically scale the horizontal journey to fit the remaining viewport
         // 48px of breathing room so no planet ring or badge ever rides the bottom edge.
         const availableHeight = window.innerHeight - headerSpace - 48;
-        // Measure what the world actually occupies instead of hard-coding it: the
-        // planets, their rings, badges and the launch site all move when the layout
-        // changes, and a stale constant either crops them or wastes half the screen.
-        const worldSvg = worldRef.current?.querySelector("#journey-content");
-        let contentTop = 0;
-        let activeHeight = 1055;
-        if (worldSvg) {
-          try {
-            const box = (worldSvg as SVGGraphicsElement).getBBox();
-            if (box.height > 0) {
-              contentTop = box.y;
-              activeHeight = box.height;
-            }
-          } catch {
-            // getBBox throws while the SVG is still hidden; the fallback above holds.
-          }
-        }
-        // Fill the height that is actually free. The old 0.65 cap left the world stuck in
-        // the top half of tall or zoomed-out windows, with a dead band underneath.
+        // Use pre-calculated known bounds instead of synchronous getBBox()
+        // The highest element is Death Star/Space Station (~50px), the lowest is Earth Launch (~980px).
+        // Using these static known bounds completely avoids a costly synchronous layout thrash on resize.
+        let contentTop = 50;
+        let activeHeight = 1000;
         const journeyScale = Math.max(0.3, Math.min(availableHeight / activeHeight, 1));
         document.documentElement.style.setProperty('--journey-scale', `${journeyScale}`);
         journeyScaleRef.current = journeyScale;
+        
+        targetScreenXRef.current = Math.min(window.innerWidth * 0.28, 420);
 
         // Centre the measured content in that free height instead of pinning the
         // world box (whose empty top band is not content) to the top.
@@ -700,10 +730,9 @@ export default function ScrollJourney() {
                         height: `${star.size}px`,
                         animationDuration: `${star.duration}s`,
                         animationDelay: `${star.delay}s`,
-                        filter: `drop-shadow(0 0 6px ${star.color}) drop-shadow(0 0 12px ${star.color}99)`,
                       }}
                     >
-                      <svg viewBox="0 0 10 10" width={star.size} height={star.size} fill="none">
+                      <svg viewBox="0 0 10 10" width={star.size} height={star.size} fill="none" style={{ filter: `drop-shadow(0 0 6px ${star.color})` }}>
                         <path
                           d="M 5 0 Q 5 5 10 5 Q 5 5 5 10 Q 5 5 0 5 Q 5 5 5 0 Z"
                           fill={star.color}
@@ -725,7 +754,7 @@ export default function ScrollJourney() {
                       height: `${star.size}px`,
                       backgroundColor: star.color,
                       borderRadius: "50%",
-                      boxShadow: `0 0 ${Math.round(star.size * 1.5)}px ${star.color}, 0 0 ${Math.round(star.size * 3)}px ${star.color}aa`,
+                      boxShadow: `0 0 ${Math.round(star.size * 2)}px ${star.color}`,
                       animationDuration: `${star.duration}s`,
                       animationDelay: `${star.delay}s`,
                     }}
@@ -827,21 +856,7 @@ export default function ScrollJourney() {
             className="absolute left-0 right-0 bottom-0 pointer-events-none hidden md:block"
             style={{ top: "var(--header-space, 200px)", opacity: 0, zIndex: 10, overflow: "hidden" }}
           >
-            {/* Side scroll indicator */}
-            <div
-              ref={scrollIndicatorRef}
-              className="absolute right-6 bottom-28 z-20 hidden md:flex items-center gap-3 rounded-full border border-white/10 bg-[#1A1A1A] px-4 py-2 opacity-0 shadow-lg"
-            >
-              <Mouse className="h-4 w-4 text-[#33FF67] animate-bounce" />
-              <div className="text-left">
-                <span className="block font-mono text-[9px] font-black uppercase tracking-widest text-[#F7F2F6]">
-                  Scroll Down To Move Left
-                </span>
-                <span ref={indicatorEventRef} className="block font-mono text-[8px] font-medium tracking-wider text-[#7484FE]">
-                  Journey through 10 Events
-                </span>
-              </div>
-            </div>
+
 
             {/* Scaler Wrapper: dynamically shrinks world to fit available height */}
             <div
@@ -1428,13 +1443,14 @@ export default function ScrollJourney() {
                     <div
                       key={ev.id}
                       ref={(el) => { cardRefs.current[idx] = el; }}
-                      className="absolute opacity-0 rounded-[28px] p-1.5 bg-[#0E0E0E] border border-white/[0.10] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] pointer-events-none"
+                      className="absolute opacity-0 rounded-[28px] p-1.5 bg-[#0E0E0E] border border-white/[0.10] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] pointer-events-none will-change-transform"
                       style={{
                         left: `${layout.x + 220}px`,
                         top: `${layout.cardTop}px`,
                         width: "430px",
                         transform: "scale(calc(1 / var(--journey-scale, 0.65)))",
-                        transformOrigin: "left center"
+                        transformOrigin: "left center",
+                        contain: "paint layout"
                       }}
                     >
                       {/* Inner core: solid dark panel (no backdrop-filter — it repainted every
