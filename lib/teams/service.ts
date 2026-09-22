@@ -125,13 +125,19 @@ export async function createTeamFor(reg: Reg, rawName: string): Promise<{ id: st
   if (reg.team_id) throw new ApiError(409, "You are already on a team.");
   const team = await reserveTeam(rawName);
 
-  const { error } = await supabaseAdmin()
+  const { data: claimed, error } = await supabaseAdmin()
     .from("pass_registrations")
     .update({ team_id: team.id, team_role: "leader", requested_team_id: null })
     .eq("id", reg.id)
-    .is("team_id", null);
-  if (error) {
+    .is("team_id", null)
+    .select("id");
+
+  // No error but no row means a leader accepted their outstanding request
+  // between authenticate() and this write: they are on a team already, so the
+  // reserved name and code must go back rather than hang off a team nobody leads.
+  if (error || (claimed ?? []).length === 0) {
     await supabaseAdmin().from("registration_teams").delete().eq("id", team.id);
+    if (!error) throw new ApiError(409, "You are already on a team.");
     console.error("[teams] createTeamFor", error);
     throw new ApiError(500, "Could not create the team. Please try again.");
   }
