@@ -77,8 +77,8 @@ export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOv
             <X className="h-6 w-6 text-white stroke-[2.5] sm:h-7 sm:w-7" />
           ) : (
             <Image
-              src="/chatbot-mascot.png"
-              alt="Equinox AI Mascot"
+              src="/chitti-2.0.png"
+              alt="Chitti 2.0 Mascot"
               width={160}
               height={225}
               priority
