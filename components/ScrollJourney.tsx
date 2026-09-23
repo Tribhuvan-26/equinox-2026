@@ -722,14 +722,12 @@ export default function ScrollJourney() {
                   return (
                     <div
                       key={i}
-                      className="star-anim-sparkle absolute pointer-events-none"
+                      className="absolute pointer-events-none"
                       style={{
                         left: `${star.x}%`,
                         top: `${star.y}%`,
                         width: `${star.size}px`,
                         height: `${star.size}px`,
-                        animationDuration: `${star.duration}s`,
-                        animationDelay: `${star.delay}s`,
                       }}
                     >
                       <svg viewBox="0 0 10 10" width={star.size} height={star.size} fill="none" style={{ filter: `drop-shadow(0 0 6px ${star.color})` }}>
@@ -746,7 +744,7 @@ export default function ScrollJourney() {
                 return (
                   <div
                     key={i}
-                    className={i % 2 === 0 ? "star-anim-twinkle absolute pointer-events-none" : "star-anim-subtle absolute pointer-events-none"}
+                    className="absolute pointer-events-none"
                     style={{
                       left: `${star.x}%`,
                       top: `${star.y}%`,
@@ -755,8 +753,6 @@ export default function ScrollJourney() {
                       backgroundColor: star.color,
                       borderRadius: "50%",
                       boxShadow: `0 0 ${Math.round(star.size * 2)}px ${star.color}`,
-                      animationDuration: `${star.duration}s`,
-                      animationDelay: `${star.delay}s`,
                     }}
                   />
                 );

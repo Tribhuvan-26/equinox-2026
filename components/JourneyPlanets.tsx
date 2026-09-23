@@ -115,7 +115,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   <circle cx="0" cy="0" r="85" />
                 </clipPath>
               </defs>
-              <g filter="drop-shadow(0 0 35px rgba(116,132,254,0.45))">
+              <g>
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={imgHref}
@@ -150,7 +150,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   <circle cx="0" cy="0" r="85" />
                 </clipPath>
               </defs>
-              <g filter="drop-shadow(0 0 30px rgba(116,132,254,0.3))">
+              <g>
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={imgHref}
@@ -185,7 +185,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   <circle cx="0" cy="0" r="85" />
                 </clipPath>
               </defs>
-              <g filter="drop-shadow(0 0 35px rgba(51,255,103,0.35))">
+              <g>
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={imgHref}
@@ -220,7 +220,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   <circle cx="0" cy="0" r="85" />
                 </clipPath>
               </defs>
-              <g filter="drop-shadow(0 0 45px rgba(51,255,103,0.45))">
+              <g>
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={imgHref}
@@ -255,7 +255,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   <circle cx="0" cy="0" r="85" />
                 </clipPath>
               </defs>
-              <g filter="drop-shadow(0 0 40px rgba(56,189,248,0.4))">
+              <g>
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={imgHref}
@@ -290,7 +290,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   <circle cx="0" cy="0" r="85" />
                 </clipPath>
               </defs>
-              <g filter="drop-shadow(0 0 35px rgba(51,255,103,0.35))">
+              <g>
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={imgHref}
@@ -325,7 +325,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   <circle cx="0" cy="0" r="85" />
                 </clipPath>
               </defs>
-              <g filter="drop-shadow(0 0 30px rgba(116,132,254,0.35))">
+              <g>
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={imgHref}
@@ -360,7 +360,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   <circle cx="0" cy="0" r="85" />
                 </clipPath>
               </defs>
-              <g filter="drop-shadow(0 0 35px rgba(167,139,250,0.35))">
+              <g>
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={imgHref}
@@ -395,7 +395,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   <circle cx="0" cy="0" r="85" />
                 </clipPath>
               </defs>
-              <g filter="drop-shadow(0 0 35px rgba(167,139,250,0.35))">
+              <g>
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={imgHref}
@@ -430,7 +430,7 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   <circle cx="0" cy="0" r="85" />
                 </clipPath>
               </defs>
-              <g filter="drop-shadow(0 0 50px rgba(116,132,254,0.55))">
+              <g>
                 <circle cx="0" cy="0" r="85" fill="#0A0A0A" />
                 <image
                   href={imgHref}

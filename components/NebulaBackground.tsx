@@ -33,7 +33,7 @@ function generateStarfield(
 // Deterministic, so computed once at module load and identical on server + client.
 const starsBackground = generateStarfield(1, 400, 0.5, [0.1, 0.4]);
 const starsMidground = generateStarfield(2, 150, 1.2, [0.4, 0.8]);
-const starsForeground = generateStarfield(3, 40, 2, [0.6, 1], "200, 230, 255");
+const starsForeground = generateStarfield(3, 40, 2.0, [0.6, 1], "200, 230, 255");
 
 export default function NebulaBackground() {
   return (
@@ -44,34 +44,34 @@ export default function NebulaBackground() {
         <div className="absolute top-0 left-0 w-[2px] h-[2px] rounded-full" style={{ boxShadow: starsBackground }} />
       </div>
 
-      {/* 2. Very Subtle, Localized Diagonal Nebula Band using fast CSS radial gradients */}
-      <div className="absolute inset-0 z-0 opacity-55 mix-blend-screen pointer-events-none">
+      {/* 2. Soft, Elongated Diffuse Cosmic Clouds (Restored Original Intent) */}
+      <div className="absolute inset-0 z-0 opacity-40 mix-blend-screen pointer-events-none">
         {/* Deep Teal / Navy Base - Localized to the center diagonal */}
         <div 
-          className="absolute rounded-[100%] opacity-75 blur-[80px]"
-          style={{ width: "400px", height: "160px", backgroundColor: "#0F766E", top: "70%", left: "30%", transform: "translate(-50%, -50%) rotate(-35deg)", willChange: "transform" }}
+          className="absolute"
+          style={{ width: "800px", height: "400px", background: "radial-gradient(ellipse at center, #0F766E 0%, transparent 60%)", top: "70%", left: "30%", transform: "translate(-50%, -50%) rotate(-35deg)" }}
         />
         <div 
-          className="absolute rounded-[100%] opacity-75 blur-[80px]"
-          style={{ width: "600px", height: "200px", backgroundColor: "#1E3A8A", top: "50%", left: "50%", transform: "translate(-50%, -50%) rotate(-35deg)", willChange: "transform" }}
+          className="absolute"
+          style={{ width: "1000px", height: "500px", background: "radial-gradient(ellipse at center, #1E3A8A 0%, transparent 60%)", top: "50%", left: "50%", transform: "translate(-50%, -50%) rotate(-35deg)" }}
         />
         <div 
-          className="absolute rounded-[100%] opacity-75 blur-[80px]"
-          style={{ width: "400px", height: "160px", backgroundColor: "#115E59", top: "30%", left: "70%", transform: "translate(-50%, -50%) rotate(-35deg)", willChange: "transform" }}
+          className="absolute"
+          style={{ width: "800px", height: "400px", background: "radial-gradient(ellipse at center, #115E59 0%, transparent 60%)", top: "30%", left: "70%", transform: "translate(-50%, -50%) rotate(-35deg)" }}
         />
 
         {/* Soft Cyan / Violet Hints - Boosted opacity to define the clouds */}
         <div 
-          className="absolute rounded-[100%] opacity-60 blur-[40px]"
-          style={{ width: "300px", height: "100px", backgroundColor: "#0891B2", top: "60%", left: "40%", transform: "translate(-50%, -50%) rotate(-35deg)", willChange: "transform" }}
+          className="absolute"
+          style={{ width: "600px", height: "300px", background: "radial-gradient(ellipse at center, #0891B2 0%, transparent 60%)", top: "60%", left: "40%", transform: "translate(-50%, -50%) rotate(-35deg)" }}
         />
         <div 
-          className="absolute rounded-[100%] opacity-60 blur-[40px]"
-          style={{ width: "300px", height: "80px", backgroundColor: "#4C1D95", top: "40%", left: "60%", transform: "translate(-50%, -50%) rotate(-35deg)", willChange: "transform" }}
+          className="absolute"
+          style={{ width: "600px", height: "250px", background: "radial-gradient(ellipse at center, #4C1D95 0%, transparent 60%)", top: "40%", left: "60%", transform: "translate(-50%, -50%) rotate(-35deg)" }}
         />
         <div 
-          className="absolute rounded-[100%] opacity-60 blur-[40px]"
-          style={{ width: "200px", height: "60px", backgroundColor: "#0284C7", top: "25%", left: "75%", transform: "translate(-50%, -50%) rotate(-35deg)", willChange: "transform" }}
+          className="absolute"
+          style={{ width: "400px", height: "200px", background: "radial-gradient(ellipse at center, #0284C7 0%, transparent 60%)", top: "25%", left: "75%", transform: "translate(-50%, -50%) rotate(-35deg)" }}
         />
       </div>
 
