@@ -14,7 +14,6 @@ import GlitchWordmark from "./GlitchWordmark";
 import NebulaBackground from "./NebulaBackground";
 import ContinuousComet from "./ContinuousComet";
 import MobileJourney from "./MobileJourney";
-import ScrollTutorialOverlay from "./ScrollTutorialOverlay";
 
 import {
   PLANET_LAYOUTS,
@@ -1515,9 +1514,6 @@ export default function ScrollJourney() {
               </div>
             </div>
           </div>
-
-          {/* Minimal first-visit scroll tutorial overlay */}
-          <ScrollTutorialOverlay showLoader={showLoader} />
 
           {/* Opening sequence: MLR CIE mark, glitch, EQUINOX lockup */}
           {showLoader && <SpiderIntro onDone={handleIntroDone} />}
