@@ -6,7 +6,7 @@
   width: 100vw;
   height: 100vh;
   z-index: 1000000;
-  background-color: #1b1c1e;
+  background-color: #2A2A2A;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -19,18 +19,20 @@
 .stageSvg {
   width: 100%;
   height: 100%;
+  max-width: 100vw;
+  max-height: 100vh;
   position: absolute;
   inset: 0;
   pointer-events: none;
 }
 
-/* Subtle dark paper texture overlay */
+/* Subtle dark texture overlay */
 .paperNoise {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 10;
-  opacity: 0.03;
+  opacity: 0.025;
   mix-blend-mode: overlay;
 }
 
@@ -39,7 +41,7 @@
   position: absolute;
   top: 1.5rem;
   right: 1.5rem;
-  z-index: 50;
+  z-index: 60;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
@@ -50,18 +52,18 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: #F7F2F6;
-  background-color: rgba(30, 31, 33, 0.85);
+  background-color: rgba(30, 30, 30, 0.85);
   border: 1.5px solid rgba(255, 255, 255, 0.22);
   border-radius: 9999px;
   cursor: pointer;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(10px);
-  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   pointer-events: auto;
 }
 
 .skipButton:hover {
-  background-color: rgba(45, 47, 50, 0.95);
+  background-color: rgba(45, 45, 45, 0.95);
   border-color: #33FF67;
   color: #33FF67;
   transform: translate(-1px, -1px);
@@ -73,9 +75,7 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* =========================================================================
-   TOP BRANDING HEADER (Equinox 2.0 & Oct 30-31 MLRIT)
-   ========================================================================= */
+/* Top Branding Left */
 .topBrandingLeft {
   position: absolute;
   top: 1.5rem;
@@ -87,9 +87,19 @@
   user-select: none;
 }
 
+.brandThe {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #7484FE;
+  margin-bottom: 0.15rem;
+}
+
 .brandTitle {
   font-family: var(--font-display, 'Outfit', 'Inter', sans-serif);
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -97,140 +107,129 @@
   line-height: 1.1;
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.5rem;
 }
 
-.brandThe {
+.brandBadge {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
   font-weight: 800;
-  color: #CBD5E1;
-  letter-spacing: 0.12em;
-}
-
-.brandEquinox {
-  font-weight: 900;
-  color: #FFFFFF;
-}
-
-.brandVersion {
-  font-weight: 900;
-  color: #33FF67;
-  text-shadow: 0 0 14px rgba(51, 255, 103, 0.7);
-  will-change: transform, opacity;
+  letter-spacing: 0.1em;
+  background: #33FF67;
+  color: #1a1a1a;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
 }
 
 .brandSub {
   font-family: var(--font-mono, monospace);
-  font-size: 0.65rem;
-  font-weight: 700;
+  font-size: 0.68rem;
+  font-weight: 800;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
-  margin-top: 0.3rem;
+  color: #7484FE;
+  margin-top: 0.2rem;
 }
 
+/* Top Branding Right */
 .topBrandingRight {
   position: absolute;
   top: 1.5rem;
   right: 7.5rem;
   z-index: 50;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.95rem;
-  font-family: var(--font-mono, monospace);
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #FFFFFF;
-  background: rgba(30, 31, 33, 0.85);
-  border: 1.5px solid rgba(255, 255, 255, 0.18);
-  border-radius: 9999px;
-  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   pointer-events: none;
   user-select: none;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-  will-change: transform, opacity;
 }
 
-.dateDot {
-  width: 7px;
-  height: 7px;
-  border-radius: 9999px;
-  background-color: #33FF67;
-  box-shadow: 0 0 8px #33FF67;
+.dateText {
+  font-family: var(--font-display, 'Outfit', 'Inter', sans-serif);
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #FFFFFF;
 }
 
-@media (max-width: 640px) {
+.monthText {
+  font-family: var(--font-display, 'Outfit', 'Inter', sans-serif);
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #33FF67;
+}
+
+.dateUnderline {
+  width: 100%;
+  height: 3px;
+  background-color: #7484FE;
+  border-radius: 2px;
+  margin-top: 0.25rem;
+}
+
+/* Typography styles for SVG text */
+.titleECell {
+  font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 900;
+  font-size: 114px;
+  letter-spacing: -1px;
+  fill: #F7F2F6;
+  text-anchor: middle;
+}
+
+.titleMeet {
+  font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 900;
+  font-size: 140px;
+  letter-spacing: -2px;
+  fill: #7484FE;
+  text-anchor: middle;
+}
+
+.subtitleText {
+  font-family: var(--font-mono, monospace), 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 12.5px;
+  letter-spacing: 3.5px;
+  text-anchor: middle;
+}
+
+.subWord {
+  font-family: var(--font-mono, monospace), 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  user-select: none;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
   .topBrandingLeft {
     top: 1rem;
     left: 1rem;
   }
   .brandTitle {
-    font-size: 0.95rem;
+    font-size: 1.1rem;
   }
   .brandSub {
-    display: none;
+    font-size: 0.6rem;
   }
   .topBrandingRight {
     top: 1rem;
     right: 5.5rem;
-    padding: 0.4rem 0.65rem;
-    font-size: 0.65rem;
+  }
+  .dateText, .monthText {
+    font-size: 0.8rem;
   }
   .skipButton {
-    top: 1rem;
-    right: 1rem;
+    top: 0.85rem;
+    right: 0.85rem;
     padding: 0.4rem 0.75rem;
     font-size: 0.7rem;
-  }
-}
-
-/* Transform Origins and GPU Acceleration for Animated SVG groups */
-#layer-base-scene {
-  pointer-events: none;
-  transform: none !important;
-}
-
-#left-hanging-banner {
-  transform-origin: 192.5px 0px;
-  will-change: transform, opacity;
-}
-
-#ecell-title-wrapper {
-  will-change: transform, opacity;
-}
-
-#ecell-title-main {
-  transform-origin: 822.5px 247.5px;
-  will-change: transform, opacity;
-}
-
-#ecell-rocket-container {
-  transform-origin: 1150px 175px;
-  will-change: transform, opacity;
-}
-
-#right-banner-information {
-  will-change: transform, opacity;
-}
-
-#board-header-underline {
-  transform-origin: 1325px 372px;
-  will-change: transform;
-}
-
-#stall-information {
-  will-change: transform, opacity;
-}
-
-#stall-info-grow {
-  transform-origin: 300px 796px;
-  will-change: transform;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .overlayContainer {
-    transition: opacity 0.2s ease-in-out;
   }
 }

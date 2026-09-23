@@ -145,3 +145,5 @@ export const StartupExpoAnimation: React.FC<AnimationComponentProps> = ({
     </div>
   );
 };
+
+export default StartupExpoAnimation;

@@ -189,3 +189,5 @@ export const PitchDeckAnimation: React.FC<AnimationComponentProps> = ({
     </div>
   );
 };
+
+export default PitchDeckAnimation;

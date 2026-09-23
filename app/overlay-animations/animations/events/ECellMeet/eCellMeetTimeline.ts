@@ -15,23 +15,17 @@ export interface ECellMeetTimelineOptions {
 /**
  * Master GSAP timeline for "The E-CELL Meet" Animation.
  *
- * Requirements & Constraints:
- * 1. Title ("THE E-CELL MEET" & Rocket):
- *    - Clean, authentic artwork with smooth entrance and elegant hover motion.
- *    - NO artificial rays, speed lines, or flame glowing blobs behind the title.
- * 2. Top-Left Hanging Banner ("DIFFERENT COLLEGES / SAME VISION"):
- *    - Physical pendulum sway swinging naturally from suspension string hooks (transformOrigin: 192.5px 0px).
- *    - Clean animated text reveal and synchronized subtle text dynamics inside it.
- * 3. Booth/Stall Desk Signage ("IDEAS / NETWORK / GROW"):
- *    - All 3 words animated cleanly in text with sequential reveal.
- *    - NO blurry drop-shadow filter or scale distortion on GROW.
- * 4. Right-Side Banner ("E-CELL" + 4 circular icons):
- *    - E-CELL heading reveals and green underline draws in.
- *    - 4 circular icon badges pop in sequentially with an elastic bounce, then sit still.
- * 5. 100% Static & Frozen:
- *    - Foreground characters (students exchanging card): 100% static.
- *    - Corner foliage and plants: 100% static.
- *    - Booth structure, seamless canopy roof, laptop, background: 100% static.
+ * Synchronized ~5-Second Master Sequence:
+ * 0.00 – 0.60: INNER TRIANGLES & initial branding/ambient dots.
+ * 0.50 – 1.10: OUTER TRIANGLES (appear after inner triangles settle).
+ * 0.20 – 2.20: NETWORK CONNECTIONS (sequential line drawing with balanced left/right rhythm).
+ * 1.00 – 2.00: PEOPLE GROUP (enters subtly and settles completely inside upper arc).
+ * 1.80 – 2.70: "E-CELL" title reveals and settles.
+ * 2.30 – 3.20: "MEET" title reveals and settles.
+ * 3.10 – 3.80: "CONNECT" appears.
+ * 3.30 – 4.00: "COLLABORATE" appears + bullet 1.
+ * 3.50 – 4.20: "CREATE" appears + bullet 2 + side lines draw outward without overlapping text.
+ * 4.20 – 5.00: Final network/node settle + stable hold with resting idle motion.
  */
 export function createECellMeetTimeline(
   targets: ECellMeetTimelineTargets,
@@ -60,438 +54,598 @@ export function createECellMeetTimeline(
 
     tl.to(container, { opacity: 1, duration: 0.3, ease: "power1.out" }, 0);
     tl.addLabel("settled", 0.35);
-    tl.addLabel("exit", 3.7);
+    tl.addLabel("exit", 5.0);
     tl.to(container, { opacity: 0, duration: 0.35, ease: "power1.in" }, "exit");
     return tl;
   }
 
   const q = gsap.utils.selector(container);
 
-  // Target element selectors
-  const elBase = q("#layer-base-scene");
-  const elTitleMain = q("#ecell-title-main");
-  const elRocketContainer = q("#ecell-rocket-container");
+  // 1. Branding & Background Elements
+  const elBrandingLeft = q("#ecell-top-branding-left");
+  const elBrandingRight = q("#ecell-top-branding-right");
+  const elAmbientDots = q("#ecell-ambient-dots circle");
 
-  const elLeftBanner = q("#left-hanging-banner");
-  const elHangingDiffColleges = q("#hanging-info-different-colleges");
-  const elHangingSameVision = q("#hanging-info-same-vision");
-  const elHangingLine = q("#hanging-info-line");
+  // 2. Corner Chevrons & Clouds & Triangles (Inner vs Outer)
+  const elChevronBLBlue = q("#bl-chevron-blue");
+  const elChevronBRBlue = q("#br-chevron-blue");
+  const elChevronBLGreen = q("#bl-chevron-green");
+  const elChevronBRGreen = q("#br-chevron-green");
+  const elCloudLeft = q("#cloud-left");
+  const elCloudRight = q("#cloud-right");
+  const elTrianglesInner = q("#ecell-triangles-inner polygon");
+  const elTrianglesOuter = q("#ecell-triangles-outer polygon");
 
-  const elBoardHeader = q("#board-info-header");
-  const elBoardUnderline = q("#board-header-underline");
-  const elBoardIdeas = q("#board-info-ideas");
-  const elBoardNetwork = q("#board-info-network");
-  const elBoardCollaborate = q("#board-info-collaborate");
-  const elBoardGrow = q("#board-info-grow");
+  // 3. The 7 Institution Nodes
+  const elNode1 = q("#college-node-1"); // Top-Left (Blue)
+  const elNode2 = q("#college-node-2"); // Mid-Left (Green)
+  const elNode3 = q("#college-node-3"); // Bottom-Left (Blue)
+  const elNode4 = q("#college-node-4"); // Bottom-Center (Blue)
+  const elNode5 = q("#college-node-5"); // Top-Right (Green)
+  const elNode6 = q("#college-node-6"); // Mid-Right (Blue)
+  const elNode7 = q("#college-node-7"); // Bottom-Right (Green)
 
-  const elStallIdeas = q("#stall-info-ideas");
-  const elStallNetwork = q("#stall-info-network");
-  const elStallGrow = q("#stall-info-grow");
-  const elStallGrowLine = q("#stall-info-grow-line");
+  // 4. Connecting Lines (Solid conduits & progressive clip rects for dotted lines)
+  const elLine1 = q("#net-line-1");
+  const elClipDot1 = q("#clip-rect-dot-1"); // Level 1 Left dotted
+  const elLine5 = q("#net-line-5");
+  const elClipDot3 = q("#clip-rect-dot-3"); // Level 1 Right dotted
 
-  const elTopBrandingLeft = q("#ecell-top-branding-left");
-  const elTopBrandingRight = q("#ecell-top-branding-right");
-  const elTopBrandVersion = q("#ecell-top-branding-left [class*='brandVersion']");
-  const elTopDateDot = q("#ecell-top-branding-right [class*='dateDot']");
+  const elLine2 = q("#net-line-2");
+  const elClipDot2 = q("#clip-rect-dot-2"); // Level 2 Left dotted
+  const elLine6 = q("#net-line-6");
+  const elClipDot4 = q("#clip-rect-dot-4"); // Level 2 Right dotted
+
+  const elLine3 = q("#net-line-3");
+  const elLine7 = q("#net-line-7");
+  const elUpperArc = q("#upper-arc-path");
+
+  // 5. Junction / Node Dots
+  const elDot1 = q("#net-dot-1");
+  const elDot2 = q("#net-dot-2");
+  const elDot3 = q("#net-dot-3");
+  const elDot5 = q("#net-dot-5");
+  const elDot6 = q("#net-dot-6");
+  const elDot7 = q("#net-dot-7");
+  const elArcDotLeft = q("#arc-dot-left");
+  const elArcDotMidLeft = q("#arc-dot-mid-left");
+  const elArcDotTop = q("#arc-dot-top");
+  const elArcDotMidRight = q("#arc-dot-mid-right");
+  const elArcDotRight = q("#arc-dot-right");
+  const elPulseDots = q("#ecell-traveling-dots circle");
+
+  // 6. Upper People Group (Framed Comfortably Inside Upper Arc Container)
+  // Note: Permanently STATIC and centered inside arc — no animation/translation
+  const _elPeople = q("#ecell-people-group");
+
+  // 7. Dominant Center Title
+  const elTitleECell = q("#title-ecell");
+  const elTitleMeet = q("#title-meet");
+
+  // 8. Subtitle Elements (Separated Words, Bullets & Lines)
+  const elWordConnect = q("#sub-word-connect");
+  const elDotSub1 = q("#sub-dot-1");
+  const elWordCollaborate = q("#sub-word-collaborate");
+  const elDotSub2 = q("#sub-dot-2");
+  const elWordCreate = q("#sub-word-create");
+  const elSubLineLeft = q("#sub-line-left");
+  const elSubLineRight = q("#sub-line-right");
 
   // =========================================================================
-  // 1. INITIAL RESTING / HIDDEN STATES (t = 0.0s)
+  // INITIAL ZERO / RESET STATES
   // =========================================================================
+  gsap.set(container, { opacity: 1, backgroundColor: "#2A2A2A" });
+  if (skipButton) gsap.set(skipButton, { opacity: 0, y: -10 });
 
-  gsap.set(container, { opacity: 1 });
+  // Top branding headers
+  gsap.set([elBrandingLeft, elBrandingRight], { opacity: 0, y: -10 });
 
-  // Base scene (people, plants, canopy, booth, background) is strictly 100% static
-  gsap.set(elBase, {
-    opacity: 1,
-    x: 0,
-    y: 0,
-    scale: 1,
+  // Ambient dots
+  elAmbientDots.forEach((dot, idx) => {
+    const dx = (idx % 2 === 0 ? -1 : 1) * (15 + (idx * 4) % 20);
+    const dy = (idx % 3 === 0 ? -1 : 1) * (10 + (idx * 5) % 15);
+    gsap.set(dot, { opacity: 0, scale: 0.1, x: dx, y: dy, transformOrigin: "center center" });
   });
 
-  // Top branding headers initial state
-  gsap.set([elTopBrandingLeft, elTopBrandingRight], { opacity: 0, y: -16 });
+  // Corner chevrons: Blue outer and Green inner separate initial offsets
+  gsap.set(elChevronBLBlue, { x: -90, y: 45, opacity: 0 });
+  gsap.set(elChevronBRBlue, { x: 90, y: 45, opacity: 0 });
+  gsap.set(elChevronBLGreen, { x: -60, y: 30, opacity: 0 });
+  gsap.set(elChevronBRGreen, { x: 60, y: 30, opacity: 0 });
 
-  // Skip button initial state
-  if (skipButton) {
-    gsap.set(skipButton, { opacity: 0, y: -8, pointerEvents: "none" });
+  // Clouds
+  gsap.set(elCloudLeft, { x: -50, opacity: 0 });
+  gsap.set(elCloudRight, { x: 50, opacity: 0 });
+
+  // Decorative triangles: Inner vs Outer initial states
+  gsap.set(elTrianglesInner, {
+    opacity: 0,
+    scale: 0.2,
+    transformOrigin: "center center",
+  });
+  gsap.set(elTrianglesOuter, {
+    opacity: 0,
+    scale: 0.2,
+    transformOrigin: "center center",
+  });
+
+  // Institution Nodes (Circles + Icons)
+  const allNodes = [elNode1, elNode2, elNode3, elNode4, elNode5, elNode6, elNode7];
+  allNodes.forEach((node) => {
+    gsap.set(node, { opacity: 0, scale: 0.2 });
+  });
+
+  // Solid Lines setup for progressive SVG line drawing
+  const allSolidLines = [
+    elLine1,
+    elLine5,
+    elLine2,
+    elLine6,
+    elLine3,
+    elLine7,
+  ];
+
+  allSolidLines.forEach((line) => {
+    if (!line || line.length === 0) return;
+    const l = line[0] as unknown as SVGLineElement;
+    const x1 = parseFloat(l.getAttribute("x1") || "0");
+    const y1 = parseFloat(l.getAttribute("y1") || "0");
+    const x2 = parseFloat(l.getAttribute("x2") || "0");
+    const y2 = parseFloat(l.getAttribute("y2") || "0");
+    const len = Math.hypot(x2 - x1, y2 - y1) || 120;
+    gsap.set(l, {
+      strokeDasharray: len,
+      strokeDashoffset: len,
+      opacity: 0,
+    });
+  });
+
+  // Clip rects for dotted lines: start with width = 0
+  gsap.set([elClipDot1, elClipDot2, elClipDot3, elClipDot4], {
+    attr: { width: 0 },
+  });
+
+  // Upper Arc setup for drawing
+  if (elUpperArc && elUpperArc.length > 0) {
+    const arcPath = elUpperArc[0] as unknown as SVGPathElement;
+    const arcLen = arcPath.getTotalLength ? arcPath.getTotalLength() : 445;
+    gsap.set(arcPath, {
+      strokeDasharray: arcLen,
+      strokeDashoffset: arcLen,
+      opacity: 0,
+    });
   }
 
-  // 1. Main Title & Rocket: Clean artwork, starts slightly offset
-  gsap.set(elTitleMain, {
-    opacity: 0,
-    y: 22,
-    scale: 0.95,
-    transformOrigin: "822.5px 247.5px",
-  });
-  gsap.set(elRocketContainer, {
-    opacity: 0,
-    y: 26,
-    scale: 0.94,
-    transformOrigin: "1150px 175px",
+  // Subtitle decorative lines setup for outward draw
+  [elSubLineLeft, elSubLineRight].forEach((line) => {
+    if (!line || line.length === 0) return;
+    const l = line[0] as unknown as SVGLineElement;
+    const x1 = parseFloat(l.getAttribute("x1") || "0");
+    const x2 = parseFloat(l.getAttribute("x2") || "0");
+    const len = Math.abs(x2 - x1) || 32;
+    gsap.set(l, {
+      strokeDasharray: len,
+      strokeDashoffset: len,
+      opacity: 0,
+    });
   });
 
-  // 2. Left Hanging Banner: Suspended from string hooks
-  gsap.set(elLeftBanner, {
-    opacity: 0,
-    y: -24,
-    rotation: -3.5,
-    transformOrigin: "192.5px 0px",
+  // Junction dots
+  const allDots = [
+    elDot1,
+    elDot2,
+    elDot3,
+    elDot5,
+    elDot6,
+    elDot7,
+    elArcDotLeft,
+    elArcDotMidLeft,
+    elArcDotTop,
+    elArcDotMidRight,
+    elArcDotRight,
+  ];
+  allDots.forEach((dot) => {
+    gsap.set(dot, { opacity: 0, scale: 0, transformOrigin: "center center" });
   });
-  gsap.set(elHangingDiffColleges, { opacity: 0, y: -10 });
-  gsap.set(elHangingSameVision, { opacity: 0, scale: 0.88, y: 6, transformOrigin: "150px 250px" });
-  gsap.set(elHangingLine, { opacity: 0, scaleX: 0, transformOrigin: "110px 305px" });
 
-  // 3. Right Banner: Header, drawing line, and cascading circular icons
-  gsap.set(elBoardHeader, { opacity: 0, y: -12 });
-  gsap.set(elBoardUnderline, { scaleX: 0, transformOrigin: "1325px 372px" });
-  gsap.set(elBoardIdeas, { opacity: 0, scale: 0.6, x: 25, transformOrigin: "1340px 425px" });
-  gsap.set(elBoardNetwork, { opacity: 0, scale: 0.6, x: 25, transformOrigin: "1340px 510px" });
-  gsap.set(elBoardCollaborate, { opacity: 0, scale: 0.6, x: 25, transformOrigin: "1340px 595px" });
-  gsap.set(elBoardGrow, { opacity: 0, scale: 0.6, x: 25, transformOrigin: "1340px 680px" });
-
-  // 4. Stall Desk Info: Clean 3-word text initial state
-  gsap.set(elStallIdeas, { opacity: 0, y: 8 });
-  gsap.set(elStallNetwork, { opacity: 0, y: 8 });
-  gsap.set(elStallGrow, { opacity: 0, y: 8 });
-  if (elStallGrowLine) {
-    gsap.set(elStallGrowLine, { scaleX: 0, transformOrigin: "265px 808px" });
+  if (elPulseDots && elPulseDots.length > 0) {
+    gsap.set(elPulseDots, { opacity: 0 });
   }
 
+  // Dominant Title elements initial states
+  gsap.set(elTitleECell, { opacity: 0, y: 16, scale: 0.97, transformOrigin: "512px 278px" });
+  gsap.set(elTitleMeet, { opacity: 0, y: 16, scale: 0.97, transformOrigin: "512px 398px" });
+
+  // Subtitle Words and Dots initial states
+  gsap.set([elWordConnect, elWordCollaborate, elWordCreate], {
+    opacity: 0,
+    scale: 0.96,
+  });
+  gsap.set([elDotSub1, elDotSub2], {
+    opacity: 0,
+    scale: 0,
+    transformOrigin: "center center",
+  });
+
   // =========================================================================
-  // 2. CHOREOGRAPHED ENTRANCE TIMELINE (0.0s – 1.6s)
+  // MASTER TIMELINE: CONTINUOUS, POLISHED & FAST (~2.55 SECONDS TOTAL)
+  // Flow:
+  // 1. Bottom/side elements (Blue outer triangle, then Green inner triangle)
+  // 2. Buildings + Connections (Level 1 → Level 2 → Level 3, locking on arrival)
+  // 3. Title (E-CELL and MEET smooth entrance, followed by subtitle)
+  // 4. Remaining decorative elements
+  // 5. Final Triangles (Inner then Outer)
+  // 6. Settle immediately into completely static state
   // =========================================================================
 
-  // Top branding headers reveal (Equinox 2.0 on top left, Oct 30-31 MLRIT on top right)
+  // [0.00 – 0.50s] Phase 1: Context & Bottom/Side Elements
   tl.to(
-    [elTopBrandingLeft, elTopBrandingRight],
+    [elBrandingLeft, elBrandingRight],
     {
       opacity: 1,
       y: 0,
-      duration: 0.45,
-      stagger: 0.1,
+      duration: 0.30,
       ease: "power2.out",
+      stagger: 0.05,
     },
-    0.12
+    0.00
   );
 
-  // Skip button reveal
   if (skipButton) {
     tl.to(
       skipButton,
       {
         opacity: 1,
         y: 0,
-        duration: 0.35,
+        duration: 0.25,
         ease: "power2.out",
-        onStart: () => {
-          gsap.set(skipButton, { pointerEvents: "auto" });
-        },
       },
-      0.15
+      0.05
     );
   }
 
-  // -------------------------------------------------------------------------
-  // PHASE 1: MAIN TITLE & ROCKET CLEAN ENTRANCE (0.10s – 0.65s)
-  // Clean, confident emergence with NO artificial rays behind the letters
-  // -------------------------------------------------------------------------
   tl.to(
-    elTitleMain,
+    elAmbientDots,
     {
-      opacity: 1,
+      opacity: (idx) => [0.65, 0.75, 0.6, 0.8, 0.65, 0.55][idx % 6],
+      scale: 1,
+      x: 0,
       y: 0,
-      scale: 1.0,
-      duration: 0.55,
+      duration: 0.38,
+      ease: "power2.out",
+      stagger: 0.02,
+    },
+    0.05
+  );
+
+  tl.to(
+    [elCloudLeft, elCloudRight],
+    {
+      x: 0,
+      opacity: 0.95,
+      duration: 0.38,
       ease: "power2.out",
     },
-    0.10
+    0.08
   );
 
+  // 1) Bottom Corner Triangles: Blue outer triangle enters first
   tl.to(
-    elRocketContainer,
+    [elChevronBLBlue, elChevronBRBlue],
     {
-      opacity: 1,
+      x: 0,
       y: 0,
-      scale: 1.0,
-      duration: 0.58,
+      opacity: 1,
+      duration: 0.38,
       ease: "power2.out",
     },
-    0.12
+    0.05
   );
 
-  // -------------------------------------------------------------------------
-  // PHASE 2: LEFT HANGING BANNER PENDULUM SWAY & TEXT REVEAL (0.18s – 1.15s)
-  // Hanging banner sways naturally from string hooks and text animates inside
-  // -------------------------------------------------------------------------
+  // 2) Green inner triangle enters immediately after it
   tl.to(
-    elLeftBanner,
+    [elChevronBLGreen, elChevronBRGreen],
     {
-      opacity: 1,
+      x: 0,
       y: 0,
-      rotation: 3.0,
-      duration: 0.55,
-      ease: "power2.out",
-    },
-    0.18
-  );
-
-  tl.to(
-    elLeftBanner,
-    {
-      rotation: -1.4,
-      duration: 0.42,
-      ease: "sine.inOut",
-    },
-    0.73
-  );
-
-  tl.to(
-    elLeftBanner,
-    {
-      rotation: 0,
-      duration: 0.32,
-      ease: "sine.out",
-    },
-    1.15
-  );
-
-  // Animate text inside the hanging banner
-  tl.to(
-    elHangingDiffColleges,
-    {
       opacity: 1,
-      y: 0,
       duration: 0.35,
+      ease: "power2.out",
+    },
+    0.20
+  );
+
+  // =========================================================================
+  // Phase 2: Buildings + Connections (Level 1 → Level 2 → Level 3)
+  // Continuous, sequential entrances with matching lines, then locked.
+  // =========================================================================
+
+  // --- LEVEL 1 (0.35s – 0.78s) ---
+  // Top buildings enter smoothly
+  tl.to(
+    elNode1,
+    {
+      opacity: 1,
+      scale: 1,
+      duration: 0.30,
+      ease: "power2.out",
+    },
+    0.35
+  );
+
+  tl.to(
+    elNode5,
+    {
+      opacity: 1,
+      scale: 1,
+      duration: 0.30,
       ease: "power2.out",
     },
     0.38
   );
 
+  // Synchronized Level 1 connections
   tl.to(
-    elHangingSameVision,
+    [elLine1, elLine5],
     {
       opacity: 1,
-      y: 0,
-      scale: 1.0,
-      duration: 0.40,
-      ease: "back.out(1.5)",
+      strokeDashoffset: 0,
+      duration: 0.28,
+      ease: "power2.out",
+      stagger: 0.02,
     },
-    0.54
+    0.44
   );
 
   tl.to(
-    elHangingLine,
+    [elClipDot1, elClipDot3],
+    {
+      attr: { width: 85 },
+      duration: 0.30,
+      ease: "power2.out",
+    },
+    0.44
+  );
+
+  tl.to(
+    elUpperArc,
     {
       opacity: 1,
-      scaleX: 1.0,
+      strokeDashoffset: 0,
       duration: 0.32,
+      ease: "power2.inOut",
+    },
+    0.46
+  );
+
+  tl.to(
+    [elDot1, elDot5, elArcDotLeft, elArcDotRight, elArcDotMidLeft, elArcDotMidRight, elArcDotTop],
+    {
+      opacity: 1,
+      scale: 1,
+      duration: 0.18,
+      ease: "back.out(1.8)",
+      stagger: 0.02,
+    },
+    0.58
+  );
+
+  // --- LEVEL 2 (0.72s – 1.15s) ---
+  // Mid buildings enter smoothly
+  tl.to(
+    elNode2,
+    {
+      opacity: 1,
+      scale: 1,
+      duration: 0.30,
       ease: "power2.out",
     },
     0.72
   );
 
-  // -------------------------------------------------------------------------
-  // PHASE 3: RIGHT SIDE BANNER ("E-CELL" + 4 CIRCULAR ICONS POP IN)
-  // -------------------------------------------------------------------------
   tl.to(
-    elBoardHeader,
+    elNode6,
     {
       opacity: 1,
-      y: 0,
-      duration: 0.30,
-      ease: "power2.out",
-    },
-    0.45
-  );
-
-  tl.to(
-    elBoardUnderline,
-    {
-      scaleX: 1.0,
-      duration: 0.35,
-      ease: "power2.out",
-    },
-    0.55
-  );
-
-  // 4 Circular icon badges pop in one after another with elastic bounce
-  tl.to(
-    elBoardIdeas,
-    {
-      opacity: 1,
-      scale: 1.0,
-      x: 0,
-      duration: 0.38,
-      ease: "back.out(1.7)",
-    },
-    0.68
-  );
-
-  tl.to(
-    elBoardNetwork,
-    {
-      opacity: 1,
-      scale: 1.0,
-      x: 0,
-      duration: 0.38,
-      ease: "back.out(1.7)",
-    },
-    0.84
-  );
-
-  tl.to(
-    elBoardCollaborate,
-    {
-      opacity: 1,
-      scale: 1.0,
-      x: 0,
-      duration: 0.38,
-      ease: "back.out(1.7)",
-    },
-    1.00
-  );
-
-  tl.to(
-    elBoardGrow,
-    {
-      opacity: 1,
-      scale: 1.0,
-      x: 0,
-      duration: 0.38,
-      ease: "back.out(1.7)",
-    },
-    1.16
-  );
-
-  // -------------------------------------------------------------------------
-  // PHASE 4: STALL DESK INFO - 3 WORDS CLEAN TEXT ANIMATION (0.75s – 1.40s)
-  // Sequential clean reveal: IDEAS -> NETWORK -> GROW (no drop shadow filter)
-  // -------------------------------------------------------------------------
-  tl.to(
-    elStallIdeas,
-    {
-      opacity: 1,
-      y: 0,
+      scale: 1,
       duration: 0.30,
       ease: "power2.out",
     },
     0.75
   );
 
+  // Synchronized Level 2 connections
   tl.to(
-    elStallNetwork,
+    [elLine2, elLine6],
     {
       opacity: 1,
-      y: 0,
+      strokeDashoffset: 0,
+      duration: 0.28,
+      ease: "power2.out",
+      stagger: 0.02,
+    },
+    0.80
+  );
+
+  tl.to(
+    [elClipDot2, elClipDot4],
+    {
+      attr: { width: 110 },
       duration: 0.30,
       ease: "power2.out",
     },
-    0.95
+    0.80
   );
 
   tl.to(
-    elStallGrow,
+    [elDot2, elDot6],
+    {
+      opacity: 1,
+      scale: 1,
+      duration: 0.18,
+      ease: "back.out(1.8)",
+    },
+    0.92
+  );
+
+  // --- LEVEL 3 (1.08s – 1.50s) ---
+  // Bottom buildings enter smoothly
+  tl.to(
+    elNode3,
+    {
+      opacity: 1,
+      scale: 1,
+      duration: 0.30,
+      ease: "power2.out",
+    },
+    1.08
+  );
+
+  tl.to(
+    elNode7,
+    {
+      opacity: 1,
+      scale: 1,
+      duration: 0.30,
+      ease: "power2.out",
+    },
+    1.11
+  );
+
+  tl.to(
+    elNode4,
+    {
+      opacity: 1,
+      scale: 1,
+      duration: 0.30,
+      ease: "power2.out",
+    },
+    1.14
+  );
+
+  // Synchronized Level 3 connections
+  tl.to(
+    [elLine3, elLine7],
+    {
+      opacity: 1,
+      strokeDashoffset: 0,
+      duration: 0.28,
+      ease: "power2.out",
+      stagger: 0.02,
+    },
+    1.18
+  );
+
+  tl.to(
+    [elDot3, elDot7],
+    {
+      opacity: 1,
+      scale: 1,
+      duration: 0.18,
+      ease: "back.out(1.8)",
+    },
+    1.30
+  );
+
+  // =========================================================================
+  // Phase 3: Title Text Animation (1.42s – 1.85s)
+  // Clean, subtle entrance without bouncing; locks permanently.
+  // =========================================================================
+  tl.to(
+    elTitleECell,
     {
       opacity: 1,
       y: 0,
-      duration: 0.32,
-      ease: "power2.out",
+      scale: 1,
+      duration: 0.38,
+      ease: "power3.out",
     },
-    1.15
+    1.42
   );
 
-  if (elStallGrowLine) {
-    tl.to(
-      elStallGrowLine,
-      {
-        scaleX: 1.0,
-        duration: 0.30,
-        ease: "power2.out",
-      },
-      1.22
-    );
-  }
+  tl.to(
+    elTitleMeet,
+    {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      duration: 0.38,
+      ease: "power3.out",
+    },
+    1.52
+  );
 
   // =========================================================================
-  // 3. CONTINUOUS LIVING LOOPS (At t = 1.45s)
-  // - Title: Smooth, subtle hover float (clean, professional, zero rays)
-  // - Hanging sign: Gentle physical pendulum sway from string hooks
-  // - Hanging text: Subtle breathing illumination synchronized to sway
-  // - Stall text: Clean sequential text highlight across all 3 words
+  // Phase 4: Remaining Decorative Elements / Subtitle (1.75s – 2.05s)
   // =========================================================================
-  tl.add(() => {
-    // 1. Title & Rocket subtle hover float
-    gsap.to([elTitleMain, elRocketContainer], {
-      y: -5,
-      duration: 2.6,
-      ease: "sine.inOut",
-      yoyo: true,
-      repeat: -1,
-    });
+  tl.to(
+    [elWordConnect, elDotSub1, elWordCollaborate, elDotSub2, elWordCreate],
+    {
+      opacity: 1,
+      scale: 1,
+      duration: 0.26,
+      ease: "power2.out",
+      stagger: 0.03,
+    },
+    1.75
+  );
 
-    // 2. Left hanging banner continuous pendulum sway from hooks
-    gsap.to(elLeftBanner, {
-      rotation: 1.8,
-      duration: 2.8,
-      ease: "sine.inOut",
-      yoyo: true,
-      repeat: -1,
-      transformOrigin: "192.5px 0px",
-    });
+  tl.to(
+    [elSubLineLeft, elSubLineRight],
+    {
+      opacity: 1,
+      strokeDashoffset: 0,
+      duration: 0.24,
+      ease: "power2.out",
+    },
+    1.88
+  );
 
-    // 3. Text inside hanging banner subtle breathing highlight
-    gsap.to(elHangingSameVision, {
-      opacity: 0.90,
-      duration: 1.4,
-      ease: "sine.inOut",
-      yoyo: true,
-      repeat: -1,
-    });
+  // =========================================================================
+  // Phase 5: Final Triangles (Inner First, Then Outer) (2.05s – 2.50s)
+  // =========================================================================
+  // Inner triangles entrance
+  tl.to(
+    elTrianglesInner,
+    {
+      opacity: 1,
+      scale: 1,
+      duration: 0.22,
+      ease: "power2.out",
+      stagger: 0.03,
+    },
+    2.05
+  );
 
-    // 4. Stall desk 3-word clean text animation loop
-    // Staggered subtle luminance wave across IDEAS -> NETWORK -> GROW
-    const stallWordsTl = gsap.timeline({ repeat: -1, repeatDelay: 0.9 });
-    stallWordsTl
-      .to(elStallIdeas, { opacity: 0.65, duration: 0.35, yoyo: true, repeat: 1, ease: "power1.inOut" })
-      .to(elStallNetwork, { opacity: 0.65, duration: 0.35, yoyo: true, repeat: 1, ease: "power1.inOut" }, "-=0.1")
-      .to(elStallGrow, { opacity: 0.75, duration: 0.35, yoyo: true, repeat: 1, ease: "power1.inOut" }, "-=0.1");
+  // Outer triangles entrance — strictly AFTER inner completes
+  tl.to(
+    elTrianglesOuter,
+    {
+      opacity: 1,
+      scale: 1,
+      duration: 0.22,
+      ease: "power2.out",
+      stagger: 0.04,
+    },
+    2.25
+  );
 
-    // 5. Top branding subtle living kinetic pulse (Equinox 2.0 glow & date indicator)
-    if (elTopBrandVersion) {
-      gsap.to(elTopBrandVersion, {
-        scale: 1.06,
-        opacity: 0.85,
-        duration: 1.8,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-        transformOrigin: "center center",
-      });
-    }
-    if (elTopDateDot) {
-      gsap.to(elTopDateDot, {
-        scale: 1.35,
-        opacity: 0.6,
-        duration: 1.2,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-      });
-    }
-  }, 1.45);
-
-  // Settle milestone
-  tl.addLabel("settled", 1.60);
+  // =========================================================================
+  // Phase 6: [2.55s] FINAL SETTLE & STATIC LOCK
+  // Everything settles and remains COMPLETELY STATIC.
+  // Zero secondary movement, zero bounce, zero drift.
+  // =========================================================================
+  tl.addLabel("settled", 2.55);
 
   if (!loop) {
-    tl.addLabel("hold", 3.80);
-    tl.addLabel("exit", 5.00);
+    tl.addLabel("hold", 6.5);
+    tl.addLabel("exit", 7.5);
 
     tl.to(
       container,
       {
         opacity: 0,
-        duration: 0.35,
+        duration: 0.4,
         ease: "power2.in",
       },
       "exit"
@@ -508,7 +662,7 @@ export function skipECellMeetTimelineToExit(
   tl: gsap.core.Timeline | null
 ): void {
   if (!tl) return;
-  const exitTime = tl.labels["exit"] ?? 4.0;
+  const exitTime = tl.labels["exit"] ?? 6.0;
   if (tl.time() < exitTime) {
     tl.tweenTo(exitTime, {
       duration: 0.22,

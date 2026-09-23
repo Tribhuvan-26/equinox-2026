@@ -17,22 +17,56 @@ const lazyAnimation = (
   load: () => Promise<{ default: ComponentType<AnimationComponentProps> }>
 ) => dynamic(load, { ssr: false });
 
-const SpotlightAnimation = lazyAnimation(() => import("../events/Spotlight/SpotlightAnimation"));
-const StartupPolyAnimation = lazyAnimation(() => import("../events/StartupPoly/StartupPolyAnimation"));
-const IplAuctionAnimation = lazyAnimation(() => import("../events/IplAuction/IplAuctionAnimation"));
-const HustleManiaAnimation = lazyAnimation(() => import("../events/HustleMania/HustleManiaAnimation"));
-const CrossroadsAnimation = lazyAnimation(() => import("../events/Crossroads/CrossroadsAnimation"));
+const SpotlightAnimation = lazyAnimation(() =>
+  import("../events/Spotlight/SpotlightAnimation").then((m) => ({
+    default: m.default ?? m.SpotlightAnimation,
+  }))
+);
+const StartupPolyAnimation = lazyAnimation(() =>
+  import("../events/StartupPoly/StartupPolyAnimation").then((m) => ({
+    default: m.default ?? m.StartupPolyAnimation,
+  }))
+);
+const IplAuctionAnimation = lazyAnimation(() =>
+  import("../events/IplAuction/IplAuctionAnimation").then((m) => ({
+    default: m.default ?? m.IplAuctionAnimation ?? m.IPLAuctionAnimation,
+  }))
+);
+const HustleManiaAnimation = lazyAnimation(() =>
+  import("../events/HustleMania/HustleManiaAnimation").then((m) => ({
+    default: m.default ?? m.HustleManiaAnimation,
+  }))
+);
+const CrossroadsAnimation = lazyAnimation(() =>
+  import("../events/Crossroads/CrossroadsAnimation").then((m) => ({
+    default: m.default ?? m.CrossroadsAnimation,
+  }))
+);
 const PitchDeckAnimation = lazyAnimation(() =>
-  import("../events/PitchDeck/PitchDeckAnimation").then((m) => ({ default: m.PitchDeckAnimation }))
+  import("../events/PitchDeck/PitchDeckAnimation").then((m) => ({
+    default: m.default ?? m.PitchDeckAnimation,
+  }))
 );
 const StartupExpoAnimation = lazyAnimation(() =>
-  import("../events/StartupExpo/StartupExpoAnimation").then((m) => ({ default: m.StartupExpoAnimation }))
+  import("../events/StartupExpo/StartupExpoAnimation").then((m) => ({
+    default: m.default ?? m.StartupExpoAnimation,
+  }))
 );
 const BrandBattlesAnimation = lazyAnimation(() =>
-  import("../events/BrandBattles/BrandBattlesAnimation").then((m) => ({ default: m.BrandBattlesAnimation }))
+  import("../events/BrandBattles/BrandBattlesAnimation").then((m) => ({
+    default: m.default ?? m.BrandBattlesAnimation,
+  }))
 );
-const ECellMeetAnimation = lazyAnimation(() => import("../events/ECellMeet/ECellMeetAnimation"));
-const InternshipDriveAnimation = lazyAnimation(() => import("../events/InternshipDrive/InternshipDriveAnimation"));
+const ECellMeetAnimation = lazyAnimation(() =>
+  import("../events/ECellMeet/ECellMeetAnimation").then((m) => ({
+    default: m.default ?? m.ECellMeetAnimation,
+  }))
+);
+const InternshipDriveAnimation = lazyAnimation(() =>
+  import("../events/InternshipDrive/InternshipDriveAnimation").then((m) => ({
+    default: m.default ?? m.InternshipDriveAnimation,
+  }))
+);
 
 /**
  * Official registry mapping event keys to their respective overlay components.
@@ -210,7 +244,6 @@ export const OverlayAnimationHost: React.FC = () => {
   const [playKey, setPlayKey] = useState<number>(0);
   const [isDismissed, setIsDismissed] = useState<boolean>(false);
 
-
   const lastTriggerRef = useRef<{ event: string; time: number } | null>(null);
 
   const handleTrigger = useCallback((payload: AnimationTriggerPayload) => {
@@ -266,11 +299,17 @@ export const OverlayAnimationHost: React.FC = () => {
   }
 
   const entry = animationRegistry[activeEvent];
-  if (!entry) {
+  if (!entry || !entry.Component) {
     return null;
   }
 
   const ActiveComponent = entry.Component;
+  if (
+    !ActiveComponent ||
+    (typeof ActiveComponent !== "function" && typeof ActiveComponent !== "object")
+  ) {
+    return null;
+  }
 
   return React.createElement(
     OverlayErrorBoundary,

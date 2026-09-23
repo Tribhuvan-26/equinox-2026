@@ -121,3 +121,5 @@ export const BrandBattlesAnimation: React.FC<AnimationComponentProps> = ({
     </div>
   );
 };
+
+export default BrandBattlesAnimation;
