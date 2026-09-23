@@ -9,7 +9,7 @@ function mailConfigured(): boolean {
 
 /** Replies to a send-only sender land here, so a confused registrant reaches a human. */
 function replyTo(): { email: string } {
-  return { email: process.env.BREVO_REPLY_TO ?? "24r21a05hg@mlrit.ac.in" };
+  return { email: process.env.BREVO_REPLY_TO ?? "cie@mlrinstitutions.ac.in" };
 }
 
 /**
