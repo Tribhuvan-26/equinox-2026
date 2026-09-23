@@ -95,8 +95,7 @@ export default function GlitchWordmark({ className = "" }: { className?: string 
       activeTl
         .to(blueRef.current, { opacity: 0.9, x: -reach, y: gsap.utils.random(-4, 4), duration: 0.05, ease: step })
         .to(greenRef.current, { opacity: 0.9, x: reach, y: gsap.utils.random(-4, 4), duration: 0.05, ease: step }, "<")
-        .to(paperRef.current, { opacity: hard ? 0.5 : 0, x: gsap.utils.random(-9, 9), y: gsap.utils.random(-6, 6), duration: 0.05, ease: step }, "<")
-        .to(artRef.current, { x: gsap.utils.random(-4, 4), duration: 0.05, ease: step }, "<");
+        .to(paperRef.current, { opacity: hard ? 0.5 : 0, x: gsap.utils.random(-9, 9), y: gsap.utils.random(-6, 6), duration: 0.05, ease: step }, "<");
 
       activeSlices.forEach((slice, i) => {
         if (!slice) return;
@@ -127,8 +126,6 @@ export default function GlitchWordmark({ className = "" }: { className?: string 
       if (validPlates.length > 0) {
         activeTl.to(validPlates, { opacity: 0, x: 0, y: 0, duration: 0.06, ease: step });
       }
-      activeTl
-        .to(artRef.current, { x: 0, duration: 0.06, ease: step }, "<");
       if (activeSlices.length > 0) {
         activeTl.to(activeSlices, { opacity: 0, x: 0, duration: 0.06, ease: step }, "<");
       }
