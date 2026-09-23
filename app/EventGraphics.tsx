@@ -14,12 +14,26 @@ export function InstitutionalHeader({ className = "" }: { className?: string }) 
   return (
     <div className={`flex flex-wrap items-center justify-between gap-4 py-4 text-white ${className}`}>
       {/* Left: MLR CIE official lockup */}
-      {/* eslint-disable-next-line @next/next/no-img-element -- fixed-ratio brand asset, no next/image benefit */}
-      <img src="/logos/cie-full-white.png" alt="MLR CIE — Centre for Innovation & Entrepreneurship" className="h-10 w-auto object-contain sm:h-12" />
+      <a
+        href="https://mlritcie.in/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="transition-opacity hover:opacity-85"
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element -- fixed-ratio brand asset, no next/image benefit */}
+        <img src="/logos/cie-full-white.png" alt="MLR CIE — Centre for Innovation & Entrepreneurship" className="h-10 w-auto object-contain sm:h-12" />
+      </a>
 
       {/* Right: MLRIT official lockup */}
-      {/* eslint-disable-next-line @next/next/no-img-element -- fixed-ratio brand asset, no next/image benefit */}
-      <img src="/logos/mlrit.png" alt="MLR Institute of Technology" className="h-9 w-auto object-contain sm:h-11" />
+      <a
+        href="https://maps.app.goo.gl/4DksqRseMdafyB417"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="transition-opacity hover:opacity-85"
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element -- fixed-ratio brand asset, no next/image benefit */}
+        <img src="/logos/mlrit.png" alt="MLR Institute of Technology" className="h-9 w-auto object-contain sm:h-11" />
+      </a>
     </div>
   );
 }

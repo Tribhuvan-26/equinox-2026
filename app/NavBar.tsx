@@ -124,9 +124,11 @@ export function NavBar({
         {/* CIE Logo — the homepage hero has its own CIE lockup while it's in view, so skip the duplicate there */}
         {pathname !== "/" && (
           <a
-            href="/"
+            href="https://mlritcie.in/"
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label="Centre for Innovation & Entrepreneurship"
-            className="absolute left-0 hidden items-center lg:flex"
+            className="absolute left-0 hidden items-center lg:flex transition-opacity hover:opacity-85"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
