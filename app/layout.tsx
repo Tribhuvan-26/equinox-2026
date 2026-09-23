@@ -74,7 +74,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${display.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <head>
+      <body className="night flex min-h-full flex-col" suppressHydrationWarning>
         {/* SpiderIntro (the CIE->EQUINOX opener) animates this the instant it
             mounts. Preloading it here starts the fetch/decode during initial
             page load instead of when the intro's own effect runs, which is
@@ -86,8 +86,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(summitJsonLd()) }}
         />
-      </head>
-      <body className="night flex min-h-full flex-col" suppressHydrationWarning>
         <PreIntroCover />
         <NavBar
           items={nav.map((item) => ({ name: item.label, url: item.href }))}

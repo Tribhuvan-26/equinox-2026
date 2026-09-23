@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { canonicalSlugs, eventsData } from "../eventsData";
 import { SubEventBadge } from "../../EventGraphics";
-import { AutoPlayAnimation } from "../AutoPlayAnimation";
+import { EventPageReveal } from "../EventPageReveal";
 import { EVENT_SPOCS } from "@/chatbot/data/events";
 import { Phone, ArrowUpRight, Ticket } from "lucide-react";
 import { SITE_NAME, subEventJsonLd } from "@/lib/seo";
@@ -53,9 +53,8 @@ export default async function EventPage({ params }: PageProps) {
           __html: JSON.stringify(subEventJsonLd({ name: item.title, slug, description: item.description })),
         }}
       />
-      <AutoPlayAnimation slug={slug} />
-
-      <div className="mx-auto max-w-[1200px]">
+      <EventPageReveal slug={slug}>
+        <div className="mx-auto max-w-[1200px]">
         {/* Top Institutional & Navigation Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/20 pb-5">
           <div className="flex items-center gap-2">
@@ -260,6 +259,7 @@ export default async function EventPage({ params }: PageProps) {
           </div>
         </div>
       </div>
+      </EventPageReveal>
     </main>
   );
 }

@@ -251,6 +251,10 @@ export const OverlayAnimationHost: React.FC = () => {
   const handleComplete = useCallback(() => {
     setActiveEvent(null);
     setIsDismissed(false);
+
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("equinox:animation-complete"));
+    }
   }, []);
 
   const handleDismiss = useCallback(() => {
