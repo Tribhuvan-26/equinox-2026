@@ -337,11 +337,20 @@ export function getMockEquinoxResponse(
     };
   }
 
-  if (q.includes("registration fee") || q.includes("cost to attend") || q.includes("ticket price")) {
+  // Registration & Pass Pricing
+  if (
+    q.includes("registration") ||
+    q.includes("register") ||
+    q.includes("ticket") ||
+    q.includes("pass") ||
+    q.includes("cost") ||
+    q.includes("fee")
+  ) {
     return {
       answer:
-        "I don't have information about the exact registration fee in the official Equinox 2.0 program. Delegate pass registration and pricing will be announced soon on the official summit website.",
-      suggestions: ["Explore Sub-Events", "Dates & Venue", "About CIE"],
+        `**Equinox 2.0 Registration Details**:\n\n• **Pass Fee**: **₹769 per participant**\n• **Inclusions**: Grants access to attend summit sessions, keynote talks, and participate across the official sub-events.\n• **How to Register**: Complete the registration pass payment on the official portal, after which you can immediately start a team or request to join an existing team from your confirmation dashboard.\n• **Dates**: 30 – 31 October 2026 at MLRIT Hyderabad.`,
+      suggestions: ["Explore Sub-Events", "Dates & Venue", "Overall Coordinators"],
+      links: [{ label: "Register on Website", url: "/register" }],
       grounded: true,
     };
   }
@@ -369,6 +378,21 @@ export function getMockEquinoxResponse(
       answer:
         "I don't have information about food, accommodation, or transport arrangements in the official Equinox 2.0 program. You can contact the organizers at cie@mlrinstitutions.ac.in for more information.",
       suggestions: ["Dates & Venue", "Explore Sub-Events", "Registration"],
+      grounded: true,
+    };
+  }
+
+  // Dates & Venue combined
+  if (
+    q.includes("dates & venue") ||
+    q.includes("dates and venue") ||
+    q.includes("when and where") ||
+    (q.includes("date") && q.includes("venue"))
+  ) {
+    return {
+      answer: `**The Equinox 2.0 Dates & Venue**:\n\n• **Dates**: **${event.date}** (30th & 31st October 2026)\n• **Venue**: **${event.venueFull}**\n• **Host**: Organized by the **Centre for Innovation and Entrepreneurship (CIE)**, MLR Institute of Technology, Dundigal, Hyderabad.`,
+      suggestions: ["Explore Sub-Events", "Registration details", "Coordinators"],
+      links: [{ label: "Contact & Location", url: "/contact" }, { label: "Browse Sub-Events", url: "/events" }],
       grounded: true,
     };
   }
@@ -463,8 +487,20 @@ export function getMockEquinoxResponse(
     };
   }
 
-  // 9. Sub-events List
+  // 11. Sub-events List
   if (
+    q === "events" ||
+    q === "event" ||
+    q === "sub events" ||
+    q === "sub-events" ||
+    q === "subevents" ||
+    q === "all events" ||
+    q.includes("events") ||
+    q.includes("event") ||
+    q.includes("sub-event") ||
+    q.includes("subevent") ||
+    q.includes("explore sub-events") ||
+    q.includes("explore sub events") ||
     q.includes("list all events") ||
     q.includes("list of events") ||
     q.includes("what are the 10 events") ||
@@ -474,9 +510,6 @@ export function getMockEquinoxResponse(
     q.includes("what are all the sub-events") ||
     q.includes("all the sub events") ||
     q.includes("all sub events") ||
-    q.includes("sub events") ||
-    q.includes("sub-events") ||
-    q.includes("subevents") ||
     q.includes("what events are there")
   ) {
     return {

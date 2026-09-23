@@ -41,52 +41,90 @@ export function cosineSimilarity(a: number[], b: number[]): number {
 }
 
 /**
- * Gets or initializes the Google Gen AI client with GEMINI_API_KEY.
+ * Collects configured and backup Gemini API keys
  */
-function getAiClient(): GoogleGenAI {
-  let apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    try {
-      const fs = require("fs");
-      const path = require("path");
-      const envPath = path.resolve(process.cwd(), ".env.local");
-      if (fs.existsSync(envPath)) {
-        const lines = fs.readFileSync(envPath, "utf-8").split("\n");
-        for (const line of lines) {
-          const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
-          if (match && match[1] === "GEMINI_API_KEY") {
-            apiKey = match[2].trim().replace(/^['"]|['"]$/g, "");
-            process.env.GEMINI_API_KEY = apiKey;
-            break;
+export function getAvailableApiKeys(): string[] {
+  const keys: string[] = [];
+  if (process.env.GEMINI_API_KEY) keys.push(process.env.GEMINI_API_KEY);
+  if (process.env.GEMINI_API_KEY_BACKUP) keys.push(process.env.GEMINI_API_KEY_BACKUP);
+  if (process.env.GEMINI_API_KEY_BACKUP_2) keys.push(process.env.GEMINI_API_KEY_BACKUP_2);
+
+  try {
+    const fs = require("fs");
+    const path = require("path");
+    const envPath = path.resolve(process.cwd(), ".env.local");
+    if (fs.existsSync(envPath)) {
+      const lines = fs.readFileSync(envPath, "utf-8").split("\n");
+      for (const line of lines) {
+        const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+        if (match) {
+          const varName = match[1];
+          const val = match[2]?.trim().replace(/^['"]|['"]$/g, "");
+          if (val && varName.startsWith("GEMINI_API_KEY")) {
+            if (!keys.includes(val)) {
+              keys.push(val);
+            }
           }
         }
       }
-    } catch {
-      // Ignore in environments where fs is restricted
     }
+  } catch {
+    // Ignore in environments where fs is restricted
   }
 
-  if (!apiKey) {
-    throw new Error("GEMINI_API_KEY environment variable is not defined");
-  }
-  return new GoogleGenAI({ apiKey });
+  return keys;
 }
 
 /**
- * Generates an embedding vector for a given query using the configured Gemini model.
+ * Gets primary Google Gen AI client.
+ */
+function getAiClient(): GoogleGenAI {
+  const keys = getAvailableApiKeys();
+  if (keys.length === 0) {
+    throw new Error("GEMINI_API_KEY environment variable is not defined");
+  }
+  return new GoogleGenAI({ apiKey: keys[0] });
+}
+
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms)
+    ),
+  ]);
+}
+
+/**
+ * Generates an embedding vector for a given query using the configured Gemini model with backup key failover.
  */
 export async function embedQuery(query: string): Promise<number[]> {
-  const ai = getAiClient();
-  const response = await ai.models.embedContent({
-    model: EMBEDDING_MODEL,
-    contents: query,
-  });
+  const keys = getAvailableApiKeys();
+  let lastErr: any = null;
 
-  const values = response.embeddings?.[0]?.values;
-  if (!values || values.length === 0) {
-    throw new Error(`Failed to generate embedding for query: "${query}"`);
+  for (const key of keys) {
+    try {
+      const ai = new GoogleGenAI({ apiKey: key });
+      const response = await withTimeout(
+        ai.models.embedContent({
+          model: EMBEDDING_MODEL,
+          contents: query,
+        }),
+        3500,
+        "Embedding"
+      );
+
+      const values = response.embeddings?.[0]?.values;
+      if (values && values.length > 0) {
+        return values;
+      }
+    } catch (err) {
+      lastErr = err;
+      console.warn("Embedding generation with key failed, trying backup if available:", err);
+    }
   }
-  return values;
+
+  throw lastErr || new Error(`Failed to generate embedding for query: "${query}"`);
 }
 
 /**

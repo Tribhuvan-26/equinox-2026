@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { ChatWindow } from "./ChatWindow";
 import {
   animateChatOpen,
@@ -19,10 +20,71 @@ interface ChatbotOverlayProps {
 }
 
 export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOverlayProps) {
+  const pathname = usePathname();
+  const isScrollJourney = pathname === "/";
   const [isOpen, setIsOpen] = useState(initialOpen);
   const [isRendered, setIsRendered] = useState(initialOpen);
+  const [isBubbleVisible, setIsBubbleVisible] = useState(false);
   const windowRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Initial bubble appearance on scroll journey
+  useEffect(() => {
+    if (!isScrollJourney || isOpen) {
+      setIsBubbleVisible(false);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setIsBubbleVisible(true);
+    }, 2500);
+
+    const handleIntroDone = () => {
+      setIsBubbleVisible(true);
+    };
+
+    window.addEventListener("equinox:intro-done", handleIntroDone);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("equinox:intro-done", handleIntroDone);
+    };
+  }, [isScrollJourney, isOpen]);
+
+  // Handle scroll detection and 4-second idle return (only in scroll journey)
+  useEffect(() => {
+    if (!isScrollJourney) return;
+
+    const handleScrollActivity = () => {
+      // Disappear immediately when scrolling starts
+      setIsBubbleVisible(false);
+
+      if (idleTimerRef.current) {
+        clearTimeout(idleTimerRef.current);
+      }
+
+      // Return if user hasn't scrolled for 4 seconds
+      idleTimerRef.current = setTimeout(() => {
+        if (!isOpen && isScrollJourney) {
+          setIsBubbleVisible(true);
+        }
+      }, 4000);
+    };
+
+    window.addEventListener("scroll", handleScrollActivity, { passive: true });
+    window.addEventListener("wheel", handleScrollActivity, { passive: true });
+    window.addEventListener("touchmove", handleScrollActivity, { passive: true });
+
+    return () => {
+      if (idleTimerRef.current) {
+        clearTimeout(idleTimerRef.current);
+      }
+      window.removeEventListener("scroll", handleScrollActivity);
+      window.removeEventListener("wheel", handleScrollActivity);
+      window.removeEventListener("touchmove", handleScrollActivity);
+    };
+  }, [isScrollJourney, isOpen]);
 
   // Handle open/close GSAP animations
   useEffect(() => {
@@ -55,8 +117,33 @@ export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOv
 
   return (
     <div className="equinox-chatbot-root" data-lenis-prevent>
-      {/* Floating Circular Equinox AI Launcher Button */}
-      <div className="fixed right-4 bottom-4 z-[99990] sm:right-6 sm:bottom-6">
+      {/* Floating Circular Equinox AI Launcher Button & Speech Bubble */}
+      <div className="fixed right-4 bottom-4 z-[99990] sm:right-6 sm:bottom-6 flex items-center">
+        {/* Chat Bubble (Scroll Journey idle prompt) */}
+        {!isOpen && isScrollJourney && (
+          <div
+            onClick={toggleOpen}
+            className={`cursor-pointer select-none transition-all duration-300 ease-out mr-3 flex items-center gap-2 rounded-2xl bg-[#0E0E0E] border border-white/15 px-3.5 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.85)] relative ${
+              isBubbleVisible
+                ? "opacity-100 translate-x-0 pointer-events-auto scale-100"
+                : "opacity-0 translate-x-2 pointer-events-none scale-95"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#33FF67] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#33FF67]" />
+              </span>
+              <span className="font-mono text-[11px] sm:text-xs font-semibold tracking-wide text-white/90 whitespace-nowrap">
+                Scroll to explore <span className="text-[#7484FE]">→</span>
+              </span>
+            </div>
+            {/* Tail pointing right towards the launcher button */}
+            <div className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-0 h-0 border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[6px] border-l-white/15" />
+            <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-0 h-0 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[5px] border-l-[#0E0E0E]" />
+          </div>
+        )}
+
         <button
           ref={triggerRef}
           onClick={toggleOpen}
@@ -68,8 +155,8 @@ export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOv
         >
           {/* Active status beacon */}
           {!isOpen && (
-            <span className="absolute top-1 right-1 flex h-2 w-2">
-              <span className="h-full w-full bg-[#33FF67] border border-black animate-pulse" />
+            <span className="absolute top-[16%] right-[16%] flex h-2 w-2">
+              <span className="h-full w-full rounded-full bg-[#33FF67] border border-black animate-pulse" />
             </span>
           )}
 
@@ -77,8 +164,8 @@ export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOv
             <X className="h-6 w-6 text-white stroke-[2.5] sm:h-7 sm:w-7" />
           ) : (
             <Image
-              src="/chatbot-mascot.png"
-              alt="Equinox AI Mascot"
+              src="/chitti-2.0.png"
+              alt="Chitti 2.0 Mascot"
               width={160}
               height={225}
               priority

@@ -29,7 +29,7 @@
 .chatbot-launcher-btn {
   width: 58px;
   height: 58px;
-  border-radius: 0px !important;
+  border-radius: 50% !important;
   background: #161616;
   border: 2.5px solid #ffffff;
   box-shadow: 4px 4px 0px #7484fe;

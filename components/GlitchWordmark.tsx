@@ -76,10 +76,13 @@ export default function GlitchWordmark({ className = "" }: { className?: string 
         stopGlitch();
         return;
       }
+      if (!blueRef.current || !greenRef.current || !paperRef.current || !artRef.current) {
+        return;
+      }
 
       const activeSlices = slices();
       const activeSwaps = swaps();
-      const hard = Math.random() < 0.35; // occasional bigger tear
+      const hard = Math.random() < 0.35 && activeSwaps.length >= 2; // occasional bigger tear
       const reach = hard ? 60 : 26;
 
       activeTl = gsap.timeline({
@@ -92,10 +95,10 @@ export default function GlitchWordmark({ className = "" }: { className?: string 
       activeTl
         .to(blueRef.current, { opacity: 0.9, x: -reach, y: gsap.utils.random(-4, 4), duration: 0.05, ease: step })
         .to(greenRef.current, { opacity: 0.9, x: reach, y: gsap.utils.random(-4, 4), duration: 0.05, ease: step }, "<")
-        .to(paperRef.current, { opacity: hard ? 0.5 : 0, x: gsap.utils.random(-9, 9), y: gsap.utils.random(-6, 6), duration: 0.05, ease: step }, "<")
-        .to(artRef.current, { x: gsap.utils.random(-4, 4), duration: 0.05, ease: step }, "<");
+        .to(paperRef.current, { opacity: hard ? 0.5 : 0, x: gsap.utils.random(-9, 9), y: gsap.utils.random(-6, 6), duration: 0.05, ease: step }, "<");
 
       activeSlices.forEach((slice, i) => {
+        if (!slice) return;
         activeTl?.to(
           slice,
           {
@@ -108,7 +111,7 @@ export default function GlitchWordmark({ className = "" }: { className?: string 
         );
       });
 
-      if (hard) {
+      if (hard && activeSwaps[0] && activeSwaps[1]) {
         activeTl
           .to(activeSwaps[0], { opacity: 1, duration: 0.04, ease: step })
           .to(activeSwaps[0], { opacity: 0, duration: 0.04, ease: step })
@@ -119,10 +122,13 @@ export default function GlitchWordmark({ className = "" }: { className?: string 
           .to(greenRef.current, { x: -reach * 0.6, duration: 0.04, ease: step }, "<");
       }
 
-      activeTl
-        .to([blueRef.current, greenRef.current, paperRef.current], { opacity: 0, x: 0, y: 0, duration: 0.06, ease: step })
-        .to(artRef.current, { x: 0, duration: 0.06, ease: step }, "<")
-        .to(activeSlices, { opacity: 0, x: 0, duration: 0.06, ease: step }, "<");
+      const validPlates = [blueRef.current, greenRef.current, paperRef.current].filter(Boolean);
+      if (validPlates.length > 0) {
+        activeTl.to(validPlates, { opacity: 0, x: 0, y: 0, duration: 0.06, ease: step });
+      }
+      if (activeSlices.length > 0) {
+        activeTl.to(activeSlices, { opacity: 0, x: 0, duration: 0.06, ease: step }, "<");
+      }
     };
 
     // Scroll listener: kills/disables glitch animation immediately upon scroll
@@ -171,6 +177,7 @@ export default function GlitchWordmark({ className = "" }: { className?: string 
         src="/equinox-logo.svg"
         alt="The Equinox 2.0 E-Summit 2K26"
         className="relative h-full w-full object-contain"
+        fetchPriority="high"
         draggable={false}
       />
 

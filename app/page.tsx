@@ -52,7 +52,7 @@ export default function HomePage() {
           ========================================================================= */}
       <section
         id="about"
-        className="relative mx-auto max-w-[1400px] overflow-hidden px-4 py-16 sm:px-8 sm:py-32 md:py-48"
+        className="relative mx-auto max-w-[1400px] overflow-hidden px-4 pt-16 pb-6 sm:px-8 sm:pt-32 sm:pb-8 md:pt-40 md:pb-10"
       >
         <div
           aria-hidden
@@ -169,7 +169,7 @@ export default function HomePage() {
       {/* =========================================================================
           WHAT'S IN STORE (Compete / Create / Connect / Learn)
           ========================================================================= */}
-      <section className="relative mx-auto max-w-[1400px] overflow-hidden px-4 py-16 sm:px-8 sm:py-32">
+      <section className="relative mx-auto max-w-[1400px] overflow-hidden px-4 pt-4 pb-16 sm:px-8 sm:pt-6 sm:pb-24">
         <p className="font-mono text-xs font-black uppercase tracking-widest text-[#33FF67]">
           {whatsInStore.eyebrow}
         </p>

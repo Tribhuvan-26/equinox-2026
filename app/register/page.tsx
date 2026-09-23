@@ -3,11 +3,17 @@ import Link from "next/link";
 import { Calendar, MapPin, Mail, ArrowRight, ArrowLeft } from "lucide-react";
 import { contact, event, registration } from "@/lib/content";
 import { PageTransition } from "../ui";
-import { RegisterForm } from "./RegisterForm";
+import { PayForm } from "./PayForm";
 
 export const metadata: Metadata = {
-  title: `Register - ${event.name} ${event.year}`,
+  title: "Register",
   description: registration.body,
+  alternates: { canonical: "/register" },
+  openGraph: {
+    title: `Register — ${event.name} ${event.edition}`,
+    description: registration.body,
+    url: "/register",
+  },
 };
 
 const details = [
@@ -59,7 +65,7 @@ export default function RegisterPage() {
           </p>
 
           <div className="mt-12 w-full max-w-4xl text-left">
-            <RegisterForm />
+            <PayForm />
           </div>
 
           <div className="mt-16 grid w-full gap-4 sm:grid-cols-3">

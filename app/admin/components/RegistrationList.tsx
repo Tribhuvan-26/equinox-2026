@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { formatTeamNumber } from "@/lib/registration/team-number";
 import type { RegistrationStatus } from "@/lib/registration/types";
 import type { RegistrationWithUrls } from "../AdminDashboard";
 
@@ -8,10 +9,14 @@ export function RegistrationList({
   registrations,
   busyId,
   onSetStatus,
+  onSetTeamStatus,
+  teamCounts,
 }: {
   registrations: RegistrationWithUrls[];
   busyId: string | null;
   onSetStatus: (id: string, status: RegistrationStatus) => void;
+  onSetTeamStatus: (teamId: string, status: RegistrationStatus) => void;
+  teamCounts: Map<string, { total: number; unapproved: number }>;
 }) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -21,16 +26,25 @@ export function RegistrationList({
 
   return (
     <div className="flex flex-col gap-6">
-      {registrations.map((r) => (
+      {registrations.map((r) => {
+        const team = r.team_id ? teamCounts.get(r.team_id) : undefined;
+        const teamBusy = busyId === r.team_id;
+        return (
         <div key={r.id} className="rounded-2xl border border-white/15 bg-black/20 p-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <p className="font-mono text-sm font-bold text-[#33FF67]">
-                {`EQ-${String(r.team_seq).padStart(3, "0")}`} · {r.confirmation_number}
+                {formatTeamNumber(r.team_seq)} · {r.confirmation_number}
               </p>
               <p className="mt-1 text-sm text-[#F7F2F6]/70">
                 Submitted {new Date(r.created_at).toLocaleString("en-IN")}
               </p>
+              {r.teamName && (
+                <p className="mt-1 text-sm font-bold text-[#7484FE]">
+                  Team: {r.teamName}
+                  {r.team_role ? ` · ${r.team_role === "leader" ? "Leader" : "Member"}` : ""}
+                </p>
+              )}
             </div>
             <StatusBadge status={r.status} />
           </div>
@@ -78,24 +92,48 @@ export function RegistrationList({
             </div>
           </div>
 
-          <div className="mt-5 flex gap-3">
+          <div className="mt-5 flex flex-wrap gap-3">
             <button
-              disabled={busyId === r.id || r.status === "approved"}
+              disabled={busyId === r.id || teamBusy || r.status === "approved"}
               onClick={() => onSetStatus(r.id, "approved")}
               className="rounded-lg bg-[#33FF67] px-4 py-2 text-sm font-black text-[#2A2A2A] disabled:cursor-not-allowed disabled:opacity-40"
             >
               Approve
             </button>
             <button
-              disabled={busyId === r.id || r.status === "rejected"}
+              disabled={busyId === r.id || teamBusy || r.status === "rejected"}
               onClick={() => onSetStatus(r.id, "rejected")}
               className="rounded-lg border border-red-400/60 px-4 py-2 text-sm font-black text-red-400 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              Reject
+              Mark Not Approved
             </button>
+
+            {r.team_id && team && team.total > 1 && (
+              <button
+                disabled={busyId !== null || team.unapproved === 0}
+                onClick={() => {
+                  if (
+                    confirm(
+                      `Approve all ${team.total} registrations on "${r.teamName ?? "this team"}"? ` +
+                        `${team.unapproved} still need approving, and each one gets a confirmation email.`
+                    )
+                  ) {
+                    onSetTeamStatus(r.team_id!, "approved");
+                  }
+                }}
+                className="rounded-lg border-2 border-[#33FF67] px-4 py-2 text-sm font-black text-[#33FF67] disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {teamBusy
+                  ? "Approving team..."
+                  : team.unapproved === 0
+                    ? `Whole team approved (${team.total})`
+                    : `Approve whole team (${team.unapproved} of ${team.total})`}
+              </button>
+            )}
           </div>
         </div>
-      ))}
+        );
+      })}
 
       {previewUrl && (
         <div
@@ -129,7 +167,7 @@ function StatusBadge({ status }: { status: RegistrationStatus }) {
   const labels: Record<RegistrationStatus, string> = {
     pending: "Pending Verification",
     approved: "Approved",
-    rejected: "Rejected",
+    rejected: "Not Approved",
   };
   return (
     <span className={`rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-wider ${styles[status]}`}>

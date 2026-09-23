@@ -4,6 +4,8 @@
 
 import { motion, useMotionValue, animate } from "framer-motion"
 import { useEffect, useMemo, useRef, useState, useCallback } from "react"
+import { urlForImage } from "@/sanity/lib/image"
+import { sanityAssets } from "@/lib/sanity-assets"
 
 export type GridItem = {
     image?: { src?: string; srcSet?: string; alt?: string }
@@ -178,8 +180,17 @@ function GridCell({
     handlePointerUp: (e: React.PointerEvent, item: GridItem, index: number) => void
 }) {
     const rawSrc = item?.image?.src
+    let sanityUrl = rawSrc;
+    if (rawSrc && rawSrc.startsWith('/')) {
+        const assetKey = rawSrc.replace(/^\//, ''); // e.g. equinox-gallery/photo-1.jpg
+        const sanityId = sanityAssets[assetKey];
+        if (sanityId) {
+            sanityUrl = urlForImage(sanityId).auto('format').fit('max').url();
+        }
+    }
+
     const alt = item?.alt ?? item?.image?.alt ?? item?.title ?? `Event Photo ${index + 1}`
-    const [currentSrc, setCurrentSrc] = useState<string | undefined>(rawSrc)
+    const [currentSrc, setCurrentSrc] = useState<string | undefined>(sanityUrl)
     const [hasError, setHasError] = useState(false)
 
     useEffect(() => {

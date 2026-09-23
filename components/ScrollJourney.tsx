@@ -5,8 +5,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import Link from "next/link";
-import { ArrowRight, Mouse } from "lucide-react";
-import Globe from "./Globe";
+import { ArrowRight } from "lucide-react";
+import dynamic from "next/dynamic";
 import { InstitutionalHeader } from "../app/EventGraphics";
 import { subEvents } from "@/lib/content";
 import SpiderIntro from "./SpiderIntro";
@@ -23,58 +23,13 @@ import {
   PlanetGradients,
 } from "./JourneyPlanets";
 
+/* three + d3-geo (~1.5MB) stay out of the initial bundle. The chunk is
+   prefetched on mount (see ScrollJourney) so it loads during the intro loader,
+   before the globe is first rendered. */
+const loadGlobe = () => import("./Globe");
+const Globe = dynamic(loadGlobe, { ssr: false });
+
 gsap.registerPlugin(ScrollTrigger);
-
-// Prominent, beautiful twinkling stars with deterministic coordinates and asynchronous phases
-const TWINKLE_STARS = [
-  // Top quadrant
-  { x: 5, y: 11, size: 4.5, color: "#F7F2F6", duration: 3.2, delay: -0.8, type: "dot" as const },
-  { x: 13, y: 21, size: 6.0, color: "#7484FE", duration: 4.1, delay: -2.3, type: "dot" as const },
-  { x: 22, y: 8, size: 3.5, color: "#F7F2F6", duration: 2.8, delay: -1.4, type: "dot" as const },
-  { x: 31, y: 17, size: 16.0, color: "#F7F2F6", duration: 5.2, delay: -3.7, type: "sparkle" as const },
-  { x: 41, y: 10, size: 4.5, color: "#33FF67", duration: 3.6, delay: -0.5, type: "dot" as const },
-  { x: 52, y: 6, size: 5.2, color: "#F7F2F6", duration: 4.4, delay: -1.9, type: "dot" as const },
-  { x: 63, y: 15, size: 3.8, color: "#7484FE", duration: 3.0, delay: -2.7, type: "dot" as const },
-  { x: 74, y: 9, size: 18.0, color: "#F7F2F6", duration: 4.8, delay: -0.9, type: "sparkle" as const },
-  { x: 83, y: 19, size: 4.5, color: "#F7F2F6", duration: 3.5, delay: -3.1, type: "dot" as const },
-  { x: 93, y: 12, size: 5.2, color: "#33FF67", duration: 4.2, delay: -1.6, type: "dot" as const },
-
-  // Upper-middle band
-  { x: 4, y: 34, size: 5.2, color: "#F7F2F6", duration: 3.9, delay: -2.1, type: "dot" as const },
-  { x: 11, y: 43, size: 3.5, color: "#7484FE", duration: 2.6, delay: -0.7, type: "dot" as const },
-  { x: 20, y: 30, size: 18.0, color: "#7484FE", duration: 5.5, delay: -4.0, type: "sparkle" as const },
-  { x: 35, y: 37, size: 4.5, color: "#F7F2F6", duration: 3.3, delay: -1.2, type: "dot" as const },
-  { x: 47, y: 28, size: 3.8, color: "#F7F2F6", duration: 4.6, delay: -3.4, type: "dot" as const },
-  { x: 57, y: 38, size: 6.0, color: "#F7F2F6", duration: 3.7, delay: -0.4, type: "dot" as const },
-  { x: 68, y: 32, size: 4.2, color: "#33FF67", duration: 4.0, delay: -2.8, type: "dot" as const },
-  { x: 78, y: 41, size: 3.5, color: "#F7F2F6", duration: 3.1, delay: -1.5, type: "dot" as const },
-  { x: 87, y: 31, size: 17.0, color: "#F7F2F6", duration: 5.0, delay: -2.2, type: "sparkle" as const },
-  { x: 95, y: 39, size: 4.5, color: "#7484FE", duration: 3.8, delay: -0.3, type: "dot" as const },
-
-  // Center / Lower-middle band
-  { x: 7, y: 55, size: 3.5, color: "#F7F2F6", duration: 3.4, delay: -1.8, type: "dot" as const },
-  { x: 17, y: 61, size: 6.0, color: "#33FF67", duration: 4.5, delay: -3.5, type: "dot" as const },
-  { x: 26, y: 51, size: 4.5, color: "#F7F2F6", duration: 2.9, delay: -0.6, type: "dot" as const },
-  { x: 37, y: 58, size: 3.8, color: "#7484FE", duration: 4.3, delay: -2.4, type: "dot" as const },
-  { x: 46, y: 50, size: 18.0, color: "#F7F2F6", duration: 5.8, delay: -4.5, type: "sparkle" as const },
-  { x: 55, y: 62, size: 4.5, color: "#F7F2F6", duration: 3.2, delay: -1.1, type: "dot" as const },
-  { x: 66, y: 53, size: 5.2, color: "#7484FE", duration: 4.1, delay: -2.9, type: "dot" as const },
-  { x: 75, y: 60, size: 3.5, color: "#F7F2F6", duration: 2.7, delay: -0.8, type: "dot" as const },
-  { x: 84, y: 52, size: 6.0, color: "#F7F2F6", duration: 4.7, delay: -3.9, type: "dot" as const },
-  { x: 93, y: 63, size: 4.2, color: "#33FF67", duration: 3.5, delay: -1.7, type: "dot" as const },
-
-  // Bottom quadrant
-  { x: 4, y: 77, size: 16.0, color: "#F7F2F6", duration: 4.9, delay: -2.0, type: "sparkle" as const },
-  { x: 14, y: 87, size: 4.2, color: "#F7F2F6", duration: 3.3, delay: -0.7, type: "dot" as const },
-  { x: 22, y: 73, size: 5.2, color: "#7484FE", duration: 4.2, delay: -3.3, type: "dot" as const },
-  { x: 32, y: 84, size: 3.5, color: "#F7F2F6", duration: 2.8, delay: -1.3, type: "dot" as const },
-  { x: 43, y: 75, size: 4.8, color: "#33FF67", duration: 3.9, delay: -2.5, type: "dot" as const },
-  { x: 53, y: 88, size: 3.5, color: "#F7F2F6", duration: 4.5, delay: -4.1, type: "dot" as const },
-  { x: 62, y: 78, size: 19.0, color: "#7484FE", duration: 5.4, delay: -1.0, type: "sparkle" as const },
-  { x: 71, y: 85, size: 4.5, color: "#F7F2F6", duration: 3.1, delay: -2.6, type: "dot" as const },
-  { x: 82, y: 74, size: 5.2, color: "#F7F2F6", duration: 4.0, delay: -0.4, type: "dot" as const },
-  { x: 92, y: 86, size: 3.5, color: "#7484FE", duration: 3.6, delay: -3.0, type: "dot" as const },
-];
 
 export default function ScrollJourney() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -102,8 +57,12 @@ export default function ScrollJourney() {
   const indicatorEventRef = useRef<HTMLSpanElement>(null);
   const lenisRef = useRef<Lenis | null>(null);
   const journeyScaleRef = useRef(0.65);
+  const targetScreenXRef = useRef(420);
 
   const [isGlobeReady, setIsGlobeReady] = useState(false);
+  useEffect(() => {
+    void loadGlobe();
+  }, []);
   // Globe keeps rendering every frame while it spins; it is a few pixels wide once
   // the journey starts, so pause it there and give those frames to the scroll.
   const [isGlobePaused, setIsGlobePaused] = useState(false);
@@ -150,15 +109,10 @@ export default function ScrollJourney() {
   useEffect(() => {
     if (showLoader) return;
     let currentIntensity = 0;
-    let lastScrollY = typeof window !== "undefined" ? window.scrollY : 0;
 
     const flameTick = () => {
-      const currentScrollY = window.scrollY;
-      const scrollDelta = Math.abs(currentScrollY - lastScrollY);
-      lastScrollY = currentScrollY;
-
       const lenisVelocity = Math.abs(lenisRef.current?.velocity || 0);
-      const effectiveSpeed = Math.max(lenisVelocity, scrollDelta);
+      const effectiveSpeed = lenisVelocity;
 
       // Thresholds:
       // Slow/normal scroll has effectiveSpeed < 10 -> 0 ignition.
@@ -178,6 +132,11 @@ export default function ScrollJourney() {
         currentIntensity = 0;
       }
 
+      // Optimization: Only update DOM if not idle
+      if (currentIntensity === 0 && targetIntensity === 0 && (flameTrailRef.current?.style.opacity === "0" || !flameTrailRef.current)) {
+        return;
+      }
+
       if (flameTrailRef.current) {
         if (currentIntensity > 0) {
           // Dynamic flame flare with natural high-speed plasma jitter
@@ -189,7 +148,7 @@ export default function ScrollJourney() {
 
           flameTrailRef.current.style.transform = `scale3d(${scaleX.toFixed(3)}, ${scaleY.toFixed(3)}, 1)`;
           flameTrailRef.current.style.opacity = opacity.toFixed(3);
-        } else {
+        } else if (flameTrailRef.current.style.opacity !== "0") {
           flameTrailRef.current.style.opacity = "0";
         }
       }
@@ -197,7 +156,9 @@ export default function ScrollJourney() {
       if (idleFlameRef.current) {
         // Idle pilot flame is subtle at rest and gently yields when the main afterburner ignites
         const idleOpacity = Math.max(0, 0.75 - currentIntensity * 1.5);
-        idleFlameRef.current.style.opacity = idleOpacity.toFixed(3);
+        if (idleFlameRef.current.style.opacity !== idleOpacity.toFixed(3)) {
+          idleFlameRef.current.style.opacity = idleOpacity.toFixed(3);
+        }
       }
     };
 
@@ -237,6 +198,10 @@ export default function ScrollJourney() {
     let rocketDirection: 1 | -1 = 1;
     const turnRotation = { value: 0 };
     let currentRocketState = { x: 360, y: 690, baseAngle: 0, scale: 1, opacity: 1 };
+    
+    // Cache for DOM reads/writes to prevent thrashing
+    const pointerEventsCache = new Map<number, string>();
+    let lastHUDTitle = "";
 
     const applyRocketTransform = () => {
       if (!rocketRef.current) return;
@@ -353,38 +318,73 @@ export default function ScrollJourney() {
         scale: blackHoleScale,
         opacity: blackHoleOpacity,
       };
-      applyRocketTransform();
 
       // Scale is recomputed only on resize (updateHeaderSpace); reading it from a ref
       // keeps this scroll callback write-only, so it never forces a style flush per frame.
       const currentScale = journeyScaleRef.current;
       const inverseScale = 1 / currentScale;
 
-      const targetScreenX = Math.min(window.innerWidth * 0.28, 420);
-      const unscaledTargetScreenX = targetScreenX / currentScale;
-
+      const unscaledTargetScreenX = targetScreenXRef.current / currentScale;
       const worldX = pt.x > unscaledTargetScreenX ? -(pt.x - unscaledTargetScreenX) : 0;
-      worldRef.current.style.transform = `translate3d(${worldX}px, 0, 0)`;
 
       let currentEventTitle = "";
-      PLANET_LAYOUTS.forEach((layout, idx) => {
+      
+      // Read Phase: Calculate all target states without mutating DOM
+      const cardUpdates = PLANET_LAYOUTS.map((layout, idx) => {
         const cardEl = cardRefs.current[idx];
-        if (!cardEl) return;
+        if (!cardEl) return null;
         const dist = Math.abs(pt.x - layout.x);
+        
+        let opacity = "0";
+        let transformY = 20;
+        let pointerEvents = "none";
+        
         if (dist < 480) {
           const t = Math.max(0, 1 - dist / 420);
-          cardEl.style.opacity = `${t}`;
-          cardEl.style.transform = `translate3d(0, ${(1 - t) * 20}px, 0) scale3d(${inverseScale}, ${inverseScale}, 1)`;
-          cardEl.style.pointerEvents = t > 0.4 ? "auto" : "none";
+          opacity = `${t}`;
+          transformY = (1 - t) * 20;
+          pointerEvents = t > 0.4 ? "auto" : "none";
           if (t > 0.3) currentEventTitle = `${layout.badge} · ${subEvents[idx]?.name || ""}`;
-        } else if (cardEl.style.opacity !== "0") {
-          cardEl.style.opacity = "0";
-          cardEl.style.pointerEvents = "none";
+        }
+        
+        return {
+          cardEl,
+          idx,
+          opacity,
+          transformY,
+          pointerEvents,
+          visibility: dist < 1200 ? "visible" : "hidden",
+          isActive: dist < 480
+        };
+      });
+
+      // Write Phase: Apply all mutations at once
+      applyRocketTransform();
+      worldRef.current.style.transform = `translate3d(${worldX}px, 0, 0)`;
+
+      cardUpdates.forEach((update) => {
+        if (!update) return;
+        const { cardEl, idx, opacity, transformY, pointerEvents, visibility, isActive } = update;
+        
+        if (isActive || cardEl.style.opacity !== "0") {
+          cardEl.style.opacity = opacity;
+          cardEl.style.transform = `translate3d(0, ${transformY}px, 0) scale3d(${inverseScale}, ${inverseScale}, 1)`;
+        }
+        
+        if (pointerEventsCache.get(idx) !== pointerEvents) {
+          cardEl.style.pointerEvents = pointerEvents;
+          pointerEventsCache.set(idx, pointerEvents);
+        }
+
+        // Apply visibility for performance optimization
+        if (cardEl.style.visibility !== visibility) {
+          cardEl.style.visibility = visibility;
         }
       });
 
-      if (indicatorEventRef.current && currentEventTitle) {
+      if (indicatorEventRef.current && currentEventTitle !== lastHUDTitle) {
         indicatorEventRef.current.textContent = currentEventTitle;
+        lastHUDTitle = currentEventTitle;
       }
     };
 
@@ -567,28 +567,16 @@ export default function ScrollJourney() {
         // Dynamically scale the horizontal journey to fit the remaining viewport
         // 48px of breathing room so no planet ring or badge ever rides the bottom edge.
         const availableHeight = window.innerHeight - headerSpace - 48;
-        // Measure what the world actually occupies instead of hard-coding it: the
-        // planets, their rings, badges and the launch site all move when the layout
-        // changes, and a stale constant either crops them or wastes half the screen.
-        const worldSvg = worldRef.current?.querySelector("#journey-content");
-        let contentTop = 0;
-        let activeHeight = 1055;
-        if (worldSvg) {
-          try {
-            const box = (worldSvg as SVGGraphicsElement).getBBox();
-            if (box.height > 0) {
-              contentTop = box.y;
-              activeHeight = box.height;
-            }
-          } catch {
-            // getBBox throws while the SVG is still hidden; the fallback above holds.
-          }
-        }
-        // Fill the height that is actually free. The old 0.65 cap left the world stuck in
-        // the top half of tall or zoomed-out windows, with a dead band underneath.
+        // Use pre-calculated known bounds instead of synchronous getBBox()
+        // The highest element is Death Star/Space Station (~50px), the lowest is Earth Launch (~980px).
+        // Using these static known bounds completely avoids a costly synchronous layout thrash on resize.
+        let contentTop = 50;
+        let activeHeight = 1000;
         const journeyScale = Math.max(0.3, Math.min(availableHeight / activeHeight, 1));
         document.documentElement.style.setProperty('--journey-scale', `${journeyScale}`);
         journeyScaleRef.current = journeyScale;
+        
+        targetScreenXRef.current = Math.min(window.innerWidth * 0.28, 420);
 
         // Centre the measured content in that free height instead of pinning the
         // world box (whose empty top band is not content) to the top.
@@ -660,71 +648,7 @@ export default function ScrollJourney() {
           <NebulaBackground />
           <ContinuousComet />
 
-          {/* ── SPARSE STAR FIELD WITH MINIMAL TWINKLING STARS ──────────────── */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
-            {/* Faint static backdrop pattern */}
-            <svg width="100%" height="100%" className="absolute inset-0">
-              <pattern id="static-stars" x="0" y="0" width="180" height="180" patternUnits="userSpaceOnUse">
-                <circle fill="#F7F2F6" cx="28" cy="22" r="2.2" opacity="0.45" />
-                <circle fill="#F7F2F6" cx="115" cy="48" r="2.8" opacity="0.55" />
-                <circle fill="#F7F2F6" cx="57" cy="108" r="2.0" opacity="0.40" />
-                <circle fill="#7484FE" cx="138" cy="125" r="2.6" opacity="0.50" />
-                <circle fill="#33FF67" cx="88" cy="18" r="2.2" opacity="0.45" />
-                <circle fill="#F7F2F6" cx="14" cy="70" r="2.4" opacity="0.45" />
-                <circle fill="#F7F2F6" cx="155" cy="78" r="2.5" opacity="0.50" />
-              </pattern>
-              <rect x="0" y="0" width="100%" height="100%" fill="url(#static-stars)" />
-            </svg>
 
-            {/* Prominent twinkling stars layer */}
-            <div className="absolute inset-0">
-              {TWINKLE_STARS.map((star, i) => {
-                if (star.type === "sparkle") {
-                  return (
-                    <div
-                      key={i}
-                      className="star-anim-sparkle absolute pointer-events-none"
-                      style={{
-                        left: `${star.x}%`,
-                        top: `${star.y}%`,
-                        width: `${star.size}px`,
-                        height: `${star.size}px`,
-                        animationDuration: `${star.duration}s`,
-                        animationDelay: `${star.delay}s`,
-                        filter: `drop-shadow(0 0 6px ${star.color}) drop-shadow(0 0 12px ${star.color}99)`,
-                      }}
-                    >
-                      <svg viewBox="0 0 10 10" width={star.size} height={star.size} fill="none">
-                        <path
-                          d="M 5 0 Q 5 5 10 5 Q 5 5 5 10 Q 5 5 0 5 Q 5 5 5 0 Z"
-                          fill={star.color}
-                          opacity="0.95"
-                        />
-                      </svg>
-                    </div>
-                  );
-                }
-
-                return (
-                  <div
-                    key={i}
-                    className={i % 2 === 0 ? "star-anim-twinkle absolute pointer-events-none" : "star-anim-subtle absolute pointer-events-none"}
-                    style={{
-                      left: `${star.x}%`,
-                      top: `${star.y}%`,
-                      width: `${star.size}px`,
-                      height: `${star.size}px`,
-                      backgroundColor: star.color,
-                      borderRadius: "50%",
-                      boxShadow: `0 0 ${Math.round(star.size * 1.5)}px ${star.color}, 0 0 ${Math.round(star.size * 3)}px ${star.color}aa`,
-                      animationDuration: `${star.duration}s`,
-                      animationDelay: `${star.delay}s`,
-                    }}
-                  />
-                );
-              })}
-            </div>
-          </div>
 
           {/* ================================================================
             INSTITUTIONAL HEADER (NavBar area) — sticky to journey section
@@ -759,23 +683,21 @@ export default function ScrollJourney() {
                 zIndex: 3, // Sit alongside the text, not behind it
               }}
             >
-              {!showLoader && (
-                <Globe
-                  isPaused={isGlobePaused}
-                  onReady={handleGlobeReady}
-                  speed={2}
-                  dots={
-                    isGlobePaused
-                      ? { color: "#ffffff", size: 16, density: 4, allDots: false }
-                      : { color: "#ffffff", size: 5, density: 8, allDots: false }
-                  }
-                  oceanColor="#0a0a0a"
-                  graticuleColor="#333333"
-                  outlineColor="#eeeeee"
-                  showGrid={true}
-                  showOutline={true}
-                />
-              )}
+              <Globe
+                isPaused={isGlobePaused}
+                onReady={handleGlobeReady}
+                speed={2}
+                dots={
+                  isGlobePaused
+                    ? { color: "#ffffff", size: 16, density: 4, allDots: false }
+                    : { color: "#ffffff", size: 5, density: 8, allDots: false }
+                }
+                oceanColor="#0a0a0a"
+                graticuleColor="#333333"
+                outlineColor="#eeeeee"
+                showGrid={true}
+                showOutline={true}
+              />
             </div>
 
             {/* Massive "EQUINOX" HTML text split into parts */}
@@ -803,7 +725,7 @@ export default function ScrollJourney() {
               className="relative flex flex-col items-center gap-4 pointer-events-none"
               style={{ zIndex: 2 }}
             >
-              <h2 className="font-sans text-2xl font-bold tracking-tight text-white md:text-3xl lg:text-4xl drop-shadow-md">
+              <h2 className="max-w-full px-4 text-center font-sans text-[5vw] font-bold tracking-tight text-white sm:text-2xl md:text-3xl lg:text-4xl drop-shadow-md">
                 #Where<span className="text-[#7484FE]">Passion</span>Meets<span className="text-[#33FF67]">Perseverance</span>
               </h2>
             </div>
@@ -818,21 +740,7 @@ export default function ScrollJourney() {
             className="absolute left-0 right-0 bottom-0 pointer-events-none hidden md:block"
             style={{ top: "var(--header-space, 200px)", opacity: 0, zIndex: 10, overflow: "hidden" }}
           >
-            {/* Side scroll indicator */}
-            <div
-              ref={scrollIndicatorRef}
-              className="absolute right-6 bottom-28 z-20 hidden md:flex items-center gap-3 rounded-full border border-white/10 bg-[#1A1A1A] px-4 py-2 opacity-0 shadow-lg"
-            >
-              <Mouse className="h-4 w-4 text-[#33FF67] animate-bounce" />
-              <div className="text-left">
-                <span className="block font-mono text-[9px] font-black uppercase tracking-widest text-[#F7F2F6]">
-                  Scroll Down To Move Left
-                </span>
-                <span ref={indicatorEventRef} className="block font-mono text-[8px] font-medium tracking-wider text-[#7484FE]">
-                  Journey through 10 Events
-                </span>
-              </div>
-            </div>
+
 
             {/* Scaler Wrapper: dynamically shrinks world to fit available height */}
             <div
@@ -1419,13 +1327,14 @@ export default function ScrollJourney() {
                     <div
                       key={ev.id}
                       ref={(el) => { cardRefs.current[idx] = el; }}
-                      className="absolute opacity-0 rounded-[28px] p-1.5 bg-[#0E0E0E] border border-white/[0.10] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] pointer-events-none"
+                      className="absolute opacity-0 rounded-[28px] p-1.5 bg-[#0E0E0E] border border-white/[0.10] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] pointer-events-none will-change-transform"
                       style={{
                         left: `${layout.x + 220}px`,
                         top: `${layout.cardTop}px`,
                         width: "430px",
                         transform: "scale(calc(1 / var(--journey-scale, 0.65)))",
-                        transformOrigin: "left center"
+                        transformOrigin: "left center",
+                        contain: "paint layout"
                       }}
                     >
                       {/* Inner core: solid dark panel (no backdrop-filter — it repainted every

@@ -554,14 +554,24 @@ function Globe({
                 let landFeatures = cachedLandFeatures;
                 if (!landFeatures) {
                     const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 3000);
-                    const response = await fetch(
-                        "https://raw.githubusercontent.com/martynafford/natural-earth-geojson/refs/heads/master/50m/physical/ne_50m_land.json",
-                        { signal: controller.signal }
-                    );
+                    const timeoutId = setTimeout(() => controller.abort(), 4000);
+                    try {
+                        const localRes = await fetch("/ne_50m_land.json", { signal: controller.signal });
+                        if (localRes.ok) {
+                            landFeatures = await localRes.json();
+                        }
+                    } catch (e) {
+                        // ignore local fetch error
+                    }
+                    if (!landFeatures) {
+                        const response = await fetch(
+                            "https://raw.githubusercontent.com/martynafford/natural-earth-geojson/refs/heads/master/50m/physical/ne_50m_land.json",
+                            { signal: controller.signal }
+                        );
+                        if (!response.ok) throw new Error("Failed to load land data");
+                        landFeatures = await response.json();
+                    }
                     clearTimeout(timeoutId);
-                    if (!response.ok) throw new Error("Failed to load land data");
-                    landFeatures = await response.json();
                     cachedLandFeatures = landFeatures;
                 }
 
@@ -1011,8 +1021,13 @@ function Globe({
 
         const raycaster = new Raycaster();
         const mouse = new Vector2();
+        let lastMoveTime = 0;
         const handleMouseMove = (event: MouseEvent) => {
-            if (!stopOnHover) return;
+            if (!stopOnHover || isPausedRef.current) return;
+            const now = Date.now();
+            if (now - lastMoveTime < 50) return; // Throttle to ~20Hz
+            lastMoveTime = now;
+            
             const rect = canvas.getBoundingClientRect();
             mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
             mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;

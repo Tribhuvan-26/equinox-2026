@@ -1,7 +1,6 @@
--- Equinox 2026 pass registrations (team-based, flat ₹869/participant flow).
--- Named "pass_registrations" deliberately — this project's Supabase instance
--- already has a separate, unrelated "registrations" table (solo/duo/trio/quad
--- event passes with its own schema and existing data). Do not merge the two.
+-- Equinox 2026 pass registrations (team-based, flat ₹769/participant flow).
+-- Named "pass_registrations" because this Supabase project once held an
+-- unrelated prototype "registrations" table (dropped in 06-drop-legacy-registrations.sql).
 --
 -- Run this once in the Supabase SQL Editor (Dashboard → SQL Editor → New query).
 -- All reads/writes go through server-side code using the service-role key, so

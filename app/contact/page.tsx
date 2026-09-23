@@ -4,7 +4,19 @@ import {
   PageTransition,
   SectionHeading,
 } from "../ui";
+import type { Metadata } from "next";
 import { board, contact, event } from "@/lib/content";
+
+export const metadata: Metadata = {
+  title: "Contact",
+  description: `Reach the ${event.host} team about ${event.name} ${event.edition}: ${contact.email}. ${event.venueFull}`,
+  alternates: { canonical: "/contact" },
+  openGraph: {
+    title: `Contact — ${event.name} ${event.edition}`,
+    description: `Questions about ${event.name} ${event.edition}? Email ${contact.email}.`,
+    url: "/contact",
+  },
+};
 
 /* Same shape as About(): eyebrow/heading up top, an editorial lead paragraph,
    then the particulars — here the particulars are people instead of facts,

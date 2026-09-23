@@ -138,8 +138,8 @@ export function ChatWindow({ onClose, onEventSelect }: ChatWindowProps) {
         <div className="flex items-center gap-2.5">
           <div className="flex h-8.5 w-8.5 items-center justify-center overflow-hidden rounded-none border-2 border-[#7484FE] bg-[#101014] shadow-[2px_2px_0px_#000000]">
             <Image
-              src="/chatbot-mascot.png"
-              alt="Equinox Mascot"
+              src="/chitti-2.0.png"
+              alt="Chitti 2.0 Mascot"
               width={64}
               height={90}
               className="h-[88%] w-auto object-contain"

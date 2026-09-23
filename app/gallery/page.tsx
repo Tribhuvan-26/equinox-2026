@@ -4,9 +4,17 @@ import { ArrowLeft, Sparkles, Ticket } from "lucide-react";
 import GallerySection from "@/components/GallerySection";
 import { event } from "@/lib/content";
 
+const galleryDescription = `Photos and memories from previous editions of ${event.name} and CIE MLRIT summits.`;
+
 export const metadata: Metadata = {
-  title: `Previous Event Gallery — ${event.name} ${event.edition}`,
-  description: `Browse photos and memories from previous editions of ${event.name} and CIE MLRIT summits. Drop your photos into public/gallery to display them live.`,
+  title: "Gallery",
+  description: galleryDescription,
+  alternates: { canonical: "/gallery" },
+  openGraph: {
+    title: `Previous Event Gallery — ${event.name} ${event.edition}`,
+    description: galleryDescription,
+    url: "/gallery",
+  },
 };
 
 export default function GalleryPage() {

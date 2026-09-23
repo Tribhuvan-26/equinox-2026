@@ -35,7 +35,7 @@ export function RegistrationChart({ registrations }: { registrations: Registrati
   const statusData = [
     { name: "Approved", value: registrations.filter((r) => r.status === "approved").length, color: "#33FF67" },
     { name: "Pending", value: registrations.filter((r) => r.status === "pending").length, color: "#facc15" },
-    { name: "Rejected", value: registrations.filter((r) => r.status === "rejected").length, color: "#ef4444" },
+    { name: "Not Approved", value: registrations.filter((r) => r.status === "rejected").length, color: "#ef4444" },
   ].filter((d) => d.value > 0);
 
   return (

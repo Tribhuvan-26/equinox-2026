@@ -5,11 +5,27 @@ const COOKIE_NAME = "equinox_admin_session";
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000; // 12 hours
 
 function secret(): string {
-  return process.env.ADMIN_SESSION_SECRET || "equinox-admin-secret-dev-2026";
+  const configured = process.env.ADMIN_SESSION_SECRET;
+  if (configured) return configured;
+  // Never fall back to a value that lives in the repo: anyone could read it and
+  // sign their own session cookie. Missing secret = no admin sessions at all.
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("ADMIN_SESSION_SECRET is not set; refusing to sign admin sessions.");
+  }
+  return "equinox-admin-secret-dev-2026";
+}
+
+/**
+ * Sessions are keyed on the secret *and* the current password, so rotating
+ * ADMIN_PASSWORD immediately invalidates every cookie issued before it.
+ */
+function signingKey(): string {
+  const passwordFingerprint = crypto.createHash("sha256").update(process.env.ADMIN_PASSWORD ?? "").digest("hex");
+  return `${secret()}:${passwordFingerprint}`;
 }
 
 function sign(payload: string): string {
-  return crypto.createHmac("sha256", secret()).update(payload).digest("hex");
+  return crypto.createHmac("sha256", signingKey()).update(payload).digest("hex");
 }
 
 function issueToken(): string {
@@ -23,7 +39,15 @@ function verifyToken(token: string | undefined): boolean {
   const [payload, signature] = token.split(".");
   if (!payload || !signature) return false;
 
-  const expected = sign(payload);
+  let expected: string;
+  try {
+    expected = sign(payload);
+  } catch (err) {
+    // Misconfigured server: reject rather than let anyone through.
+    console.error("[admin] cannot verify session", err);
+    return false;
+  }
+
   const a = Buffer.from(signature);
   const b = Buffer.from(expected);
   if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return false;

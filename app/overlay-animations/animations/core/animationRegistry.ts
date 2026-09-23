@@ -2,23 +2,37 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { SpotlightAnimation } from "../events/Spotlight/SpotlightAnimation";
-import { StartupPolyAnimation } from "../events/StartupPoly/StartupPolyAnimation";
-import { IplAuctionAnimation } from "../events/IplAuction/IplAuctionAnimation";
-import { HustleManiaAnimation } from "../events/HustleMania/HustleManiaAnimation";
-import { CrossroadsAnimation } from "../events/Crossroads/CrossroadsAnimation";
-import { PitchDeckAnimation } from "../events/PitchDeck/PitchDeckAnimation";
-import { StartupExpoAnimation } from "../events/StartupExpo/StartupExpoAnimation";
-import { BrandBattlesAnimation } from "../events/BrandBattles/BrandBattlesAnimation";
-import { createPlaceholderAnimation } from "../events/Placeholder/PlaceholderAnimation";
-import { ECellMeetAnimation } from "../events/ECellMeet/ECellMeetAnimation";
-import { InternshipDriveAnimation } from "../events/InternshipDrive/InternshipDriveAnimation";
+import dynamic from "next/dynamic";
+import type { ComponentType } from "react";
 import type {
   AnimationRegistry,
   AnimationTriggerPayload,
   AnimationComponentProps,
   AnimationEventKey,
 } from "./animationTypes";
+
+/* Each overlay is a big SVG/GSAP scene that only plays on demand. Loading them
+   lazily keeps ~10k lines out of the root-layout bundle every page pays for. */
+const lazyAnimation = (
+  load: () => Promise<{ default: ComponentType<AnimationComponentProps> }>
+) => dynamic(load, { ssr: false });
+
+const SpotlightAnimation = lazyAnimation(() => import("../events/Spotlight/SpotlightAnimation"));
+const StartupPolyAnimation = lazyAnimation(() => import("../events/StartupPoly/StartupPolyAnimation"));
+const IplAuctionAnimation = lazyAnimation(() => import("../events/IplAuction/IplAuctionAnimation"));
+const HustleManiaAnimation = lazyAnimation(() => import("../events/HustleMania/HustleManiaAnimation"));
+const CrossroadsAnimation = lazyAnimation(() => import("../events/Crossroads/CrossroadsAnimation"));
+const PitchDeckAnimation = lazyAnimation(() =>
+  import("../events/PitchDeck/PitchDeckAnimation").then((m) => ({ default: m.PitchDeckAnimation }))
+);
+const StartupExpoAnimation = lazyAnimation(() =>
+  import("../events/StartupExpo/StartupExpoAnimation").then((m) => ({ default: m.StartupExpoAnimation }))
+);
+const BrandBattlesAnimation = lazyAnimation(() =>
+  import("../events/BrandBattles/BrandBattlesAnimation").then((m) => ({ default: m.BrandBattlesAnimation }))
+);
+const ECellMeetAnimation = lazyAnimation(() => import("../events/ECellMeet/ECellMeetAnimation"));
+const InternshipDriveAnimation = lazyAnimation(() => import("../events/InternshipDrive/InternshipDriveAnimation"));
 
 /**
  * Official registry mapping event keys to their respective overlay components.
@@ -163,6 +177,31 @@ if (typeof window !== "undefined") {
 }
 
 /**
+ * The scenes are lazy chunks. If one fails to load (flaky network, stale chunk
+ * hash after a deploy) or throws, drop the overlay instead of letting the error
+ * unmount the whole root layout.
+ */
+class OverlayErrorBoundary extends React.Component<
+  { onError: () => void; children?: React.ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  componentDidCatch(err: unknown) {
+    console.error("[OverlayAnimations] overlay failed to render:", err);
+    this.props.onError();
+  }
+
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
+/**
  * OverlayAnimationHost
  * Renders the currently active overlay animation at the root of the viewport.
  */
@@ -171,14 +210,10 @@ export const OverlayAnimationHost: React.FC = () => {
   const [playKey, setPlayKey] = useState<number>(0);
   const [isDismissed, setIsDismissed] = useState<boolean>(false);
 
-  useEffect(() => {
-    console.log("[OverlayAnimations] OverlayAnimationHost mounted at root layout!");
-  }, []);
 
   const lastTriggerRef = useRef<{ event: string; time: number } | null>(null);
 
   const handleTrigger = useCallback((payload: AnimationTriggerPayload) => {
-    console.log("[OverlayAnimations] OverlayAnimationHost received trigger:", payload);
     if (payload.type === "event" && payload.event) {
       const now = Date.now();
       if (
@@ -216,6 +251,10 @@ export const OverlayAnimationHost: React.FC = () => {
   const handleComplete = useCallback(() => {
     setActiveEvent(null);
     setIsDismissed(false);
+
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("equinox:animation-complete"));
+    }
   }, []);
 
   const handleDismiss = useCallback(() => {
@@ -233,12 +272,15 @@ export const OverlayAnimationHost: React.FC = () => {
 
   const ActiveComponent = entry.Component;
 
-  return React.createElement(ActiveComponent, {
-    key: `${activeEvent}-${playKey}`,
-    onComplete: handleComplete,
-    isDismissed: isDismissed,
-    onDismiss: handleDismiss,
-  });
+  return React.createElement(
+    OverlayErrorBoundary,
+    { key: `${activeEvent}-${playKey}`, onError: handleComplete },
+    React.createElement(ActiveComponent, {
+      onComplete: handleComplete,
+      isDismissed: isDismissed,
+      onDismiss: handleDismiss,
+    })
+  );
 };
 
 export default animationRegistry;

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Search, Filter, X } from "lucide-react";
+import { formatTeamNumber } from "@/lib/registration/team-number";
 import type { RegistrationRecord, RegistrationStatus } from "@/lib/registration/types";
 
 export function FilterPanel<T extends RegistrationRecord>({
@@ -23,7 +24,7 @@ export function FilterPanel<T extends RegistrationRecord>({
     if (term) {
       filtered = filtered.filter((r) => {
         if (r.confirmation_number?.toLowerCase().includes(term)) return true;
-        if (`eq-${String(r.team_seq).padStart(3, "0")}`.includes(term)) return true;
+        if (formatTeamNumber(r.team_seq).toLowerCase().includes(term)) return true;
         if (r.utr_number.toLowerCase().includes(term)) return true;
         return r.participants.some(
           (p) =>
@@ -92,7 +93,7 @@ export function FilterPanel<T extends RegistrationRecord>({
               <option value="">All Status</option>
               <option value="pending">Pending</option>
               <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
+              <option value="rejected">Not Approved</option>
             </select>
           </div>
           <div>

@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { event, nav, socials, contact } from "@/lib/content";
+import { sanityAssets } from "@/lib/sanity-assets";
+import { urlForImage } from "@/sanity/lib/image";
 
 export function Footer() {
   const pathname = usePathname();
@@ -35,7 +37,7 @@ export function Footer() {
               # WHERE PASSION MEETS PERSEVERANCE
             </p>
             <div className="mt-6 flex items-center gap-6">
-              <img src="/logos/cie-white.png" alt="MLR CIE — Centre for Innovation & Entrepreneurship" className="h-10 w-auto object-contain" />
+              <img src={sanityAssets["logos/cie-white.png"] ? urlForImage(sanityAssets["logos/cie-white.png"]).url() : "/logos/cie-white.png"} alt="MLR CIE — Centre for Innovation & Entrepreneurship" className="h-10 w-auto object-contain" />
             </div>
           </div>
 
@@ -55,6 +57,14 @@ export function Footer() {
                     </a>
                   </li>
                 ))}
+                <li>
+                  <a
+                    href="/my-registration"
+                    className="text-sm font-medium text-white/80 transition hover:text-[#33FF67] hover:underline"
+                  >
+                    My Registration
+                  </a>
+                </li>
               </ul>
             </div>
 

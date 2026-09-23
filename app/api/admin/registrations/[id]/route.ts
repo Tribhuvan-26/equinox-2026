@@ -21,6 +21,31 @@ export async function PATCH(request: Request, ctx: { params: Promise<{ id: strin
   }
 
   const supabase = supabaseAdmin();
+
+  // Approving freezes a registration, and a frozen one can never pick a team.
+  // Someone who has only paid isn't refusable either -- they are just not ready.
+  if (status === "approved") {
+    const { data: current, error: lookupError } = await supabase
+      .from("pass_registrations")
+      .select("team_id")
+      .eq("id", id)
+      .maybeSingle();
+    // A lookup that failed tells us nothing, so it must not read as "has a team".
+    if (lookupError) {
+      console.error("[admin] approval guard lookup failed", lookupError);
+      return NextResponse.json({ error: "Could not check this registration. Please try again." }, { status: 503 });
+    }
+    if (!current) {
+      return NextResponse.json({ error: "Registration not found." }, { status: 404 });
+    }
+    if (!current.team_id) {
+      return NextResponse.json(
+        { error: "This person has paid but isn't on a team yet. Approve them once they've joined one." },
+        { status: 409 }
+      );
+    }
+  }
+
   const { data, error } = await supabase
     .from("pass_registrations")
     .update({ status, admin_note: note, updated_at: new Date().toISOString() })
