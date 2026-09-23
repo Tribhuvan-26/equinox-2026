@@ -31,57 +31,6 @@ const Globe = dynamic(loadGlobe, { ssr: false });
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Prominent, beautiful twinkling stars with deterministic coordinates and asynchronous phases
-const TWINKLE_STARS = [
-  // Top quadrant
-  { x: 5, y: 11, size: 4.5, color: "#F7F2F6", duration: 3.2, delay: -0.8, type: "dot" as const },
-  { x: 13, y: 21, size: 6.0, color: "#7484FE", duration: 4.1, delay: -2.3, type: "dot" as const },
-  { x: 22, y: 8, size: 3.5, color: "#F7F2F6", duration: 2.8, delay: -1.4, type: "dot" as const },
-  { x: 31, y: 17, size: 16.0, color: "#F7F2F6", duration: 5.2, delay: -3.7, type: "sparkle" as const },
-  { x: 41, y: 10, size: 4.5, color: "#33FF67", duration: 3.6, delay: -0.5, type: "dot" as const },
-  { x: 52, y: 6, size: 5.2, color: "#F7F2F6", duration: 4.4, delay: -1.9, type: "dot" as const },
-  { x: 63, y: 15, size: 3.8, color: "#7484FE", duration: 3.0, delay: -2.7, type: "dot" as const },
-  { x: 74, y: 9, size: 18.0, color: "#F7F2F6", duration: 4.8, delay: -0.9, type: "sparkle" as const },
-  { x: 83, y: 19, size: 4.5, color: "#F7F2F6", duration: 3.5, delay: -3.1, type: "dot" as const },
-  { x: 93, y: 12, size: 5.2, color: "#33FF67", duration: 4.2, delay: -1.6, type: "dot" as const },
-
-  // Upper-middle band
-  { x: 4, y: 34, size: 5.2, color: "#F7F2F6", duration: 3.9, delay: -2.1, type: "dot" as const },
-  { x: 11, y: 43, size: 3.5, color: "#7484FE", duration: 2.6, delay: -0.7, type: "dot" as const },
-  { x: 20, y: 30, size: 18.0, color: "#7484FE", duration: 5.5, delay: -4.0, type: "sparkle" as const },
-  { x: 35, y: 37, size: 4.5, color: "#F7F2F6", duration: 3.3, delay: -1.2, type: "dot" as const },
-  { x: 47, y: 28, size: 3.8, color: "#F7F2F6", duration: 4.6, delay: -3.4, type: "dot" as const },
-  { x: 57, y: 38, size: 6.0, color: "#F7F2F6", duration: 3.7, delay: -0.4, type: "dot" as const },
-  { x: 68, y: 32, size: 4.2, color: "#33FF67", duration: 4.0, delay: -2.8, type: "dot" as const },
-  { x: 78, y: 41, size: 3.5, color: "#F7F2F6", duration: 3.1, delay: -1.5, type: "dot" as const },
-  { x: 87, y: 31, size: 17.0, color: "#F7F2F6", duration: 5.0, delay: -2.2, type: "sparkle" as const },
-  { x: 95, y: 39, size: 4.5, color: "#7484FE", duration: 3.8, delay: -0.3, type: "dot" as const },
-
-  // Center / Lower-middle band
-  { x: 7, y: 55, size: 3.5, color: "#F7F2F6", duration: 3.4, delay: -1.8, type: "dot" as const },
-  { x: 17, y: 61, size: 6.0, color: "#33FF67", duration: 4.5, delay: -3.5, type: "dot" as const },
-  { x: 26, y: 51, size: 4.5, color: "#F7F2F6", duration: 2.9, delay: -0.6, type: "dot" as const },
-  { x: 37, y: 58, size: 3.8, color: "#7484FE", duration: 4.3, delay: -2.4, type: "dot" as const },
-  { x: 46, y: 50, size: 18.0, color: "#F7F2F6", duration: 5.8, delay: -4.5, type: "sparkle" as const },
-  { x: 55, y: 62, size: 4.5, color: "#F7F2F6", duration: 3.2, delay: -1.1, type: "dot" as const },
-  { x: 66, y: 53, size: 5.2, color: "#7484FE", duration: 4.1, delay: -2.9, type: "dot" as const },
-  { x: 75, y: 60, size: 3.5, color: "#F7F2F6", duration: 2.7, delay: -0.8, type: "dot" as const },
-  { x: 84, y: 52, size: 6.0, color: "#F7F2F6", duration: 4.7, delay: -3.9, type: "dot" as const },
-  { x: 93, y: 63, size: 4.2, color: "#33FF67", duration: 3.5, delay: -1.7, type: "dot" as const },
-
-  // Bottom quadrant
-  { x: 4, y: 77, size: 16.0, color: "#F7F2F6", duration: 4.9, delay: -2.0, type: "sparkle" as const },
-  { x: 14, y: 87, size: 4.2, color: "#F7F2F6", duration: 3.3, delay: -0.7, type: "dot" as const },
-  { x: 22, y: 73, size: 5.2, color: "#7484FE", duration: 4.2, delay: -3.3, type: "dot" as const },
-  { x: 32, y: 84, size: 3.5, color: "#F7F2F6", duration: 2.8, delay: -1.3, type: "dot" as const },
-  { x: 43, y: 75, size: 4.8, color: "#33FF67", duration: 3.9, delay: -2.5, type: "dot" as const },
-  { x: 53, y: 88, size: 3.5, color: "#F7F2F6", duration: 4.5, delay: -4.1, type: "dot" as const },
-  { x: 62, y: 78, size: 19.0, color: "#7484FE", duration: 5.4, delay: -1.0, type: "sparkle" as const },
-  { x: 71, y: 85, size: 4.5, color: "#F7F2F6", duration: 3.1, delay: -2.6, type: "dot" as const },
-  { x: 82, y: 74, size: 5.2, color: "#F7F2F6", duration: 4.0, delay: -0.4, type: "dot" as const },
-  { x: 92, y: 86, size: 3.5, color: "#7484FE", duration: 3.6, delay: -3.0, type: "dot" as const },
-];
-
 export default function ScrollJourney() {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -699,66 +648,7 @@ export default function ScrollJourney() {
           <NebulaBackground />
           <ContinuousComet />
 
-          {/* ── SPARSE STAR FIELD WITH MINIMAL TWINKLING STARS ──────────────── */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
-            {/* Faint static backdrop pattern */}
-            <svg width="100%" height="100%" className="absolute inset-0">
-              <pattern id="static-stars" x="0" y="0" width="180" height="180" patternUnits="userSpaceOnUse">
-                <circle fill="#F7F2F6" cx="28" cy="22" r="2.2" opacity="0.45" />
-                <circle fill="#F7F2F6" cx="115" cy="48" r="2.8" opacity="0.55" />
-                <circle fill="#F7F2F6" cx="57" cy="108" r="2.0" opacity="0.40" />
-                <circle fill="#7484FE" cx="138" cy="125" r="2.6" opacity="0.50" />
-                <circle fill="#33FF67" cx="88" cy="18" r="2.2" opacity="0.45" />
-                <circle fill="#F7F2F6" cx="14" cy="70" r="2.4" opacity="0.45" />
-                <circle fill="#F7F2F6" cx="155" cy="78" r="2.5" opacity="0.50" />
-              </pattern>
-              <rect x="0" y="0" width="100%" height="100%" fill="url(#static-stars)" />
-            </svg>
 
-            {/* Prominent twinkling stars layer */}
-            <div className="absolute inset-0">
-              {TWINKLE_STARS.map((star, i) => {
-                if (star.type === "sparkle") {
-                  return (
-                    <div
-                      key={i}
-                      className="absolute pointer-events-none"
-                      style={{
-                        left: `${star.x}%`,
-                        top: `${star.y}%`,
-                        width: `${star.size}px`,
-                        height: `${star.size}px`,
-                      }}
-                    >
-                      <svg viewBox="0 0 10 10" width={star.size} height={star.size} fill="none" style={{ filter: `drop-shadow(0 0 6px ${star.color})` }}>
-                        <path
-                          d="M 5 0 Q 5 5 10 5 Q 5 5 5 10 Q 5 5 0 5 Q 5 5 5 0 Z"
-                          fill={star.color}
-                          opacity="0.95"
-                        />
-                      </svg>
-                    </div>
-                  );
-                }
-
-                return (
-                  <div
-                    key={i}
-                    className="absolute pointer-events-none"
-                    style={{
-                      left: `${star.x}%`,
-                      top: `${star.y}%`,
-                      width: `${star.size}px`,
-                      height: `${star.size}px`,
-                      backgroundColor: star.color,
-                      borderRadius: "50%",
-                      boxShadow: `0 0 ${Math.round(star.size * 2)}px ${star.color}`,
-                    }}
-                  />
-                );
-              })}
-            </div>
-          </div>
 
           {/* ================================================================
             INSTITUTIONAL HEADER (NavBar area) — sticky to journey section

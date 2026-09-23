@@ -177,6 +177,7 @@ export default function GlitchWordmark({ className = "" }: { className?: string 
         src="/equinox-logo.svg"
         alt="The Equinox 2.0 E-Summit 2K26"
         className="relative h-full w-full object-contain"
+        fetchPriority="high"
         draggable={false}
       />
 
