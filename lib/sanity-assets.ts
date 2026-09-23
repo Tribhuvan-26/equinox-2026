@@ -1,11 +1,5 @@
 export const sanityAssets: Record<string, string> = {
-  "planets/crossroads.png": "image-27ac78cdc6dd61670a51d6efa07c4e7a791a11a6-640x640-png",
-  "planets/brand-battles.png": "image-f9fe805354db84c8bd4d8bf9dce4c57b7d338312-640x640-png",
-  "planets/pitch-deck.png": "image-b62a0700598dcd2c88d0417b0458c9819339d0c5-1254x1254-png",
-  "planets/e-cell-meet.png": "image-31e1452305218295f2a4ec924188117863fd3ecc-640x640-png",
-  "planets/startup-poly.png": "image-a87559ab1cbfa9cb3e897d8ec312057c851beedb-640x640-png",
-  "planets/ipl-auction.png": "image-8954a4ede747c34fa600ad394b13007068153864-640x640-png",
-  "planets/internship-drive.png": "image-46521c8ca1382629d1c962ef7868a632a766b603-640x640-png",
+
   "assets/events/ecell/1_base_scene.png": "image-f07c4c96acf4a1851c41f1370956165778102f68-1670x942-png",
   "equinox-gallery/photo-1.jpg": "image-a4a1ae70a905b4d2c325609cffd8251bfd1cf896-1600x1066-jpg",
   "equinox-gallery/photo-10.jpg": "image-fd99d0cf860e0d93de80532e7266367348fa3bb9-1600x1066-jpg",
