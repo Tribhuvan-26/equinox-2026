@@ -32,6 +32,16 @@ const newFilesToUpload = [
   'public/overlay-animations/hustle-mania-stall.png',
   'public/logos/cie-full-white.png',
   'public/chatbot-mascot.png',
+  // New assets
+  'public/tagline-lockup.png',
+  'public/logos/mlrit.png',
+  'public/logos/mlrit-white.png',
+  'public/logos/cie-mark-white.png',
+  'public/blackhole.svg',
+  'public/portol.svg',
+  'public/spacestation.svg',
+  'public/spotlight-planet.svg',
+  'public/equinox_background.jpg'
 ]
 
 async function uploadAssets() {

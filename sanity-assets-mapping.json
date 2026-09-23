@@ -44,5 +44,18 @@
   "public/overlay-animations/pitch-deck-scene.png": "image-d2275d2ad318ab5da5dba27d64aff43ea581cf7e-1024x576-png",
   "public/overlay-animations/hustle-mania-stall.png": "image-b96be1c5bd34956e75aac93095a201abf9045a80-1024x576-png",
   "public/logos/cie-full-white.png": "image-cbd577dff4708cbe3ba477cc53629d8fd40b4e86-5868x1659-png",
-  "public/chatbot-mascot.png": "image-c5b3e176f453e921e6624430d7bda46e1fa4565a-3610x5081-png"
+  "public/chatbot-mascot.png": "image-c5b3e176f453e921e6624430d7bda46e1fa4565a-3610x5081-png",
+  "public/equinox-logo.svg": "image-0dd68d56c94172eee040046a71310009e17ec049-2824x1187-svg",
+  "public/equinox-wordmark.svg": "image-0dd68d56c94172eee040046a71310009e17ec049-2824x1187-svg",
+  "public/tagline-lockup.png": "image-f884c0431d2c9cd288d2d63f3b742c9264fb9f27-1548x184-png",
+  "public/logos/mlrit.png": "image-509d40b816091b21818469f19aef1cf112ff7765-1200x299-png",
+  "public/logos/mlrit-white.png": "image-509d40b816091b21818469f19aef1cf112ff7765-1200x299-png",
+  "public/logos/cie-white.png": "image-645df66294af783bca71c806d1266e81da728f6f-1532x652-png",
+  "public/logos/cie-mark-white.png": "image-645df66294af783bca71c806d1266e81da728f6f-1532x652-png",
+  "public/blackhole.svg": "image-63ce8f7694121d01c9079715279400b578d27263-1920x1080-svg",
+  "public/portol.svg": "image-6812d05c690ce9b24db5677cf63ac0a1095e48b3-1872x840-svg",
+  "public/spacestation.svg": "image-a8ee74c6a6c91b07c1574b2956d48d722ee5cf47-1536x1024-svg",
+  "public/spaceship.svg": "image-c6f95162fcae3c7bc3c425dd19ceb03eb2542659-760x760-svg",
+  "public/spotlight-planet.svg": "image-2ff41de2c4e0de2761db773cfe72b0ff095d47e7-1254x1254-svg",
+  "public/equinox_background.jpg": "image-d300b5398de7304bac83d7afab543e03d363c1a3-1376x768-jpg"
 }

@@ -45,4 +45,9 @@ export const sanityAssets: Record<string, string> = {
   "overlay-animations/hustle-mania-stall.png": "image-b96be1c5bd34956e75aac93095a201abf9045a80-1024x576-png",
   "logos/cie-full-white.png": "image-cbd577dff4708cbe3ba477cc53629d8fd40b4e86-5868x1659-png",
   "chatbot-mascot.png": "image-c5b3e176f453e921e6624430d7bda46e1fa4565a-3610x5081-png",
+  "tagline-lockup.png": "image-f884c0431d2c9cd288d2d63f3b742c9264fb9f27-1548x184-png",
+  "logos/mlrit.png": "image-509d40b816091b21818469f19aef1cf112ff7765-1200x299-png",
+  "logos/mlrit-white.png": "image-509d40b816091b21818469f19aef1cf112ff7765-1200x299-png",
+  "logos/cie-mark-white.png": "image-645df66294af783bca71c806d1266e81da728f6f-1532x652-png",
+  "equinox_background.jpg": "image-d300b5398de7304bac83d7afab543e03d363c1a3-1376x768-jpg",
 };

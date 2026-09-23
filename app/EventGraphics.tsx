@@ -1,12 +1,16 @@
 "use client";
 
 import React from "react";
+import { sanityAssets } from "@/lib/sanity-assets";
+import { urlForImage } from "@/sanity/lib/image";
 
 // Official sub-event logo lockups, extracted from the printed Equinox 2.0
 // program materials (public/logos) — one shared renderer for every badge.
 function EventLogo({ slug, alt, className = "" }: { slug: string; alt: string; className?: string }) {
   // eslint-disable-next-line @next/next/no-img-element -- real intrinsic aspect ratio per logo, no next/image benefit here
-  return <img src={`/logos/${slug}.png`} alt={alt} className={`h-full max-w-full w-auto object-contain ${className}`} />;
+  const assetKey = `logos/${slug}.png`;
+  const sanityUrl = sanityAssets[assetKey] ? urlForImage(sanityAssets[assetKey]).url() : `/logos/${slug}.png`;
+  return <img src={sanityUrl} alt={alt} className={`h-full max-w-full w-auto object-contain ${className}`} />;
 }
 
 // 1. Institutional Lockup (Top of Cover)
@@ -21,7 +25,7 @@ export function InstitutionalHeader({ className = "" }: { className?: string }) 
         className="transition-opacity hover:opacity-85"
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- fixed-ratio brand asset, no next/image benefit */}
-        <img src="/logos/cie-full-white.png" alt="MLR CIE — Centre for Innovation & Entrepreneurship" className="h-10 w-auto object-contain sm:h-12" />
+        <img src={sanityAssets["logos/cie-full-white.png"] ? urlForImage(sanityAssets["logos/cie-full-white.png"]).url() : "/logos/cie-full-white.png"} alt="MLR CIE — Centre for Innovation & Entrepreneurship" className="h-10 w-auto object-contain sm:h-12" />
       </a>
 
       {/* Right: MLRIT official lockup */}
@@ -32,7 +36,7 @@ export function InstitutionalHeader({ className = "" }: { className?: string }) 
         className="transition-opacity hover:opacity-85"
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- fixed-ratio brand asset, no next/image benefit */}
-        <img src="/logos/mlrit.png" alt="MLR Institute of Technology" className="h-9 w-auto object-contain sm:h-11" />
+        <img src={sanityAssets["logos/mlrit.png"] ? urlForImage(sanityAssets["logos/mlrit.png"]).url() : "/logos/mlrit.png"} alt="MLR Institute of Technology" className="h-9 w-auto object-contain sm:h-11" />
       </a>
     </div>
   );

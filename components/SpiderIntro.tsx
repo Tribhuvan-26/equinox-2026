@@ -3,6 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import gsap from "gsap";
+import { sanityAssets } from "@/lib/sanity-assets";
+import { urlForImage } from "@/sanity/lib/image";
+
+const cieMarkUrl = sanityAssets["logos/cie-mark-white.png"] ? urlForImage(sanityAssets["logos/cie-mark-white.png"]).url() : "/logos/cie-mark-white.png";
 
 const BLUE = "#7484FE";
 const GREEN = "#33FF67";
@@ -329,14 +333,14 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
           {/* eslint-disable-next-line @next/next/no-img-element -- fixed-ratio brand asset */}
           <img
             ref={cieArtRef}
-            src="/logos/cie-mark-white.png"
+            src={cieMarkUrl}
             alt="MLR Centre for Innovation and Entrepreneurship"
             className="absolute inset-0 h-full w-full object-contain"
             style={{ transform: "translateZ(0)" }}
           />
-          {plate("/logos/cie-mark-white.png", null, (el) => { ciePlatesRef.current[0] = el; })}
-          {plate("/logos/cie-mark-white.png", BLUE, (el) => { ciePlatesRef.current[1] = el; })}
-          {plate("/logos/cie-mark-white.png", GREEN, (el) => { ciePlatesRef.current[2] = el; })}
+          {plate(cieMarkUrl, null, (el) => { ciePlatesRef.current[0] = el; })}
+          {plate(cieMarkUrl, BLUE, (el) => { ciePlatesRef.current[1] = el; })}
+          {plate(cieMarkUrl, GREEN, (el) => { ciePlatesRef.current[2] = el; })}
           {/* opaque cover, retreats left-to-right via scaleX (GPU-only —
               never clip-path) to reveal C, then I, then E. */}
           <div

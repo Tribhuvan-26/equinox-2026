@@ -7,6 +7,8 @@ import { Footer } from "./Footer";
 import { Chatbot } from "./Chatbot";
 import { OverlayAnimationHost } from "./overlay-animations";
 import PreIntroCover from "@/components/PreIntroCover";
+import { sanityAssets } from "@/lib/sanity-assets";
+import { urlForImage } from "@/sanity/lib/image";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -79,7 +81,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             mounts. Preloading it here starts the fetch/decode during initial
             page load instead of when the intro's own effect runs, which is
             what was causing the stutter on the very first reveal (the C). */}
-        <link rel="preload" as="image" href="/equinox-logo.svg" />
+        <link rel="preload" as="image" href="/equinox-logo.svg" fetchPriority="high" />
         {/* Event structured data: lets search engines show the dates, venue and
             sub-events as a rich result instead of a plain link. */}
         <script
