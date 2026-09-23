@@ -180,7 +180,8 @@ export default function MobileJourney() {
                       src={`/logos/${ev.slug}.png`}
                       alt={ev.name}
                       className="h-full w-auto object-contain object-left"
-                      loading="lazy"
+                      loading={idx < 2 ? "eager" : "lazy"}
+                      fetchPriority={idx < 2 ? "high" : "auto"}
                       draggable={false}
                     />
                   </div>

@@ -85,7 +85,12 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
 
   const assetKey = `planets/${event.slug}.png`;
   const sanityId = sanityAssets[assetKey];
-  const imgHref = sanityId ? urlForImage(sanityId).url() : `/${assetKey}`;
+  const localFallback = `/${assetKey}`;
+  
+  // Optimize Sanity images: Auto format (WebP), scale to 2x rendered size for Retina, and set 80% quality
+  const imgHref = sanityId 
+    ? urlForImage(sanityId).width(Math.round(imgSize * 2)).quality(80).url() 
+    : localFallback;
 
   return (
     <g
@@ -120,6 +125,11 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
+                  onError={(e) => {
+                    if (e.currentTarget.getAttribute("href") !== localFallback) {
+                      e.currentTarget.setAttribute("href", localFallback);
+                    }
+                  }}
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#7484FE" strokeWidth="1.5" opacity="0.8" />
               </g>
@@ -150,6 +160,11 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
+                  onError={(e) => {
+                    if (e.currentTarget.getAttribute("href") !== localFallback) {
+                      e.currentTarget.setAttribute("href", localFallback);
+                    }
+                  }}
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#7484FE" strokeWidth="1.5" opacity="0.8" />
               </g>
@@ -180,6 +195,11 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
+                  onError={(e) => {
+                    if (e.currentTarget.getAttribute("href") !== localFallback) {
+                      e.currentTarget.setAttribute("href", localFallback);
+                    }
+                  }}
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#33FF67" strokeWidth="1.5" opacity="0.8" />
               </g>
@@ -210,6 +230,11 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
+                  onError={(e) => {
+                    if (e.currentTarget.getAttribute("href") !== localFallback) {
+                      e.currentTarget.setAttribute("href", localFallback);
+                    }
+                  }}
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#33FF67" strokeWidth="1.5" opacity="0.8" />
               </g>
@@ -240,6 +265,11 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
+                  onError={(e) => {
+                    if (e.currentTarget.getAttribute("href") !== localFallback) {
+                      e.currentTarget.setAttribute("href", localFallback);
+                    }
+                  }}
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#38BDF8" strokeWidth="1.5" opacity="0.8" />
               </g>
@@ -270,6 +300,11 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
+                  onError={(e) => {
+                    if (e.currentTarget.getAttribute("href") !== localFallback) {
+                      e.currentTarget.setAttribute("href", localFallback);
+                    }
+                  }}
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#33FF67" strokeWidth="1.5" opacity="0.8" />
               </g>
@@ -300,6 +335,11 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
+                  onError={(e) => {
+                    if (e.currentTarget.getAttribute("href") !== localFallback) {
+                      e.currentTarget.setAttribute("href", localFallback);
+                    }
+                  }}
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#7484FE" strokeWidth="1.5" opacity="0.8" />
               </g>
@@ -330,6 +370,11 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
+                  onError={(e) => {
+                    if (e.currentTarget.getAttribute("href") !== localFallback) {
+                      e.currentTarget.setAttribute("href", localFallback);
+                    }
+                  }}
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#A78BFA" strokeWidth="1.5" opacity="0.8" />
               </g>
@@ -360,6 +405,11 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
+                  onError={(e) => {
+                    if (e.currentTarget.getAttribute("href") !== localFallback) {
+                      e.currentTarget.setAttribute("href", localFallback);
+                    }
+                  }}
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#A78BFA" strokeWidth="1.5" opacity="0.8" />
               </g>
@@ -390,6 +440,11 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
                   height={imgSize}
                   clipPath={`url(#planet-clip-${index})`}
                   preserveAspectRatio="xMidYMid slice"
+                  onError={(e) => {
+                    if (e.currentTarget.getAttribute("href") !== localFallback) {
+                      e.currentTarget.setAttribute("href", localFallback);
+                    }
+                  }}
                 />
                 <circle cx="0" cy="0" r="85" fill="none" stroke="#7484FE" strokeWidth="1.5" opacity="0.85" />
               </g>
