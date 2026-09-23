@@ -793,23 +793,21 @@ export default function ScrollJourney() {
                 zIndex: 3, // Sit alongside the text, not behind it
               }}
             >
-              {!showLoader && (
-                <Globe
-                  isPaused={isGlobePaused}
-                  onReady={handleGlobeReady}
-                  speed={2}
-                  dots={
-                    isGlobePaused
-                      ? { color: "#ffffff", size: 16, density: 4, allDots: false }
-                      : { color: "#ffffff", size: 5, density: 8, allDots: false }
-                  }
-                  oceanColor="#0a0a0a"
-                  graticuleColor="#333333"
-                  outlineColor="#eeeeee"
-                  showGrid={true}
-                  showOutline={true}
-                />
-              )}
+              <Globe
+                isPaused={isGlobePaused}
+                onReady={handleGlobeReady}
+                speed={2}
+                dots={
+                  isGlobePaused
+                    ? { color: "#ffffff", size: 16, density: 4, allDots: false }
+                    : { color: "#ffffff", size: 5, density: 8, allDots: false }
+                }
+                oceanColor="#0a0a0a"
+                graticuleColor="#333333"
+                outlineColor="#eeeeee"
+                showGrid={true}
+                showOutline={true}
+              />
             </div>
 
             {/* Massive "EQUINOX" HTML text split into parts */}

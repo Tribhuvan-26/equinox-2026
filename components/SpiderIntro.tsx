@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { sanityAssets } from "@/lib/sanity-assets";
 import { urlForImage } from "@/sanity/lib/image";
 
-const cieMarkUrl = sanityAssets["logos/cie-mark-white.png"] ? urlForImage(sanityAssets["logos/cie-mark-white.png"]).url() : "/logos/cie-mark-white.png";
+const cieMarkUrl = "/logos/cie-mark-white.png";
 
 const BLUE = "#7484FE";
 const GREEN = "#33FF67";
@@ -22,6 +22,9 @@ const CIE_GLYPH_END_X = { c: 620, i: 905, e: 1530 };
 const coverFraction = (endX: number) => 1 - endX / CIE_IMAGE_WIDTH;
 
 const MOBILE_BREAKPOINT = 640;
+
+const filterValid = (arr: (Element | null | undefined)[]) =>
+  arr.filter((el): el is Element => Boolean(el));
 
 /**
  * Spider-Verse style opener: CIE reads clean, letter by letter, holds, then
@@ -58,37 +61,11 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
     // The portal renders on the second pass, so the refs only exist once mounted.
     if (!mounted || !rootRef.current || !cieRef.current) return;
 
-    // The C reveal is the first animated frame, so it's the one exposed to
-    // every "first time" cost: image decode, the browser's first paint of
-    // this whole overlay, and (if opened in a background tab) GSAP's ticker
-    // not having run yet. Three gates before the timeline is built:
-    //  1. wait for the CIE mark to finish decoding (no-op if cached/preloaded)
-    //  2. wait for the tab to actually be visible — opening a link in a new
-    //     background tab (ctrl/cmd-click, target=_blank) leaves
-    //     document.hidden true and starves requestAnimationFrame, which is
-    //     what GSAP's ticker runs on; building/playing a timeline while
-    //     hidden either never advances or, once the tab is later focused,
-    //     can jump by the whole elapsed background time — either way the
-    //     user never actually sees the intro play.
-    //  3. promote the plates that will animate to their own compositing
-    //     layers, then wait a double-rAF before the first tween runs.
-    //     Layer promotion (willChange on mask-image elements) forces the
-    //     browser to rasterize a GPU texture for each one — that allocation
-    //     is what was still stuttering the C reveal even after gates 1-2,
-    //     because it was previously done in the same synchronous tick as
-    //     building and starting the timeline, so the layer-creation cost
-    //     landed on the first animated frame instead of before it.
     let cancelled = false;
     let ctx: gsap.Context | null = null;
     let activeTl: gsap.core.Timeline | null = null;
     let finished = false;
-    const img = cieArtRef.current;
 
-    // Whatever finishes the intro — the timeline's own onComplete, or this
-    // failsafe — runs through here exactly once, so the site can never be
-    // left permanently stuck behind the overlay (a dev hot-reload
-    // interrupting the timeline mid-tween, a decode/visibility gate that
-    // never resolves, or any other stall all recover the same way).
     const finish = () => {
       if (finished) return;
       finished = true;
@@ -123,25 +100,20 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
         // Configure GSAP ticker so it never skips initial frames even if mobile frame drops
         gsap.ticker.lagSmoothing(500, 33);
 
-        // Promote ONLY the elements active during Act 1 (the CIE reveal).
-        // The chromatic glitch plates (cieBlue, cieGreen, wordBlue, wordGreen)
-        // use heavy CSS mask-image and mix-blend-mode; allocating all 6 GPU textures
-        // simultaneously on mobile GPUs right at mount causes a massive frame drop
-        // exactly when the "C" begins revealing. They are promoted at Act 2 instead.
-        gsap.set([cieRef.current, cieArtRef.current], { willChange: "transform", force3D: true });
-        gsap.set([coverRef.current, flashRef.current], {
-          willChange: "transform, opacity",
-          force3D: true,
-        });
+        const activeTargets = filterValid([cieRef.current, cieArtRef.current]);
+        if (activeTargets.length > 0) {
+          gsap.set(activeTargets, { willChange: "transform", force3D: true });
+        }
+        const coverTargets = filterValid([coverRef.current, flashRef.current]);
+        if (coverTargets.length > 0) {
+          gsap.set(coverTargets, {
+            willChange: "transform, opacity",
+            force3D: true,
+          });
+        }
 
-        // Measured once, up front — never re-measured mid-timeline. The glitch
-        // displacement scales with the logo's actual rendered width so it reads
-        // the same proportionally on a phone and a laptop, and small enough on
-        // narrow screens that it never throws the mark off-screen.
         const cieWidth = cieRef.current.getBoundingClientRect().width || 300;
 
-        // Double-rAF ensures the browser compositor has finished rasterizing
-        // the initial layers and painting the cover before the timeline begins.
         const startIntro = () => {
           if (cancelled || !rootRef.current) return;
           ctx = buildTimeline(cieWidth);
@@ -162,7 +134,6 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
     }
 
     if (decodePromises.length > 0) {
-      // Race image decode with a fast 150ms timeout so a slow decode on mobile doesn't stall startup
       Promise.race([
         Promise.all(decodePromises),
         new Promise((resolve) => setTimeout(resolve, 150)),
@@ -173,98 +144,123 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
 
     function buildTimeline(cieWidth: number) {
       return gsap.context(() => {
-      const ciePlates = ciePlatesRef.current.filter(Boolean) as HTMLDivElement[];
-      const wordPlates = wordPlatesRef.current.filter(Boolean) as HTMLDivElement[];
-      const [ciePaper, cieBlue, cieGreen] = ciePlates;
-      const [wordBlue, wordGreen] = wordPlates;
+        const ciePlates = ciePlatesRef.current.filter((el): el is HTMLDivElement => Boolean(el));
+        const wordPlates = wordPlatesRef.current.filter((el): el is HTMLDivElement => Boolean(el));
+        const [ciePaper, cieBlue, cieGreen] = ciePlates;
+        const [wordBlue, wordGreen] = wordPlates;
 
-      const unit = Math.min(26, Math.max(5, cieWidth * 0.035));
-      const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
-
-      const tl = gsap.timeline({ onComplete: finish });
-      activeTl = tl;
-
-      // Act 1 — CIE reads clean, one letter at a time.
-      // On mobile, give a clean settling delay so the first
-      // frame never hits mid-paint, and pace the letters faster.
-      const startDelay = isMobile ? 0.05 : 0.15;
-      const cDur = isMobile ? 0.25 : 0.55;
-      const iStart = isMobile ? 0.35 : 0.90;
-      const iDur = isMobile ? 0.20 : 0.40;
-      const eStart = isMobile ? 0.60 : 1.50;
-      const eDur = isMobile ? 0.20 : 0.45;
-      const glitchTime = isMobile ? 0.90 : 2.55;
-
-      tl.set([cieBlue, cieGreen, wordRef.current], { opacity: 0 })
-        .set(ciePaper, { opacity: 0 })
-        .set(cieRef.current, { opacity: 1 }, 0)
-        .set(coverRef.current, { scaleX: 1 }, 0)
-        .set([wordBlue, wordGreen], { opacity: 0 }, 0)
-        .set(wordArtRef.current, { opacity: 0 }, 0)
-        .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.c), duration: cDur, ease: "power2.out" }, startDelay) // C
-        .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.i), duration: iDur, ease: "power2.out" }, iStart) // I
-        .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.e), duration: eDur, ease: "power2.out" }, eStart); // E.
-
-      // Act 2 — the tear.
-      const jitter = () => gsap.utils.random(-2, 2, 1);
-      const steps = isMobile
-        ? [{ reach: unit * 0.8, opacity: 0.65 }, { reach: unit * 1.6, opacity: 0.95 }]
-        : [{ reach: unit * 0.4, opacity: 0.4 }, { reach: unit * 0.9, opacity: 0.7 }, { reach: unit * 1.6, opacity: 0.95 }];
-
-      tl.addLabel("glitch", glitchTime);
-      // Promote chromatic glitch plates now right before the glitch runs
-      tl.call(() => {
-        gsap.set([cieBlue, cieGreen, wordBlue, wordGreen, wordArtRef.current], { willChange: "transform, opacity", force3D: true });
-      }, undefined, "glitch-=0.1");
-      tl.to(gridRef.current, { opacity: 1, duration: isMobile ? 0.25 : 0.35, ease: "power1.out" }, "glitch");
-      let t = 0;
-      steps.forEach((step, i) => {
-        const jx = jitter();
-        const jy = jitter();
-        tl.to(cieBlue, { opacity: step.opacity, x: -step.reach + jx, y: jy, duration: 0.05, ease: "steps(1)" }, `glitch+=${t}`)
-          .to(cieGreen, { opacity: step.opacity, x: step.reach - jx, y: -jy, duration: 0.05, ease: "steps(1)" }, `glitch+=${t}`);
-        const isLast = i === steps.length - 1;
-        if (!isLast) {
-          tl.to([cieBlue, cieGreen], { opacity: 0, x: 0, y: 0, duration: 0.05, ease: "steps(1)" }, `glitch+=${t + (isMobile ? 0.08 : 0.1)}`);
+        if (
+          !rootRef.current ||
+          !cieRef.current ||
+          !coverRef.current ||
+          !wordRef.current ||
+          !wordArtRef.current ||
+          !ciePaper ||
+          !cieBlue ||
+          !cieGreen ||
+          !wordBlue ||
+          !wordGreen
+        ) {
+          finish();
+          return;
         }
-        t += isMobile ? 0.12 : 0.18;
-      });
 
-      // the tear
-      tl.addLabel("tear", `glitch+=${t + 0.05}`)
-        .to(ciePaper, { opacity: 1, duration: 0.03 }, "tear")
-        .to(cieArtRef.current, { opacity: 0, duration: 0.03 }, "tear")
-        .to(cieRef.current, { scale: 1.04, duration: 0.08, ease: "steps(2)" }, "tear")
-        .to(flashRef.current, { opacity: 0.85, duration: 0.05 }, "tear+=0.08")
-        .to(flashRef.current, { opacity: 0, duration: 0.12 }, "tear+=0.14")
-        .set(cieRef.current, { opacity: 0 }, "tear+=0.13")
-        .set(wordRef.current, { opacity: 1 }, "tear+=0.13");
+        const unit = Math.min(26, Math.max(5, cieWidth * 0.035));
+        const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
 
-      // Act 3 — EQUINOX settles clean and stable, then lifts
-      const settleDur = isMobile ? 0.15 : 0.32;
-      const liftHold = isMobile ? 0.15 : 0.45;
-      const liftFade = isMobile ? 0.25 : 0.5;
+        const tl = gsap.timeline({ onComplete: finish });
+        activeTl = tl;
 
-      tl.fromTo(
-        wordArtRef.current,
-        { scale: 1.15, opacity: 0 },
-        { scale: 1, opacity: 1, duration: settleDur, ease: "power4.out" },
-        "tear+=0.13",
-      )
-        .fromTo(
-          wordBlue,
-          { x: -unit * 1.8, y: unit * 0.5, opacity: 0.9, scale: 1.15 },
-          { x: 0, y: 0, opacity: 0, scale: 1, duration: settleDur + 0.06, ease: "power3.out" },
+        const startDelay = isMobile ? 0.05 : 0.15;
+        const cDur = isMobile ? 0.25 : 0.55;
+        const iStart = isMobile ? 0.35 : 0.90;
+        const iDur = isMobile ? 0.20 : 0.40;
+        const eStart = isMobile ? 0.60 : 1.50;
+        const eDur = isMobile ? 0.20 : 0.45;
+        const glitchTime = isMobile ? 0.90 : 2.55;
+
+        tl.set(filterValid([cieBlue, cieGreen, wordRef.current]), { opacity: 0 })
+          .set(ciePaper, { opacity: 0 })
+          .set(cieRef.current, { opacity: 1 }, 0)
+          .set(coverRef.current, { scaleX: 1 }, 0)
+          .set(filterValid([wordBlue, wordGreen]), { opacity: 0 }, 0)
+          .set(wordArtRef.current, { opacity: 0 }, 0)
+          .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.c), duration: cDur, ease: "power2.out" }, startDelay)
+          .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.i), duration: iDur, ease: "power2.out" }, iStart)
+          .to(coverRef.current, { scaleX: coverFraction(CIE_GLYPH_END_X.e), duration: eDur, ease: "power2.out" }, eStart);
+
+        const jitter = () => gsap.utils.random(-2, 2, 1);
+        const steps = isMobile
+          ? [{ reach: unit * 0.8, opacity: 0.65 }, { reach: unit * 1.6, opacity: 0.95 }]
+          : [{ reach: unit * 0.4, opacity: 0.4 }, { reach: unit * 0.9, opacity: 0.7 }, { reach: unit * 1.6, opacity: 0.95 }];
+
+        tl.addLabel("glitch", glitchTime);
+        tl.call(() => {
+          const promoTargets = filterValid([cieBlue, cieGreen, wordBlue, wordGreen, wordArtRef.current]);
+          if (promoTargets.length > 0) {
+            gsap.set(promoTargets, { willChange: "transform, opacity", force3D: true });
+          }
+        }, undefined, "glitch-=0.1");
+
+        if (gridRef.current) {
+          tl.to(gridRef.current, { opacity: 1, duration: isMobile ? 0.25 : 0.35, ease: "power1.out" }, "glitch");
+        }
+
+        let t = 0;
+        steps.forEach((step, i) => {
+          const jx = jitter();
+          const jy = jitter();
+          tl.to(cieBlue, { opacity: step.opacity, x: -step.reach + jx, y: jy, duration: 0.05, ease: "steps(1)" }, `glitch+=${t}`)
+            .to(cieGreen, { opacity: step.opacity, x: step.reach - jx, y: -jy, duration: 0.05, ease: "steps(1)" }, `glitch+=${t}`);
+          const isLast = i === steps.length - 1;
+          if (!isLast) {
+            tl.to(filterValid([cieBlue, cieGreen]), { opacity: 0, x: 0, y: 0, duration: 0.05, ease: "steps(1)" }, `glitch+=${t + (isMobile ? 0.08 : 0.1)}`);
+          }
+          t += isMobile ? 0.12 : 0.18;
+        });
+
+        tl.addLabel("tear", `glitch+=${t + 0.05}`)
+          .to(ciePaper, { opacity: 1, duration: 0.03 }, "tear");
+        if (cieArtRef.current) {
+          tl.to(cieArtRef.current, { opacity: 0, duration: 0.03 }, "tear");
+        }
+        tl.to(cieRef.current, { scale: 1.04, duration: 0.08, ease: "steps(2)" }, "tear");
+
+        if (flashRef.current) {
+          tl.to(flashRef.current, { opacity: 0.85, duration: 0.05 }, "tear+=0.08")
+            .to(flashRef.current, { opacity: 0, duration: 0.12 }, "tear+=0.14");
+        }
+
+        tl.set(cieRef.current, { opacity: 0 }, "tear+=0.13")
+          .set(wordRef.current, { opacity: 1 }, "tear+=0.13");
+
+        const settleDur = isMobile ? 0.15 : 0.32;
+        const liftHold = isMobile ? 0.15 : 0.45;
+        const liftFade = isMobile ? 0.25 : 0.5;
+
+        tl.fromTo(
+          wordArtRef.current,
+          { scale: 1.15, opacity: 0 },
+          { scale: 1, opacity: 1, duration: settleDur, ease: "power4.out" },
           "tear+=0.13",
         )
-        .fromTo(
-          wordGreen,
-          { x: unit * 1.8, y: -unit * 0.5, opacity: 0.9, scale: 1.15 },
-          { x: 0, y: 0, opacity: 0, scale: 1, duration: settleDur + 0.06, ease: "power3.out" },
-          "tear+=0.13",
-        )
-        .to({}, { duration: liftHold })
-        .to(rootRef.current, { opacity: 0, duration: liftFade, ease: "power2.inOut" });
+          .fromTo(
+            wordBlue,
+            { x: -unit * 1.8, y: unit * 0.5, opacity: 0.9, scale: 1.15 },
+            { x: 0, y: 0, opacity: 0, scale: 1, duration: settleDur + 0.06, ease: "power3.out" },
+            "tear+=0.13",
+          )
+          .fromTo(
+            wordGreen,
+            { x: unit * 1.8, y: -unit * 0.5, opacity: 0.9, scale: 1.15 },
+            { x: 0, y: 0, opacity: 0, scale: 1, duration: settleDur + 0.06, ease: "power3.out" },
+            "tear+=0.13",
+          )
+          .to({}, { duration: liftHold });
+
+        if (rootRef.current) {
+          tl.to(rootRef.current, { opacity: 0, duration: liftFade, ease: "power2.inOut" });
+        }
       }, rootRef);
     }
 

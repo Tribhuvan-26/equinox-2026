@@ -76,10 +76,13 @@ export default function GlitchWordmark({ className = "" }: { className?: string 
         stopGlitch();
         return;
       }
+      if (!blueRef.current || !greenRef.current || !paperRef.current || !artRef.current) {
+        return;
+      }
 
       const activeSlices = slices();
       const activeSwaps = swaps();
-      const hard = Math.random() < 0.35; // occasional bigger tear
+      const hard = Math.random() < 0.35 && activeSwaps.length >= 2; // occasional bigger tear
       const reach = hard ? 60 : 26;
 
       activeTl = gsap.timeline({
@@ -96,6 +99,7 @@ export default function GlitchWordmark({ className = "" }: { className?: string 
         .to(artRef.current, { x: gsap.utils.random(-4, 4), duration: 0.05, ease: step }, "<");
 
       activeSlices.forEach((slice, i) => {
+        if (!slice) return;
         activeTl?.to(
           slice,
           {
@@ -108,7 +112,7 @@ export default function GlitchWordmark({ className = "" }: { className?: string 
         );
       });
 
-      if (hard) {
+      if (hard && activeSwaps[0] && activeSwaps[1]) {
         activeTl
           .to(activeSwaps[0], { opacity: 1, duration: 0.04, ease: step })
           .to(activeSwaps[0], { opacity: 0, duration: 0.04, ease: step })
@@ -119,10 +123,15 @@ export default function GlitchWordmark({ className = "" }: { className?: string 
           .to(greenRef.current, { x: -reach * 0.6, duration: 0.04, ease: step }, "<");
       }
 
+      const validPlates = [blueRef.current, greenRef.current, paperRef.current].filter(Boolean);
+      if (validPlates.length > 0) {
+        activeTl.to(validPlates, { opacity: 0, x: 0, y: 0, duration: 0.06, ease: step });
+      }
       activeTl
-        .to([blueRef.current, greenRef.current, paperRef.current], { opacity: 0, x: 0, y: 0, duration: 0.06, ease: step })
-        .to(artRef.current, { x: 0, duration: 0.06, ease: step }, "<")
-        .to(activeSlices, { opacity: 0, x: 0, duration: 0.06, ease: step }, "<");
+        .to(artRef.current, { x: 0, duration: 0.06, ease: step }, "<");
+      if (activeSlices.length > 0) {
+        activeTl.to(activeSlices, { opacity: 0, x: 0, duration: 0.06, ease: step }, "<");
+      }
     };
 
     // Scroll listener: kills/disables glitch animation immediately upon scroll
