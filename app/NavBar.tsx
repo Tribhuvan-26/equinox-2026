@@ -91,12 +91,16 @@ export function NavBar({
       e.preventDefault();
 
       if (pathname === "/") {
-        // If already on homepage, just scroll smoothly to top
+        // Direct instant jump without reverse scroll & reset scroll journey
         if (typeof window !== "undefined") {
-          if ((window as any).__lenis) {
-            (window as any).__lenis.scrollTo(0, { immediate: false, duration: 1.5 });
+          if ((window as any).__resetScrollJourney) {
+            (window as any).__resetScrollJourney();
           } else {
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            if ((window as any).__lenis) {
+              (window as any).__lenis.scrollTo(0, { immediate: true });
+              (window as any).__lenis.velocity = 0;
+            }
+            window.scrollTo({ top: 0, left: 0, behavior: "instant" });
           }
           window.history.replaceState(null, "", "/#top");
         }
