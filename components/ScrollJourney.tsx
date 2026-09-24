@@ -67,7 +67,15 @@ export default function ScrollJourney() {
   // the journey starts, so pause it there and give those frames to the scroll.
   const [isGlobePaused, setIsGlobePaused] = useState(false);
   const globePausedRef = useRef(false);
+  
   const [showLoader, setShowLoader] = useState(true);
+  
+  useEffect(() => {
+    if (typeof window !== "undefined" && sessionStorage.getItem("equinox_intro_done")) {
+      setShowLoader(false);
+      window.dispatchEvent(new Event("equinox:intro-done"));
+    }
+  }, []);
   // Below 768px the 16500px horizontal world is unusable, so the journey phases
   // are skipped and <MobileJourney /> renders the same 10 events as a vertical spine.
   const [isMobile, setIsMobile] = useState(false);
@@ -97,6 +105,7 @@ export default function ScrollJourney() {
     const tick = (t: number) => lenis.raf(t * 1000);
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
+    
     return () => {
       gsap.ticker.remove(tick);
       lenis.destroy();
@@ -175,7 +184,12 @@ export default function ScrollJourney() {
 
   // The opener plays for a fixed beat; it calls back when its last frame lands.
   // The globe keeps loading underneath, so the two never wait on each other.
-  const handleIntroDone = useCallback(() => setShowLoader(false), []);
+  const handleIntroDone = useCallback(() => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("equinox_intro_done", "true");
+    }
+    setShowLoader(false);
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = showLoader ? "hidden" : "";
@@ -620,6 +634,25 @@ export default function ScrollJourney() {
 
       if (typeof window !== "undefined") {
         (window as any).__resetScrollJourney = resetScrollJourney;
+        
+        // Restore scroll position after GSAP timeline is fully built
+        const savedY = sessionStorage.getItem("equinox_scroll_y");
+        if (savedY) {
+          const y = parseInt(savedY, 10);
+          
+          // Use setTimeout to ensure ScrollTrigger has fully bound its metrics
+          setTimeout(() => {
+            if (lenisRef.current) {
+              lenisRef.current.scrollTo(y, { immediate: true });
+            }
+            window.scrollTo({ top: y, left: 0, behavior: "instant" });
+            const st = mainTl.scrollTrigger;
+            if (st) {
+              st.scroll(y);
+            }
+            ScrollTrigger.update();
+          }, 50);
+        }
       }
 
       return () => {
@@ -629,8 +662,21 @@ export default function ScrollJourney() {
         }
       };
     }, containerRef);
+    
+    // Save scroll position ONLY on intentional navigation clicks 
+    // This prevents Next.js from overwriting it with 0 when it forces a scroll-to-top during route transitions
+    const savePositionOnClick = (e: MouseEvent) => {
+      const link = (e.target as HTMLElement).closest("a");
+      if (link && link.href && !link.href.includes("#top")) {
+        sessionStorage.setItem("equinox_scroll_y", window.scrollY.toString());
+      }
+    };
+    document.addEventListener("click", savePositionOnClick, { capture: true });
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      document.removeEventListener("click", savePositionOnClick, { capture: true });
+    };
   }, [subEvents, isMobile, showLoader]);
 
   // Force a ScrollTrigger refresh after a short delay to handle font loading
@@ -722,12 +768,22 @@ export default function ScrollJourney() {
             {/* Subtitle & hanging tag */}
             <div
               ref={heroSubtitleRef}
-              className="relative flex flex-col items-center gap-4 pointer-events-none"
+              className="relative flex flex-col items-center gap-3 pointer-events-none"
               style={{ zIndex: 2 }}
             >
               <h2 className="max-w-full px-4 text-center font-sans text-[5vw] font-bold tracking-tight text-white sm:text-2xl md:text-3xl lg:text-4xl drop-shadow-md">
                 #Where<span className="text-[#7484FE]">Passion</span>Meets<span className="text-[#33FF67]">Perseverance</span>
               </h2>
+
+              {/* Minimal Scroll to Explore Indicator */}
+              <div className="mt-1 flex items-center gap-2.5 rounded-full bg-[#0E0E0E]/85 border border-white/15 px-4 py-1.5 shadow-[0_4px_20px_rgba(0,0,0,0.6)] backdrop-blur-sm">
+                <div className="w-3 h-4.5 rounded-full border border-white/40 flex items-start justify-center p-0.5">
+                  <div className="w-1 h-1.5 rounded-full bg-[#33FF67] animate-bounce" />
+                </div>
+                <span className="font-mono text-[10px] sm:text-[11px] font-semibold tracking-[0.18em] uppercase text-white/85 flex items-center gap-1.5">
+                  Scroll to explore <span className="text-[#7484FE] font-bold">→</span>
+                </span>
+              </div>
             </div>
           </div>
 
@@ -1403,6 +1459,23 @@ export default function ScrollJourney() {
 
               </div>
             </div>
+          </div>
+
+          {/* Bottom HUD / Journey Active Event Indicator */}
+          <div
+            ref={scrollIndicatorRef}
+            className="pointer-events-none absolute bottom-6 left-6 z-40 hidden opacity-0 transition-opacity duration-300 md:flex items-center gap-3 rounded-full border border-white/15 bg-[#0E0E0E]/90 px-4 py-2 backdrop-blur-md shadow-[0_8px_24px_rgba(0,0,0,0.7)]"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#33FF67] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#33FF67]" />
+            </span>
+            <span
+              ref={indicatorEventRef}
+              className="font-mono text-xs font-bold tracking-[0.15em] uppercase text-white/90"
+            >
+              01 / 10 · SPOTLIGHT
+            </span>
           </div>
 
           {/* Opening sequence: MLR CIE mark, glitch, EQUINOX lockup */}
