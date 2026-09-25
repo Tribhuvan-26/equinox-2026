@@ -1,6 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
@@ -67,7 +69,28 @@ export default function ScrollJourney() {
   // the journey starts, so pause it there and give those frames to the scroll.
   const [isGlobePaused, setIsGlobePaused] = useState(false);
   const globePausedRef = useRef(false);
-  const [showLoader, setShowLoader] = useState(true);
+
+  // Initialize showLoader based on whether this is the first time the component mounts in this JS context.
+  // A hard refresh resets the JS context (isFirstSessionMount = true) so it plays the intro.
+  // A client-side navigation preserves the context, so returning home skips the intro if done.
+  const [showLoader, setShowLoader] = useState(() => {
+    if (typeof window !== "undefined") {
+      if ((window as any).__equinox_first_mount_done && sessionStorage.getItem("equinox_intro_done") === "true") {
+        return false;
+      }
+    }
+    return true;
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      (window as any).__equinox_first_mount_done = true;
+      if (!showLoader) {
+        window.dispatchEvent(new Event("equinox:intro-done"));
+      }
+    }
+  }, [showLoader]);
+
   // Below 768px the 16500px horizontal world is unusable, so the journey phases
   // are skipped and <MobileJourney /> renders the same 10 events as a vertical spine.
   const [isMobile, setIsMobile] = useState(false);
@@ -82,6 +105,16 @@ export default function ScrollJourney() {
 
   const handleGlobeReady = useCallback(() => setIsGlobeReady(true), []);
 
+  // ── INSTANT SCROLL RESTORATION ───────────────────────────────────────────────
+  useIsomorphicLayoutEffect(() => {
+    if (!showLoader && typeof window !== "undefined") {
+      const savedY = sessionStorage.getItem("equinox_scroll_y");
+      if (savedY) {
+        window.scrollTo({ top: parseInt(savedY, 10), left: 0, behavior: "instant" });
+      }
+    }
+  }, [showLoader]);
+
   // ── LENIS + GSAP ─────────────────────────────────────────────────────────────
   // Scroll is blocked (body overflow: hidden) for the entire SpiderIntro, so
   // there is nothing for Lenis or the journey ScrollTrigger to do until it
@@ -92,7 +125,11 @@ export default function ScrollJourney() {
     if (showLoader) return;
     const lenis = new Lenis({ lerp: 0.08, smoothWheel: true });
     lenisRef.current = lenis;
-    if (typeof window !== "undefined") (window as any).__lenis = lenis;
+    if (typeof window !== "undefined") {
+      (window as any).__lenis = lenis;
+      const savedY = sessionStorage.getItem("equinox_scroll_y");
+      if (savedY) lenis.scrollTo(parseInt(savedY, 10), { immediate: true });
+    }
     lenis.on("scroll", ScrollTrigger.update);
     const tick = (t: number) => lenis.raf(t * 1000);
     gsap.ticker.add(tick);
@@ -175,7 +212,12 @@ export default function ScrollJourney() {
 
   // The opener plays for a fixed beat; it calls back when its last frame lands.
   // The globe keeps loading underneath, so the two never wait on each other.
-  const handleIntroDone = useCallback(() => setShowLoader(false), []);
+  const handleIntroDone = useCallback(() => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("equinox_intro_done", "true");
+    }
+    setShowLoader(false);
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = showLoader ? "hidden" : "";
@@ -629,8 +671,21 @@ export default function ScrollJourney() {
         }
       };
     }, containerRef);
+    
+    // Save scroll position ONLY on intentional navigation clicks 
+    // This prevents Next.js from overwriting it with 0 when it forces a scroll-to-top during route transitions
+    const savePositionOnClick = (e: MouseEvent) => {
+      const link = (e.target as HTMLElement).closest("a");
+      if (link && link.href && !link.href.includes("#top")) {
+        sessionStorage.setItem("equinox_scroll_y", window.scrollY.toString());
+      }
+    };
+    document.addEventListener("click", savePositionOnClick, { capture: true });
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      document.removeEventListener("click", savePositionOnClick, { capture: true });
+    };
   }, [subEvents, isMobile, showLoader]);
 
   // Force a ScrollTrigger refresh after a short delay to handle font loading

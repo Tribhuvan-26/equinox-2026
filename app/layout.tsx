@@ -27,7 +27,6 @@ const geistMono = Geist_Mono({
 const display = Syne({
   variable: "--font-syne",
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
 });
 
 export const metadata: Metadata = {
