@@ -223,7 +223,7 @@ export const ECellMeetAnimation: React.FC<AnimationComponentProps> = ({
           />
           <path
             id="cloud-right"
-            d="M 712 198 L 822 198 A 12 12 0 0 0 812 184 A 16 16 0 0 0 787 174 A 20 20 0 0 0 752 164 A 18 18 0 0 0 727 181 A 14 14 0 0 0 712 198 Z"
+            d="M 869 183 L 979 183 A 12 12 0 0 0 969 169 A 16 16 0 0 0 944 159 A 20 20 0 0 0 909 149 A 18 18 0 0 0 884 166 A 14 14 0 0 0 869 183 Z"
             fill="#F7F2F6"
             opacity="0.95"
           />
@@ -414,14 +414,14 @@ export const ECellMeetAnimation: React.FC<AnimationComponentProps> = ({
         </g>
 
         {/* 7. Central 3-People Team Asset Layer */}
-        <g id="ecell-people-group" style={{ transformOrigin: "506px 114px" }}>
+        <g id="ecell-people-group" style={{ transformOrigin: "509px 126px" }}>
           <image
             id="ecell-people-image"
             href="/assets/events/ecell/network/people_group.png"
-            x="436"
-            y="65"
-            width="140"
-            height="98"
+            x="466"
+            y="96"
+            width="86"
+            height="60"
             preserveAspectRatio="xMidYMid meet"
           />
         </g>

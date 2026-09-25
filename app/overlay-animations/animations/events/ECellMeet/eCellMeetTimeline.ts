@@ -15,17 +15,14 @@ export interface ECellMeetTimelineOptions {
 /**
  * Master GSAP timeline for "The E-CELL Meet" Animation.
  *
- * Synchronized ~5-Second Master Sequence:
- * 0.00 – 0.60: INNER TRIANGLES & initial branding/ambient dots.
- * 0.50 – 1.10: OUTER TRIANGLES (appear after inner triangles settle).
- * 0.20 – 2.20: NETWORK CONNECTIONS (sequential line drawing with balanced left/right rhythm).
- * 1.00 – 2.00: PEOPLE GROUP (enters subtly and settles completely inside upper arc).
- * 1.80 – 2.70: "E-CELL" title reveals and settles.
- * 2.30 – 3.20: "MEET" title reveals and settles.
- * 3.10 – 3.80: "CONNECT" appears.
- * 3.30 – 4.00: "COLLABORATE" appears + bullet 1.
- * 3.50 – 4.20: "CREATE" appears + bullet 2 + side lines draw outward without overlapping text.
- * 4.20 – 5.00: Final network/node settle + stable hold with resting idle motion.
+ * Synchronized ~3-Second Master Sequence:
+ * 0.00 – 0.25: Initial branding, ambient dots, clouds, and corner chevrons.
+ * 0.24 – 0.98: NETWORK CONNECTIONS & INSTITUTION NODES (Level 1 → Level 2 → Level 3).
+ * 0.94 – 1.25: "E-CELL" & "MEET" title reveals and settles permanently.
+ * 1.18 – 1.42: Subtitle words ("CONNECT • COLLABORATE • CREATE") and decorative lines.
+ * 1.38 – 1.68: Final geometric triangles (Inner then Outer).
+ * 1.70: Complete static settle.
+ * 2.70 – 3.05: Clean fade-out exit.
  */
 export function createECellMeetTimeline(
   targets: ECellMeetTimelineTargets,
@@ -52,10 +49,10 @@ export function createECellMeetTimeline(
     gsap.set(container, { opacity: 0 });
     if (skipButton) gsap.set(skipButton, { opacity: 1, pointerEvents: "auto" });
 
-    tl.to(container, { opacity: 1, duration: 0.3, ease: "power1.out" }, 0);
-    tl.addLabel("settled", 0.35);
-    tl.addLabel("exit", 5.0);
-    tl.to(container, { opacity: 0, duration: 0.35, ease: "power1.in" }, "exit");
+    tl.to(container, { opacity: 1, duration: 0.25, ease: "power1.out" }, 0);
+    tl.addLabel("settled", 0.3);
+    tl.addLabel("exit", 2.2);
+    tl.to(container, { opacity: 0, duration: 0.3, ease: "power1.in" }, "exit");
     return tl;
   }
 
@@ -271,25 +268,25 @@ export function createECellMeetTimeline(
   });
 
   // =========================================================================
-  // MASTER TIMELINE: CONTINUOUS, POLISHED & FAST (~2.55 SECONDS TOTAL)
+  // MASTER TIMELINE: CONTINUOUS, POLISHED & FAST (~1.70s Settle + Clean Exit)
   // Flow:
-  // 1. Bottom/side elements (Blue outer triangle, then Green inner triangle)
+  // 1. Bottom/side elements (Blue outer chevron, then Green inner chevron)
   // 2. Buildings + Connections (Level 1 → Level 2 → Level 3, locking on arrival)
   // 3. Title (E-CELL and MEET smooth entrance, followed by subtitle)
   // 4. Remaining decorative elements
   // 5. Final Triangles (Inner then Outer)
-  // 6. Settle immediately into completely static state
+  // 6. Settle immediately into completely static state, brief hold, then exit
   // =========================================================================
 
-  // [0.00 – 0.50s] Phase 1: Context & Bottom/Side Elements
+  // [0.00 – 0.30s] Phase 1: Context & Bottom/Side Elements
   tl.to(
     [elBrandingLeft, elBrandingRight],
     {
       opacity: 1,
       y: 0,
-      duration: 0.30,
+      duration: 0.22,
       ease: "power2.out",
-      stagger: 0.05,
+      stagger: 0.04,
     },
     0.00
   );
@@ -300,10 +297,10 @@ export function createECellMeetTimeline(
       {
         opacity: 1,
         y: 0,
-        duration: 0.25,
+        duration: 0.18,
         ease: "power2.out",
       },
-      0.05
+      0.03
     );
   }
 
@@ -314,11 +311,11 @@ export function createECellMeetTimeline(
       scale: 1,
       x: 0,
       y: 0,
-      duration: 0.38,
+      duration: 0.26,
       ease: "power2.out",
-      stagger: 0.02,
+      stagger: 0.015,
     },
-    0.05
+    0.03
   );
 
   tl.to(
@@ -326,23 +323,23 @@ export function createECellMeetTimeline(
     {
       x: 0,
       opacity: 0.95,
-      duration: 0.38,
+      duration: 0.26,
       ease: "power2.out",
     },
-    0.08
+    0.05
   );
 
-  // 1) Bottom Corner Triangles: Blue outer triangle enters first
+  // 1) Bottom Corner Chevrons: Blue outer triangle enters first
   tl.to(
     [elChevronBLBlue, elChevronBRBlue],
     {
       x: 0,
       y: 0,
       opacity: 1,
-      duration: 0.38,
+      duration: 0.26,
       ease: "power2.out",
     },
-    0.05
+    0.04
   );
 
   // 2) Green inner triangle enters immediately after it
@@ -352,10 +349,10 @@ export function createECellMeetTimeline(
       x: 0,
       y: 0,
       opacity: 1,
-      duration: 0.35,
+      duration: 0.24,
       ease: "power2.out",
     },
-    0.20
+    0.14
   );
 
   // =========================================================================
@@ -363,17 +360,17 @@ export function createECellMeetTimeline(
   // Continuous, sequential entrances with matching lines, then locked.
   // =========================================================================
 
-  // --- LEVEL 1 (0.35s – 0.78s) ---
+  // --- LEVEL 1 (0.24s – 0.54s) ---
   // Top buildings enter smoothly
   tl.to(
     elNode1,
     {
       opacity: 1,
       scale: 1,
-      duration: 0.30,
+      duration: 0.22,
       ease: "power2.out",
     },
-    0.35
+    0.24
   );
 
   tl.to(
@@ -381,10 +378,10 @@ export function createECellMeetTimeline(
     {
       opacity: 1,
       scale: 1,
-      duration: 0.30,
+      duration: 0.22,
       ease: "power2.out",
     },
-    0.38
+    0.26
   );
 
   // Synchronized Level 1 connections
@@ -393,21 +390,21 @@ export function createECellMeetTimeline(
     {
       opacity: 1,
       strokeDashoffset: 0,
-      duration: 0.28,
+      duration: 0.20,
       ease: "power2.out",
       stagger: 0.02,
     },
-    0.44
+    0.30
   );
 
   tl.to(
     [elClipDot1, elClipDot3],
     {
       attr: { width: 140 },
-      duration: 0.30,
+      duration: 0.22,
       ease: "power2.out",
     },
-    0.44
+    0.30
   );
 
   tl.to(
@@ -415,10 +412,10 @@ export function createECellMeetTimeline(
     {
       opacity: 1,
       strokeDashoffset: 0,
-      duration: 0.32,
+      duration: 0.24,
       ease: "power2.inOut",
     },
-    0.46
+    0.32
   );
 
   tl.to(
@@ -426,24 +423,24 @@ export function createECellMeetTimeline(
     {
       opacity: 1,
       scale: 1,
-      duration: 0.18,
-      ease: "back.out(1.8)",
-      stagger: 0.02,
+      duration: 0.14,
+      ease: "back.out(1.5)",
+      stagger: 0.015,
     },
-    0.58
+    0.40
   );
 
-  // --- LEVEL 2 (0.72s – 1.15s) ---
+  // --- LEVEL 2 (0.48s – 0.74s) ---
   // Mid buildings enter smoothly
   tl.to(
     elNode2,
     {
       opacity: 1,
       scale: 1,
-      duration: 0.30,
+      duration: 0.22,
       ease: "power2.out",
     },
-    0.72
+    0.48
   );
 
   tl.to(
@@ -451,10 +448,10 @@ export function createECellMeetTimeline(
     {
       opacity: 1,
       scale: 1,
-      duration: 0.30,
+      duration: 0.22,
       ease: "power2.out",
     },
-    0.75
+    0.50
   );
 
   // Synchronized Level 2 connections
@@ -463,21 +460,21 @@ export function createECellMeetTimeline(
     {
       opacity: 1,
       strokeDashoffset: 0,
-      duration: 0.28,
+      duration: 0.20,
       ease: "power2.out",
       stagger: 0.02,
     },
-    0.80
+    0.54
   );
 
   tl.to(
     [elClipDot2, elClipDot4],
     {
       attr: { width: 140 },
-      duration: 0.30,
+      duration: 0.22,
       ease: "power2.out",
     },
-    0.80
+    0.54
   );
 
   tl.to(
@@ -485,23 +482,23 @@ export function createECellMeetTimeline(
     {
       opacity: 1,
       scale: 1,
-      duration: 0.18,
-      ease: "back.out(1.8)",
+      duration: 0.14,
+      ease: "back.out(1.5)",
     },
-    0.92
+    0.62
   );
 
-  // --- LEVEL 3 (1.08s – 1.50s) ---
+  // --- LEVEL 3 (0.70s – 0.98s) ---
   // Bottom buildings enter smoothly
   tl.to(
     elNode3,
     {
       opacity: 1,
       scale: 1,
-      duration: 0.30,
+      duration: 0.22,
       ease: "power2.out",
     },
-    1.08
+    0.70
   );
 
   tl.to(
@@ -509,10 +506,10 @@ export function createECellMeetTimeline(
     {
       opacity: 1,
       scale: 1,
-      duration: 0.30,
+      duration: 0.22,
       ease: "power2.out",
     },
-    1.11
+    0.72
   );
 
   tl.to(
@@ -520,10 +517,10 @@ export function createECellMeetTimeline(
     {
       opacity: 1,
       scale: 1,
-      duration: 0.30,
+      duration: 0.22,
       ease: "power2.out",
     },
-    1.14
+    0.74
   );
 
   // Synchronized Level 3 connections
@@ -532,11 +529,11 @@ export function createECellMeetTimeline(
     {
       opacity: 1,
       strokeDashoffset: 0,
-      duration: 0.28,
+      duration: 0.20,
       ease: "power2.out",
       stagger: 0.02,
     },
-    1.18
+    0.78
   );
 
   tl.to(
@@ -544,14 +541,14 @@ export function createECellMeetTimeline(
     {
       opacity: 1,
       scale: 1,
-      duration: 0.18,
-      ease: "back.out(1.8)",
+      duration: 0.14,
+      ease: "back.out(1.5)",
     },
-    1.30
+    0.86
   );
 
   // =========================================================================
-  // Phase 3: Title Text Animation (1.42s – 1.85s)
+  // Phase 3: Title Text Animation (0.94s – 1.25s)
   // Clean, subtle entrance without bouncing; locks permanently.
   // =========================================================================
   tl.to(
@@ -560,10 +557,10 @@ export function createECellMeetTimeline(
       opacity: 1,
       y: 0,
       scale: 1,
-      duration: 0.38,
+      duration: 0.28,
       ease: "power3.out",
     },
-    1.42
+    0.94
   );
 
   tl.to(
@@ -572,25 +569,25 @@ export function createECellMeetTimeline(
       opacity: 1,
       y: 0,
       scale: 1,
-      duration: 0.38,
+      duration: 0.28,
       ease: "power3.out",
     },
-    1.52
+    1.02
   );
 
   // =========================================================================
-  // Phase 4: Remaining Decorative Elements / Subtitle (1.75s – 2.05s)
+  // Phase 4: Remaining Decorative Elements / Subtitle (1.18s – 1.42s)
   // =========================================================================
   tl.to(
     [elWordConnect, elDotSub1, elWordCollaborate, elDotSub2, elWordCreate],
     {
       opacity: 1,
       scale: 1,
-      duration: 0.26,
+      duration: 0.20,
       ease: "power2.out",
-      stagger: 0.03,
+      stagger: 0.02,
     },
-    1.75
+    1.18
   );
 
   tl.to(
@@ -598,14 +595,14 @@ export function createECellMeetTimeline(
     {
       opacity: 1,
       strokeDashoffset: 0,
-      duration: 0.24,
+      duration: 0.18,
       ease: "power2.out",
     },
-    1.88
+    1.28
   );
 
   // =========================================================================
-  // Phase 5: Final Triangles (Inner First, Then Outer) (2.05s – 2.50s)
+  // Phase 5: Final Triangles (Inner First, Then Outer) (1.38s – 1.68s)
   // =========================================================================
   // Inner triangles entrance
   tl.to(
@@ -613,11 +610,11 @@ export function createECellMeetTimeline(
     {
       opacity: 1,
       scale: 1,
-      duration: 0.22,
+      duration: 0.16,
       ease: "power2.out",
-      stagger: 0.03,
+      stagger: 0.02,
     },
-    2.05
+    1.38
   );
 
   // Outer triangles entrance — strictly AFTER inner completes
@@ -626,29 +623,29 @@ export function createECellMeetTimeline(
     {
       opacity: 1,
       scale: 1,
-      duration: 0.22,
+      duration: 0.16,
       ease: "power2.out",
-      stagger: 0.04,
+      stagger: 0.02,
     },
-    2.25
+    1.50
   );
 
   // =========================================================================
-  // Phase 6: [2.55s] FINAL SETTLE & STATIC LOCK
+  // Phase 6: [1.70s] FINAL SETTLE & STATIC LOCK
   // Everything settles and remains COMPLETELY STATIC.
-  // Zero secondary movement, zero bounce, zero drift.
+  // Minimal delay after last element appears before clean exit.
   // =========================================================================
-  tl.addLabel("settled", 2.55);
+  tl.addLabel("settled", 1.70);
 
   if (!loop) {
-    tl.addLabel("hold", 6.5);
-    tl.addLabel("exit", 7.5);
+    tl.addLabel("hold", 2.70);
+    tl.addLabel("exit", 2.70);
 
     tl.to(
       container,
       {
         opacity: 0,
-        duration: 0.4,
+        duration: 0.35,
         ease: "power2.in",
       },
       "exit"
@@ -665,10 +662,10 @@ export function skipECellMeetTimelineToExit(
   tl: gsap.core.Timeline | null
 ): void {
   if (!tl) return;
-  const exitTime = tl.labels["exit"] ?? 6.0;
+  const exitTime = tl.labels["exit"] ?? 2.70;
   if (tl.time() < exitTime) {
     tl.tweenTo(exitTime, {
-      duration: 0.22,
+      duration: 0.20,
       ease: "power2.in",
       overwrite: "auto",
     });
