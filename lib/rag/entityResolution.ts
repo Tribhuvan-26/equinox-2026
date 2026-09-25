@@ -14,15 +14,17 @@ export interface ResolvedEntity {
   confidence: number;
 }
 
-export type AttributeIntent =
-  | "timing"
-  | "venue"
-  | "eligibility"
-  | "rules"
-  | "registration"
-  | "prize"
-  | "contact"
-  | "overview";
+export type QuestionCategory =
+  | "EVENT_INFO"
+  | "EVENT_CONTACT"
+  | "EVENT_DATE"
+  | "EVENT_VENUE"
+  | "REGISTRATION"
+  | "ELIGIBILITY"
+  | "EVENT_LIST"
+  | "GENERAL_EQUINOX"
+  | "CONTACT"
+  | "UNKNOWN";
 
 export interface FalsePremiseResult {
   isFalsePremise: boolean;
@@ -182,7 +184,7 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
   {
     slug: "hustle-mania",
     name: "Hustle Mania",
-    primaryKeywords: ["hustle mania", "hustle", "mania", "hustler"],
+    primaryKeywords: ["hustle mania", "hustle", "mania", "hustler", "hustlemania"],
     semanticPhrases: [
       "which event involves setting up stalls and selling to customers",
       "setting up stalls and selling to customers",
@@ -208,6 +210,7 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
       "marketing and negotiation",
       "on campus stall",
       "stall selling",
+      "selling event"
     ],
   },
   {
@@ -461,6 +464,8 @@ export function resolveSubEvent(query: string): ResolvedEntity | undefined {
         "more",
         "startup",
         "startups",
+        "start",
+        "start time",
         "business",
         "event",
         "events",
@@ -534,8 +539,27 @@ export function resolveSubEvent(query: string): ResolvedEntity | undefined {
 /**
  * Detects attribute intent (timing, venue, eligibility, rules, registration, prize, coordinator, etc.)
  */
-export function detectAttributeIntent(query: string): AttributeIntent | undefined {
+export function detectQuestionCategory(query: string): QuestionCategory | undefined {
   const q = normalizeQueryString(query);
+
+  if (
+    q.includes("all events") ||
+    q.includes("list of events") ||
+    q.includes("what are the events") ||
+    q.includes("what events are there") ||
+    q.includes("sub-events")
+  ) {
+    return "EVENT_LIST";
+  }
+
+  if (
+    q.includes("what is equinox") ||
+    q.includes("about equinox") ||
+    q.includes("equinox 2.0") ||
+    q.includes("tell me about equinox")
+  ) {
+    return "GENERAL_EQUINOX";
+  }
 
   if (
     q.includes("what time") ||
@@ -548,7 +572,7 @@ export function detectAttributeIntent(query: string): AttributeIntent | undefine
     q.includes("dates") ||
     q.includes("when")
   ) {
-    return "timing";
+    return "EVENT_DATE";
   }
 
   if (
@@ -561,7 +585,7 @@ export function detectAttributeIntent(query: string): AttributeIntent | undefine
     q.includes("auditorium") ||
     q.includes("place")
   ) {
-    return "venue";
+    return "EVENT_VENUE";
   }
 
   if (
@@ -573,9 +597,12 @@ export function detectAttributeIntent(query: string): AttributeIntent | undefine
     q.includes("how many members") ||
     q.includes("can i participate") ||
     q.includes("solo") ||
-    q.includes("teams")
+    q.includes("teams") ||
+    q.includes("team") ||
+    q.includes("participant criteria") ||
+    q.includes("participation")
   ) {
-    return "eligibility";
+    return "ELIGIBILITY";
   }
 
   if (
@@ -588,7 +615,7 @@ export function detectAttributeIntent(query: string): AttributeIntent | undefine
     q.includes("how does it work") ||
     q.includes("rounds")
   ) {
-    return "rules";
+    return "EVENT_INFO";
   }
 
   if (
@@ -600,10 +627,11 @@ export function detectAttributeIntent(query: string): AttributeIntent | undefine
     q.includes("fee") ||
     q.includes("fees") ||
     q.includes("ticket") ||
-    q.includes("pass") ||
+    (q.includes("pass") && !q.includes("password")) ||
+    q.includes("how much") ||
     q.includes("cost")
   ) {
-    return "registration";
+    return "REGISTRATION";
   }
 
   if (
@@ -614,7 +642,7 @@ export function detectAttributeIntent(query: string): AttributeIntent | undefine
     q.includes("cash") ||
     q.includes("awards")
   ) {
-    return "prize";
+    return "EVENT_INFO";
   }
 
   if (
@@ -628,11 +656,15 @@ export function detectAttributeIntent(query: string): AttributeIntent | undefine
     q.includes("contacts") ||
     q.includes("who do i contact") ||
     q.includes("who to contact") ||
+    q.includes("who do i call") ||
+    q.includes("who to call") ||
     q.includes("who manages") ||
+    q.includes("who handles") ||
+    q.includes("handles") ||
     q.includes("manages") ||
     q.includes("who is in charge")
   ) {
-    return "contact";
+    return "EVENT_CONTACT";
   }
 
   if (
@@ -640,12 +672,16 @@ export function detectAttributeIntent(query: string): AttributeIntent | undefine
     q.includes("tell me about") ||
     q.includes("about") ||
     q.includes("details") ||
-    q.includes("explain")
+    q.includes("explain") ||
+    q.includes("work") ||
+    q.includes("overview") ||
+    q.includes("info") ||
+    q.includes("event")
   ) {
-    return "overview";
+    return "EVENT_INFO";
   }
 
-  return undefined;
+  return "UNKNOWN";
 }
 
 /**
@@ -677,7 +713,7 @@ export function isFollowUpReference(query: string): boolean {
     /\b(what are the rules|rules|guidelines|format)\b/,
     /\b(how do i register|how to register|what about registration|registration|fees|fee)\b/,
     /\b(what is the prize|prize|prizes)\b/,
-    /\b(who is the coordinator|contact|spoc|spocs|who manages|who do i contact|who to contact)\b/,
+    /\b(who is the coordinator|contact|spoc|spocs|who manages|who handles|who do i call|who do i contact|who to contact)\b/,
     /\b(tell me more|details)\b/,
   ];
 

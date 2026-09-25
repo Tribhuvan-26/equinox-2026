@@ -160,7 +160,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     category: "Keynote & Insights",
     tagline: "Industry Experts on Tech, Startups & Emerging Trends",
     description:
-      "Featuring inspiring presentations from industry experts on the latest trends in technology and entrepreneurship, Spotlight provides attendees with valuable insights into emerging technologies, industry trends, and the future of work. Participants hear firsthand personal stories of resilience and innovation from successful entrepreneurs.",
+      "Spotlight is an interactive session that brings students closer to entrepreneurs, industry professionals, and thought leaders. The event creates a platform for meaningful conversations about business, innovation, technology, leadership, and professional growth. Participants get the opportunity to hear about real experiences, understand the challenges faced by industry professionals, and explore how ideas develop into practical ventures. Through engaging discussions and personal insights, the session encourages curiosity and provides a broader understanding of the entrepreneurial and professional world. Whether you're interested in entrepreneurship, career development, or emerging industry trends, Spotlight offers an opportunity to learn from experienced individuals and gain perspectives that extend beyond the classroom.",
     skills: ["Tech Trends", "Industry Foresight", "Startup Insights", "Q&A Engagement"],
     format: "Keynote talks by proven tech leaders followed by audience interactive sessions",
     timing: "30 - 31 Oct (Session slots releasing soon)",
@@ -180,7 +180,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     category: "Case Competition",
     tagline: "Business Case-Study Strategy & Practical Solutions",
     description:
-      "An interactive business simulation where each team member takes on a specific role, such as CEO, CTO, or Marketing Manager. Teams face a challenging scenario and develop a strategic plan to overcome obstacles, with top teams awarded for creativity, feasibility, and teamwork.",
+      "Crossroads is a business case-study competition that places participants in real-world business situations. Teams step into the roles of decision-makers and work together to understand challenges, identify opportunities, and develop practical strategies. Participants may take on roles such as CEO, CTO, Marketing Manager, or Finance Head, allowing them to examine a business problem from different perspectives. Each team must analyse the given situation, evaluate possible approaches, and prepare a solution that addresses the central challenge. The competition concludes with teams presenting their strategies and defending their decisions. Through this experience, participants explore the complexities of business management, teamwork, and strategic thinking in a competitive environment.",
     skills: ["Case Breakdown", "Strategic Problem-Solving", "Risk Evaluation", "Business Acumen"],
     format: "Real-world dilemma dossier assigned to teams; live jury pitch & strategy defense",
     timing: "30 Oct (10:00 AM - 04:00 PM)",
@@ -200,7 +200,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     category: "Product Exhibition",
     tagline: "Showcase Solutions, Products & Innovative Ideas",
     description:
-      "The Startup Expo offers an exciting platform for students to showcase their innovative products and business ideas to a diverse audience. It is a great opportunity for creators to showcase their ideas and marketing skills to simulate a real-life market.",
+      "Startup Expo provides a platform for startups and emerging ventures to present their products, services, and innovative ideas to a wider audience. The event allows participants to interact directly with founders, understand the problems their startups are addressing, and learn how different businesses develop solutions for their customers. It creates an environment where innovation can be explored through conversations and demonstrations. For startups, the expo offers an opportunity to increase visibility, receive audience feedback, and connect with students and members of the entrepreneurial ecosystem. For visitors, it offers a closer look at the ideas and businesses being developed around them.",
     skills: ["Product Pitching", "Live Demonstrations", "Customer Feedback", "Networking"],
     format: "Dedicated exhibition stalls for prototypes, hardware demos, and software products",
     timing: "30 - 31 Oct (Full-Day Expo Pavilion)",
@@ -220,7 +220,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     category: "Competitive Debate",
     tagline: "Rival Brands Defense & Strategy Clash",
     description:
-      "A competitive debate where two teams represent rival brands from the same sector. Participants present strong, well-researched arguments supported by real-time data, case studies, and relevant market examples to demonstrate why their chosen brand stands superior.",
+      "Brand Battles is a competitive debate where participants represent rival brands from the same industry. Teams must defend their chosen brand by using research, relevant data, real-world examples, and well-structured arguments. The event encourages participants to examine how brands compete, communicate their value, attract customers, and establish their position in the market. Teams must understand their own brand as well as the strategies of their competitors. As the debate progresses, participants present their viewpoints, challenge opposing arguments, and respond to questions. The event combines brand analysis, business reasoning, and persuasive communication in an engaging competitive format.",
     skills: ["Brand Defense", "Market Research", "Logical Rebuttal", "Competitive Countering"],
     format: "Head-to-head bracket debates pitting sector giants (e.g. Swiggy vs Zomato)",
     timing: "31 Oct (11:00 AM - 03:30 PM)",
@@ -240,7 +240,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     category: "Strategic Simulation",
     tagline: "Live Simulated Cricket Bidding & Team Valuation",
     description:
-      "A competitive cricket draft experience where participants step into the shoes of team owners and build their own squads. Each team receives a fixed budget to bid on players in a fast-paced format as participants strategize, outbid rivals, and assemble the strongest lineup.",
+      "IPL Auction is a simulated cricket auction in which participants take on the role of franchise owners and compete to build their ideal cricket team. Each team must make careful decisions while working within a limited budget. Participants evaluate available players, decide when to place bids, and manage their finances throughout the auction. Every purchase affects the remaining budget and the team's ability to acquire other players, making planning an important part of the experience. The event combines cricket knowledge with strategic thinking, financial management, and competitive bidding. Participants must balance their preferences with their budget while working towards building a strong and well-planned squad.",
     skills: ["Budget Allocation", "Live Bidding Discipline", "Squad Optimization", "Valuation"],
     format: "Live auctioneer with virtual budget purse, category quotas, and points calculation",
     timing: "31 Oct (Gavel strike at 10:00 AM)",
@@ -262,7 +262,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     category: "Marketing & Sales",
     tagline: "On-Ground Product Marketing & Live Selling Showdown",
     description:
-      "A hands-on business and marketing challenge where participants set up stalls and sell their products to real customers. Every aspect of operations — expenditure, pricing, revenue, and profit — is tracked as teams apply marketing strategies and customer engagement skills.",
+      "Hustle Mania is an interactive selling and marketing event where participants operate stalls and sell products of their choice. It gives students an opportunity to experience the practical side of business by engaging directly with potential customers. Participants decide how to present their products, attract attention, communicate value, and respond to customer questions. They must adjust their approach based on customer reactions while working to generate sales in a competitive environment. The event transforms selling into a hands-on experience, allowing participants to explore the realities of customer interaction, marketing, negotiation, and business communication. Every conversation becomes an opportunity to understand customer preferences and improve the selling approach.",
     skills: ["Direct Sales", "Persuasive Negotiation", "Pricing Margins", "Guerrilla Tactics"],
     format: "Live campus market day; teams pitch, negotiate, and sell within designated zones",
     timing: "30 Oct (Running throughout Day 1)",
@@ -282,7 +282,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     category: "Career & Recruitment",
     tagline: "Connect with Startups for Real-World Opportunities",
     description:
-      "A unique platform designed for students to connect with companies and dynamic startups that may not traditionally engage with campus recruitment, exploring diverse career paths, gaining valuable experience, and building professional networks.",
+      "Internship Drive brings students and participating startups or organisations together to explore internship and career opportunities. The event provides a platform for students to learn about different professional roles, understand workplace expectations, and interact with organisations from various industries. Participating organisations can introduce their work, explain available opportunities, and connect with students who are interested in gaining practical experience. Students can discuss potential roles, understand relevant requirements, and learn more about the skills needed in professional environments. By bringing employers and students into one space, Internship Drive encourages meaningful interaction and helps participants explore possible career directions beyond their academic studies.",
     skills: ["Interviewing", "Resume Pitching", "Startup Readiness", "Professional Networking"],
     format: "Face-to-face founder interviews, portfolio reviews, and on-the-spot screening",
     timing: "31 Oct (10:00 AM - 03:00 PM)",
@@ -302,7 +302,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     category: "Business Gaming",
     tagline: "Fast-Paced Monopoly-Inspired Startup Simulation",
     description:
-      "A Monopoly-inspired entrepreneurship challenge where participants roll a die and navigate through a board filled with startup-themed opportunities, challenges, rewards, and setbacks, testing business decision-making to remain until the end.",
+      "Startup Poly is a live, startup-themed business simulation inspired by the mechanics of a board game. Teams compete to build and manage a valuable business portfolio within a fixed gameplay period. Participants begin with available funds and move across a specially designed board, where they encounter opportunities to acquire and upgrade businesses. Throughout the game, teams must manage their finances, evaluate investments, respond to changing situations, and make decisions that influence their business growth. The simulation introduces participants to business concepts through an engaging and competitive format. Instead of simply discussing entrepreneurship, teams experience the challenges of managing resources, taking risks, responding to competition, and making decisions within limited time and money.",
     skills: ["Cashflow Management", "Risk Balancing", "Market Maneuvers", "Tabletop Strategy"],
     format: "Multi-table business board game tournament with market shock cards",
     timing: "30 Oct (11:00 AM - 04:00 PM)",
@@ -322,7 +322,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     category: "Leadership & Ecosystem",
     tagline: "Cross-Campus Conclave for Entrepreneurship Leaders",
     description:
-      "A networking event where E-Cells from different colleges come together to collaborate, share ideas, and exchange experiences, focusing on building relationships and fostering partnerships across campuses.",
+      "E-Cell Meet is an inter-college gathering that brings together entrepreneurship cells, student leaders, and innovation communities from different institutions. The event provides a space for participants to exchange experiences, discuss initiatives, and explore opportunities for collaboration. Representatives from different E-Cells can share their approaches to organising events, engaging students, supporting innovation, and promoting entrepreneurship on their campuses. The gathering encourages open discussions about common challenges and possible ways to strengthen student-led initiatives. Through conversations and networking, E-Cell Meet aims to build stronger connections between campus entrepreneurship communities and create opportunities for future partnerships and collaborative activities.",
     skills: ["Ecosystem Scaling", "Cross-Campus Collaboration", "Institutional Partnerships"],
     format: "Roundtable policy discussions, case sharing, and regional inter-college pacts",
     timing: "31 Oct (02:00 PM - 05:00 PM)",
@@ -342,7 +342,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     category: "Startup Pitching",
     tagline: "Presenting Ventures to Investors & Mentors",
     description:
-      "An idea presentation event where participants showcase their startup concepts to a panel of investors, venture capitalists, and industry experts. Teams present problem statement, solution, business model, and market potential through a structured pitch.",
+      "Pitch Deck is a startup pitching platform where selected teams present their business ideas before investors, mentors, and industry professionals. The event gives aspiring entrepreneurs an opportunity to explain their ventures and receive feedback from experienced members of the business ecosystem. Participants present important aspects of their startup, including the problem they aim to solve, their proposed solution, target customers, business model, market opportunity, and future plans. They must communicate their ideas clearly while responding to questions from the panel. The session provides exposure to the pitching process and helps participants understand how business ideas are presented and evaluated. Through feedback and interaction with the panel, teams can gain new perspectives on their concepts and identify areas for further improvement.",
     skills: ["Investor Pitching", "Financial Projections", "Value Proposition", "Venture Defense"],
     format: "5-minute pitch deck presentation + 5-minute interrogation by angel investors",
     timing: "31 Oct (Grand Finale Track - 10:30 AM onwards)",

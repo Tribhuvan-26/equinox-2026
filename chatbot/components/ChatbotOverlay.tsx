@@ -19,26 +19,65 @@ interface ChatbotOverlayProps {
   onEventSelect?: (slug: string) => void;
 }
 
+const PROMPTS_SCROLL = [
+  {
+    title: "Scroll to explore",
+    arrow: "↓",
+    subtitle: "Scroll down to travel the galaxy",
+  },
+  {
+    title: "Have doubts? Ask me!",
+    arrow: "→",
+    subtitle: "Events, rules & schedules",
+  },
+];
+
+const PROMPTS_OTHER = [
+  {
+    title: "Have doubts? Ask me!",
+    arrow: "→",
+    subtitle: "Events, rules & schedules",
+  },
+  {
+    title: "Need help? Ask Chitti",
+    arrow: "→",
+    subtitle: "Clear your doubts & explore",
+  },
+];
+
 export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOverlayProps) {
   const pathname = usePathname();
   const isScrollJourney = pathname === "/";
   const [isOpen, setIsOpen] = useState(initialOpen);
   const [isRendered, setIsRendered] = useState(initialOpen);
   const [isBubbleVisible, setIsBubbleVisible] = useState(false);
+  const [promptIndex, setPromptIndex] = useState(0);
   const windowRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Initial bubble appearance on scroll journey
+  const activePrompts = isScrollJourney ? PROMPTS_SCROLL : PROMPTS_OTHER;
+
+  // Cycle the bubble message every 4 seconds while visible
   useEffect(() => {
-    if (!isScrollJourney || isOpen) {
+    if (!isBubbleVisible || isOpen) return;
+    const interval = setInterval(() => {
+      setPromptIndex((prev) => (prev + 1) % activePrompts.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [isBubbleVisible, isOpen, activePrompts.length]);
+
+
+  // Initial bubble appearance
+  useEffect(() => {
+    if (isOpen) {
       setIsBubbleVisible(false);
       return;
     }
 
     const timer = setTimeout(() => {
       setIsBubbleVisible(true);
-    }, 2500);
+    }, isScrollJourney ? 2500 : 1500);
 
     const handleIntroDone = () => {
       setIsBubbleVisible(true);
@@ -64,9 +103,10 @@ export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOv
         clearTimeout(idleTimerRef.current);
       }
 
-      // Return if user hasn't scrolled for 4 seconds
+      // Return if user hasn't scrolled for 4 seconds, showing "Scroll to explore"
       idleTimerRef.current = setTimeout(() => {
         if (!isOpen && isScrollJourney) {
+          setPromptIndex(0);
           setIsBubbleVisible(true);
         }
       }, 4000);
@@ -115,31 +155,41 @@ export function ChatbotOverlay({ initialOpen = false, onEventSelect }: ChatbotOv
     setIsOpen((prev) => !prev);
   };
 
+  const currentPrompt = activePrompts[promptIndex % activePrompts.length];
+
   return (
     <div className="equinox-chatbot-root" data-lenis-prevent>
       {/* Floating Circular Equinox AI Launcher Button & Speech Bubble */}
       <div className="fixed right-4 bottom-4 z-[99990] sm:right-6 sm:bottom-6 flex items-center">
-        {/* Chat Bubble (Scroll Journey idle prompt) */}
-        {!isOpen && isScrollJourney && (
+        {/* Chat Speech Bubble */}
+        {!isOpen && (
           <div
             onClick={toggleOpen}
-            className={`cursor-pointer select-none transition-all duration-300 ease-out mr-3 flex items-center gap-2 rounded-2xl bg-[#0E0E0E] border border-white/15 px-3.5 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.85)] relative ${
+            className={`cursor-pointer select-none transition-all duration-300 ease-out mr-3 flex items-center gap-2.5 rounded-2xl bg-[#0E0E0E]/95 backdrop-blur-md border border-white/20 px-3.5 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.85)] relative group hover:border-[#7484FE]/60 hover:bg-[#141414] ${
               isBubbleVisible
                 ? "opacity-100 translate-x-0 pointer-events-auto scale-100"
                 : "opacity-0 translate-x-2 pointer-events-none scale-95"
             }`}
           >
-            <div className="flex items-center gap-2">
-              <span className="relative flex h-2 w-2">
+            <div className="flex items-center gap-2.5">
+              <span className="relative flex h-2 w-2 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#33FF67] opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#33FF67]" />
               </span>
-              <span className="font-mono text-[11px] sm:text-xs font-semibold tracking-wide text-white/90 whitespace-nowrap">
-                Scroll to explore <span className="text-[#7484FE]">→</span>
-              </span>
+              <div className="flex flex-col text-left min-w-[145px] sm:min-w-[165px]">
+                <span className="font-mono text-[11px] sm:text-xs font-semibold tracking-wide text-white/95 whitespace-nowrap flex items-center gap-1.5">
+                  {currentPrompt.title}{" "}
+                  <span className="text-[#7484FE] font-bold group-hover:translate-x-0.5 transition-transform">
+                    {currentPrompt.arrow}
+                  </span>
+                </span>
+                <span className="text-[10px] text-white/60 tracking-tight font-sans">
+                  {currentPrompt.subtitle}
+                </span>
+              </div>
             </div>
             {/* Tail pointing right towards the launcher button */}
-            <div className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-0 h-0 border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[6px] border-l-white/15" />
+            <div className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-0 h-0 border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[6px] border-l-white/20" />
             <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-0 h-0 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[5px] border-l-[#0E0E0E]" />
           </div>
         )}

@@ -13,7 +13,7 @@ import {
 import { EQUINOX_SUB_EVENTS, SubEventInfo, EVENT_SPOCS, OVERALL_COORDINATORS } from "@/chatbot/data/events";
 import {
   resolveSubEvent,
-  detectAttributeIntent,
+  detectQuestionCategory,
   normalizeQueryString,
   detectFalsePremise,
   isIdeathonQuery,
@@ -58,7 +58,7 @@ function generateSubEventAttributeAnswer(
   const info = entity.eventInfo;
   const content = entity.contentInfo || subEvents.find((s) => s.slug === entity.slug);
   const q = normalizeQueryString(query);
-  const attribute = detectAttributeIntent(query);
+  const attribute = detectQuestionCategory(query);
 
   const spocs = EVENT_SPOCS[entity.slug] || (content?.spocs) || (content?.spoc ? [content.spoc] : []);
   const spocsFormatted = spocs.map((s) => `• **${s.name}**: ${s.phone}`).join("\n");
@@ -78,7 +78,7 @@ function generateSubEventAttributeAnswer(
 
   // 2. Coordinator / Contact for this Sub-Event
   if (
-    attribute === "contact" ||
+    attribute === "EVENT_CONTACT" ||
     q.includes("coordinator") ||
     q.includes("spoc") ||
     q.includes("spocs") ||
@@ -100,7 +100,7 @@ function generateSubEventAttributeAnswer(
 
   // 3. Timing / Schedule
   if (
-    attribute === "timing" ||
+    attribute === "EVENT_DATE" ||
     q.includes("what time") ||
     q.includes("start time") ||
     q.includes("timing") ||
@@ -119,7 +119,7 @@ function generateSubEventAttributeAnswer(
   }
 
   // 4. Venue / Location
-  if (attribute === "venue" || q.includes("where is") || q.includes("room") || q.includes("hall")) {
+  if (attribute === "EVENT_VENUE" || q.includes("where is") || q.includes("room") || q.includes("hall")) {
     const venue = content?.venue || info.venueRoom;
     return {
       answer: `**${info.name}** Venue:\n\n• **Location**: ${venue}\n• **Campus**: MLR Institute of Technology, Dundigal, Hyderabad${spocsSection}`,
@@ -132,7 +132,7 @@ function generateSubEventAttributeAnswer(
 
   // 5. Eligibility / Team size
   if (
-    attribute === "eligibility" ||
+    attribute === "ELIGIBILITY" ||
     q.includes("participate") ||
     q.includes("eligibility") ||
     q.includes("eligible") ||
@@ -151,7 +151,7 @@ function generateSubEventAttributeAnswer(
   }
 
   // 6. Rules & Format
-  if (attribute === "rules" || q.includes("rule") || q.includes("guideline") || q.includes("format")) {
+  if (attribute === "EVENT_INFO" || q.includes("rule") || q.includes("guideline") || q.includes("format")) {
     const rulesList = content?.rules && content.rules.length > 0
       ? content.rules.map((r: string) => `• ${r}`).join("\n")
       : `• Format: ${info.format}`;
@@ -167,7 +167,7 @@ function generateSubEventAttributeAnswer(
 
   // 7. Registration & Fees
   if (
-    attribute === "registration" ||
+    attribute === "REGISTRATION" ||
     q.includes("register") ||
     q.includes("registration") ||
     q.includes("fee") ||
@@ -184,7 +184,7 @@ function generateSubEventAttributeAnswer(
   }
 
   // 8. Prize & Awards
-  if (attribute === "prize" || q.includes("prize") || q.includes("award") || q.includes("cash")) {
+  if (q.includes("prize") || q.includes("award") || q.includes("cash")) {
     const prizeDetail = content?.prize || "Exclusive awards, certificates, and recognition";
     return {
       answer: `**${info.name}** Prizes & Awards:\n\n• **Prize**: ${prizeDetail}${spocsSection}`,
@@ -269,6 +269,92 @@ export function getMockEquinoxResponse(
   const context = resolveConversationContext(trimmed, history);
   const q = normalizeQueryString(trimmed);
 
+    // 5. UNGROUNDED / UNAVAILABLE TOPICS (Case B)
+  // Check for questions asking for information not present in the official brochure
+  if (
+    q.includes("who won") ||
+    q.includes("winner") ||
+    q.includes("last year") ||
+    q.includes("2025") ||
+    q.includes("previous edition") ||
+    q.includes("previous winner") ||
+    q.includes("past winners") ||
+    q.includes("which college won") ||
+    q.includes("who came second") ||
+    q.includes("how many people attended last year") ||
+    q.includes("how many teams participated last year")
+  ) {
+    return {
+      answer:
+        "I don't have information about past editions or last year's winners in the official Equinox 2.0 program. You can contact the organizers for more information.",
+      suggestions: ["What is Equinox 2.0?", "Dates & Venue", "Explore Sub-Events"],
+      grounded: true,
+    };
+  }
+
+  if (q.includes("judge") || q.includes("judges") || q.includes("jury")) {
+    return {
+      answer:
+        "I don't have information about the judges in the official Equinox 2.0 program. Jury panels and evaluators are announced closer to the event days.",
+      suggestions: ["Explore Sub-Events", "Dates & Venue", "Registration"],
+      grounded: true,
+    };
+  }
+
+  if (q.includes("chief guest") || q.includes("guest of honour") || q.includes("dignitary")) {
+    return {
+      answer:
+        "I don't have information about the chief guest in the official Equinox 2.0 program. Dignitaries and keynote speakers will be announced on the official summit website.",
+      suggestions: ["Spotlight Keynotes", "Dates & Venue", "Explore Sub-Events"],
+      grounded: true,
+    };
+  }
+
+  if (
+    q.includes("total prize pool") ||
+    q.includes("overall prize money") ||
+    q.includes("prize money") ||
+    q.includes("how much money can i win") ||
+    q.includes("what are the prizes") ||
+    q.includes("cash prize") ||
+    ((q.includes("prize pool") || q === "prizes" || q === "EVENT_INFO") && !context.resolvedEntity)
+  ) {
+    return {
+      answer:
+        "The Equinox 2.0 program features dedicated prizes across its sub-events:\n\n• **Brand Battles**: Cash prizes & trophies\n• **IPL Auction**: Champion purse & team medals\n• **Hustle Mania**: Retain sales profits + Winner Trophy\n• **Pitch Deck**: Seed funding & incubation support\n• **Startup Poly**: Equinox Board Champion Shield\n• **Crossroads**: Exciting awards & certificates\n• **Spotlight**: Exclusive mentor connections\n• **Internship Drive**: Paid internship offers\n\nAsk about any specific event to view its complete rules, timing, and coordinator contacts!",
+      suggestions: ["Brand Battles prizes", "IPL Auction prizes", "Hustle Mania prizes", "Pitch Deck prizes"],
+      links: [{ label: "Explore Sub-Events", url: "/events" }],
+      grounded: true,
+    };
+  }
+
+  if (q.includes("wifi") || q.includes("wi fi") || q.includes("password")) {
+    return {
+      answer:
+        "I don't have the WiFi password in the official Equinox 2.0 program. Campus network access details will be provided at the registration desk during check-in.",
+      suggestions: ["Dates & Venue", "Explore Sub-Events", "Registration"],
+      grounded: true,
+    };
+  }
+
+  if (
+    q.includes("food") ||
+    q.includes("lunch") ||
+    q.includes("accommodation") ||
+    q.includes("stay") ||
+    q.includes("hotel") ||
+    q.includes("transport") ||
+    q.includes("bus") ||
+    q.includes("cab")
+  ) {
+    return {
+      answer:
+        "I don't have information about food, accommodation, or transport arrangements in the official Equinox 2.0 program. You can contact the organizers at cie@mlrinstitutions.ac.in for more information.",
+      suggestions: ["Dates & Venue", "Explore Sub-Events", "Registration"],
+      grounded: true,
+    };
+  }
+
   // 4. If an active entity is identified
   if (context.resolvedEntity) {
     return generateSubEventAttributeAnswer(
@@ -326,7 +412,7 @@ export function getMockEquinoxResponse(
     q.includes("how much money can i win") ||
     q.includes("what are the prizes") ||
     q.includes("cash prize") ||
-    ((q.includes("prize pool") || q === "prizes" || q === "prize") && !context.resolvedEntity)
+    ((q.includes("prize pool") || q === "prizes" || q === "EVENT_INFO") && !context.resolvedEntity)
   ) {
     return {
       answer:
@@ -342,7 +428,7 @@ export function getMockEquinoxResponse(
     q.includes("registration") ||
     q.includes("register") ||
     q.includes("ticket") ||
-    q.includes("pass") ||
+    (q.includes("pass") && !q.includes("password")) ||
     q.includes("cost") ||
     q.includes("fee")
   ) {

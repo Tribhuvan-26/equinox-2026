@@ -8,7 +8,7 @@ import { getMockEquinoxResponse } from "@/lib/chatbot";
 import { evaluateGuardrails } from "./guardrails";
 import { resolveConversationContext, ChatHistoryMessage } from "./context";
 import {
-  detectAttributeIntent,
+  detectQuestionCategory,
   detectFalsePremise,
   normalizeQueryString,
   isIdeathonQuery,
@@ -107,10 +107,10 @@ function matchEventCard(
     return undefined;
   }
 
-  const attr = detectAttributeIntent(query);
+  const attr = detectQuestionCategory(query);
   // ONLY show event card for overview queries (e.g. "What is Crossroads?", "Tell me about Hustle Mania", "IPL Auction")
   // Do NOT show card on specific attribute queries (e.g. "What time does IPL Auction start?")
-  if (attr && attr !== "overview") {
+  if (attr && attr !== "EVENT_INFO") {
     return undefined;
   }
 
@@ -196,6 +196,25 @@ export async function generateRagChatResponse(
 
   // 4. Resolve Conversation Context & Coreference
   const context = resolveConversationContext(trimmed, history);
+
+  // 4.5. Predefined FAQ Routing & Structured Event Data
+  const category = detectQuestionCategory(context.augmentedQuery);
+  
+  if (category !== "UNKNOWN" || context.resolvedEntity) {
+    const mock = getMockEquinoxResponse(context.augmentedQuery, history);
+    // Only return if it's a solid hit, not a "I don't have information" generic failure
+    if (mock.answer && (!mock.answer.includes("I don't have information") || !getAiClient())) {
+      return {
+        answer: mock.answer,
+        eventCard: mock.eventCard,
+        suggestions: mock.suggestions,
+        links: mock.links,
+        retrievedChunks: [],
+        grounded: mock.grounded ?? true,
+        source: "mock-fallback",
+      };
+    }
+  }
 
   const ai = getAiClient();
   if (!ai) {
