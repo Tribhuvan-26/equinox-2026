@@ -91,16 +91,31 @@ export function NavBar({
       e.preventDefault();
 
       if (pathname === "/") {
-        // If already on homepage, just scroll smoothly to top
+        // Direct intentional jump to top of homepage
+        try {
+          sessionStorage.removeItem("equinox_home_scroll");
+          sessionStorage.removeItem("equinox_scroll_y");
+          sessionStorage.removeItem("equinox_restore_pending");
+        } catch {}
         if (typeof window !== "undefined") {
-          if ((window as any).__lenis) {
-            (window as any).__lenis.scrollTo(0, { immediate: false, duration: 1.5 });
+          if ((window as any).__resetScrollJourney) {
+            (window as any).__resetScrollJourney();
+          } else if ((window as any).__lenis) {
+            (window as any).__lenis.scrollTo(0, { immediate: true });
+            (window as any).__lenis.velocity = 0;
+            window.scrollTo({ top: 0, behavior: "instant" });
           } else {
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            window.scrollTo({ top: 0, behavior: "instant" });
           }
           window.history.replaceState(null, "", "/#top");
         }
       } else {
+        // If returning from a sub-event, preserve restoration state
+        if (pathname.startsWith("/events")) {
+          try {
+            sessionStorage.setItem("equinox_restore_pending", "true");
+          } catch {}
+        }
         // Navigate directly to homepage
         router.push("/");
       }

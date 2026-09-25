@@ -25,6 +25,14 @@ export default function LogoMarquee({ slugs, names }: { slugs: string[]; names: 
             <Link
               key={`${slug}-${i}`}
               href={`/events/${slug}`}
+              onClick={() => {
+                try {
+                  const y = window.scrollY;
+                  sessionStorage.setItem("equinox_home_scroll", y.toString());
+                  sessionStorage.setItem("equinox_scroll_y", y.toString());
+                  sessionStorage.setItem("equinox_restore_pending", "true");
+                } catch {}
+              }}
               aria-label={`View ${eventName} details`}
               title={`View ${eventName}`}
               className="group relative flex shrink-0 items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#33FF67] rounded-xl"

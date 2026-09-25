@@ -1,9 +1,9 @@
-import { sanityAssets } from "@/lib/sanity-assets";
+﻿import { sanityAssets } from "@/lib/sanity-assets";
 import { urlForImage } from "@/sanity/lib/image";
 
 export default function NebulaBackground() {
-  const bgUrl = sanityAssets["equinox_background.jpg"] 
-    ? urlForImage(sanityAssets["equinox_background.jpg"]).url() 
+  const bgUrl = sanityAssets["equinox_background.jpg"]
+    ? urlForImage(sanityAssets["equinox_background.jpg"]).url()
     : "/equinox_background.jpg";
 
   return (

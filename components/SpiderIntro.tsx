@@ -70,6 +70,9 @@ export default function SpiderIntro({ onDone }: { onDone?: () => void }) {
       if (finished) return;
       finished = true;
       clearTimeout(failsafe);
+      try {
+        sessionStorage.setItem("equinox_intro_done", "true");
+      } catch (e) {}
       onDone?.();
       window.dispatchEvent(new Event("equinox:intro-done"));
     };

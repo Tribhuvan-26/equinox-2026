@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   motion,
   type Variants,
@@ -41,6 +41,72 @@ const heroFadeUp: Variants = {
 };
 
 export default function HomePage() {
+  useEffect(() => {
+    // Disable automatic browser scroll restoration so our exact restoration takes precedence
+    if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+
+    // Save scroll position when navigating to any event from the homepage
+    const handleLinkClick = (e: MouseEvent) => {
+      const target = (e.target as Element)?.closest?.("a");
+      if (!target) return;
+      const href = target.getAttribute("href");
+      if (href && (href.startsWith("/events") || href.includes("/events/"))) {
+        try {
+          const y = window.scrollY;
+          sessionStorage.setItem("equinox_home_scroll", y.toString());
+          sessionStorage.setItem("equinox_scroll_y", y.toString());
+          sessionStorage.setItem("equinox_restore_pending", "true");
+        } catch {}
+      }
+    };
+    window.addEventListener("click", handleLinkClick, { capture: true });
+
+    // Restore scroll position if returning from a sub-event
+    try {
+      const saved = sessionStorage.getItem("equinox_home_scroll") || sessionStorage.getItem("equinox_scroll_y");
+      const isPending = sessionStorage.getItem("equinox_restore_pending");
+      if (saved !== null && isPending === "true") {
+        const targetY = parseFloat(saved);
+        if (!isNaN(targetY) && targetY >= 0) {
+          const doRestore = () => {
+            if ((window as any).__restoreScrollJourney) {
+              (window as any).__restoreScrollJourney(targetY);
+            } else {
+              if ((window as any).__lenis) {
+                (window as any).__lenis.scrollTo(targetY, { immediate: true });
+                (window as any).__lenis.velocity = 0;
+              }
+              window.scrollTo({ top: targetY, left: 0, behavior: "instant" });
+            }
+          };
+
+          // Apply across early render frames to prevent Next.js / browser reset to 0
+          doRestore();
+          requestAnimationFrame(() => {
+            doRestore();
+            const t1 = setTimeout(doRestore, 40);
+            const t2 = setTimeout(doRestore, 120);
+            const t3 = setTimeout(() => {
+              doRestore();
+              sessionStorage.removeItem("equinox_restore_pending");
+            }, 300);
+            return () => {
+              clearTimeout(t1);
+              clearTimeout(t2);
+              clearTimeout(t3);
+            };
+          });
+        }
+      }
+    } catch {}
+
+    return () => {
+      window.removeEventListener("click", handleLinkClick, { capture: true });
+    };
+  }, []);
+
   return (
     <div id="top" className="riso-texture brochure-grid min-h-screen overflow-x-clip text-[#F7F2F6] selection:bg-[#7484FE] selection:text-[#2A2A2A]">
       <ScrollJourney />

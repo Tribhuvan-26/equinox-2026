@@ -19,7 +19,7 @@ import type { RegistrationRecord } from "@/lib/registration/types";
 export function RegistrationChart({ registrations }: { registrations: RegistrationRecord[] }) {
   const last7Days = eachDayOfInterval({ start: subDays(new Date(), 6), end: new Date() });
 
-  const dailyData = last7Days.map((day) => {
+  const dailyData = last7Days.map((day: Date) => {
     const dayStart = startOfDay(day);
     const dayRegs = registrations.filter(
       (r) => startOfDay(parseISO(r.created_at)).getTime() === dayStart.getTime()
@@ -65,7 +65,7 @@ export function RegistrationChart({ registrations }: { registrations: Registrati
               cx="50%"
               cy="50%"
               labelLine={false}
-              label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
+              label={({ name, percent }: { name?: string; percent?: number }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
               outerRadius={90}
               dataKey="value"
             >

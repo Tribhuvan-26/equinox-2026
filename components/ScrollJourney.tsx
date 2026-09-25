@@ -75,9 +75,15 @@ export default function ScrollJourney() {
   // A client-side navigation preserves the context, so returning home skips the intro if done.
   const [showLoader, setShowLoader] = useState(() => {
     if (typeof window !== "undefined") {
-      if ((window as any).__equinox_first_mount_done && sessionStorage.getItem("equinox_intro_done") === "true") {
-        return false;
-      }
+      try {
+        if (
+          sessionStorage.getItem("equinox_intro_done") === "true" ||
+          sessionStorage.getItem("equinox_home_scroll") !== null ||
+          sessionStorage.getItem("equinox_scroll_y") !== null
+        ) {
+          return false;
+        }
+      } catch (e) {}
     }
     return true;
   });
@@ -108,9 +114,12 @@ export default function ScrollJourney() {
   // ── INSTANT SCROLL RESTORATION ───────────────────────────────────────────────
   useIsomorphicLayoutEffect(() => {
     if (!showLoader && typeof window !== "undefined") {
-      const savedY = sessionStorage.getItem("equinox_scroll_y");
-      if (savedY) {
-        window.scrollTo({ top: parseInt(savedY, 10), left: 0, behavior: "instant" });
+      const saved = sessionStorage.getItem("equinox_home_scroll") || sessionStorage.getItem("equinox_scroll_y");
+      if (saved) {
+        const y = parseFloat(saved);
+        if (!isNaN(y) && y >= 0) {
+          window.scrollTo({ top: y, left: 0, behavior: "instant" });
+        }
       }
     }
   }, [showLoader]);
@@ -127,8 +136,14 @@ export default function ScrollJourney() {
     lenisRef.current = lenis;
     if (typeof window !== "undefined") {
       (window as any).__lenis = lenis;
-      const savedY = sessionStorage.getItem("equinox_scroll_y");
-      if (savedY) lenis.scrollTo(parseInt(savedY, 10), { immediate: true });
+      const saved = sessionStorage.getItem("equinox_home_scroll") || sessionStorage.getItem("equinox_scroll_y");
+      if (saved) {
+        const y = parseFloat(saved);
+        if (!isNaN(y) && y >= 0) {
+          lenis.scrollTo(y, { immediate: true });
+          lenis.velocity = 0;
+        }
+      }
     }
     lenis.on("scroll", ScrollTrigger.update);
     const tick = (t: number) => lenis.raf(t * 1000);
@@ -660,14 +675,80 @@ export default function ScrollJourney() {
         ScrollTrigger.update();
       };
 
+      // ── DIRECT INSTANT RESTORATION FOR RETURNING NAVIGATION ───────────────
+      const restoreScrollJourney = (targetY: number) => {
+        if (typeof targetY !== "number" || isNaN(targetY) || targetY < 0) return;
+
+        // 1. Immediately teleport Lenis to targetY with zero velocity
+        if (lenisRef.current) {
+          lenisRef.current.scrollTo(targetY, { immediate: true });
+          lenisRef.current.velocity = 0;
+        }
+        window.scrollTo({ top: targetY, left: 0, behavior: "instant" });
+
+        // 2. Snap GSAP timeline and its ScrollTrigger directly to targetY
+        if (mainTl) {
+          const st = mainTl.scrollTrigger;
+          if (st) {
+            st.scroll(targetY);
+            const total = st.end - st.start;
+            if (total > 0) {
+              const rawP = (targetY - st.start) / total;
+              const progress = Math.max(0, Math.min(1, rawP));
+              mainTl.progress(progress, false);
+
+              if (!isMobile) {
+                if (progress >= 0.2 && progress <= 0.9) {
+                  const journeyP = (progress - 0.2) / 0.7;
+                  updateJourneyProgress(journeyP);
+                  const shouldPause = progress > 0.14;
+                  if (shouldPause !== globePausedRef.current) {
+                    globePausedRef.current = shouldPause;
+                    setIsGlobePaused(shouldPause);
+                  }
+                } else if (progress > 0.9) {
+                  updateJourneyProgress(1);
+                  setIsGlobePaused(true);
+                  globePausedRef.current = true;
+                } else {
+                  updateJourneyProgress(0);
+                }
+              }
+            }
+          }
+        }
+
+        // 3. Sync ScrollTrigger immediately
+        ScrollTrigger.update();
+      };
+
       if (typeof window !== "undefined") {
         (window as any).__resetScrollJourney = resetScrollJourney;
+        (window as any).__restoreScrollJourney = restoreScrollJourney;
+      }
+
+      // Check for saved scroll position on initialization
+      let didRestoreOnInit = false;
+      try {
+        const saved = sessionStorage.getItem("equinox_home_scroll") || sessionStorage.getItem("equinox_scroll_y");
+        if (saved !== null) {
+          const targetY = parseFloat(saved);
+          if (!isNaN(targetY) && targetY > 0) {
+            didRestoreOnInit = true;
+            restoreScrollJourney(targetY);
+          }
+        }
+      } catch (e) {}
+
+      if (!didRestoreOnInit) {
+        updateJourneyProgress(0);
       }
 
       return () => {
         window.removeEventListener("resize", updateHeaderSpace);
         if (typeof window !== "undefined") {
           delete (window as any).__resetScrollJourney;
+          delete (window as any).__restoreScrollJourney;
         }
       };
     }, containerRef);
@@ -675,9 +756,13 @@ export default function ScrollJourney() {
     // Save scroll position ONLY on intentional navigation clicks 
     // This prevents Next.js from overwriting it with 0 when it forces a scroll-to-top during route transitions
     const savePositionOnClick = (e: MouseEvent) => {
-      const link = (e.target as HTMLElement).closest("a");
-      if (link && link.href && !link.href.includes("#top")) {
-        sessionStorage.setItem("equinox_scroll_y", window.scrollY.toString());
+      const link = (e.target as Element)?.closest?.("a");
+      const href = link?.getAttribute("href") || "";
+      if (href && !href.includes("#top")) {
+        const y = window.scrollY;
+        sessionStorage.setItem("equinox_home_scroll", y.toString());
+        sessionStorage.setItem("equinox_scroll_y", y.toString());
+        sessionStorage.setItem("equinox_restore_pending", "true");
       }
     };
     document.addEventListener("click", savePositionOnClick, { capture: true });
@@ -1442,6 +1527,14 @@ export default function ScrollJourney() {
                           <div className="mt-4 flex items-center w-full">
                             <Link
                               href={`/events/${ev.slug}`}
+                              onClick={() => {
+                                try {
+                                  const y = window.scrollY;
+                                  sessionStorage.setItem("equinox_home_scroll", y.toString());
+                                  sessionStorage.setItem("equinox_scroll_y", y.toString());
+                                  sessionStorage.setItem("equinox_restore_pending", "true");
+                                } catch {}
+                              }}
                               className="group relative inline-flex items-center justify-between gap-4 rounded-full pl-6 pr-2 py-2 text-xs font-mono font-bold uppercase tracking-[0.12em] text-[#161616] bg-[#33FF67] shadow-[0_0_20px_rgba(51,255,103,0.3),inset_0_1px_0_rgba(255,255,255,0.4)] transition-all duration-300 hover:shadow-[0_0_30px_rgba(51,255,103,0.55)] hover:bg-[#45ff75] hover:scale-[1.02] active:scale-[0.98]"
                             >
                               <span>Explore Event</span>

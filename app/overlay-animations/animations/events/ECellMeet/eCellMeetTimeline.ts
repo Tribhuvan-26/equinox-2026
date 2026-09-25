@@ -116,7 +116,6 @@ export function createECellMeetTimeline(
 
   // 6. Upper People Group (Framed Comfortably Inside Upper Arc Container)
   // Note: Permanently STATIC and centered inside arc — no animation/translation
-  const _elPeople = q("#ecell-people-group");
 
   // 7. Dominant Center Title
   const elTitleECell = q("#title-ecell");
@@ -176,6 +175,7 @@ export function createECellMeetTimeline(
   });
 
   // Solid Lines setup for progressive SVG line drawing
+  const elLine7Link = q("#net-link-7");
   const allSolidLines = [
     elLine1,
     elLine5,
@@ -183,16 +183,19 @@ export function createECellMeetTimeline(
     elLine6,
     elLine3,
     elLine7,
+    elLine7Link,
   ];
 
   allSolidLines.forEach((line) => {
     if (!line || line.length === 0) return;
-    const l = line[0] as unknown as SVGLineElement;
-    const x1 = parseFloat(l.getAttribute("x1") || "0");
-    const y1 = parseFloat(l.getAttribute("y1") || "0");
-    const x2 = parseFloat(l.getAttribute("x2") || "0");
-    const y2 = parseFloat(l.getAttribute("y2") || "0");
-    const len = Math.hypot(x2 - x1, y2 - y1) || 120;
+    const l = line[0] as unknown as SVGGeometryElement;
+    const len =
+      typeof l.getTotalLength === "function"
+        ? l.getTotalLength()
+        : Math.hypot(
+            parseFloat(l.getAttribute("x2") || "0") - parseFloat(l.getAttribute("x1") || "0"),
+            parseFloat(l.getAttribute("y2") || "0") - parseFloat(l.getAttribute("y1") || "0")
+          ) || 120;
     gsap.set(l, {
       strokeDasharray: len,
       strokeDashoffset: len,
@@ -400,7 +403,7 @@ export function createECellMeetTimeline(
   tl.to(
     [elClipDot1, elClipDot3],
     {
-      attr: { width: 85 },
+      attr: { width: 140 },
       duration: 0.30,
       ease: "power2.out",
     },
@@ -470,7 +473,7 @@ export function createECellMeetTimeline(
   tl.to(
     [elClipDot2, elClipDot4],
     {
-      attr: { width: 110 },
+      attr: { width: 140 },
       duration: 0.30,
       ease: "power2.out",
     },
@@ -525,7 +528,7 @@ export function createECellMeetTimeline(
 
   // Synchronized Level 3 connections
   tl.to(
-    [elLine3, elLine7],
+    [elLine3, elLine7, elLine7Link],
     {
       opacity: 1,
       strokeDashoffset: 0,

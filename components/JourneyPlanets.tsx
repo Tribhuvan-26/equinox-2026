@@ -97,7 +97,18 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
       transform={`translate(${x}, ${y})`}
       id={`planet-node-${index}`}
     >
-      <Link href={`/events/${event.slug}`} className="group pointer-events-auto cursor-pointer">
+      <Link
+        href={`/events/${event.slug}`}
+        onClick={() => {
+          try {
+            const y = window.scrollY;
+            sessionStorage.setItem("equinox_home_scroll", y.toString());
+            sessionStorage.setItem("equinox_scroll_y", y.toString());
+            sessionStorage.setItem("equinox_restore_pending", "true");
+          } catch {}
+        }}
+        className="group pointer-events-auto cursor-pointer"
+      >
         <g
           transform="scale(1.75)"
           className="transition-transform duration-300 ease-out group-hover:scale-105"

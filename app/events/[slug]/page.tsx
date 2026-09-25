@@ -67,6 +67,7 @@ export default async function EventPage({ params }: PageProps) {
             </Link>
             <Link
               href="/"
+              scroll={false}
               className="inline-flex items-center gap-1.5 border border-white/20 bg-[#151515] px-3 py-1.5 font-mono text-xs font-bold uppercase tracking-wider text-[#F7F2F6]/80 shadow-[2px_2px_0px_#2A2A2A] transition hover:border-[#33FF67] hover:bg-white/10 hover:text-white active:scale-95"
             >
               <span>Home</span>

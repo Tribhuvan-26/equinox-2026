@@ -195,6 +195,14 @@ export default function MobileJourney() {
 
                   <Link
                     href={`/events/${ev.slug}`}
+                    onClick={() => {
+                      try {
+                        const y = window.scrollY;
+                        sessionStorage.setItem("equinox_home_scroll", y.toString());
+                        sessionStorage.setItem("equinox_scroll_y", y.toString());
+                        sessionStorage.setItem("equinox_restore_pending", "true");
+                      } catch {}
+                    }}
                     className="mt-4 inline-flex items-center justify-between gap-3 rounded-full bg-[#33FF67] py-2 pl-5 pr-2 font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-[#161616] active:scale-[0.98]"
                   >
                     <span>Explore Event</span>

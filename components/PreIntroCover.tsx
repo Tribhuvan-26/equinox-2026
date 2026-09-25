@@ -20,7 +20,20 @@ import { useEffect, useState } from "react";
  */
 export default function PreIntroCover() {
   const pathname = usePathname();
-  const [hidden, setHidden] = useState(false);
+  const [hidden, setHidden] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        if (
+          sessionStorage.getItem("equinox_intro_done") === "true" ||
+          sessionStorage.getItem("equinox_home_scroll") !== null ||
+          sessionStorage.getItem("equinox_scroll_y") !== null
+        ) {
+          return true;
+        }
+      } catch (e) {}
+    }
+    return false;
+  });
 
   useEffect(() => {
     const reveal = () => setHidden(true);
