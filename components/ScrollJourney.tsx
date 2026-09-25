@@ -1,6 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
@@ -103,6 +105,16 @@ export default function ScrollJourney() {
 
   const handleGlobeReady = useCallback(() => setIsGlobeReady(true), []);
 
+  // ── INSTANT SCROLL RESTORATION ───────────────────────────────────────────────
+  useIsomorphicLayoutEffect(() => {
+    if (!showLoader && typeof window !== "undefined") {
+      const savedY = sessionStorage.getItem("equinox_scroll_y");
+      if (savedY) {
+        window.scrollTo({ top: parseInt(savedY, 10), left: 0, behavior: "instant" });
+      }
+    }
+  }, [showLoader]);
+
   // ── LENIS + GSAP ─────────────────────────────────────────────────────────────
   // Scroll is blocked (body overflow: hidden) for the entire SpiderIntro, so
   // there is nothing for Lenis or the journey ScrollTrigger to do until it
@@ -113,7 +125,11 @@ export default function ScrollJourney() {
     if (showLoader) return;
     const lenis = new Lenis({ lerp: 0.08, smoothWheel: true });
     lenisRef.current = lenis;
-    if (typeof window !== "undefined") (window as any).__lenis = lenis;
+    if (typeof window !== "undefined") {
+      (window as any).__lenis = lenis;
+      const savedY = sessionStorage.getItem("equinox_scroll_y");
+      if (savedY) lenis.scrollTo(parseInt(savedY, 10), { immediate: true });
+    }
     lenis.on("scroll", ScrollTrigger.update);
     const tick = (t: number) => lenis.raf(t * 1000);
     gsap.ticker.add(tick);
@@ -646,25 +662,6 @@ export default function ScrollJourney() {
 
       if (typeof window !== "undefined") {
         (window as any).__resetScrollJourney = resetScrollJourney;
-        
-        // Restore scroll position after GSAP timeline is fully built
-        const savedY = sessionStorage.getItem("equinox_scroll_y");
-        if (savedY && !showLoader) {
-          const y = parseInt(savedY, 10);
-          
-          // Use setTimeout to ensure ScrollTrigger has fully bound its metrics
-          setTimeout(() => {
-            if (lenisRef.current) {
-              lenisRef.current.scrollTo(y, { immediate: true });
-            }
-            window.scrollTo({ top: y, left: 0, behavior: "instant" });
-            const st = mainTl.scrollTrigger;
-            if (st) {
-              st.scroll(y);
-            }
-            ScrollTrigger.update();
-          }, 50);
-        }
       }
 
       return () => {
