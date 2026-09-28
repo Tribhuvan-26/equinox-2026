@@ -64,15 +64,20 @@ export function RegistrationChart({ registrations }: { registrations: Registrati
               data={statusData}
               cx="50%"
               cy="50%"
-              labelLine={false}
-              label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
               outerRadius={90}
               dataKey="value"
+              stroke="none"
             >
               {statusData.map((entry) => (
                 <Cell key={entry.name} fill={entry.color} />
               ))}
             </Pie>
+            <Legend
+              formatter={(name, entry) => {
+                const value = (entry.payload as { value?: number } | undefined)?.value ?? 0;
+                return `${name} ${registrations.length ? Math.round((value / registrations.length) * 100) : 0}%`;
+              }}
+            />
             <Tooltip contentStyle={{ background: "#2A2A2A", border: "1px solid rgba(255,255,255,0.2)" }} />
           </PieChart>
         </ResponsiveContainer>
