@@ -3,7 +3,7 @@ import type { RegistrationRecord } from "./registration/types";
 
 const BREVO_ENDPOINT = "https://api.brevo.com/v3/smtp/email";
 
-function mailConfigured(): boolean {
+export function mailConfigured(): boolean {
   return Boolean(process.env.BREVO_API_KEY && process.env.BREVO_FROM_EMAIL);
 }
 
@@ -53,12 +53,13 @@ function checkInRef(registration: RegistrationRecord): string {
   return registration.confirmation_number || registration.id;
 }
 
-export async function sendApprovalEmails(registration: RegistrationRecord) {
+/** `link` is the person's private /my-registration link, when one could be issued. */
+export async function sendApprovalEmails(registration: RegistrationRecord, link?: string) {
   const emails = Array.from(new Set(registration.participants.map((p) => p.email)));
 
   const subject = `Equinox 2026 — Registration Confirmed (${checkInRef(registration)})`;
-  const html = renderApprovalEmail(registration);
-  const text = renderApprovalText(registration);
+  const html = renderApprovalEmail(registration, link);
+  const text = renderApprovalText(registration, link);
 
   if (!mailConfigured()) {
     console.warn(
@@ -74,7 +75,7 @@ export async function sendApprovalEmails(registration: RegistrationRecord) {
   return { sent: failed.length === 0, recipients: emails };
 }
 
-function renderApprovalText(registration: RegistrationRecord): string {
+function renderApprovalText(registration: RegistrationRecord, link?: string): string {
   const people = registration.participants
     .map((p) => `  - ${p.name} (${p.rollNumber}), ${p.college}, ${p.department}`)
     .join("\n");
@@ -90,13 +91,16 @@ function renderApprovalText(registration: RegistrationRecord): string {
     "",
     "Participants:",
     people,
+    ...(link
+      ? ["", "Open your registration:", link, "This link is private and replaces any earlier one. Do not forward it."]
+      : []),
     "",
     "Keep your confirmation number handy - you will need it at check-in.",
     "See you at Equinox 2.0!",
   ].join("\n");
 }
 
-function renderApprovalEmail(registration: RegistrationRecord): string {
+function renderApprovalEmail(registration: RegistrationRecord, link?: string): string {
   const rows = registration.participants
     .map(
       (p) =>
@@ -122,6 +126,15 @@ function renderApprovalEmail(registration: RegistrationRecord): string {
         </thead>
         <tbody>${rows}</tbody>
       </table>
+      ${
+        link
+          ? `<p style="margin:24px 0;">
+        <a href="${escapeHtml(link)}" style="background:#33FF67;color:#2A2A2A;padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block;">Open my registration</a>
+      </p>
+      <p style="font-size:13px;color:#555;">This link is private and replaces any earlier one. Don't forward it.<br>
+      <span style="word-break:break-all;">${escapeHtml(link)}</span></p>`
+          : ""
+      }
       <p style="margin-top:20px;">Keep your confirmation number handy — you'll need it at check-in. See you at Equinox 2026!</p>
     </div>
   `;

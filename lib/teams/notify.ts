@@ -1,5 +1,7 @@
 import "server-only";
-import { sendRegistrationLinkEmail, sendTeamNoticeEmail } from "@/lib/email";
+import { mailConfigured, sendApprovalEmails, sendRegistrationLinkEmail, sendTeamNoticeEmail } from "@/lib/email";
+import type { RegistrationRecord } from "@/lib/registration/types";
+import { newAccessToken } from "./access";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { siteUrl } from "@/lib/security/site-url";
 
@@ -33,6 +35,26 @@ export async function emailRegistrationLink(opts: {
   } catch (err) {
     console.error("[teams] emailRegistrationLink failed", err);
   }
+}
+
+/**
+ * Approval email with the person's private link. Only a hash of the old token is
+ * stored, so a fresh token is issued (the old link stops working). Skipped when
+ * mail can't go out, so nobody is cut off from a link they never receive.
+ */
+export async function emailApproval(registration: RegistrationRecord): Promise<void> {
+  const base = siteUrl();
+  let link: string | undefined;
+  if (base && mailConfigured()) {
+    const { token, hash } = newAccessToken();
+    const { error } = await supabaseAdmin()
+      .from("pass_registrations")
+      .update({ access_token_hash: hash })
+      .eq("id", registration.id);
+    if (error) console.error("[admin] could not issue approval link", registration.id, error);
+    else link = `${base}/my-registration#token=${token}`;
+  }
+  await sendApprovalEmails(registration, link);
 }
 
 /** Who leads this team, for notices addressed to them. */

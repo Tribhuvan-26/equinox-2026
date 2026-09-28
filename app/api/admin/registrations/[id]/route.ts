@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/admin/session";
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import { sendApprovalEmails } from "@/lib/email";
+import { emailApproval } from "@/lib/teams/notify";
 import type { RegistrationRecord, RegistrationStatus } from "@/lib/registration/types";
 
 const VALID_STATUSES: RegistrationStatus[] = ["pending", "approved", "rejected"];
@@ -38,7 +38,7 @@ export async function PATCH(request: Request, ctx: { params: Promise<{ id: strin
 
   if (status === "approved") {
     try {
-      await sendApprovalEmails(registration);
+      await emailApproval(registration);
     } catch (err) {
       console.error("[admin] approval email failed", err);
     }
