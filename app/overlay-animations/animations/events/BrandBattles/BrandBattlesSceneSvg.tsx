@@ -3,12 +3,13 @@ import React, { forwardRef } from "react";
 
 export interface BrandBattlesSceneSvgProps {
   className?: string;
+  viewBox?: string;
 }
 
 export const BrandBattlesSceneSvg = forwardRef<SVGSVGElement, BrandBattlesSceneSvgProps>(
-  ({ className = "" }, ref) => {
+  ({ className = "", viewBox = "0 0 1460 822" }, ref) => {
     return (
-      <svg ref={ref} className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1460 822" style={{ background: "transparent", width: "100%", height: "100%" }}>
+      <svg ref={ref} className={className} xmlns="http://www.w3.org/2000/svg" viewBox={viewBox} preserveAspectRatio="xMidYMid meet" style={{ background: "transparent", width: "100%", height: "100%" }}>
 
 
         {/* Background wall & lamp interior glow */}
