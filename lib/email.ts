@@ -48,10 +48,15 @@ async function sendMail(to: string, subject: string, html: string, text: string)
   }
 }
 
+/** The short CNF-XXXXXX people already got by email; older rows may lack one. */
+function checkInRef(registration: RegistrationRecord): string {
+  return registration.confirmation_number || registration.id;
+}
+
 export async function sendApprovalEmails(registration: RegistrationRecord) {
   const emails = Array.from(new Set(registration.participants.map((p) => p.email)));
 
-  const subject = `Equinox 2026 — Registration Confirmed (${registration.id})`;
+  const subject = `Equinox 2026 — Registration Confirmed (${checkInRef(registration)})`;
   const html = renderApprovalEmail(registration);
   const text = renderApprovalText(registration);
 
@@ -79,14 +84,14 @@ function renderApprovalText(registration: RegistrationRecord): string {
     "",
     "Your Equinox 2.0 registration has been verified and approved.",
     "",
-    `Registration ID: ${registration.id}`,
+    `Confirmation number: ${checkInRef(registration)}`,
     `Total participants: ${registration.participant_count}`,
     `Amount paid: Rs ${registration.total_amount.toLocaleString("en-IN")}`,
     "",
     "Participants:",
     people,
     "",
-    "Keep your registration ID handy - you will need it at check-in.",
+    "Keep your confirmation number handy - you will need it at check-in.",
     "See you at Equinox 2.0!",
   ].join("\n");
 }
@@ -103,7 +108,7 @@ function renderApprovalEmail(registration: RegistrationRecord): string {
     <div style="font-family:sans-serif;max-width:560px;margin:0 auto;">
       <h1 style="color:#2A2A2A;">Registration Confirmed 🎉</h1>
       <p>Your Equinox 2026 registration has been verified and approved.</p>
-      <p><strong>Registration ID:</strong> ${escapeHtml(registration.id)}</p>
+      <p><strong>Confirmation number:</strong> ${escapeHtml(checkInRef(registration))}</p>
       <p><strong>Total participants:</strong> ${registration.participant_count}</p>
       <p><strong>Amount paid:</strong> ₹${registration.total_amount.toLocaleString("en-IN")}</p>
       <table style="border-collapse:collapse;width:100%;margin-top:12px;">
@@ -117,7 +122,7 @@ function renderApprovalEmail(registration: RegistrationRecord): string {
         </thead>
         <tbody>${rows}</tbody>
       </table>
-      <p style="margin-top:20px;">Keep your registration ID handy — you'll need it at check-in. See you at Equinox 2026!</p>
+      <p style="margin-top:20px;">Keep your confirmation number handy — you'll need it at check-in. See you at Equinox 2026!</p>
     </div>
   `;
 }
