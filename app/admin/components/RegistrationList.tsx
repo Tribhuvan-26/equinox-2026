@@ -28,7 +28,7 @@ export function RegistrationList({
     <div className="flex flex-col gap-6">
       {registrations.map((r) => {
         const team = r.team_id ? teamCounts.get(r.team_id) : undefined;
-        const teamBusy = busyId === r.team_id;
+        const teamBusy = r.team_id !== null && busyId === r.team_id;
         return (
         <div key={r.id} className="rounded-2xl border border-white/15 bg-black/20 p-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
