@@ -94,9 +94,7 @@ export function RegistrationList({
 
           <div className="mt-5 flex flex-wrap gap-3">
             <button
-              // Approving freezes a registration, so someone with no team yet can't be approved.
-              disabled={busyId === r.id || teamBusy || r.status === "approved" || !r.team_id}
-              title={r.team_id ? undefined : "Paid but not on a team yet. Approve once they join one."}
+              disabled={busyId === r.id || teamBusy || r.status === "approved"}
               onClick={() => onSetStatus(r.id, "approved")}
               className="rounded-lg bg-[#33FF67] px-4 py-2 text-sm font-black text-[#2A2A2A] disabled:cursor-not-allowed disabled:opacity-40"
             >
@@ -109,10 +107,6 @@ export function RegistrationList({
             >
               Mark Not Approved
             </button>
-
-            {!r.team_id && r.status !== "rejected" && (
-              <p className="self-center text-sm text-yellow-400">Not on a team yet. Approve once they join one.</p>
-            )}
 
             {r.team_id && team && team.total > 1 && (
               <button

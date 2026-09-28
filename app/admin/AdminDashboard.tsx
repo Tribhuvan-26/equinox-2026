@@ -42,7 +42,7 @@ export function AdminDashboard({ registrations }: { registrations: RegistrationW
 
   const statusFilteredForView: RegistrationWithUrls[] = useMemo(() => {
     if (view === "pending") return filtered.filter((r) => r.status === "pending");
-    // Paid, but still deciding on a team. They can't be approved until they pick one.
+    // Paid solo registrations that aren't on a team.
     if (view === "no-team") return filtered.filter((r) => !r.team_id && r.status !== "rejected");
     if (view === "approved") return filtered.filter((r) => r.status === "approved");
     if (view === "rejected") return filtered.filter((r) => r.status === "rejected");
