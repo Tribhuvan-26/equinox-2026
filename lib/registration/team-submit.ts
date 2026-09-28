@@ -18,33 +18,30 @@ export type ParsedRegistrationForm = {
   form: FormData;
 };
 
-function validFile(file: File): boolean {
-  return file.size > 0 && file.size <= MAX_FILE_BYTES && ALLOWED_TYPES.has(file.type);
-}
-
 function startsWith(bytes: Uint8Array, signature: number[], offset = 0): boolean {
   return signature.every((byte, i) => bytes[offset + i] === byte);
 }
 
+/** Real format from the first bytes, or null if it isn't one we accept. */
+function sniffType(head: Uint8Array): string | null {
+  if (startsWith(head, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])) return "image/png";
+  if (startsWith(head, [0xff, 0xd8, 0xff])) return "image/jpeg";
+  if (startsWith(head, [0x25, 0x50, 0x44, 0x46])) return "application/pdf";
+  // "RIFF" .... "WEBP"
+  if (startsWith(head, [0x52, 0x49, 0x46, 0x46]) && startsWith(head, [0x57, 0x45, 0x42, 0x50], 8)) return "image/webp";
+  return null;
+}
+
 /**
- * The declared Content-Type is whatever the browser (or a hand-written request)
- * says it is, so check the first bytes really are the format they claim.
+ * The declared Content-Type is just the file extension (payment apps often save
+ * a PNG as ".jpeg"), so trust the bytes instead and re-label the file with the
+ * real type. Null when too big or not an accepted format.
  */
-async function contentMatchesType(file: File): Promise<boolean> {
-  const head = new Uint8Array(await file.slice(0, 12).arrayBuffer());
-  switch (file.type) {
-    case "image/png":
-      return startsWith(head, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
-    case "image/jpeg":
-      return startsWith(head, [0xff, 0xd8, 0xff]);
-    case "application/pdf":
-      return startsWith(head, [0x25, 0x50, 0x44, 0x46]);
-    case "image/webp":
-      // "RIFF" .... "WEBP"
-      return startsWith(head, [0x52, 0x49, 0x46, 0x46]) && startsWith(head, [0x57, 0x45, 0x42, 0x50], 8);
-    default:
-      return false;
-  }
+async function normalizeFile(file: File): Promise<File | null> {
+  if (file.size === 0 || file.size > MAX_FILE_BYTES) return null;
+  const type = sniffType(new Uint8Array(await file.slice(0, 12).arrayBuffer()));
+  if (!type || !ALLOWED_TYPES.has(type)) return null;
+  return type === file.type ? file : new File([file], file.name, { type });
 }
 
 /** Read + validate the single-person registration form (details, UTR, screenshot). */
@@ -71,21 +68,20 @@ export async function readRegistrationForm(request: Request): Promise<ParsedRegi
   const utrNumber = String(form.get("utrNumber") ?? "").trim();
   if (utrNumber.length < 6) throw new ApiError(400, "Enter a valid UTR / transaction number.", "utrNumber");
 
-  const paymentScreenshot = form.get("paymentScreenshot");
-  if (!(paymentScreenshot instanceof File) || paymentScreenshot.size === 0) {
+  const rawScreenshot = form.get("paymentScreenshot");
+  if (!(rawScreenshot instanceof File) || rawScreenshot.size === 0) {
     throw new ApiError(400, "Upload the payment screenshot.", "paymentScreenshot");
   }
-  if (!validFile(paymentScreenshot) || !(await contentMatchesType(paymentScreenshot))) {
+  const paymentScreenshot = await normalizeFile(rawScreenshot);
+  if (!paymentScreenshot) {
     throw new ApiError(400, "Payment screenshot must be a PNG/JPG/WEBP/PDF under 5MB.", "paymentScreenshot");
   }
 
   const proof = form.get("utrProof");
   let utrProof: File | null = null;
   if (proof instanceof File && proof.size > 0) {
-    if (!validFile(proof) || !(await contentMatchesType(proof))) {
-      throw new ApiError(400, "UTR proof must be a PNG/JPG/WEBP/PDF under 5MB.");
-    }
-    utrProof = proof;
+    utrProof = await normalizeFile(proof);
+    if (!utrProof) throw new ApiError(400, "UTR proof must be a PNG/JPG/WEBP/PDF under 5MB.");
   }
 
   return { participant, utrNumber, paymentScreenshot, utrProof, form };
