@@ -9,6 +9,7 @@ import type { AnimationComponentProps } from "../../core/animationTypes";
 import { HustleManiaSceneSvg } from "./HustleManiaSceneSvg";
 import { createHustleManiaTimeline } from "./hustleManiaTimeline";
 import styles from "./HustleManiaAnimation.module.css";
+import { useResponsiveViewBox } from "../core/useResponsiveViewBox";
 
 // Register useGSAP plugin
 gsap.registerPlugin(useGSAP);
@@ -47,6 +48,8 @@ export const HustleManiaAnimation: React.FC<AnimationComponentProps> = ({
 
   // Timeline ref for cancelation/skip
   const masterTlRef = useRef<gsap.core.Timeline | null>(null);
+
+  const viewBox = useResponsiveViewBox(1536, 1024);
 
   useGSAP(
     () => {
@@ -140,6 +143,7 @@ export const HustleManiaAnimation: React.FC<AnimationComponentProps> = ({
       {/* 1536:1024 Responsive Stage Frame */}
       <div className={styles.stageFrame}>
         <HustleManiaSceneSvg
+          viewBox={viewBox}
           backgroundSceneRef={backgroundSceneRef}
           sideBannersRef={sideBannersRef}
           bannerLeftBodyRef={bannerLeftBodyRef}

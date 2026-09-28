@@ -3,18 +3,20 @@ import React from "react";
 
 export interface StartupExpoSceneSvgProps {
   className?: string;
+  viewBox?: string;
 }
 
 export const StartupExpoSceneSvg = React.forwardRef<SVGSVGElement, StartupExpoSceneSvgProps>(
-  ({ className }, ref) => {
+  ({ className, viewBox = "0 0 1672 941" }, ref) => {
     return (
       <svg
         ref={ref}
-        viewBox="0 0 1672 941"
+        viewBox={viewBox}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className={className}
         style={{ width: "100%", height: "100%", display: "block" }}
+        preserveAspectRatio="xMidYMid meet"
       >
         <defs>
           <linearGradient id="expoEquinoxGrad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -45,7 +47,7 @@ export const StartupExpoSceneSvg = React.forwardRef<SVGSVGElement, StartupExpoSc
 
         {/* BASE BACKGROUND */}
         <g id="background-base">
-          <rect width="1672" height="941" fill="none" />
+          <rect x="-2000" y="-2000" width="5672" height="4941" fill="transparent" />
         </g>
 
         {/* SIDE BANNERS (Right Column banner asset matching left date-tag column) */}

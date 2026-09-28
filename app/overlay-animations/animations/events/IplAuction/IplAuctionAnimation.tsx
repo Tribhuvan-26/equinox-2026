@@ -12,6 +12,7 @@ import {
   type IplAuctionTimelineTargets,
 } from "./iplAuctionTimeline";
 import styles from "./IplAuctionAnimation.module.css";
+import { useResponsiveViewBox } from "../core/useResponsiveViewBox";
 
 gsap.registerPlugin(useGSAP);
 
@@ -33,6 +34,7 @@ export const IPLAuctionAnimation: React.FC<IPLAuctionAnimationProps> = ({
 
   const masterTlRef = useRef<gsap.core.Timeline | null>(null);
   const [isUnmounted, setIsUnmounted] = useState(false);
+  const viewBox = useResponsiveViewBox(1672, 940);
 
   // Initialize master GSAP timeline for stage lifecycle
   useGSAP(
@@ -143,7 +145,7 @@ export const IPLAuctionAnimation: React.FC<IPLAuctionAnimationProps> = ({
 
       {/* 16:9 Responsive Stage Frame */}
       <div ref={stageFrameRef} className={styles.stageFrame}>
-        <IplAuctionScene ref={svgRef} />
+        <IplAuctionScene ref={svgRef} viewBox={viewBox} />
       </div>
     </div>
   );

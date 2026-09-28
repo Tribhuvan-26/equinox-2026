@@ -25,6 +25,7 @@ export interface PitchDeckSceneSvgProps {
   iconRow2Ref?: React.RefObject<SVGGElement | null>;
   iconRow3Ref?: React.RefObject<SVGGElement | null>;
   calloutBubbleRef?: React.RefObject<SVGGElement | null>;
+  viewBox?: string;
 }
 
 export const PitchDeckSceneSvg: React.FC<PitchDeckSceneSvgProps> = ({
@@ -49,11 +50,13 @@ export const PitchDeckSceneSvg: React.FC<PitchDeckSceneSvgProps> = ({
   iconRow2Ref,
   iconRow3Ref,
   calloutBubbleRef,
+  viewBox = "0 0 1672 941",
 }) => {
   return (
     <svg
       className={className}
-      viewBox="0 0 1672 941"
+      viewBox={viewBox}
+      preserveAspectRatio="xMidYMid meet"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       style={{ width: "100%", height: "100%", display: "block" }}

@@ -411,3 +411,22 @@ body {
   animation: death-star-laser 2.4s ease-in-out infinite;
   transform-origin: 0px 0px;
 }@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } } .animate-float { animation: float 6s ease-in-out infinite; }
+
+/* ── MOBILE OVERLAY ANIMATION OPTIMIZATIONS ────────────────────────────── */
+@media (max-width: 767px) {
+
+  /* Disable heavy blur filters on mobile */
+  div[class*="overlayContainer"] * {
+    backdrop-filter: none !important;
+    filter: none !important;
+  }
+
+  /* Disable continuously running star animations */
+  .star-anim-twinkle,
+  .star-anim-subtle,
+  .star-anim-sparkle {
+    animation: none !important;
+    will-change: auto !important;
+    opacity: 0.5 !important;
+  }
+}

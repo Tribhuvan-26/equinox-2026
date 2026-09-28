@@ -23,6 +23,7 @@ export interface HustleManiaSceneSvgProps {
   sideBannersRef?: React.RefObject<SVGGElement | null>;
   signPanelRef?: React.RefObject<SVGGElement | null>;
   backgroundSceneRef?: React.RefObject<SVGGElement | null>;
+  viewBox?: string;
 }
 
 export const HustleManiaSceneSvg: React.FC<HustleManiaSceneSvgProps> = ({
@@ -47,10 +48,11 @@ export const HustleManiaSceneSvg: React.FC<HustleManiaSceneSvgProps> = ({
   sideBannersRef,
   signPanelRef,
   backgroundSceneRef,
+  viewBox = "0 0 1536 1024",
 }) => {
   return (
     <svg
-      viewBox="0 0 1536 1024"
+      viewBox={viewBox}
       preserveAspectRatio="xMidYMid meet"
       xmlns="http://www.w3.org/2000/svg"
       style={{ width: "100%", height: "100%", display: "block" }}

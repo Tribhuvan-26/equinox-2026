@@ -240,7 +240,7 @@ export default function ScrollJourney() {
     let rocketDirection: 1 | -1 = 1;
     const turnRotation = { value: 0 };
     let currentRocketState = { x: 360, y: 690, baseAngle: 0, scale: 1, opacity: 1 };
-    
+
     // Cache for DOM reads/writes to prevent thrashing
     const pointerEventsCache = new Map<number, string>();
     let lastHUDTitle = "";
@@ -293,7 +293,7 @@ export default function ScrollJourney() {
       // Easter Egg Trigger: Among Us character drifting into black hole
       if (pt.x > 14350 && !hasTriggeredAmongUs.current && amongUsRef.current) {
         hasTriggeredAmongUs.current = true;
-        
+
         // Start from the right side of Planet 10 (Pitch Deck is at x=14200, y=670)
         const startX = 14350;
         const startY = 670;
@@ -301,15 +301,15 @@ export default function ScrollJourney() {
         const endY = 540;
 
         amongUsRef.current.style.visibility = "visible";
-        
+
         gsap.fromTo(
           amongUsRef.current,
-          { 
-            x: startX, 
-            y: startY, 
-            rotation: -45, 
-            scale: 0.8, 
-            opacity: 1 
+          {
+            x: startX,
+            y: startY,
+            rotation: -45,
+            scale: 0.8,
+            opacity: 1
           },
           {
             x: endX,
@@ -317,16 +317,16 @@ export default function ScrollJourney() {
             rotation: 315, // slow rotation
             duration: 18,
             ease: "none",
-            onUpdate: function() {
-               if (!amongUsRef.current) return;
-               const progress = this.progress();
-               if (progress > 0.8) {
-                 const shrinkP = (progress - 0.8) / 0.2; // 0 to 1
-                 gsap.set(amongUsRef.current, {
-                    scale: 0.8 * (1 - shrinkP),
-                    opacity: 1 - shrinkP
-                 });
-               }
+            onUpdate: function () {
+              if (!amongUsRef.current) return;
+              const progress = this.progress();
+              if (progress > 0.8) {
+                const shrinkP = (progress - 0.8) / 0.2; // 0 to 1
+                gsap.set(amongUsRef.current, {
+                  scale: 0.8 * (1 - shrinkP),
+                  opacity: 1 - shrinkP
+                });
+              }
             }
           }
         );
@@ -370,17 +370,17 @@ export default function ScrollJourney() {
       const worldX = pt.x > unscaledTargetScreenX ? -(pt.x - unscaledTargetScreenX) : 0;
 
       let currentEventTitle = "";
-      
+
       // Read Phase: Calculate all target states without mutating DOM
       const cardUpdates = PLANET_LAYOUTS.map((layout, idx) => {
         const cardEl = cardRefs.current[idx];
         if (!cardEl) return null;
         const dist = Math.abs(pt.x - layout.x);
-        
+
         let opacity = "0";
         let transformY = 20;
         let pointerEvents = "none";
-        
+
         if (dist < 480) {
           const t = Math.max(0, 1 - dist / 420);
           opacity = `${t}`;
@@ -388,7 +388,7 @@ export default function ScrollJourney() {
           pointerEvents = t > 0.4 ? "auto" : "none";
           if (t > 0.3) currentEventTitle = `${layout.badge} · ${subEvents[idx]?.name || ""}`;
         }
-        
+
         return {
           cardEl,
           idx,
@@ -407,12 +407,12 @@ export default function ScrollJourney() {
       cardUpdates.forEach((update) => {
         if (!update) return;
         const { cardEl, idx, opacity, transformY, pointerEvents, visibility, isActive } = update;
-        
+
         if (isActive || cardEl.style.opacity !== "0") {
           cardEl.style.opacity = opacity;
           cardEl.style.transform = `translate3d(0, ${transformY}px, 0) scale3d(${inverseScale}, ${inverseScale}, 1)`;
         }
-        
+
         if (pointerEventsCache.get(idx) !== pointerEvents) {
           cardEl.style.pointerEvents = pointerEvents;
           pointerEventsCache.set(idx, pointerEvents);
@@ -617,7 +617,7 @@ export default function ScrollJourney() {
         const journeyScale = Math.max(0.3, Math.min(availableHeight / activeHeight, 1));
         document.documentElement.style.setProperty('--journey-scale', `${journeyScale}`);
         journeyScaleRef.current = journeyScale;
-        
+
         targetScreenXRef.current = Math.min(window.innerWidth * 0.28, 420);
 
         // Centre the measured content in that free height instead of pinning the
@@ -626,8 +626,15 @@ export default function ScrollJourney() {
           Math.max(0, (availableHeight - activeHeight * journeyScale) / 2) - contentTop * journeyScale;
         document.documentElement.style.setProperty('--journey-offset-y', `${offsetY}px`);
       };
+      let lastWidth = window.innerWidth;
+      const handleResize = () => {
+        if (window.innerWidth !== lastWidth) {
+          lastWidth = window.innerWidth;
+          updateHeaderSpace();
+        }
+      };
       updateHeaderSpace();
-      window.addEventListener('resize', updateHeaderSpace);
+      window.addEventListener('resize', handleResize);
 
       // ── DIRECT INSTANT RESET FOR HOMEPAGE NAVIGATION (NO REVERSE SCROLL) ────
       const resetScrollJourney = () => {
@@ -665,13 +672,13 @@ export default function ScrollJourney() {
       }
 
       return () => {
-        window.removeEventListener("resize", updateHeaderSpace);
+        window.removeEventListener("resize", handleResize);
         if (typeof window !== "undefined") {
           delete (window as any).__resetScrollJourney;
         }
       };
     }, containerRef);
-    
+
     // Save scroll position ONLY on intentional navigation clicks 
     // This prevents Next.js from overwriting it with 0 when it forces a scroll-to-top during route transitions
     const savePositionOnClick = (e: MouseEvent) => {
@@ -700,10 +707,12 @@ export default function ScrollJourney() {
     <>
       <div ref={containerRef} className="relative w-full" style={{ height: isMobile ? "115vh" : "1500vh" }}>
         <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
-          <NebulaBackground />
-          <ContinuousComet />
-
-
+          <div className="absolute inset-0 pointer-events-none z-[-10]">
+            <NebulaBackground />
+          </div>
+          <div className="hidden md:block">
+            <ContinuousComet />
+          </div>
 
           {/* ================================================================
             INSTITUTIONAL HEADER (NavBar area) — sticky to journey section
@@ -1359,19 +1368,19 @@ export default function ScrollJourney() {
                       </g>
                     </g>
                   </g>
-                    {/* Among Us Easter Egg */}
-                    <g ref={amongUsRef} style={{ willChange: "transform, opacity", opacity: 0, visibility: "hidden" }}>
-                      <image
-                        href="/among-us.png"
-                        x="-30"
-                        y="-30"
-                        width="60"
-                        height="60"
-                        preserveAspectRatio="xMidYMid meet"
-                        className="drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]"
-                      />
-                    </g>
-                  </svg>
+                  {/* Among Us Easter Egg */}
+                  <g ref={amongUsRef} style={{ willChange: "transform, opacity", opacity: 0, visibility: "hidden" }}>
+                    <image
+                      href="/among-us.png"
+                      x="-30"
+                      y="-30"
+                      width="60"
+                      height="60"
+                      preserveAspectRatio="xMidYMid meet"
+                      className="drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]"
+                    />
+                  </g>
+                </svg>
 
                 {/* Event detail cards */}
                 {PLANET_LAYOUTS.map((layout, idx) => {

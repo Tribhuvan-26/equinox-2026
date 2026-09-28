@@ -12,6 +12,7 @@ import {
   type StartupExpoTimelineTargets,
 } from "./startupExpoTimeline";
 import styles from "./StartupExpoAnimation.module.css";
+import { useResponsiveViewBox } from "../core/useResponsiveViewBox";
 
 gsap.registerPlugin(useGSAP);
 
@@ -120,6 +121,8 @@ export const StartupExpoAnimation: React.FC<AnimationComponentProps> = ({
     }
   }, [skip, isDismissed]);
 
+  const viewBox = useResponsiveViewBox(1672, 941);
+
   return (
     <div
       ref={containerRef}
@@ -140,7 +143,7 @@ export const StartupExpoAnimation: React.FC<AnimationComponentProps> = ({
       </button>
 
       <div className={styles.stageFrame}>
-        <StartupExpoSceneSvg ref={svgRef} />
+        <StartupExpoSceneSvg ref={svgRef} viewBox={viewBox} />
       </div>
     </div>
   );

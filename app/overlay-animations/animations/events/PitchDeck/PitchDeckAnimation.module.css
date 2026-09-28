@@ -18,12 +18,10 @@
 
 /* 16:9 aspect-ratio responsive stage frame (contain-fit within viewport) */
 .stageFrame {
-  position: relative;
+  position: absolute;
+  inset: 0;
   width: 100vw;
-  height: calc(100vw * (9 / 16));
-  max-width: calc(100vh * (16 / 9));
-  max-height: 100vh;
-  aspect-ratio: 16 / 9;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -12,6 +12,8 @@ import {
 } from "./crossroadsTimeline";
 import styles from "./CrossroadsAnimation.module.css";
 
+import { useResponsiveViewBox } from "../core/useResponsiveViewBox";
+
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
@@ -23,6 +25,8 @@ export const CrossroadsAnimation: React.FC<AnimationComponentProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const skipButtonRef = useRef<HTMLButtonElement>(null);
+
+  const viewBox = useResponsiveViewBox(1460, 822);
 
   // ── Scene refs ─────────────────────────────────────────────────────────────
   const backgroundGroupRef    = useRef<SVGGElement>(null);
@@ -282,7 +286,7 @@ export const CrossroadsAnimation: React.FC<AnimationComponentProps> = ({
       {/* Real Vector Stage SVG matching reference poster exactly */}
       <svg
         className={styles.stageSvg}
-        viewBox="0 0 1460 822"
+        viewBox={viewBox}
         preserveAspectRatio="xMidYMid meet"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -305,7 +309,7 @@ export const CrossroadsAnimation: React.FC<AnimationComponentProps> = ({
 
         {/* 1. Background & Horizon Ground (Dark #2A2A2A) */}
         <g ref={backgroundGroupRef} id="background-group">
-          <rect width="1460" height="822" fill="var(--equinox-dark)" />
+          <rect x="-2000" y="-2000" width="5460" height="4822" fill="var(--equinox-dark)" />
           <path d="M0.17 497.98C18.69 504.28 36.68 513.16 54.74 520.72C86.44 533.98 118.14 547.27 149.79 560.65C183.66 574.97 217.66 589 251.8 602.64C269.83 609.85 288.37 616.37 305.99 624.5C297.49 629.33 284.37 630.82 274.72 633.33C254.8 638.51 234.91 643.65 214.9 648.47C166.24 660.19 117.83 673.13 69.4 685.76C52.73 690.11 35.99 694.2 19.39 698.8C13.07 700.55 6.28 701.55 0.17 703.9C0.17 635.26 0.17 566.62 0.17 497.98Z M1459.83 499.93C1459.83 569.24 1459.83 638.55 1459.83 707.87C1358.69 680.08 1257.55 652.29 1156.41 624.5C1257.55 582.98 1358.69 541.45 1459.83 499.93Z M964.92 821.83C808.96 821.83 653 821.83 497.04 821.83C503.34 816.99 518.37 812.03 526.25 808.71C545.38 800.66 564.3 792.08 583.35 783.82C610.69 771.96 638.22 760.29 665.2 747.66C680.21 740.63 695.19 733.59 710.3 726.79C717 723.78 723.61 720.33 730.5 717.78C808.64 752.47 886.78 787.15 964.92 821.83Z" fill="var(--equinox-dark)" opacity="0.9" />
         </g>
 

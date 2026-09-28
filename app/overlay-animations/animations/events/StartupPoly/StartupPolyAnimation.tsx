@@ -10,6 +10,7 @@ import {
   skipStartupPolyTimelineToExit,
 } from "./startupPolyTimeline";
 import styles from "./StartupPolyAnimation.module.css";
+import { useResponsiveViewBox } from "../core/useResponsiveViewBox";
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -22,6 +23,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const skipButtonRef = useRef<HTMLButtonElement>(null);
+  const viewBox = useResponsiveViewBox(1920, 1080);
 
   const boardGroupRef = useRef<SVGGElement>(null);
   const centerPanelRef = useRef<SVGGElement>(null);
@@ -171,7 +173,7 @@ export const StartupPolyAnimation: React.FC<AnimationComponentProps> = ({
       {/* Scalable SVG Canvas */}
       <svg
         className={styles.stageSvg}
-        viewBox="0 0 1920 1080"
+        viewBox={viewBox}
         preserveAspectRatio="xMidYMid meet"
         xmlns="http://www.w3.org/2000/svg"
       >

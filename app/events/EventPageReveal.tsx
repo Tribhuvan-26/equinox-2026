@@ -22,12 +22,9 @@ export function EventPageReveal({ slug, children }: EventPageRevealProps) {
       return;
     }
 
-    // Skip heavy overlay animations on mobile to prevent lag
-    if (window.innerWidth < 768) {
-      setIsRevealed(true);
-      return;
-    }
-
+    // Removed the hardcoded window.innerWidth < 768 block so mobile can
+    // attempt to render the animations, relying on CSS/GSAP optimizations instead.
+    
     // Subscribe to the global animation completion event we added
     const handleComplete = () => {
       setIsRevealed(true);

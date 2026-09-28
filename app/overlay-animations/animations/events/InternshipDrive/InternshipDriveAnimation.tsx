@@ -10,6 +10,7 @@ import {
   skipInternshipDriveTimelineToExit,
 } from "./internshipDriveTimeline";
 import styles from "./InternshipDriveAnimation.module.css";
+import { useResponsiveViewBox } from "../core/useResponsiveViewBox";
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -23,6 +24,7 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const skipButtonRef = useRef<HTMLButtonElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
+  const viewBox = useResponsiveViewBox(1600, 900);
 
   // Prevent background scrolling while intro is active
   useEffect(() => {
@@ -123,7 +125,7 @@ export const InternshipDriveAnimation: React.FC<AnimationComponentProps> = ({
       <svg
         id="internship-drive-scene"
         className={styles.stageSvg}
-        viewBox="0 0 1600 900"
+        viewBox={viewBox}
         preserveAspectRatio="xMidYMid meet"
         xmlns="http://www.w3.org/2000/svg"
       >

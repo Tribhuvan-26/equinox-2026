@@ -12,6 +12,7 @@ import {
 import styles from "./ECellMeetAnimation.module.css";
 import { urlForImage } from "@/sanity/lib/image";
 import { sanityAssets } from "@/lib/sanity-assets";
+import { useResponsiveViewBox } from "../core/useResponsiveViewBox";
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -26,6 +27,7 @@ export const ECellMeetAnimation: React.FC<AnimationComponentProps> = ({
   const svgRef = useRef<SVGSVGElement>(null);
   const skipButtonRef = useRef<HTMLButtonElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
+  const viewBox = useResponsiveViewBox(1670, 942);
 
   useIsomorphicLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -115,7 +117,7 @@ export const ECellMeetAnimation: React.FC<AnimationComponentProps> = ({
         ref={svgRef}
         id="ecell-scene"
         className={styles.stageSvg}
-        viewBox="0 0 1670 942"
+        viewBox={viewBox}
         preserveAspectRatio="xMidYMid meet"
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"

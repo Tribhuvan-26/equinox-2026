@@ -32,12 +32,10 @@
 
 /* 1672:941 aspect-ratio responsive stage frame matching Base_Startup_expo.svg */
 .stageFrame {
-  position: relative;
+  position: absolute;
+  inset: 0;
   width: 100vw;
-  height: calc(100vw * (941 / 1672));
-  max-width: calc(100vh * (1672 / 941));
-  max-height: 100vh;
-  aspect-ratio: 1672 / 941;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;

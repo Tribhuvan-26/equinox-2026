@@ -10,6 +10,7 @@ import {
   skipSpotlightTimelineToExit,
 } from "./spotlightTimeline";
 import styles from "./SpotlightAnimation.module.css";
+import { useResponsiveViewBox } from "../core/useResponsiveViewBox";
 
 // Fallback to useEffect for SSR hydration safety
 const useIsomorphicLayoutEffect =
@@ -42,6 +43,7 @@ export const SpotlightAnimation: React.FC<AnimationComponentProps> = ({
   const ambientAccentsRef = useRef<SVGGElement>(null);
 
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
+  const viewBox = useResponsiveViewBox(1920, 1080);
 
   // Initialize GSAP Timeline inside scoped context with dynamic title measurement
   useIsomorphicLayoutEffect(() => {
@@ -219,7 +221,7 @@ export const SpotlightAnimation: React.FC<AnimationComponentProps> = ({
       {/* Responsive Scalable SVG Stage Canvas */}
       <svg
         className={styles.stageSvg}
-        viewBox="0 0 1920 1080"
+        viewBox={viewBox}
         preserveAspectRatio="xMidYMid meet"
         xmlns="http://www.w3.org/2000/svg"
       >

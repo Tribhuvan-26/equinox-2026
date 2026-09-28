@@ -12,6 +12,7 @@ import {
 } from "./pitchDeckTimeline";
 import { PitchDeckSceneSvg } from "./PitchDeckSceneSvg";
 import styles from "./PitchDeckAnimation.module.css";
+import { useResponsiveViewBox } from "../core/useResponsiveViewBox";
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -56,6 +57,7 @@ export const PitchDeckAnimation: React.FC<AnimationComponentProps> = ({
   const masterTlRef = useRef<gsap.core.Timeline | null>(null);
   const idleLoopsRef = useRef<gsap.core.Tween[]>([]);
   const exitingRef = useRef(false);
+  const viewBox = useResponsiveViewBox(1672, 941);
 
   // ── Lifecycle & GSAP initialization ────────────────────────────────────────
   useIsomorphicLayoutEffect(() => {
@@ -163,6 +165,7 @@ export const PitchDeckAnimation: React.FC<AnimationComponentProps> = ({
       {/* 16:9 Aspect-Ratio Responsive Stage Frame */}
       <div ref={stageFrameRef} className={styles.stageFrame}>
         <PitchDeckSceneSvg
+          viewBox={viewBox}
           className={styles.stageSvg}
           baseLayerRef={baseLayerRef}
           topLeftHeaderRef={topLeftHeaderRef}

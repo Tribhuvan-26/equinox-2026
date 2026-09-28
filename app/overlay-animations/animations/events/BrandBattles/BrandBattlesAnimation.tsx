@@ -12,6 +12,7 @@ import {
   type BrandBattlesTimelineTargets,
 } from "./brandBattlesTimeline";
 import styles from "./BrandBattlesAnimation.module.css";
+import { useResponsiveViewBox } from "../core/useResponsiveViewBox";
 
 gsap.registerPlugin(useGSAP);
 
@@ -96,6 +97,8 @@ export const BrandBattlesAnimation: React.FC<AnimationComponentProps> = ({
     }
   }, [skip, isDismissed]);
 
+  const viewBox = useResponsiveViewBox(1460, 822);
+
   return (
     <div
       ref={containerRef}
@@ -116,7 +119,7 @@ export const BrandBattlesAnimation: React.FC<AnimationComponentProps> = ({
       </button>
 
       <div className={styles.stageFrame}>
-        <BrandBattlesSceneSvg ref={svgRef} />
+        <BrandBattlesSceneSvg ref={svgRef} viewBox={viewBox} />
       </div>
     </div>
   );

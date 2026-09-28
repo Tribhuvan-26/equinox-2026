@@ -6,15 +6,16 @@ import styles from "./IplAuctionAnimation.module.css";
 
 export interface IplAuctionSceneProps {
   className?: string;
+  viewBox?: string;
 }
 
 export const IplAuctionScene = forwardRef<SVGSVGElement, IplAuctionSceneProps>(
-  ({ className = "" }, ref) => {
+  ({ className = "", viewBox = "0 0 1672 940" }, ref) => {
     return (
       <svg
         ref={ref}
         xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 1672 940"
+        viewBox={viewBox}
         width="100%"
         height="100%"
         preserveAspectRatio="xMidYMid meet"
