@@ -1,10 +1,13 @@
 "use client";
 
-import { Users, Clock, CheckCircle, TrendingUp } from "lucide-react";
+import { Users, UsersRound, Clock, CheckCircle, TrendingUp } from "lucide-react";
 import type { RegistrationRecord } from "@/lib/registration/types";
 
 export function DashboardStats({ registrations }: { registrations: RegistrationRecord[] }) {
-  const total = registrations.length;
+  // Rejected registrations aren't really in, so they don't count toward people or teams.
+  const live = registrations.filter((r) => r.status !== "rejected");
+  const people = live.reduce((sum, r) => sum + r.participant_count, 0);
+  const teams = new Set(live.map((r) => r.team_id).filter(Boolean)).size;
   const pending = registrations.filter((r) => r.status === "pending").length;
   const approved = registrations.filter((r) => r.status === "approved").length;
   const revenue = registrations
@@ -12,14 +15,15 @@ export function DashboardStats({ registrations }: { registrations: RegistrationR
     .reduce((sum, r) => sum + r.total_amount, 0);
 
   const stats = [
-    { title: "Total Teams", value: total, icon: Users, color: "text-[#7484FE]", bg: "bg-[#7484FE]/10" },
+    { title: "People Registered", value: people, icon: Users, color: "text-[#7484FE]", bg: "bg-[#7484FE]/10" },
+    { title: "Total Teams", value: teams, icon: UsersRound, color: "text-[#7484FE]", bg: "bg-[#7484FE]/10" },
     { title: "Pending Verification", value: pending, icon: Clock, color: "text-yellow-400", bg: "bg-yellow-400/10" },
     { title: "Approved", value: approved, icon: CheckCircle, color: "text-[#33FF67]", bg: "bg-[#33FF67]/10" },
     { title: "Approved Revenue", value: `₹${revenue.toLocaleString("en-IN")}`, icon: TrendingUp, color: "text-[#33FF67]", bg: "bg-[#33FF67]/10" },
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {stats.map((stat) => {
         const Icon = stat.icon;
         return (
