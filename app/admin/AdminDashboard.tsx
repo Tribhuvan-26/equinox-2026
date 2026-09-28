@@ -32,6 +32,13 @@ export function AdminDashboard({ registrations }: { registrations: RegistrationW
   const [busyId, setBusyId] = useState<string | null>(null);
   const [filtered, setFiltered] = useState(registrations);
   const [collapsed, setCollapsed] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  /** Show why the server refused, instead of silently doing nothing. */
+  async function reportFailure(res: Response) {
+    const body = await res.json().catch(() => null);
+    setActionError(body?.error ?? `Update failed (${res.status}). Please try again.`);
+  }
 
   const statusFilteredForView: RegistrationWithUrls[] = useMemo(() => {
     if (view === "pending") return filtered.filter((r) => r.status === "pending");
@@ -74,6 +81,7 @@ export function AdminDashboard({ registrations }: { registrations: RegistrationW
 
   async function setStatus(id: string, status: RegistrationStatus) {
     setBusyId(id);
+    setActionError(null);
     try {
       const res = await fetch(`/api/admin/registrations/${id}`, {
         method: "PATCH",
@@ -83,7 +91,11 @@ export function AdminDashboard({ registrations }: { registrations: RegistrationW
       if (res.ok) {
         const { registration } = await res.json();
         applyUpdates([registration]);
+      } else {
+        await reportFailure(res);
       }
+    } catch {
+      setActionError("Network error. Please try again.");
     } finally {
       setBusyId(null);
     }
@@ -92,6 +104,7 @@ export function AdminDashboard({ registrations }: { registrations: RegistrationW
   /** Same call, but for every registration sharing this team. */
   async function setTeamStatus(teamId: string, status: RegistrationStatus) {
     setBusyId(teamId);
+    setActionError(null);
     try {
       const res = await fetch(`/api/admin/teams/${teamId}`, {
         method: "PATCH",
@@ -101,7 +114,11 @@ export function AdminDashboard({ registrations }: { registrations: RegistrationW
       if (res.ok) {
         const { registrations: updated } = await res.json();
         applyUpdates(updated as RegistrationRecord[]);
+      } else {
+        await reportFailure(res);
       }
+    } catch {
+      setActionError("Network error. Please try again.");
     } finally {
       setBusyId(null);
     }
@@ -131,6 +148,18 @@ export function AdminDashboard({ registrations }: { registrations: RegistrationW
         </div>
 
         <h2 className="heading mt-8 text-2xl font-black text-[#F7F2F6]">{VIEW_TITLES[view]}</h2>
+
+        {actionError && (
+          <div
+            role="alert"
+            className="sticky top-4 z-10 mt-4 flex items-start justify-between gap-4 rounded-xl border border-red-400/40 bg-[#2A1414] p-4 text-sm text-red-300"
+          >
+            <p>{actionError}</p>
+            <button type="button" onClick={() => setActionError(null)} className="font-bold hover:text-red-100">
+              Dismiss
+            </button>
+          </div>
+        )}
 
         {view === "dashboard" && (
           <div className="mt-6 flex flex-col gap-6">
