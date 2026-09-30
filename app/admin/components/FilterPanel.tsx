@@ -39,7 +39,7 @@ export function FilterPanel<T extends RegistrationRecord>({
     if (status) filtered = filtered.filter((r) => r.status === status);
 
     if (dateRange.start) {
-      filtered = filtered.filter((r) => new Date(r.created_at) >= new Date(dateRange.start));
+      filtered = filtered.filter((r) => new Date(r.created_at) >= new Date(`${dateRange.start}T00:00:00`));
     }
     if (dateRange.end) {
       filtered = filtered.filter((r) => new Date(r.created_at) <= new Date(`${dateRange.end}T23:59:59`));

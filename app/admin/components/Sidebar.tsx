@@ -1,12 +1,13 @@
 "use client";
 
-import { Home, Users, BarChart3, Clock, CheckCircle, XCircle, UserMinus, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { Home, Users, ClipboardList, BarChart3, Clock, CheckCircle, XCircle, UserMinus, ChevronsLeft, ChevronsRight } from "lucide-react";
 
-export type AdminView = "dashboard" | "participants" | "analytics" | "pending" | "no-team" | "approved" | "rejected";
+export type AdminView = "dashboard" | "teams" | "registrations" | "analytics" | "pending" | "no-team" | "approved" | "rejected";
 
 const MENU_ITEMS: { id: AdminView; label: string; icon: typeof Home }[] = [
   { id: "dashboard", label: "Dashboard", icon: Home },
-  { id: "participants", label: "Teams", icon: Users },
+  { id: "teams", label: "Teams", icon: Users },
+  { id: "registrations", label: "Registrations", icon: ClipboardList },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
   { id: "pending", label: "Pending", icon: Clock },
   { id: "no-team", label: "No Team", icon: UserMinus },

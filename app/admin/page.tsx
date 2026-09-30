@@ -3,7 +3,7 @@ import { isAdminAuthenticated } from "@/lib/admin/session";
 import { supabaseAdmin, PAYMENT_PROOFS_BUCKET } from "@/lib/supabase/admin";
 import type { RegistrationRecord } from "@/lib/registration/types";
 import type { RegistrationRow } from "@/lib/supabase/admin";
-import { AdminDashboard, type RegistrationWithUrls } from "./AdminDashboard";
+import { AdminDashboard, type AdminTeam, type RegistrationWithUrls } from "./AdminDashboard";
 
 export const dynamic = "force-dynamic";
 
@@ -23,12 +23,13 @@ export default async function AdminPage() {
   );
   /* eslint-enable @typescript-eslint/no-unused-vars */
 
-  // Team registrations carry the team's id; show its name.
-  const teamIds = [...new Set(registrations.map((r) => r.team_id).filter((id): id is string => Boolean(id)))];
-  const { data: teams } = teamIds.length
-    ? await supabase.from("registration_teams").select("id, name").in("id", teamIds)
-    : { data: [] };
-  const teamNames = new Map((teams ?? []).map((t) => [t.id, t.name]));
+  // Every team, including ones nobody has joined yet, for the Teams page.
+  const { data: teamRows } = await supabase
+    .from("registration_teams")
+    .select("id, name, code, max_members, created_at")
+    .order("created_at", { ascending: false });
+  const teams: AdminTeam[] = teamRows ?? [];
+  const teamNames = new Map(teams.map((t) => [t.id, t.name]));
 
   const withUrls: RegistrationWithUrls[] = await Promise.all(
     registrations.map(async (r) => ({
@@ -46,7 +47,7 @@ export default async function AdminPage() {
           Could not load registrations: {error.message}
         </p>
       )}
-      <AdminDashboard registrations={withUrls} />
+      <AdminDashboard registrations={withUrls} teams={teams} />
     </main>
   );
 
