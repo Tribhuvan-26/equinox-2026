@@ -58,12 +58,13 @@ export function AdminDashboard({
   }
 
   const statusFilteredForView: RegistrationWithUrls[] = useMemo(() => {
-    if (view === "pending") return filtered.filter((r) => r.status === "pending");
-    // Paid solo registrations that aren't on a team.
-    if (view === "no-team") return filtered.filter((r) => !r.team_id && r.status !== "rejected");
     if (view === "approved") return filtered.filter((r) => r.status === "approved");
     if (view === "rejected") return filtered.filter((r) => r.status === "rejected");
-    return filtered;
+    // Decided registrations live only in Approved / Not Approved.
+    const open = filtered.filter((r) => r.status === "pending");
+    // Paid solo registrations that aren't on a team.
+    if (view === "no-team") return open.filter((r) => !r.team_id);
+    return open;
   }, [filtered, view]);
 
   /**
