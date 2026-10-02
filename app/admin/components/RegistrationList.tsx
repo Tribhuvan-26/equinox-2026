@@ -113,9 +113,9 @@ export function RegistrationList({
               </>
             )}
 
-            {r.team_id && team && team.total > 1 && (
+            {r.team_id && team && team.total > 1 && team.unapproved > 0 && (
               <button
-                disabled={busyId !== null || team.unapproved === 0}
+                disabled={busyId !== null}
                 onClick={() => {
                   if (
                     confirm(
@@ -128,11 +128,7 @@ export function RegistrationList({
                 }}
                 className="rounded-lg border-2 border-[#33FF67] px-4 py-2 text-sm font-black text-[#33FF67] disabled:cursor-not-allowed disabled:opacity-40"
               >
-                {teamBusy
-                  ? "Approving team..."
-                  : team.unapproved === 0
-                    ? `Whole team approved (${team.total})`
-                    : `Approve whole team (${team.unapproved} of ${team.total})`}
+                {teamBusy ? "Approving team..." : `Approve whole team (${team.unapproved} of ${team.total})`}
               </button>
             )}
           </div>
