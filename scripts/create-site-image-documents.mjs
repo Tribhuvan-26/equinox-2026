@@ -108,9 +108,9 @@ async function syncDataset(datasetName, mapping) {
 }
 
 async function main() {
-  const mappingPath = 'sanity-assets-mapping.json'
+  const mappingPath = 'sanity/assets-mapping.json'
   if (!fs.existsSync(mappingPath)) {
-    console.error('Missing sanity-assets-mapping.json')
+    console.error('Missing sanity/assets-mapping.json')
     process.exit(1)
   }
   const mapping = JSON.parse(fs.readFileSync(mappingPath, 'utf8'))
