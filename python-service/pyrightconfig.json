@@ -1,0 +1,12 @@
+{
+  "include": ["."],
+  "exclude": ["venv", "**/node_modules"],
+  "venvPath": ".",
+  "venv": "venv",
+  "extraPaths": [
+    ".",
+    "venv/lib/python3.14/site-packages",
+    "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages"
+  ],
+  "reportMissingImports": "none"
+}
