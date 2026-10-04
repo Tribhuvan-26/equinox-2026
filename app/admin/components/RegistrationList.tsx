@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { formatTeamNumber } from "@/lib/registration/team-number";
 import type { RegistrationStatus } from "@/lib/registration/types";
 import type { RegistrationWithUrls } from "../AdminDashboard";
@@ -148,11 +148,7 @@ export function RegistrationList({
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 p-6"
         >
           {isPdf(previewUrl) ? (
-            <iframe
-              src={previewUrl}
-              title="Payment proof preview"
-              className="h-[85vh] w-[90vw] max-w-4xl rounded-lg border border-white/20 bg-white"
-            />
+            <PdfPreview url={previewUrl} />
           ) : (
             <img
               src={previewUrl}
@@ -176,6 +172,54 @@ export function RegistrationList({
 /** Signed URLs keep the stored path, which ends in the upload's extension. */
 function isPdf(url: string) {
   return new URL(url).pathname.toLowerCase().endsWith(".pdf");
+}
+
+/**
+ * Draws each PDF page onto a canvas with pdf.js. An iframe would rely on the
+ * browser's own PDF viewer, which shows blank in some browsers and all of mobile Chrome.
+ */
+function PdfPreview({ url }: { url: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const pdfjs = await import("pdfjs-dist");
+      pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+        "pdfjs-dist/build/pdf.worker.min.mjs",
+        import.meta.url
+      ).toString();
+      const pdf = await pdfjs.getDocument({ url }).promise;
+      for (let n = 1; n <= pdf.numPages && !cancelled; n++) {
+        const page = await pdf.getPage(n);
+        const viewport = page.getViewport({ scale: 2 });
+        const canvas = document.createElement("canvas");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        canvas.className = "w-full rounded-lg";
+        await page.render({ canvas, viewport }).promise;
+        if (!cancelled) ref.current?.appendChild(canvas);
+      }
+    })().catch(() => !cancelled && setError(true));
+    return () => {
+      cancelled = true;
+    };
+  }, [url]);
+
+  return (
+    <div
+      ref={ref}
+      onClick={(e) => e.stopPropagation()}
+      className="flex max-h-[85vh] w-[90vw] max-w-2xl flex-col gap-4 overflow-y-auto rounded-lg border border-white/20"
+    >
+      {error && (
+        <a href={url} target="_blank" rel="noreferrer" className="p-6 text-[#7484FE] underline">
+          Could not render PDF — open it in a new tab
+        </a>
+      )}
+    </div>
+  );
 }
 
 function StatusBadge({ status }: { status: RegistrationStatus }) {
