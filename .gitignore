@@ -56,3 +56,9 @@ components/equinox gallery/
 
 # Playwright MCP scratch output
 .playwright-mcp/
+
+# AI tooling (kept locally, not shared)
+.agents/
+.claude/
+skills-lock.json
+.mcp.json
