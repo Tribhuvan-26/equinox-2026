@@ -75,18 +75,24 @@ export function RegistrationList({
               <p className="text-sm">UTR / Txn No: <span className="font-mono">{r.utr_number}</span></p>
               {r.screenshotUrl && (
                 <button type="button" onClick={() => setPreviewUrl(r.screenshotUrl)} className="mt-3 block w-fit">
-                  <img
-                    src={r.screenshotUrl}
-                    alt="Payment screenshot"
-                    className="h-32 w-auto rounded-lg border border-white/15 object-contain transition hover:border-[#7484FE]"
-                  />
+                  {isPdf(r.screenshotUrl) ? (
+                    <span className="flex h-32 w-24 items-center justify-center rounded-lg border border-white/15 text-sm font-black text-[#F7F2F6]/80 transition hover:border-[#7484FE]">
+                      PDF
+                    </span>
+                  ) : (
+                    <img
+                      src={r.screenshotUrl}
+                      alt="Payment screenshot"
+                      className="h-32 w-auto rounded-lg border border-white/15 object-contain transition hover:border-[#7484FE]"
+                    />
+                  )}
                 </button>
               )}
               <div className="mt-3 flex flex-wrap gap-3">
                 {r.utrProofUrl && (
-                  <a href={r.utrProofUrl} target="_blank" rel="noreferrer" className="text-sm text-[#7484FE] underline">
+                  <button type="button" onClick={() => setPreviewUrl(r.utrProofUrl)} className="text-sm text-[#7484FE] underline">
                     View UTR proof
-                  </a>
+                  </button>
                 )}
               </div>
             </div>
@@ -141,11 +147,19 @@ export function RegistrationList({
           onClick={() => setPreviewUrl(null)}
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 p-6"
         >
-          <img
-            src={previewUrl}
-            alt="Payment screenshot preview"
-            className="max-h-[85vh] max-w-[90vw] rounded-lg border border-white/20 object-contain"
-          />
+          {isPdf(previewUrl) ? (
+            <iframe
+              src={previewUrl}
+              title="Payment proof preview"
+              className="h-[85vh] w-[90vw] max-w-4xl rounded-lg border border-white/20 bg-white"
+            />
+          ) : (
+            <img
+              src={previewUrl}
+              alt="Payment screenshot preview"
+              className="max-h-[85vh] max-w-[90vw] rounded-lg border border-white/20 object-contain"
+            />
+          )}
           <button
             type="button"
             onClick={() => setPreviewUrl(null)}
@@ -157,6 +171,11 @@ export function RegistrationList({
       )}
     </div>
   );
+}
+
+/** Signed URLs keep the stored path, which ends in the upload's extension. */
+function isPdf(url: string) {
+  return new URL(url).pathname.toLowerCase().endsWith(".pdf");
 }
 
 function StatusBadge({ status }: { status: RegistrationStatus }) {
