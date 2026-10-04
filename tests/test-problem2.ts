@@ -1,5 +1,5 @@
-import { EQUINOX_SUB_EVENTS, getEventSPOCs, OVERALL_EQUINOX_COORDINATORS, CHATBOT_CONTACTS } from "../chatbot/data/events";
-import { getMockEquinoxResponse } from "../lib/chatbot";
+import { EQUINOX_SUB_EVENTS, getEventSPOCs, OVERALL_EQUINOX_COORDINATORS, CHATBOT_CONTACTS } from "../src/chatbot/data/events";
+import { getMockEquinoxResponse } from "../src/lib/chatbot";
 
 async function testAll() {
   console.log("=== TEST 1: EVENT-SPECIFIC SPOCS FOR ALL 10 SUB-EVENTS ===");

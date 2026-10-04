@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "setup:supabase": "node --env-file=.env.local scripts/setup-supabase-storage.mjs",
-    "test:chatbot": "tsx chatbot/tests/chatbot-evaluation.ts"
+    "test:chatbot": "tsx src/chatbot/tests/chatbot-evaluation.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

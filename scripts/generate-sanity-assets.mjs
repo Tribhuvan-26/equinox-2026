@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.join(__dirname, "..");
 
-const mappingPath = path.join(rootDir, "sanity", "assets-mapping.json");
+const mappingPath = path.join(rootDir, "src", "sanity", "assets-mapping.json");
 const outPath = path.join(rootDir, "lib", "sanity-assets.ts");
 
 function generate() {

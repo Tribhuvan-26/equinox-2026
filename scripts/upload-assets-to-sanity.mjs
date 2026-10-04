@@ -47,7 +47,7 @@ const newFilesToUpload = [
 async function uploadAssets() {
   console.log('Uploading heavy assets to Sanity...')
   // Read existing mapping
-  const mappingPath = 'sanity/assets-mapping.json'
+  const mappingPath = 'src/sanity/assets-mapping.json'
   let mapping = {}
   if (fs.existsSync(mappingPath)) {
     mapping = JSON.parse(fs.readFileSync(mappingPath, 'utf8'))
@@ -76,7 +76,7 @@ async function uploadAssets() {
   }
 
   fs.writeFileSync(mappingPath, JSON.stringify(mapping, null, 2))
-  console.log('Done! Asset mapping saved to sanity/assets-mapping.json')
+  console.log('Done! Asset mapping saved to src/sanity/assets-mapping.json')
 }
 
 uploadAssets()

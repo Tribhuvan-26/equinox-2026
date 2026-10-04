@@ -8,10 +8,10 @@
 --   * Nobody logs in. Each registration gets a secret link (only its SHA-256 is
 --     stored). The leader's link also manages the team.
 --
--- Run once in the Supabase SQL Editor AFTER database/01-schema.sql. Idempotent.
+-- Run once in the Supabase SQL Editor AFTER scripts/db/01-schema.sql. Idempotent.
 --
 -- If you ran the earlier account-based files (teams.sql, auth-hardening.sql,
--- registration-team-link.sql), run database/02-drop-account-teams.sql FIRST.
+-- registration-team-link.sql), run scripts/db/02-drop-account-teams.sql FIRST.
 
 do $$
 begin
@@ -27,7 +27,7 @@ begin
       and c.contype = 'f'
       and t.relname = 'teams'
   ) then
-    raise exception 'pass_registrations.team_id still points at the old account-based teams table. Run database/02-drop-account-teams.sql first.';
+    raise exception 'pass_registrations.team_id still points at the old account-based teams table. Run scripts/db/02-drop-account-teams.sql first.';
   end if;
 end $$;
 

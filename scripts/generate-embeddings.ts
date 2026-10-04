@@ -12,9 +12,9 @@ import {
   tickets,
   faqs,
   audience,
-} from "../lib/content";
-import { eventsData } from "../app/events/eventsData";
-import { EVENT_SPOCS } from "../chatbot/data/events";
+} from "../src/lib/content";
+import { eventsData } from "../src/app/events/eventsData";
+import { EVENT_SPOCS } from "../src/chatbot/data/events";
 
 // Load .env.local if needed
 if (!process.env.GEMINI_API_KEY) {
@@ -350,7 +350,7 @@ async function main() {
     }
   }
 
-  const outputDir = path.resolve(process.cwd(), "lib/rag");
+  const outputDir = path.resolve(process.cwd(), "src/lib/rag");
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
   }
