@@ -210,11 +210,24 @@ export default async function EventPage({ params }: PageProps) {
                 Participate in {item.title}
               </h3>
               <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#F7F2F6]/75 sm:text-base">
-                Official registrations for The Equinox 2.0 summit passes and sub-event delegate spots are centralized through the official registration portal.
+                {item.applyUrl
+                  ? `Apply for ${item.title} through the application form, and get your summit pass at the registration desk.`
+                  : "Official registrations for The Equinox 2.0 summit passes and sub-event delegate spots are centralized through the official registration portal."}
               </p>
             </div>
 
-            <div className="shrink-0">
+            <div className="flex shrink-0 flex-wrap gap-3">
+              {item.applyUrl && (
+                <a
+                  href={item.applyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2.5 border-2 border-white/40 bg-[#33FF67] px-6 py-3.5 font-mono text-xs font-black uppercase tracking-wider text-[#2A2A2A] shadow-[3px_3px_0px_#2A2A2A] transition hover:bg-[#2BE05A] hover:shadow-[4px_4px_0px_#7484FE]"
+                >
+                  <span>Apply Now</span>
+                  <ArrowUpRight className="h-4 w-4" />
+                </a>
+              )}
               <Link
                 href="/register"
                 className="inline-flex items-center gap-2.5 border-2 border-white/40 bg-[#7484FE] px-6 py-3.5 font-mono text-xs font-black uppercase tracking-wider text-[#F7F2F6] shadow-[3px_3px_0px_#2A2A2A] transition hover:bg-[#5868DF] hover:shadow-[4px_4px_0px_#33FF67]"

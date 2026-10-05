@@ -8,6 +8,8 @@ export interface EventDetail {
     whiteWord: string;
   };
   description: string;
+  /** External application form, shown as an "Apply Now" button. */
+  applyUrl?: string;
 }
 
 export const eventsData: Record<string, EventDetail> = {
@@ -82,6 +84,7 @@ export const eventsData: Record<string, EventDetail> = {
     },
     description:
       "Hustle Mania is a student-organized stall event where students sell products of their choice. Participants compete with others while developing their communication, persuasion, and business skills.",
+    applyUrl: "https://forms.gle/mMH1Ptvo1GyKiZyX9",
   },
   "internship-drive": {
     slug: "internship-drive",
