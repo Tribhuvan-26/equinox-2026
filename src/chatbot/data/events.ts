@@ -27,7 +27,7 @@ export interface SubEventInfo {
   timing: string;
   venueRoom: string;
   eligibility: string;
-  registrationStatus: "Open Soon" | "Register Now" | "Details Pending";
+  registrationStatus: "Register Now";
   animationType:
     | "spotlight"
     | "crossroads"
@@ -163,7 +163,7 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
       "Spotlight is an interactive session that brings students closer to entrepreneurs, industry professionals, and thought leaders. The event creates a platform for meaningful conversations about business, innovation, technology, leadership, and professional growth. Participants get the opportunity to hear about real experiences, understand the challenges faced by industry professionals, and explore how ideas develop into practical ventures. Through engaging discussions and personal insights, the session encourages curiosity and provides a broader understanding of the entrepreneurial and professional world. Whether you're interested in entrepreneurship, career development, or emerging industry trends, Spotlight offers an opportunity to learn from experienced individuals and gain perspectives that extend beyond the classroom.",
     skills: ["Tech Trends", "Industry Foresight", "Startup Insights", "Q&A Engagement"],
     format: "Keynote talks by proven tech leaders followed by audience interactive sessions",
-    timing: "30 - 31 Oct (Session slots releasing soon)",
+    timing: "30 - 31 Oct (Sessions across both days)",
     venueRoom: "Main Stage Auditorium, MLRIT",
     eligibility: "Open to all summit delegate pass holders",
     registrationStatus: "Register Now",

@@ -356,8 +356,8 @@ export default function HomePage() {
         {/* Dark Editorial Heading Replicating Page 12 */}
         <div className="relative max-w-3xl">
           <h2
-            className="font-display-title font-black leading-[0.9] tracking-tighter text-[#F7F2F6] hyphens-none"
-            style={{ fontSize: "clamp(1.75rem, 6.5vw, 7rem)" }}
+            className="font-display-title font-black leading-[0.95] tracking-tight text-[#F7F2F6] hyphens-none"
+            style={{ fontSize: "clamp(1.75rem, 4.4vw, 4rem)" }}
           >
             Contact Us
           </h2>

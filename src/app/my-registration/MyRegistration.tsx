@@ -295,6 +295,7 @@ function Ready({
             </p>
           )}
 
+          {!confirm && (
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             {isLeader ? (
               <>
@@ -311,6 +312,7 @@ function Ready({
               </button>
             )}
           </div>
+          )}
           {approved && !isLeader && (
             <p className="mt-2 text-xs text-[#F7F2F6]/50">Approved registrations can&apos;t leave a team. Contact the organisers.</p>
           )}

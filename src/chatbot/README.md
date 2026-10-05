@@ -99,7 +99,7 @@ All event cards and mock intelligence strictly adhere to the official event prog
 - **Confirmed Venue:** MLR Institute of Technology, Dundigal, Hyderabad
 - **Student Coordinators:** Shyam (+91 93900 06806), Mahima (+91 94933 62006), Sanjana (+91 82084 99746), Adithya (+91 91822 40970)
 - **10 Official Sub-Events:** Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, Pitch Deck.
-- *Unannounced details are clearly tagged as "Releasing soon" rather than invented.*
+- *Details not in the official program are declined rather than invented.*
 
 ---
 

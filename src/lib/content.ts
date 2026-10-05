@@ -16,7 +16,7 @@ export interface SubEvent {
   timing: string;
   venueRoom: string;
   eligibility: string;
-  registrationStatus: "Open Soon" | "Register Now" | "Details Pending";
+  registrationStatus: "Register Now";
   // Compatible legacy fields
   day: string;
   time: string;
@@ -107,12 +107,12 @@ export const subEvents: SubEvent[] = [
       "Spotlight is an interactive session that brings students closer to entrepreneurs, industry professionals, and thought leaders. The event creates a platform for meaningful conversations about business, innovation, technology, leadership, and professional growth. Participants get the opportunity to hear about real experiences, understand the challenges faced by industry professionals, and explore how ideas develop into practical ventures. Through engaging discussions and personal insights, the session encourages curiosity and provides a broader understanding of the entrepreneurial and professional world. Whether you're interested in entrepreneurship, career development, or emerging industry trends, Spotlight offers an opportunity to learn from experienced individuals and gain perspectives that extend beyond the classroom.",
     skills: ["Tech Trends Analysis", "Strategic Foresight", "Startup Insights", "Networking"],
     format: "Expert keynote presentations followed by interactive audience Q&A",
-    timing: "30 - 31 Oct (Session slots releasing soon)",
+    timing: "30 - 31 Oct (Sessions across both days)",
     venueRoom: "Main Auditorium, MLRIT",
     eligibility: "Open to all summit attendees",
     registrationStatus: "Register Now",
     day: "Day 1 (30 Oct)",
-    time: "Detailed slots releasing soon",
+    time: "Sessions across both days",
     venue: "Main Auditorium, MLRIT",
     teamSize: "Individual or open entry",
     fee: "Free with summit pass",
@@ -140,7 +140,7 @@ export const subEvents: SubEvent[] = [
       "Crossroads is a business case-study competition that places participants in real-world business situations. Teams step into the roles of decision-makers and work together to understand challenges, identify opportunities, and develop practical strategies. Participants may take on roles such as CEO, CTO, Marketing Manager, or Finance Head, allowing them to examine a business problem from different perspectives. Each team must analyse the given situation, evaluate possible approaches, and prepare a solution that addresses the central challenge. The competition concludes with teams presenting their strategies and defending their decisions. Through this experience, participants explore the complexities of business management, teamwork, and strategic thinking in a competitive environment.",
     skills: ["Case Analysis", "Strategic Problem Solving", "Risk Management", "Business Strategy"],
     format: "Team case challenge: problem breakdown, strategy formulation & jury defense",
-    timing: "30 Oct (Detailed schedule releasing soon)",
+    timing: "30 Oct (10:00 AM - 04:00 PM)",
     venueRoom: "CIE Seminar Hall B",
     eligibility: "Teams of 4–5 students from any branch or college",
     registrationStatus: "Register Now",
@@ -148,7 +148,7 @@ export const subEvents: SubEvent[] = [
     time: "10:00 AM - 04:00 PM",
     venue: "CIE Seminar Hall B",
     teamSize: "Teams of 4–5",
-    fee: "Announcing soon",
+    fee: "Included in ₹769 summit pass",
     prize: "Exciting awards & certificates",
     about: [
       "An interactive business simulation where each team member will take on a specific role, such as CEO, CTO, or Marketing Manager. They will face a challenging scenario and will be tasked with developing a strategic plan to overcome the obstacles.",
@@ -207,7 +207,7 @@ export const subEvents: SubEvent[] = [
       "Brand Battles is a competitive debate where participants represent rival brands from the same industry. Teams must defend their chosen brand by using research, relevant data, real-world examples, and well-structured arguments. The event encourages participants to examine how brands compete, communicate their value, attract customers, and establish their position in the market. Teams must understand their own brand as well as the strategies of their competitors. As the debate progresses, participants present their viewpoints, challenge opposing arguments, and respond to questions. The event combines brand analysis, business reasoning, and persuasive communication in an engaging competitive format.",
     skills: ["Brand Strategy", "Market Research", "Argumentation & Rebuttal", "Competitive Analysis"],
     format: "Head-to-head debate rounds defending iconic market rivalries",
-    timing: "31 Oct (Slot allocations releasing soon)",
+    timing: "31 Oct (11:00 AM - 03:30 PM)",
     venueRoom: "Conference Hall 1",
     eligibility: "Teams of 4–5",
     registrationStatus: "Register Now",
@@ -215,7 +215,7 @@ export const subEvents: SubEvent[] = [
     time: "11:00 AM - 03:30 PM",
     venue: "Conference Hall 1",
     teamSize: "Teams of 4–5",
-    fee: "Announcing soon",
+    fee: "Included in ₹769 summit pass",
     prize: "Cash prizes & trophies",
     about: [
       "A competitive debate where two teams represent rival brands from the same sector. Participants present strong, well-researched arguments supported by real-time data, case studies, and relevant market examples to demonstrate why their chosen brand stands superior. Teams with the most compelling arguments and impactful presentations will be awarded.",
@@ -249,7 +249,7 @@ export const subEvents: SubEvent[] = [
     time: "10:00 AM - 04:30 PM",
     venue: "Indoor Sports Complex / Hall A",
     teamSize: "Teams of 4–5",
-    fee: "Announcing soon",
+    fee: "Included in ₹769 summit pass",
     prize: "Champion purse & team medals",
     about: [
       "The IPL Auction is a competitive cricket draft experience where participants step into the shoes of team owners and build their own squads. Just like the official auction, each team is given a fixed budget to bid on players. The event runs in a fast-paced, high-energy format as participants strategize, outbid rivals, and assemble the strongest lineup for their team.",
@@ -285,7 +285,7 @@ export const subEvents: SubEvent[] = [
     time: "10:30 AM - 04:30 PM",
     venue: "Campus Promenade & CIE Courtyard",
     teamSize: "Teams of 4–5",
-    fee: "Announcing soon",
+    fee: "₹2,999 onwards",
     prize: "Retain profits + Winner Trophy",
     about: [
       "Hustle Mania is a hands-on business and marketing challenge where participants set up stalls and sell their products to real customers. Every aspect of their operations — expenditure, pricing, revenue, and profit — is tracked throughout the event. Teams must apply marketing strategies, customer engagement skills, and smart budgeting to maximize performance.",
@@ -352,7 +352,7 @@ export const subEvents: SubEvent[] = [
     time: "11:00 AM - 04:00 PM",
     venue: "CIE Innovation Lounge",
     teamSize: "Teams of 4–5",
-    fee: "Announcing soon",
+    fee: "Included in ₹769 summit pass",
     prize: "Equinox Board Champion Shield",
     about: [
       "Startup Poly is a Monopoly-inspired entrepreneurship challenge where participants roll a die and navigate through a board filled with startup-themed opportunities, challenges, rewards, and setbacks. Every move tests their business skills, creativity, and decision-making as they tackle real-world entrepreneurial scenarios. The participants who successfully overcome the challenges and remain in the game until the end will be declared the winners.",
@@ -418,7 +418,7 @@ export const subEvents: SubEvent[] = [
     time: "10:30 AM - 04:00 PM",
     venue: "Main Stage Auditorium",
     teamSize: "Teams of 4–5 founders",
-    fee: "Announcing soon",
+    fee: "Included in ₹769 summit pass",
     prize: "Seed funding & incubation support",
     about: [
       "Pitch Deck is an idea presentation event where participants showcase their startup concepts to a panel of investors, venture capitalists, and industry experts. Teams present their problem statement, solution, business model, and market potential through a structured pitch. Selected ideas receive constructive feedback, mentorship opportunities, and potential support from the panel.",

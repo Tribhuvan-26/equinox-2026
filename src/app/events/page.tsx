@@ -34,7 +34,7 @@ export default function EventsPage() {
 
           <SectionHeading
             eyebrow="Brochure Pages 05 & 06"
-            heading={`All ${events.length} Sub-Events`}
+            heading={`All ${events.length} Sub‑Events`}
           />
           <div className="mt-16 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
             {events.map((item) => (

@@ -100,7 +100,10 @@ export function Footer() {
 
         {/* Massive Footer Wordmark */}
         <div className="border-t border-white/20 pt-8 text-center md:text-left">
-          <p className="font-display-title text-5xl font-black tracking-tighter text-[#33FF67]/20 sm:text-7xl md:text-8xl lg:text-[10rem]">
+          <p
+            className="whitespace-nowrap font-display-title font-black leading-none tracking-tighter text-[#33FF67]/20"
+            style={{ fontSize: "clamp(1.5rem, 7.6vw, 7rem)" }}
+          >
             THE EQUINOX
           </p>
         </div>

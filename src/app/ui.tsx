@@ -92,7 +92,10 @@ export function SectionHeading({
   return (
     <div className="flex flex-col gap-5">
       <Eyebrow>{eyebrow}</Eyebrow>
-      <h2 className="font-display-title max-w-4xl text-4xl sm:text-5xl lg:text-6xl text-white">
+      <h2
+        className="font-display-title font-black leading-[0.95] tracking-tight text-white hyphens-none"
+        style={{ fontSize: "clamp(1.75rem, 4.4vw, 4rem)" }}
+      >
         {heading}
       </h2>
     </div>
