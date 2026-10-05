@@ -629,7 +629,10 @@ export function detectQuestionCategory(query: string): QuestionCategory | undefi
     q.includes("ticket") ||
     (q.includes("pass") && !q.includes("password")) ||
     q.includes("how much") ||
-    q.includes("cost")
+    q.includes("cost") ||
+    q.includes("price") ||
+    q.includes("apply") ||
+    q.includes("application")
   ) {
     return "REGISTRATION";
   }
@@ -711,7 +714,7 @@ export function isFollowUpReference(query: string): boolean {
     /\b(when is it|what time does it|when does it start|start time)\b/,
     /\b(where is it|what venue|location)\b/,
     /\b(what are the rules|rules|guidelines|format)\b/,
-    /\b(how do i register|how to register|what about registration|registration|fees|fee)\b/,
+    /\b(how do i register|how to register|what about registration|registration|fees|fee|price|apply)\b/,
     /\b(what is the prize|prize|prizes)\b/,
     /\b(who is the coordinator|contact|spoc|spocs|who manages|who handles|who do i call|who do i contact|who to contact)\b/,
     /\b(tell me more|details)\b/,

@@ -52,7 +52,26 @@ export function ChatMessage({
                 </strong>
               );
             }
-            return <span key={pIdx}>{part}</span>;
+            // Make bare https:// links (e.g. application forms) clickable.
+            return (
+              <span key={pIdx}>
+                {part.split(/(https:\/\/\S+)/g).map((seg, sIdx) =>
+                  seg.startsWith("https://") ? (
+                    <a
+                      key={sIdx}
+                      href={seg}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="break-all font-bold text-[#33FF67] underline"
+                    >
+                      {seg}
+                    </a>
+                  ) : (
+                    seg
+                  )
+                )}
+              </span>
+            );
           })}
         </p>
       );

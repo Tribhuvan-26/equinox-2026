@@ -20,6 +20,7 @@ import {
   ResolvedEntity,
 } from "./rag/entityResolution";
 import { evaluateGuardrails } from "./rag/guardrails";
+import { eventsData } from "@/app/events/eventsData";
 import { resolveConversationContext, ChatHistoryMessage } from "./rag/context";
 
 export interface ChatbotResponse {
@@ -174,11 +175,16 @@ function generateSubEventAttributeAnswer(
     q.includes("ticket")
   ) {
     const feeDetail = content?.fee || "Included in Summit Pass / Free for participants";
+    const applyUrl = eventsData[info.slug]?.applyUrl;
+    const applyLine = applyUrl ? `\n• **Apply**: Fill the application form at ${applyUrl}` : "";
     return {
-      answer: `**${info.name}** Registration & Details:\n\n• **Status**: ${info.registrationStatus}\n• **Fee**: ${feeDetail}\n• Registration is live on the official Equinox portal at /register.${spocsSection}`,
+      answer: `**${info.name}** Registration & Details:\n\n• **Status**: ${info.registrationStatus}\n• **Fee**: ${feeDetail}${applyLine}\n• Registration is live on the official Equinox portal at /register.${spocsSection}`,
       eventCard: undefined,
       suggestions: [`Tell me about ${info.name}`, `Dates & Venue`, "Contact coordinators"],
-      links: [{ label: "Register on Website", url: "#events" }],
+      links: [
+        ...(applyUrl ? [{ label: "Apply Now", url: applyUrl }] : []),
+        { label: "Register on Website", url: "/register" },
+      ],
       grounded: true,
     };
   }
