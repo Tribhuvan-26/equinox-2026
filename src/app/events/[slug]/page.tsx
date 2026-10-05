@@ -214,7 +214,18 @@ export default async function EventPage({ params }: PageProps) {
               </p>
             </div>
 
-            <div className="shrink-0">
+            <div className="flex shrink-0 flex-wrap gap-3">
+              {item.applyUrl && (
+                <a
+                  href={item.applyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2.5 border-2 border-white/40 bg-[#33FF67] px-6 py-3.5 font-mono text-xs font-black uppercase tracking-wider text-[#2A2A2A] shadow-[3px_3px_0px_#2A2A2A] transition hover:bg-[#2BE05A] hover:shadow-[4px_4px_0px_#7484FE]"
+                >
+                  <span>Apply Now</span>
+                  <ArrowUpRight className="h-4 w-4" />
+                </a>
+              )}
               <Link
                 href="/register"
                 className="inline-flex items-center gap-2.5 border-2 border-white/40 bg-[#7484FE] px-6 py-3.5 font-mono text-xs font-black uppercase tracking-wider text-[#F7F2F6] shadow-[3px_3px_0px_#2A2A2A] transition hover:bg-[#5868DF] hover:shadow-[4px_4px_0px_#33FF67]"
