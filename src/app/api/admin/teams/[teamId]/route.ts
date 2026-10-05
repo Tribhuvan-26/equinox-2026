@@ -28,13 +28,13 @@ export async function PATCH(request: Request, ctx: { params: Promise<{ teamId: s
 
   const supabase = supabaseAdmin();
 
-  // Rows already at this status are left alone, so re-clicking cannot send a
-  // second approval email to someone who was approved earlier.
+  // Only pending rows change: re-clicking cannot re-email someone already
+  // approved, and a rejected member is never flipped back by a team action.
   const { data, error } = await supabase
     .from("pass_registrations")
     .update({ status, admin_note: note, updated_at: new Date().toISOString() })
     .eq("team_id", teamId)
-    .neq("status", status)
+    .eq("status", "pending")
     .select();
 
   if (error) {

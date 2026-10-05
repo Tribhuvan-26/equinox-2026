@@ -23,6 +23,12 @@ export async function PATCH(request: Request, ctx: { params: Promise<{ id: strin
   // Solo registrations (no team) are approvable; teams are optional for now.
   const supabase = supabaseAdmin();
 
+  // A rejected registration stays rejected; undoing that is a manual fix.
+  const { data: current } = await supabase.from("pass_registrations").select("status").eq("id", id).maybeSingle();
+  if (current?.status === "rejected") {
+    return NextResponse.json({ error: "This registration was marked Not Approved and can't be changed here." }, { status: 409 });
+  }
+
   const { data, error } = await supabase
     .from("pass_registrations")
     .update({ status, admin_note: note, updated_at: new Date().toISOString() })

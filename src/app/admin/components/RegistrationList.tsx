@@ -99,8 +99,8 @@ export function RegistrationList({
           </div>
 
           <div className="mt-5 flex flex-wrap gap-3">
-            {/* Already approved: nothing left to decide. */}
-            {r.status !== "approved" && (
+            {/* Decided either way: no buttons. Undoing a decision is done by hand. */}
+            {r.status === "pending" && (
               <>
             <button
               disabled={busyId === r.id || teamBusy}
@@ -110,7 +110,7 @@ export function RegistrationList({
               Approve
             </button>
             <button
-              disabled={busyId === r.id || teamBusy || r.status === "rejected"}
+              disabled={busyId === r.id || teamBusy}
               onClick={() => onSetStatus(r.id, "rejected")}
               className="rounded-lg border border-red-400/60 px-4 py-2 text-sm font-black text-red-400 disabled:cursor-not-allowed disabled:opacity-40"
             >

@@ -76,7 +76,8 @@ export function AdminDashboard({
       if (!r.team_id) continue;
       const entry = counts.get(r.team_id) ?? { total: 0, unapproved: 0 };
       entry.total += 1;
-      if (r.status !== "approved") entry.unapproved += 1;
+      // Rejected stays rejected; only pending rows are left to approve.
+      if (r.status === "pending") entry.unapproved += 1;
       counts.set(r.team_id, entry);
     }
     return counts;

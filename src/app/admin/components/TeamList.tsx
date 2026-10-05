@@ -11,6 +11,7 @@ type TeamEntry = AdminTeam & {
   requests: RegistrationWithUrls[];
   live: number;
   unapproved: number;
+  pending: number;
 };
 
 export function TeamList({
@@ -44,6 +45,8 @@ export function TeamList({
           // Rejected registrations don't hold a seat.
           live: members.filter((m) => m.status !== "rejected").length,
           unapproved: members.filter((m) => m.status !== "approved").length,
+          // Rejected members are never re-approved in bulk.
+          pending: members.filter((m) => m.status === "pending").length,
         };
       }),
     [teams, registrations]
@@ -168,12 +171,12 @@ export function TeamList({
             {t.members.length > 0 && (
               <div className="mt-5">
                 <button
-                  disabled={busyId !== null || t.unapproved === 0}
+                  disabled={busyId !== null || t.pending === 0}
                   onClick={() => {
                     if (
                       confirm(
                         `Approve all ${t.members.length} registrations on "${t.name}"? ` +
-                          `${t.unapproved} still need approving, and each one gets a confirmation email.`
+                          `${t.pending} still need approving, and each one gets a confirmation email.`
                       )
                     ) {
                       onSetTeamStatus(t.id, "approved");
@@ -183,9 +186,11 @@ export function TeamList({
                 >
                   {teamBusy
                     ? "Approving team..."
-                    : t.unapproved === 0
-                      ? "Whole team approved"
-                      : `Approve whole team (${t.unapproved} of ${t.members.length})`}
+                    : t.pending === 0
+                      ? t.unapproved === 0
+                        ? "Whole team approved"
+                        : "No pending members"
+                      : `Approve whole team (${t.pending} of ${t.members.length})`}
                 </button>
               </div>
             )}
