@@ -210,7 +210,9 @@ export default async function EventPage({ params }: PageProps) {
                 Participate in {item.title}
               </h3>
               <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#F7F2F6]/75 sm:text-base">
-                Official registrations for The Equinox 2.0 summit passes and sub-event delegate spots are centralized through the official registration portal.
+                {item.applyUrl
+                  ? `Apply for ${item.title} through the application form, and get your summit pass at the registration desk.`
+                  : "Official registrations for The Equinox 2.0 summit passes and sub-event delegate spots are centralized through the official registration portal."}
               </p>
             </div>
 
