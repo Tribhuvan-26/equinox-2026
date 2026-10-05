@@ -62,8 +62,8 @@ export function AdminDashboard({
     if (view === "rejected") return filtered.filter((r) => r.status === "rejected");
     // Paid registrations still without a team, approved solos included (matches dashboard stat).
     if (view === "no-team") return filtered.filter((r) => !r.team_id && r.status !== "rejected");
-    // Decided registrations live only in Approved / Not Approved.
-    return filtered.filter((r) => r.status === "pending");
+    if (view === "pending") return filtered.filter((r) => r.status === "pending");
+    return filtered;
   }, [filtered, view]);
 
   /**
