@@ -15,16 +15,18 @@ export async function POST(request: Request) {
     const parsed = await readRegistrationForm(request);
     const registration = await registerPaid(parsed);
 
-    after(() =>
-      emailRegistrationLink({
-        to: parsed.participant.email.trim().toLowerCase(),
-        name: parsed.participant.name.trim(),
-        token: registration.accessToken,
-        confirmationNumber: registration.confirmationNumber,
-        role: null,
-        team: null,
-      })
-    );
+    after(() => {
+      for (const p of parsed.participants) {
+        emailRegistrationLink({
+          to: p.email.trim().toLowerCase(),
+          name: p.name.trim(),
+          token: registration.accessToken,
+          confirmationNumber: registration.confirmationNumber,
+          role: null,
+          team: null,
+        });
+      }
+    });
 
     return {
       confirmationNumber: registration.confirmationNumber,

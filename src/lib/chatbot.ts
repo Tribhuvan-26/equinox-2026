@@ -440,7 +440,7 @@ export function getMockEquinoxResponse(
   ) {
     return {
       answer:
-        `**Equinox 2.0 Registration Details**:\n\n• **Pass Fee**: **₹769 per participant**\n• **Inclusions**: Grants access to attend summit sessions, keynote talks, and participate across the official sub-events.\n• **Hustle Mania stalls**: ₹2,999 onwards\n• **How to Register**: Complete the registration pass payment on the official portal, after which you can immediately start a team or request to join an existing team from your confirmation dashboard.\n• **Dates**: 30 – 31 October 2026 at MLRIT Hyderabad.`,
+        `**Equinox 2.0 Registration Details**:\n\n• **Pass Fee**: **₹869 per participant**\n• **Inclusions**: Grants access to attend summit sessions, keynote talks, and participate across the official sub-events.\n• **Hustle Mania stalls**: ₹2,999 onwards\n• **How to Register**: Complete the registration pass payment on the official portal, after which you can immediately start a team or request to join an existing team from your confirmation dashboard.\n• **Dates**: 30 – 31 October 2026 at MLRIT Hyderabad.`,
       suggestions: ["Explore Sub-Events", "Dates & Venue", "Overall Coordinators"],
       links: [{ label: "Register on Website", url: "/register" }],
       grounded: true,

@@ -2,6 +2,7 @@ import "server-only";
 import { ApiError } from "@/lib/api";
 import {
   emailAlreadyRegistered,
+  emailsAlreadyRegistered,
   EMAIL_IN_TEAM_MESSAGE,
   insertTeamRegistration,
   type InsertedRegistration,
@@ -82,8 +83,16 @@ export async function loadTeam(teamId: string): Promise<RegistrationTeamRow | nu
  * and gets a registration with no team. Picking a team comes later.
  */
 export async function registerPaid(parsed: ParsedRegistrationForm): Promise<InsertedRegistration> {
-  if (await emailAlreadyRegistered(parsed.participant.email)) {
-    throw new ApiError(409, EMAIL_IN_TEAM_MESSAGE, "email");
+  const emails = parsed.participants.map((p) => p.email);
+  const already = await emailsAlreadyRegistered(emails);
+  if (already.length > 0) {
+    throw new ApiError(
+      409,
+      already.length === 1
+        ? EMAIL_IN_TEAM_MESSAGE
+        : `These emails are already registered: ${already.join(", ")}. Each participant must use an unregistered email.`,
+      "email"
+    );
   }
   return insertTeamRegistration({ parsed, teamId: null, role: null });
 }

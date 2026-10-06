@@ -148,7 +148,7 @@ export const subEvents: SubEvent[] = [
     time: "10:00 AM - 04:00 PM",
     venue: "CIE Seminar Hall B",
     teamSize: "Teams of 4–5",
-    fee: "Included in ₹769 summit pass",
+    fee: "Included in ₹869 summit pass",
     prize: "Exciting awards & certificates",
     about: [
       "An interactive business simulation where each team member will take on a specific role, such as CEO, CTO, or Marketing Manager. They will face a challenging scenario and will be tasked with developing a strategic plan to overcome the obstacles.",
@@ -215,7 +215,7 @@ export const subEvents: SubEvent[] = [
     time: "11:00 AM - 03:30 PM",
     venue: "Conference Hall 1",
     teamSize: "Teams of 4–5",
-    fee: "Included in ₹769 summit pass",
+    fee: "Included in ₹869 summit pass",
     prize: "Cash prizes & trophies",
     about: [
       "A competitive debate where two teams represent rival brands from the same sector. Participants present strong, well-researched arguments supported by real-time data, case studies, and relevant market examples to demonstrate why their chosen brand stands superior. Teams with the most compelling arguments and impactful presentations will be awarded.",
@@ -249,7 +249,7 @@ export const subEvents: SubEvent[] = [
     time: "10:00 AM - 04:30 PM",
     venue: "Indoor Sports Complex / Hall A",
     teamSize: "Teams of 4–5",
-    fee: "Included in ₹769 summit pass",
+    fee: "Included in ₹869 summit pass",
     prize: "Champion purse & team medals",
     about: [
       "The IPL Auction is a competitive cricket draft experience where participants step into the shoes of team owners and build their own squads. Just like the official auction, each team is given a fixed budget to bid on players. The event runs in a fast-paced, high-energy format as participants strategize, outbid rivals, and assemble the strongest lineup for their team.",
@@ -352,7 +352,7 @@ export const subEvents: SubEvent[] = [
     time: "11:00 AM - 04:00 PM",
     venue: "CIE Innovation Lounge",
     teamSize: "Teams of 4–5",
-    fee: "Included in ₹769 summit pass",
+    fee: "Included in ₹869 summit pass",
     prize: "Equinox Board Champion Shield",
     about: [
       "Startup Poly is a Monopoly-inspired entrepreneurship challenge where participants roll a die and navigate through a board filled with startup-themed opportunities, challenges, rewards, and setbacks. Every move tests their business skills, creativity, and decision-making as they tackle real-world entrepreneurial scenarios. The participants who successfully overcome the challenges and remain in the game until the end will be declared the winners.",
@@ -418,7 +418,7 @@ export const subEvents: SubEvent[] = [
     time: "10:30 AM - 04:00 PM",
     venue: "Main Stage Auditorium",
     teamSize: "Teams of 4–5 founders",
-    fee: "Included in ₹769 summit pass",
+    fee: "Included in ₹869 summit pass",
     prize: "Seed funding & incubation support",
     about: [
       "Pitch Deck is an idea presentation event where participants showcase their startup concepts to a panel of investors, venture capitalists, and industry experts. Teams present their problem statement, solution, business model, and market potential through a structured pitch. Selected ideas receive constructive feedback, mentorship opportunities, and potential support from the panel.",

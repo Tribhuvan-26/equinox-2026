@@ -1,4 +1,4 @@
-export const REGISTRATION_FEE = 769;
+export const REGISTRATION_FEE = 869;
 
 export const DEPARTMENTS = [
   "CSE",
@@ -84,5 +84,61 @@ export const COLLEGES = [
 export const MIN_TEAM_SIZE = 4;
 export const MAX_TEAM_SIZE = 5;
 
+export const GROUP_DISCOUNT_PERCENT = 10;
+export const GROUP_DISCOUNT_MIN_PEOPLE = 4;
+export const GROUP_DISCOUNT_MAX_PEOPLE = 5;
+export const GROUP_DISCOUNT_CODE = "RTX5060";
+
+export function isGroupDiscountCodeValid(code?: string | null): boolean {
+  if (!code) return false;
+  return code.trim().toUpperCase() === GROUP_DISCOUNT_CODE;
+}
+
+export type RegistrationPricing = {
+  participantCount: number;
+  grossAmount: number;
+  qualifiesForGroupDiscount: boolean;
+  discountPercent: number;
+  discountAmount: number;
+  totalAmount: number;
+};
+
+/**
+ * A 10% group discount applies ONLY when 4 OR 5 people are submitted together
+ * in the SAME registration transaction AND the discount code (RTX5060) is activated.
+ *
+ * Rules:
+ * - 1–3 people → no discount (discount code does not activate)
+ * - 4 people together + RTX5060 → 10% discount
+ * - 5 people together + RTX5060 → 10% discount
+ * - 3 register now + 1 later → no discount
+ * - 4 register now + 1 later → no additional discount
+ * - Separate registrations must NEVER be combined to qualify.
+ */
+export function calculateRegistrationPricing(
+  participantCount: number,
+  discountCode?: string | null
+): RegistrationPricing {
+  const count = Math.max(0, Math.floor(participantCount));
+  const grossAmount = count * REGISTRATION_FEE;
+  const qualifiesForGroupDiscount =
+    (count === GROUP_DISCOUNT_MIN_PEOPLE || count === GROUP_DISCOUNT_MAX_PEOPLE) &&
+    isGroupDiscountCodeValid(discountCode);
+  const discountAmount = qualifiesForGroupDiscount
+    ? Math.round((grossAmount * GROUP_DISCOUNT_PERCENT) / 100)
+    : 0;
+  const totalAmount = grossAmount - discountAmount;
+
+  return {
+    participantCount: count,
+    grossAmount,
+    qualifiesForGroupDiscount,
+    discountPercent: qualifiesForGroupDiscount ? GROUP_DISCOUNT_PERCENT : 0,
+    discountAmount,
+    totalAmount,
+  };
+}
+
 /** Where the browser keeps the private registration token between visits. */
 export const TOKEN_STORAGE_KEY = "equinox_registration_token";
+
