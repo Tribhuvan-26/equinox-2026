@@ -3,12 +3,29 @@
 
 import { generateRagChatResponse } from "@/lib/rag/generate";
 import { ChatHistoryMessage } from "@/lib/rag/context";
+import { clientIp, overLimit } from "@/lib/security/rate-limit";
+
+// Every real question can reach Gemini (billed), so cap volume and size.
+const MAX_MESSAGE_CHARS = 500;
+const MAX_HISTORY = 8;
+const ROLES = new Set(["user", "assistant", "bot"]);
 
 export async function POST(req: Request) {
+  // The chat window falls back to its offline answers on any non-OK status.
+  if (await overLimit([{ key: `chat:ip:${clientIp(req)}`, max: 30, windowSeconds: 300 }])) {
+    return Response.json({ error: "Too many messages. Please wait a few minutes." }, { status: 429 });
+  }
+
   try {
     const body = await req.json();
-    const message = (body.message || "").trim();
-    const history: ChatHistoryMessage[] = Array.isArray(body.history) ? body.history : [];
+    const message = String(body.message ?? "").trim().slice(0, MAX_MESSAGE_CHARS);
+    const history: ChatHistoryMessage[] = (Array.isArray(body.history) ? body.history : [])
+      .filter((m: unknown): m is ChatHistoryMessage => {
+        const h = m as ChatHistoryMessage;
+        return Boolean(h) && ROLES.has(h.role) && typeof h.content === "string";
+      })
+      .slice(-MAX_HISTORY)
+      .map((m: ChatHistoryMessage) => ({ role: m.role, content: m.content.slice(0, MAX_MESSAGE_CHARS * 4) }));
 
     if (!message) {
       return Response.json(
