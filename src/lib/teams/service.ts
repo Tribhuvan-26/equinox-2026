@@ -1,8 +1,9 @@
 import "server-only";
 import { ApiError } from "@/lib/api";
 import {
-  emailAlreadyRegistered,
+  emailsAlreadyRegistered,
   EMAIL_IN_TEAM_MESSAGE,
+  insertTeamBatchRegistration,
   insertTeamRegistration,
   type InsertedRegistration,
   type ParsedRegistrationForm,
@@ -78,18 +79,39 @@ export async function loadTeam(teamId: string): Promise<RegistrationTeamRow | nu
 /* ------------------------------------------------------------------ */
 
 /**
- * Step one, and the only step that takes money: the person pays for themselves
- * and gets a registration with no team. Picking a team comes later.
+ * Step one: pay for yourself (Option B) or your team together (Option A).
  */
 export async function registerPaid(parsed: ParsedRegistrationForm): Promise<InsertedRegistration> {
-  if (await emailAlreadyRegistered(parsed.participant.email)) {
-    throw new ApiError(409, EMAIL_IN_TEAM_MESSAGE, "email");
+  const emails = parsed.participants.map((p) => p.email);
+  const already = await emailsAlreadyRegistered(emails);
+  if (already.length > 0) {
+    throw new ApiError(
+      409,
+      already.length === 1
+        ? EMAIL_IN_TEAM_MESSAGE
+        : `These emails are already registered: ${already.join(", ")}. Each participant must use an unregistered email.`,
+      "email"
+    );
   }
+
+  if (parsed.registrationType === "team") {
+    if (!parsed.teamName || !parsed.teamName.trim()) {
+      throw new ApiError(400, "Team name is required.", "teamName");
+    }
+    const team = await reserveTeam(parsed.teamName);
+    try {
+      return await insertTeamBatchRegistration({ parsed, team });
+    } catch (err) {
+      await supabaseAdmin().from("registration_teams").delete().eq("id", team.id);
+      throw err;
+    }
+  }
+
   return insertTeamRegistration({ parsed, teamId: null, role: null });
 }
 
 /** Reserve a team name + code. The caller decides who becomes its leader. */
-async function reserveTeam(rawName: string): Promise<RegistrationTeamRow> {
+export async function reserveTeam(rawName: string): Promise<RegistrationTeamRow> {
   const nameError = validateTeamName(rawName);
   if (nameError) throw new ApiError(400, nameError, "teamName");
   const name = normalizeTeamName(rawName);

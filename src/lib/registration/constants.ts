@@ -81,7 +81,6 @@ export const COLLEGES = [
   "Other",
 ] as const;
 
-export const MIN_TEAM_SIZE = 4;
 export const MAX_TEAM_SIZE = 5;
 
 /** Where the browser keeps the private registration token between visits. */
