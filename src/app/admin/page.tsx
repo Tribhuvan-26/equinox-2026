@@ -35,6 +35,7 @@ export default async function AdminPage() {
     registrations.map(async (r) => ({
       ...r,
       teamName: r.team_id ? (teamNames.get(r.team_id) ?? null) : null,
+      requestedTeamName: r.requested_team_id ? (teamNames.get(r.requested_team_id) ?? null) : null,
       screenshotUrl: await signedUrl(r.payment_screenshot_path),
       utrProofUrl: r.utr_proof_path ? await signedUrl(r.utr_proof_path) : null,
     }))
