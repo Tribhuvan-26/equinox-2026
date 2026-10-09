@@ -3,7 +3,9 @@ import { randomUUID } from "node:crypto";
 import { ApiError } from "@/lib/api";
 import { supabaseAdmin, PAYMENT_PROOFS_BUCKET } from "@/lib/supabase/admin";
 import { newAccessToken } from "@/lib/teams/access";
-import { REGISTRATION_FEE } from "./constants";
+import type { RegistrationTeamRow } from "@/lib/teams/types";
+import { validateTeamName } from "@/lib/teams/validation";
+import { calculateRegistrationPricing, REGISTRATION_FEE } from "./constants";
 import type { Participant } from "./types";
 import { participantForStorage, isParticipantValid } from "./validation";
 
@@ -11,6 +13,9 @@ const MAX_FILE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_TYPES = new Set(["image/png", "image/jpeg", "image/webp", "application/pdf"]);
 
 export type ParsedRegistrationForm = {
+  registrationType: "team" | "individual";
+  teamName: string | null;
+  participants: Participant[];
   participant: Participant;
   utrNumber: string;
   paymentScreenshot: File;
@@ -44,7 +49,7 @@ async function normalizeFile(file: File): Promise<File | null> {
   return type === file.type ? file : new File([file], file.name, { type });
 }
 
-/** Read + validate the single-person registration form (details, UTR, screenshot). */
+/** Read + validate the registration form for either team or individual registration. */
 export async function readRegistrationForm(request: Request): Promise<ParsedRegistrationForm> {
   let form: FormData;
   try {
@@ -53,16 +58,73 @@ export async function readRegistrationForm(request: Request): Promise<ParsedRegi
     throw new ApiError(400, "Invalid form submission.");
   }
 
-  const raw = form.get("participant");
-  if (typeof raw !== "string") throw new ApiError(400, "Missing your details.");
-  let participant: Participant;
-  try {
-    participant = JSON.parse(raw);
-  } catch {
-    throw new ApiError(400, "Malformed details.");
+  const rawType = form.get("registrationType");
+  const rawTeamName = form.get("teamName");
+  const teamName = typeof rawTeamName === "string" && rawTeamName.trim() ? rawTeamName.trim() : null;
+  const registrationType: "team" | "individual" = rawType === "team" || Boolean(teamName) ? "team" : "individual";
+
+  if (registrationType === "team") {
+    if (!teamName) {
+      throw new ApiError(400, "Team name is required.", "teamName");
+    }
+    const nameError = validateTeamName(teamName);
+    if (nameError) {
+      throw new ApiError(400, nameError, "teamName");
+    }
   }
-  if (!participant || typeof participant !== "object" || !isParticipantValid(participant)) {
-    throw new ApiError(400, "One or more of your details are invalid.");
+
+  const rawParticipants = form.get("participants");
+  const rawParticipant = form.get("participant");
+  let participants: Participant[] = [];
+
+  if (typeof rawParticipants === "string") {
+    try {
+      const parsed = JSON.parse(rawParticipants);
+      if (Array.isArray(parsed)) {
+        participants = parsed;
+      }
+    } catch {
+      throw new ApiError(400, "Malformed participants details.");
+    }
+  } else if (typeof rawParticipant === "string") {
+    try {
+      const parsed = JSON.parse(rawParticipant);
+      if (parsed && typeof parsed === "object") {
+        participants = [parsed];
+      }
+    } catch {
+      throw new ApiError(400, "Malformed details.");
+    }
+  } else {
+    throw new ApiError(400, "Missing participant details.");
+  }
+
+  if (registrationType === "individual" && participants.length > 1) {
+    participants = [participants[0]];
+  }
+
+  if (participants.length === 0) {
+    throw new ApiError(400, "At least one participant is required.");
+  }
+  if (participants.length > 5) {
+    throw new ApiError(400, "A maximum of 5 participants can be registered in one transaction.");
+  }
+
+  for (let i = 0; i < participants.length; i++) {
+    const p = participants[i];
+    if (!p || typeof p !== "object" || !isParticipantValid(p)) {
+      throw new ApiError(400, `Details for participant ${i + 1} are invalid.`);
+    }
+  }
+
+  // Ensure each participant within this submission has a unique email
+  const emailSet = new Set<string>();
+  for (let i = 0; i < participants.length; i++) {
+    const email = participants[i].email.trim().toLowerCase();
+    if (emailSet.has(email)) {
+      throw new ApiError(400, `Duplicate email detected: ${email}. Each participant must have a distinct email address.`, "email");
+    }
+    emailSet.add(email);
   }
 
   const utrNumber = String(form.get("utrNumber") ?? "").trim();
@@ -84,19 +146,47 @@ export async function readRegistrationForm(request: Request): Promise<ParsedRegi
     if (!utrProof) throw new ApiError(400, "UTR proof must be a PNG/JPG/WEBP/PDF under 5MB.");
   }
 
-  return { participant, utrNumber, paymentScreenshot, utrProof, form };
+  return {
+    registrationType,
+    teamName,
+    participants,
+    participant: participants[0],
+    utrNumber,
+    paymentScreenshot,
+    utrProof,
+    form,
+  };
+}
+
+/** Check which emails from the list are already on a live registration. */
+export async function emailsAlreadyRegistered(emails: string[]): Promise<string[]> {
+  if (emails.length === 0) return [];
+  const normalized = emails.map((e) => e.trim().toLowerCase());
+  const { data, error } = await supabaseAdmin()
+    .from("pass_registrations")
+    .select("member_email, participants")
+    .neq("status", "rejected");
+  if (error) throw error;
+
+  const registeredEmails = new Set<string>();
+  for (const row of data ?? []) {
+    if (row.member_email) {
+      registeredEmails.add(row.member_email.toLowerCase());
+    }
+    if (Array.isArray(row.participants)) {
+      for (const p of row.participants) {
+        if (p?.email) registeredEmails.add(String(p.email).trim().toLowerCase());
+      }
+    }
+  }
+
+  return normalized.filter((e) => registeredEmails.has(e));
 }
 
 /** Is this email already on a live (not rejected) registration, team or not? */
 export async function emailAlreadyRegistered(email: string): Promise<boolean> {
-  const { data, error } = await supabaseAdmin()
-    .from("pass_registrations")
-    .select("id")
-    .eq("member_email", email.trim().toLowerCase())
-    .neq("status", "rejected")
-    .limit(1);
-  if (error) throw error;
-  return (data ?? []).length > 0;
+  const duplicates = await emailsAlreadyRegistered([email]);
+  return duplicates.length > 0;
 }
 
 export const EMAIL_IN_TEAM_MESSAGE =
@@ -148,13 +238,25 @@ export type InsertedRegistration = {
   confirmationNumber: string;
   /** The raw secret token. Shown once and emailed; never stored. */
   accessToken: string;
+  team?: {
+    id: string;
+    name: string;
+    code: string;
+  } | null;
+  members?: {
+    email: string;
+    name: string;
+    accessToken: string;
+    confirmationNumber: string;
+    role: "leader" | "member";
+  }[];
 };
 
 /**
- * Save one person's registration (their details + their own payment proof).
+ * Save one person's individual registration (Option B).
  *
  * `teamId` is null when they have only paid and not picked a team yet; they
- * attach to one afterwards. The database decides capacity and one-per-email.
+ * attach to one afterwards.
  */
 export async function insertTeamRegistration(opts: {
   parsed: ParsedRegistrationForm;
@@ -175,7 +277,8 @@ export async function insertTeamRegistration(opts: {
     throw new ApiError(500, "Could not upload your files. Please try again.");
   }
 
-  const stored = participantForStorage(parsed.participant);
+  const p = parsed.participants[0] ?? parsed.participant;
+  const pricing = calculateRegistrationPricing(1);
   const { token, hash } = newAccessToken();
   const uploaded = proofPath ? [screenshotPath, proofPath] : [screenshotPath];
 
@@ -186,17 +289,18 @@ export async function insertTeamRegistration(opts: {
         .from("pass_registrations")
         .insert({
           id,
-          participants: [stored],
+          participants: [participantForStorage(p)],
           participant_count: 1,
-          total_amount: REGISTRATION_FEE,
+          total_amount: pricing.totalAmount,
           payment_screenshot_path: screenshotPath,
           utr_number: parsed.utrNumber,
           utr_proof_path: proofPath,
           status: "pending",
+          admin_note: null,
           confirmation_number: number,
           team_id: teamId,
           team_role: role,
-          member_email: stored.email,
+          member_email: p.email.trim().toLowerCase(),
           access_token_hash: hash,
         })
         .single();
@@ -216,8 +320,6 @@ export async function insertTeamRegistration(opts: {
       if (error.code === "23505" && error.message.includes("pass_registrations_one_live_per_email_key")) {
         throw new ApiError(409, EMAIL_IN_TEAM_MESSAGE, "email");
       }
-      // One payment, one registration. Nothing here can check a UTR against a
-      // bank, so re-using a screenshot is caught by the index or not at all.
       if (error.code === "23505" && error.message.includes("pass_registrations_one_live_per_utr_key")) {
         throw new ApiError(409, UTR_REUSED_MESSAGE, "utrNumber");
       }
@@ -229,6 +331,123 @@ export async function insertTeamRegistration(opts: {
     }
     throw new ApiError(500, "Could not save your registration. Please try again.");
   } catch (err) {
+    await removeUploads(uploaded);
+    throw err;
+  }
+}
+
+/**
+ * Register a whole team together (Option A, 1–5 people, one payment proof, associated with the same team).
+ */
+export async function insertTeamBatchRegistration(opts: {
+  parsed: ParsedRegistrationForm;
+  team: RegistrationTeamRow;
+}): Promise<InsertedRegistration> {
+  const { parsed, team } = opts;
+  const supabase = supabaseAdmin();
+  const leadId = randomUUID();
+
+  let screenshotPath: string;
+  let proofPath: string | null = null;
+  try {
+    screenshotPath = await uploadFile(parsed.paymentScreenshot, `${leadId}/payment-screenshot`);
+    if (parsed.utrProof) proofPath = await uploadFile(parsed.utrProof, `${leadId}/utr-proof`);
+  } catch (err) {
+    console.error("[team-registration] upload failed", err);
+    throw new ApiError(500, "Could not upload your files. Please try again.");
+  }
+
+  const uploaded = proofPath ? [screenshotPath, proofPath] : [screenshotPath];
+  const members: NonNullable<InsertedRegistration["members"]> = [];
+  const insertedIds: string[] = [];
+
+  try {
+    for (let i = 0; i < parsed.participants.length; i++) {
+      const p = parsed.participants[i];
+      const id = i === 0 ? leadId : randomUUID();
+      const role: "leader" | "member" = i === 0 ? "leader" : "member";
+      const { token, hash } = newAccessToken();
+      const memberUtr = i === 0 ? parsed.utrNumber : `${parsed.utrNumber}#${i + 1}`;
+      const memberEmail = p.email.trim().toLowerCase();
+      const memberNote =
+        i === 0
+          ? `Team registration: ${team.name} (${parsed.participants.length} members)`
+          : `Team member of ${team.name} (Lead: ${parsed.participants[0].email})`;
+
+      let number = confirmationNumber();
+      let inserted = false;
+
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const { error } = await supabase
+          .from("pass_registrations")
+          .insert({
+            id,
+            participants: [participantForStorage(p)],
+            participant_count: 1,
+            total_amount: REGISTRATION_FEE,
+            payment_screenshot_path: screenshotPath,
+            utr_number: memberUtr,
+            utr_proof_path: proofPath,
+            status: "pending",
+            admin_note: memberNote,
+            confirmation_number: number,
+            team_id: team.id,
+            team_role: role,
+            member_email: memberEmail,
+            access_token_hash: hash,
+          })
+          .single();
+
+        if (!error) {
+          insertedIds.push(id);
+          members.push({
+            email: memberEmail,
+            name: p.name.trim(),
+            accessToken: token,
+            confirmationNumber: number,
+            role,
+          });
+          inserted = true;
+          break;
+        }
+
+        if (error.code === "23505" && error.message.includes("confirmation_number") && attempt === 0) {
+          number = confirmationNumber();
+          continue;
+        }
+        if (error.code === "23505" && error.message.includes("pass_registrations_one_live_per_email_key")) {
+          throw new ApiError(409, `Email already registered: ${memberEmail}`, "email");
+        }
+        if (error.code === "23505" && error.message.includes("pass_registrations_one_live_per_utr_key")) {
+          throw new ApiError(409, UTR_REUSED_MESSAGE, "utrNumber");
+        }
+        if (error.message.includes("team_full")) throw new ApiError(409, TEAM_FULL_MESSAGE);
+        if (error.message.includes("team_not_found")) throw new ApiError(404, "Team not found.");
+
+        console.error("[team-registration] batch member insert failed", error);
+        throw new ApiError(500, "Could not save team registration. Please try again.");
+      }
+
+      if (!inserted) {
+        throw new ApiError(500, "Could not save team registration. Please try again.");
+      }
+    }
+
+    return {
+      id: leadId,
+      confirmationNumber: members[0].confirmationNumber,
+      accessToken: members[0].accessToken,
+      team: {
+        id: team.id,
+        name: team.name,
+        code: team.code,
+      },
+      members,
+    };
+  } catch (err) {
+    if (insertedIds.length > 0) {
+      await supabase.from("pass_registrations").delete().in("id", insertedIds);
+    }
     await removeUploads(uploaded);
     throw err;
   }

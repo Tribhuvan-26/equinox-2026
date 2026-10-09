@@ -84,5 +84,19 @@ export const COLLEGES = [
 export const MIN_TEAM_SIZE = 4;
 export const MAX_TEAM_SIZE = 5;
 
+export type RegistrationPricing = {
+  participantCount: number;
+  totalAmount: number;
+};
+
+/** Standard pass pricing: REGISTRATION_FEE per participant. No discounts. */
+export function calculateRegistrationPricing(participantCount: number): RegistrationPricing {
+  const count = Math.max(0, Math.floor(participantCount));
+  return {
+    participantCount: count,
+    totalAmount: count * REGISTRATION_FEE,
+  };
+}
+
 /** Where the browser keeps the private registration token between visits. */
 export const TOKEN_STORAGE_KEY = "equinox_registration_token";

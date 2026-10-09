@@ -15,20 +15,36 @@ export async function POST(request: Request) {
     const parsed = await readRegistrationForm(request);
     const registration = await registerPaid(parsed);
 
-    after(() =>
-      emailRegistrationLink({
-        to: parsed.participant.email.trim().toLowerCase(),
-        name: parsed.participant.name.trim(),
-        token: registration.accessToken,
-        confirmationNumber: registration.confirmationNumber,
-        role: null,
-        team: null,
-      })
-    );
+    after(() => {
+      if (registration.members && registration.members.length > 0) {
+        for (const m of registration.members) {
+          emailRegistrationLink({
+            to: m.email.trim().toLowerCase(),
+            name: m.name.trim(),
+            token: m.accessToken,
+            confirmationNumber: m.confirmationNumber,
+            role: m.role,
+            team: registration.team ?? null,
+          });
+        }
+      } else {
+        for (const p of parsed.participants) {
+          emailRegistrationLink({
+            to: p.email.trim().toLowerCase(),
+            name: p.name.trim(),
+            token: registration.accessToken,
+            confirmationNumber: registration.confirmationNumber,
+            role: null,
+            team: null,
+          });
+        }
+      }
+    });
 
     return {
       confirmationNumber: registration.confirmationNumber,
       accessToken: registration.accessToken,
+      team: registration.team ?? null,
     };
   }, 201);
 }
