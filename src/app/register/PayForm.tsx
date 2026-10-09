@@ -4,11 +4,7 @@ import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { Check, Copy, User, Users } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import {
-  calculateRegistrationPricing,
-  REGISTRATION_FEE,
-  TOKEN_STORAGE_KEY,
-} from "@/lib/registration/constants";
+import { MAX_TEAM_SIZE, REGISTRATION_FEE, TOKEN_STORAGE_KEY } from "@/lib/registration/constants";
 import { emptyParticipant, type Participant } from "@/lib/registration/types";
 import { isParticipantValid, validateParticipant } from "@/lib/registration/validation";
 import { validateTeamName } from "@/lib/teams/validation";
@@ -160,10 +156,7 @@ export function PayForm() {
   const lock = useRef(false);
 
   const activeParticipants = mode === "team" ? participants : [participants[0]];
-  const pricing = useMemo(
-    () => calculateRegistrationPricing(activeParticipants.length),
-    [activeParticipants.length]
-  );
+  const totalAmount = activeParticipants.length * REGISTRATION_FEE;
 
   const teamNameError = mode === "team" ? validateTeamName(teamName) : null;
   const isTeamNameValid = mode === "individual" || !teamNameError;
@@ -188,7 +181,7 @@ export function PayForm() {
   }
 
   function addParticipant() {
-    if (participants.length >= 5) return;
+    if (participants.length >= MAX_TEAM_SIZE) return;
     setParticipants((prev) => [...prev, emptyParticipant()]);
   }
 
@@ -230,7 +223,6 @@ export function PayForm() {
       body.set("teamName", teamName.trim());
     }
     body.set("participants", JSON.stringify(activeParticipants));
-    body.set("participant", JSON.stringify(activeParticipants[0]));
     body.set("utrNumber", utr.trim());
     body.set("paymentScreenshot", screenshot as File);
 
@@ -382,14 +374,14 @@ export function PayForm() {
           </p>
         )}
 
-        {mode === "team" && participants.length < 5 && (
+        {mode === "team" && participants.length < MAX_TEAM_SIZE && (
           <button
             type="button"
             onClick={addParticipant}
             className="flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-white/20 bg-black/10 py-4 text-sm font-black text-[#F7F2F6] transition-all hover:border-[#33FF67] hover:bg-black/20 hover:text-[#33FF67]"
           >
             <Users className="h-4 w-4" />
-            <span>+ Add Team Member ({participants.length}/5)</span>
+            <span>+ Add Team Member ({participants.length}/{MAX_TEAM_SIZE})</span>
           </button>
         )}
       </div>
@@ -405,13 +397,13 @@ export function PayForm() {
                 : "Total to Pay:"}
             </span>
             <span className="text-2xl font-black text-[#33FF67]">
-              {currency(pricing.totalAmount)}
+              {currency(totalAmount)}
             </span>
           </div>
         </div>
 
         <div className="mt-6 grid gap-8 sm:grid-cols-[auto_1fr]">
-          <PaymentPanel totalAmount={pricing.totalAmount} />
+          <PaymentPanel totalAmount={totalAmount} />
           <div className="flex flex-col gap-5">
             <FileField
               label="Upload Payment Screenshot"
@@ -442,8 +434,8 @@ export function PayForm() {
         {submitting
           ? "Submitting..."
           : mode === "team"
-          ? `Pay & Register Team (${currency(pricing.totalAmount)})`
-          : `Pay & Register (${currency(pricing.totalAmount)})`}
+          ? `Pay & Register Team (${currency(totalAmount)})`
+          : `Pay & Register (${currency(totalAmount)})`}
       </button>
 
       <p className="text-sm text-[#F7F2F6]/70">

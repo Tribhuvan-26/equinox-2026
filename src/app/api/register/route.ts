@@ -5,7 +5,7 @@ import { clientIp, overLimit } from "@/lib/security/rate-limit";
 import { emailRegistrationLink } from "@/lib/teams/notify";
 import { registerPaid } from "@/lib/teams/service";
 
-/** Step one: pay for yourself. The team comes afterwards, from /my-registration. */
+/** Pay for yourself (team picked later from /my-registration) or for a whole team at once. */
 export async function POST(request: Request) {
   return respond(async () => {
     if (await overLimit([{ key: `register:ip:${clientIp(request)}`, max: 20, windowSeconds: 3600 }])) {
@@ -15,31 +15,30 @@ export async function POST(request: Request) {
     const parsed = await readRegistrationForm(request);
     const registration = await registerPaid(parsed);
 
-    after(() => {
-      if (registration.members && registration.members.length > 0) {
-        for (const m of registration.members) {
+    // Return the promise so the function stays alive until every email is sent.
+    const recipients = registration.members ?? [
+      {
+        email: parsed.participants[0].email.trim().toLowerCase(),
+        name: parsed.participants[0].name.trim(),
+        accessToken: registration.accessToken,
+        confirmationNumber: registration.confirmationNumber,
+        role: null,
+      },
+    ];
+    after(() =>
+      Promise.all(
+        recipients.map((m) =>
           emailRegistrationLink({
-            to: m.email.trim().toLowerCase(),
-            name: m.name.trim(),
+            to: m.email,
+            name: m.name,
             token: m.accessToken,
             confirmationNumber: m.confirmationNumber,
             role: m.role,
             team: registration.team ?? null,
-          });
-        }
-      } else {
-        for (const p of parsed.participants) {
-          emailRegistrationLink({
-            to: p.email.trim().toLowerCase(),
-            name: p.name.trim(),
-            token: registration.accessToken,
-            confirmationNumber: registration.confirmationNumber,
-            role: null,
-            team: null,
-          });
-        }
-      }
-    });
+          })
+        )
+      )
+    );
 
     return {
       confirmationNumber: registration.confirmationNumber,
