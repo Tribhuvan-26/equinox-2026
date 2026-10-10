@@ -33,7 +33,6 @@ import JourneyOutro from "../components/JourneyOutro";
 import ScrollReveal from "../components/ScrollReveal";
 import PinnedSplit from "../components/PinnedSplit";
 import LogoMarquee from "../components/LogoMarquee";
-import GallerySection from "../components/GallerySection";
 
 const heroFadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -336,11 +335,6 @@ export default function HomePage() {
           ))}
         </ScrollReveal>
       </section>
-
-      {/* =========================================================================
-          SECTION 5.5: EVENT GALLERY / ARCHIVES (Above Contact Us)
-          ========================================================================= */}
-      <GallerySection />
 
       {/* =========================================================================
           SECTION 6: CONTACT US (Page 12)
