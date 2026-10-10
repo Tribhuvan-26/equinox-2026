@@ -1,4 +1,4 @@
-export const REGISTRATION_FEE = 869;
+export const REGISTRATION_FEE = 769;
 
 export const DEPARTMENTS = [
   "CSE",
@@ -81,25 +81,7 @@ export const COLLEGES = [
   "Other",
 ] as const;
 
-export const MIN_TEAM_SIZE = 1;
 export const MAX_TEAM_SIZE = 5;
-
-export type RegistrationPricing = {
-  participantCount: number;
-  totalAmount: number;
-};
-
-/**
- * Standard pass pricing: ₹869 per participant. No discounts.
- */
-export function calculateRegistrationPricing(participantCount: number): RegistrationPricing {
-  const count = Math.max(0, Math.floor(participantCount));
-  return {
-    participantCount: count,
-    totalAmount: count * REGISTRATION_FEE,
-  };
-}
 
 /** Where the browser keeps the private registration token between visits. */
 export const TOKEN_STORAGE_KEY = "equinox_registration_token";
-

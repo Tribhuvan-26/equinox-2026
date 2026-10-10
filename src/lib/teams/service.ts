@@ -1,7 +1,6 @@
 import "server-only";
 import { ApiError } from "@/lib/api";
 import {
-  emailAlreadyRegistered,
   emailsAlreadyRegistered,
   EMAIL_IN_TEAM_MESSAGE,
   insertTeamBatchRegistration,

@@ -5,7 +5,7 @@ import { supabaseAdmin, PAYMENT_PROOFS_BUCKET } from "@/lib/supabase/admin";
 import { newAccessToken } from "@/lib/teams/access";
 import type { RegistrationTeamRow } from "@/lib/teams/types";
 import { validateTeamName } from "@/lib/teams/validation";
-import { calculateRegistrationPricing, REGISTRATION_FEE } from "./constants";
+import { MAX_TEAM_SIZE, REGISTRATION_FEE } from "./constants";
 import type { Participant } from "./types";
 import { participantForStorage, isParticipantValid } from "./validation";
 
@@ -16,7 +16,6 @@ export type ParsedRegistrationForm = {
   registrationType: "team" | "individual";
   teamName: string | null;
   participants: Participant[];
-  participant: Participant;
   utrNumber: string;
   paymentScreenshot: File;
   utrProof: File | null;
@@ -74,29 +73,13 @@ export async function readRegistrationForm(request: Request): Promise<ParsedRegi
   }
 
   const rawParticipants = form.get("participants");
-  const rawParticipant = form.get("participant");
+  if (typeof rawParticipants !== "string") throw new ApiError(400, "Missing participant details.");
   let participants: Participant[] = [];
-
-  if (typeof rawParticipants === "string") {
-    try {
-      const parsed = JSON.parse(rawParticipants);
-      if (Array.isArray(parsed)) {
-        participants = parsed;
-      }
-    } catch {
-      throw new ApiError(400, "Malformed participants details.");
-    }
-  } else if (typeof rawParticipant === "string") {
-    try {
-      const parsed = JSON.parse(rawParticipant);
-      if (parsed && typeof parsed === "object") {
-        participants = [parsed];
-      }
-    } catch {
-      throw new ApiError(400, "Malformed details.");
-    }
-  } else {
-    throw new ApiError(400, "Missing participant details.");
+  try {
+    const parsed = JSON.parse(rawParticipants);
+    if (Array.isArray(parsed)) participants = parsed;
+  } catch {
+    throw new ApiError(400, "Malformed participants details.");
   }
 
   if (registrationType === "individual" && participants.length > 1) {
@@ -106,8 +89,8 @@ export async function readRegistrationForm(request: Request): Promise<ParsedRegi
   if (participants.length === 0) {
     throw new ApiError(400, "At least one participant is required.");
   }
-  if (participants.length > 5) {
-    throw new ApiError(400, "A maximum of 5 participants can be registered in one transaction.");
+  if (participants.length > MAX_TEAM_SIZE) {
+    throw new ApiError(400, `A maximum of ${MAX_TEAM_SIZE} participants can be registered in one transaction.`);
   }
 
   for (let i = 0; i < participants.length; i++) {
@@ -150,7 +133,6 @@ export async function readRegistrationForm(request: Request): Promise<ParsedRegi
     registrationType,
     teamName,
     participants,
-    participant: participants[0],
     utrNumber,
     paymentScreenshot,
     utrProof,
@@ -181,12 +163,6 @@ export async function emailsAlreadyRegistered(emails: string[]): Promise<string[
   }
 
   return normalized.filter((e) => registeredEmails.has(e));
-}
-
-/** Is this email already on a live (not rejected) registration, team or not? */
-export async function emailAlreadyRegistered(email: string): Promise<boolean> {
-  const duplicates = await emailsAlreadyRegistered([email]);
-  return duplicates.length > 0;
 }
 
 export const EMAIL_IN_TEAM_MESSAGE =
@@ -277,8 +253,7 @@ export async function insertTeamRegistration(opts: {
     throw new ApiError(500, "Could not upload your files. Please try again.");
   }
 
-  const p = parsed.participants[0] ?? parsed.participant;
-  const pricing = calculateRegistrationPricing(1);
+  const p = parsed.participants[0];
   const { token, hash } = newAccessToken();
   const uploaded = proofPath ? [screenshotPath, proofPath] : [screenshotPath];
 
@@ -291,7 +266,7 @@ export async function insertTeamRegistration(opts: {
           id,
           participants: [participantForStorage(p)],
           participant_count: 1,
-          total_amount: pricing.totalAmount,
+          total_amount: REGISTRATION_FEE,
           payment_screenshot_path: screenshotPath,
           utr_number: parsed.utrNumber,
           utr_proof_path: proofPath,

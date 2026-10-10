@@ -45,6 +45,9 @@ export function RegistrationList({
                   {r.team_role ? ` · ${r.team_role === "leader" ? "Leader" : "Member"}` : ""}
                 </p>
               )}
+              {r.requestedTeamName && (
+                <p className="mt-1 text-sm font-bold text-yellow-400">Wants to join: {r.requestedTeamName}</p>
+              )}
             </div>
             <StatusBadge status={r.status} />
           </div>

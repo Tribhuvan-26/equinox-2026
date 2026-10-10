@@ -1,8 +1,8 @@
 "use client";
 
-import { Home, Users, ClipboardList, BarChart3, Clock, CheckCircle, XCircle, UserMinus, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { Home, Users, ClipboardList, BarChart3, Clock, CheckCircle, XCircle, UserMinus, UserPlus, ChevronsLeft, ChevronsRight } from "lucide-react";
 
-export type AdminView = "dashboard" | "teams" | "registrations" | "analytics" | "pending" | "no-team" | "approved" | "rejected";
+export type AdminView = "dashboard" | "teams" | "registrations" | "analytics" | "pending" | "no-team" | "join-requests" | "approved" | "rejected";
 
 const MENU_ITEMS: { id: AdminView; label: string; icon: typeof Home }[] = [
   { id: "dashboard", label: "Dashboard", icon: Home },
@@ -11,6 +11,7 @@ const MENU_ITEMS: { id: AdminView; label: string; icon: typeof Home }[] = [
   { id: "analytics", label: "Analytics", icon: BarChart3 },
   { id: "pending", label: "Pending", icon: Clock },
   { id: "no-team", label: "No Team", icon: UserMinus },
+  { id: "join-requests", label: "Join Requests", icon: UserPlus },
   { id: "approved", label: "Approved", icon: CheckCircle },
   { id: "rejected", label: "Not Approved", icon: XCircle },
 ];

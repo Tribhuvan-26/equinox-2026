@@ -3,11 +3,8 @@
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { Check, Copy, User, Users } from "lucide-react";
-import {
-  calculateRegistrationPricing,
-  REGISTRATION_FEE,
-  TOKEN_STORAGE_KEY,
-} from "@/lib/registration/constants";
+import { QRCodeSVG } from "qrcode.react";
+import { MAX_TEAM_SIZE, REGISTRATION_FEE, TOKEN_STORAGE_KEY } from "@/lib/registration/constants";
 import { emptyParticipant, type Participant } from "@/lib/registration/types";
 import { isParticipantValid, validateParticipant } from "@/lib/registration/validation";
 import { validateTeamName } from "@/lib/teams/validation";
@@ -58,14 +55,30 @@ function CopyButton({ text, label }: { text: string; label: string }) {
 }
 
 function PaymentPanel({ totalAmount }: { totalAmount: number }) {
+  const upiId = process.env.NEXT_PUBLIC_UPI_ID;
+  const payeeName = process.env.NEXT_PUBLIC_UPI_PAYEE_NAME ?? "Equinox 2026";
+  const upiLink = useMemo(() => {
+    if (!upiId) return null;
+    const params = new URLSearchParams({
+      pa: upiId,
+      pn: payeeName,
+      am: String(totalAmount),
+      cu: "INR",
+      tn: "Equinox 2026 Registration",
+    });
+    return `upi://pay?${params.toString()}`;
+  }, [upiId, payeeName, totalAmount]);
+
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className="flex size-40 items-center justify-center overflow-hidden rounded-2xl border border-white/20 bg-white p-1">
-        <img
-          src="/payment-qr.png"
-          alt="UPI Payment QR Code"
-          className="size-full object-contain"
-        />
+      <div className="flex size-40 items-center justify-center rounded-2xl border border-white/20 bg-white p-3">
+        {upiLink ? (
+          <QRCodeSVG value={upiLink} size={140} />
+        ) : (
+          <span className="text-center text-xs font-bold text-[#2A2A2A]/60">
+            QR code will appear here once payment details are configured
+          </span>
+        )}
       </div>
       <p className="max-w-[12rem] text-center text-xs text-[#F7F2F6]/70">
         Scan the QR code and pay <strong className="text-[#33FF67] font-bold">{currency(totalAmount)}</strong>.
@@ -143,10 +156,7 @@ export function PayForm() {
   const lock = useRef(false);
 
   const activeParticipants = mode === "team" ? participants : [participants[0]];
-  const pricing = useMemo(
-    () => calculateRegistrationPricing(activeParticipants.length),
-    [activeParticipants.length]
-  );
+  const totalAmount = activeParticipants.length * REGISTRATION_FEE;
 
   const teamNameError = mode === "team" ? validateTeamName(teamName) : null;
   const isTeamNameValid = mode === "individual" || !teamNameError;
@@ -171,7 +181,7 @@ export function PayForm() {
   }
 
   function addParticipant() {
-    if (participants.length >= 5) return;
+    if (participants.length >= MAX_TEAM_SIZE) return;
     setParticipants((prev) => [...prev, emptyParticipant()]);
   }
 
@@ -213,7 +223,6 @@ export function PayForm() {
       body.set("teamName", teamName.trim());
     }
     body.set("participants", JSON.stringify(activeParticipants));
-    body.set("participant", JSON.stringify(activeParticipants[0]));
     body.set("utrNumber", utr.trim());
     body.set("paymentScreenshot", screenshot as File);
 
@@ -365,14 +374,14 @@ export function PayForm() {
           </p>
         )}
 
-        {mode === "team" && participants.length < 5 && (
+        {mode === "team" && participants.length < MAX_TEAM_SIZE && (
           <button
             type="button"
             onClick={addParticipant}
             className="flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-white/20 bg-black/10 py-4 text-sm font-black text-[#F7F2F6] transition-all hover:border-[#33FF67] hover:bg-black/20 hover:text-[#33FF67]"
           >
             <Users className="h-4 w-4" />
-            <span>+ Add Team Member ({participants.length}/5)</span>
+            <span>+ Add Team Member ({participants.length}/{MAX_TEAM_SIZE})</span>
           </button>
         )}
       </div>
@@ -388,13 +397,13 @@ export function PayForm() {
                 : "Total to Pay:"}
             </span>
             <span className="text-2xl font-black text-[#33FF67]">
-              {currency(pricing.totalAmount)}
+              {currency(totalAmount)}
             </span>
           </div>
         </div>
 
         <div className="mt-6 grid gap-8 sm:grid-cols-[auto_1fr]">
-          <PaymentPanel totalAmount={pricing.totalAmount} />
+          <PaymentPanel totalAmount={totalAmount} />
           <div className="flex flex-col gap-5">
             <FileField
               label="Upload Payment Screenshot"
@@ -425,8 +434,8 @@ export function PayForm() {
         {submitting
           ? "Submitting..."
           : mode === "team"
-          ? `Pay & Register Team (${currency(pricing.totalAmount)})`
-          : `Pay & Register (${currency(pricing.totalAmount)})`}
+          ? `Pay & Register Team (${currency(totalAmount)})`
+          : `Pay & Register (${currency(totalAmount)})`}
       </button>
 
       <p className="text-sm text-[#F7F2F6]/70">

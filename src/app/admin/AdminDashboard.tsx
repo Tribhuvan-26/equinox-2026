@@ -15,6 +15,8 @@ export interface RegistrationWithUrls extends RegistrationRecord {
   utrProofUrl: string | null;
   /** Name of the team this registration belongs to, if any. */
   teamName?: string | null;
+  /** Name of the team this registration has asked to join, if any. */
+  requestedTeamName?: string | null;
 }
 
 /** A team as the admin sees it: everything except who is in it. */
@@ -33,6 +35,7 @@ const VIEW_TITLES: Record<AdminView, string> = {
   analytics: "Analytics",
   pending: "Pending Verification",
   "no-team": "Paid, No Team Yet",
+  "join-requests": "Waiting to Join a Team",
   approved: "Approved",
   rejected: "Not Approved",
 };
@@ -62,6 +65,7 @@ export function AdminDashboard({
     if (view === "rejected") return filtered.filter((r) => r.status === "rejected");
     // Paid registrations still without a team, approved solos included (matches dashboard stat).
     if (view === "no-team") return filtered.filter((r) => !r.team_id && r.status !== "rejected");
+    if (view === "join-requests") return filtered.filter((r) => r.requested_team_id && r.status !== "rejected");
     if (view === "pending") return filtered.filter((r) => r.status === "pending");
     return filtered;
   }, [filtered, view]);
@@ -201,7 +205,7 @@ export function AdminDashboard({
           </div>
         )}
 
-        {(view === "registrations" || view === "pending" || view === "no-team" || view === "approved" || view === "rejected") && (
+        {(view === "registrations" || view === "pending" || view === "no-team" || view === "join-requests" || view === "approved" || view === "rejected") && (
           <div className="mt-6 flex flex-col gap-6">
             <FilterPanel registrations={items} onFilterChange={setFiltered} />
             <RegistrationList
