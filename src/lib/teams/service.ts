@@ -361,19 +361,14 @@ export async function getMyRegistration(reg: Reg): Promise<MyRegistrationView> {
 /* Leader / member actions                                             */
 /* ------------------------------------------------------------------ */
 
-export async function updateTeam(reg: Reg, input: { name?: string; maxMembers?: unknown }): Promise<void> {
+export async function updateTeam(reg: Reg, input: { name?: string }): Promise<void> {
   const teamId = requireLeader(reg);
-  const patch: Partial<Pick<RegistrationTeamRow, "name" | "max_members">> = {};
+  const patch: Partial<Pick<RegistrationTeamRow, "name">> = {};
 
   if (input.name !== undefined) {
     const nameError = validateTeamName(input.name);
     if (nameError) throw new ApiError(400, nameError, "name");
     patch.name = normalizeTeamName(input.name);
-  }
-  if (input.maxMembers !== undefined) {
-    const max = validateMaxMembers(input.maxMembers);
-    if (max === null) throw new ApiError(400, "Choose a valid team size.", "maxMembers");
-    patch.max_members = max;
   }
   if (Object.keys(patch).length === 0) throw new ApiError(400, "Nothing to update.");
 
