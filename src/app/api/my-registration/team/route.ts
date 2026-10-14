@@ -16,7 +16,6 @@ export async function PATCH(request: Request) {
     const body = await readJson(request);
     await updateTeam(reg, {
       name: typeof body.name === "string" ? body.name : undefined,
-      maxMembers: body.maxMembers,
     });
     return getMyRegistration(reg);
   });

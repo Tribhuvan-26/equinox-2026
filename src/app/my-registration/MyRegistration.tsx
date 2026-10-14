@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { Check, Copy, Crown, UserPlus, Users } from "lucide-react";
-import { TEAM_MAX_MEMBERS, TEAM_MIN_MEMBERS_LIMIT, TEAM_NAME_MAX } from "@/lib/teams/constants";
+import { TEAM_NAME_MAX } from "@/lib/teams/constants";
 import type { MyRegistrationView } from "@/lib/teams/types";
 import { TOKEN_STORAGE_KEY } from "@/lib/registration/constants";
 import { NoTeam } from "./NoTeam";
@@ -366,15 +366,8 @@ function EditTeamForm({
   onSaved: (v: MyRegistrationView) => void;
 }) {
   const [name, setName] = useState(team.name);
-  const [maxMembers, setMaxMembers] = useState(team.maxMembers);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-
-  // A team can't be shrunk below the people already in it.
-  const sizes = Array.from(
-    { length: TEAM_MAX_MEMBERS - TEAM_MIN_MEMBERS_LIMIT + 1 },
-    (_, i) => TEAM_MIN_MEMBERS_LIMIT + i
-  ).filter((n) => n >= team.memberCount);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -382,7 +375,7 @@ function EditTeamForm({
     setError(null);
     const res = await api<MyRegistrationView>(token, "/api/my-registration/team", {
       method: "PATCH",
-      body: JSON.stringify({ name, maxMembers }),
+      body: JSON.stringify({ name }),
     });
     if (res.ok) onSaved(res.data);
     else {
@@ -404,16 +397,6 @@ function EditTeamForm({
         autoComplete="off"
         className={inputClass}
       />
-      <label htmlFor="edit-team-size" className={`${labelClass} mt-4`}>
-        Maximum Members
-      </label>
-      <select id="edit-team-size" value={maxMembers} onChange={(e) => setMaxMembers(Number(e.target.value))} className={inputClass}>
-        {sizes.map((n) => (
-          <option key={n} value={n} className="bg-[#151515]">
-            {n}
-          </option>
-        ))}
-      </select>
       {error && (
         <p role="alert" className="mt-2 text-sm text-red-400">
           {error}
