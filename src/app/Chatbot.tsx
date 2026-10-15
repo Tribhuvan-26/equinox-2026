@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ChatbotOverlay } from "@/chatbot";
 
 /**
@@ -12,6 +12,7 @@ import { ChatbotOverlay } from "@/chatbot";
  */
 export function Chatbot() {
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleEventSelect = useCallback(
     (slug: string) => {
