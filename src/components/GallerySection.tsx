@@ -232,37 +232,6 @@ export default function GallerySection({
         </div>
       </div>
 
-      {/* Highlights Metrics Strip */}
-      <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-4">
-        <div className="rounded-2xl border border-white/10 bg-[#151515] p-4 sm:p-5 flex flex-col justify-between">
-          <span className="font-mono text-[10px] sm:text-[11px] font-bold uppercase text-[#7484FE] tracking-wider">
-            Summits Hosted
-          </span>
-          <p className="mt-1 font-mono text-2xl xs:text-3xl font-black text-[#F7F2F6] tracking-tight whitespace-nowrap">4+</p>
-          <p className="text-xs text-[#F7F2F6]/60">Flagship Editions</p>
-        </div>
-        <div className="rounded-2xl border border-white/10 bg-[#151515] p-4 sm:p-5 flex flex-col justify-between">
-          <span className="font-mono text-[10px] sm:text-[11px] font-bold uppercase text-[#33FF67] tracking-wider">
-            Past Footfall
-          </span>
-          <p className="mt-1 font-mono text-2xl xs:text-3xl font-black text-[#33FF67] tracking-tight whitespace-nowrap">2,000+</p>
-          <p className="text-xs text-[#F7F2F6]/60">Student Delegates</p>
-        </div>
-        <div className="rounded-2xl border border-white/10 bg-[#151515] p-4 sm:p-5 flex flex-col justify-between">
-          <span className="font-mono text-[10px] sm:text-[11px] font-bold uppercase text-[#7484FE] tracking-wider">
-            Cash Distributed
-          </span>
-          <p className="mt-1 font-mono text-2xl xs:text-3xl font-black text-[#F7F2F6] tracking-tight whitespace-nowrap">₹5L+</p>
-          <p className="text-xs text-[#F7F2F6]/60">Prize Pools Awarded</p>
-        </div>
-        <div className="rounded-2xl border border-white/10 bg-[#151515] p-4 sm:p-5 flex flex-col justify-between">
-          <span className="font-mono text-[10px] sm:text-[11px] font-bold uppercase text-[#33FF67] tracking-wider">
-            Startups Pitched
-          </span>
-          <p className="mt-1 font-mono text-2xl xs:text-3xl font-black text-[#33FF67] tracking-tight whitespace-nowrap">45+</p>
-          <p className="text-xs text-[#F7F2F6]/60">Early Ventures</p>
-        </div>
-      </div>
     </section>
   );
 }
