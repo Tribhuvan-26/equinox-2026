@@ -21,5 +21,7 @@ export function Chatbot() {
     [router]
   );
 
+  if (pathname.startsWith("/admin")) return null;
+
   return <ChatbotOverlay onEventSelect={handleEventSelect} />;
 }
