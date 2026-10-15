@@ -58,11 +58,4 @@ export default async function AdminPage() {
       <AdminDashboard registrations={withUrls} teams={teams} />
     </main>
   );
-
-  async function signedUrl(path: string) {
-    const { data } = await supabase.storage
-      .from(PAYMENT_PROOFS_BUCKET)
-      .createSignedUrl(path, 3600);
-    return data?.signedUrl ?? null;
-  }
 }
