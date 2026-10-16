@@ -64,7 +64,7 @@ export const contentsList = [
   { id: "why-sponsor-us", label: "Why Sponsor Us", href: "#impact" },
   { id: "our-impact", label: "Our Impact", href: "#impact" },
   { id: "sponsorship-plans", label: "Sponsorship Plans", href: "#contact" },
-  { id: "previous-sponsors", label: "Previous Sponsors", href: "#impact" },
+  { id: "current-sponsors", label: "Current Sponsors", href: "#impact" },
   { id: "gallery", label: "Event Gallery", href: "#gallery" },
   { id: "contact-us", label: "Contact Us", href: "#contact" },
 ];
@@ -547,11 +547,14 @@ export const whySponsor = {
   ],
 };
 
-export const previousSponsors = {
-  eyebrow: "Previous Sponsors",
+export const currentSponsors = {
+  eyebrow: "Current Sponsors",
   heading: "Backing the Future of Entrepreneurship",
-  body: "We are grateful to the organisations and brands that have supported Equinox and MLRIT-CIE in building a stronger entrepreneurial ecosystem.",
-  logos: [] as string[],
+  body: "We are grateful to the organisations and brands that support Equinox and MLRIT-CIE in building a stronger entrepreneurial ecosystem.",
+  logos: [
+    { name: "Fortune Toyota", src: "/logos/sponsors/fortune-toyota.svg" },
+    { name: "Student Tribe", src: "/logos/sponsors/student-tribe.svg" },
+  ],
 };
 
 export const hosts = {
