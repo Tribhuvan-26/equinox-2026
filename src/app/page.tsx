@@ -359,7 +359,13 @@ export default function HomePage() {
 
         <ScrollReveal className="sponsor-ledger mt-14 grid grid-cols-1 sm:grid-cols-2" stagger={0.08}>
           {currentSponsors.logos.map((logo, i) => (
-            <div key={logo.name} className="sponsor-cell group flex min-h-[16rem] flex-col justify-between p-6 sm:p-10">
+            <a
+              key={logo.name}
+              href={logo.href}
+              target={logo.href ? "_blank" : undefined}
+              rel={logo.href ? "noopener noreferrer" : undefined}
+              className="sponsor-cell group flex min-h-[16rem] flex-col justify-between p-6 sm:p-10"
+            >
               <div className="flex items-center justify-between font-mono text-[10px] font-black uppercase tracking-widest">
                 <span className="text-[#F7F2F6]/40">No. {String(i + 1).padStart(2, "0")}</span>
                 <span className="text-[#33FF67] opacity-0 transition-opacity duration-500 group-hover:opacity-100">Partner ↗</span>
@@ -369,7 +375,7 @@ export default function HomePage() {
                 <img src={logo.src} alt={logo.name} className="sponsor-logo max-h-28 w-auto max-w-[80%] object-contain sm:max-h-36" />
               </div>
               <p className="font-display-title text-sm font-black uppercase tracking-tight text-[#F7F2F6]/60 transition-colors duration-500 group-hover:text-[#F7F2F6]">{logo.name}</p>
-            </div>
+            </a>
           ))}
         </ScrollReveal>
       </section>
