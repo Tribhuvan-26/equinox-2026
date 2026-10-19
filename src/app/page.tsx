@@ -16,6 +16,7 @@ import {
   whatsInStore,
   whyEquinox,
   whySponsor,
+  currentSponsors,
 } from "@/lib/content";
 import {
   ArrowRight,
@@ -332,6 +333,49 @@ export default function HomePage() {
               <h3 className="text-lg font-bold text-[#7484FE]">{reason.title}</h3>
               <p className="mt-1 text-sm leading-relaxed text-[#F7F2F6]/85">{reason.body}</p>
             </div>
+          ))}
+        </ScrollReveal>
+      </section>
+
+      {/* =========================================================================
+          CURRENT SPONSORS
+          ========================================================================= */}
+      <section
+        id="current-sponsors"
+        className="relative mx-auto max-w-[1400px] overflow-hidden px-4 pb-16 sm:px-8 sm:pb-32"
+      >
+        <p className="font-mono text-xs font-black uppercase tracking-widest text-[#33FF67]">
+          {currentSponsors.eyebrow}
+        </p>
+        <h2
+          className="mt-3 font-display-title font-black leading-[0.95] tracking-tight text-[#F7F2F6] hyphens-none"
+          style={{ fontSize: "clamp(1.75rem, 4.4vw, 4rem)" }}
+        >
+          {currentSponsors.heading}
+        </h2>
+        <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#F7F2F6]/85">
+          {currentSponsors.body}
+        </p>
+
+        <ScrollReveal className="sponsor-ledger mt-14 grid grid-cols-1 sm:grid-cols-2" stagger={0.08}>
+          {currentSponsors.logos.map((logo, i) => (
+            <a
+              key={logo.name}
+              href={logo.href}
+              target={logo.href ? "_blank" : undefined}
+              rel={logo.href ? "noopener noreferrer" : undefined}
+              className="sponsor-cell group flex min-h-[16rem] flex-col justify-between p-6 sm:p-10"
+            >
+              <div className="flex items-center justify-between font-mono text-[10px] font-black uppercase tracking-widest">
+                <span className="text-[#F7F2F6]/40">No. {String(i + 1).padStart(2, "0")}</span>
+                <span className="text-[#33FF67] opacity-0 transition-opacity duration-500 group-hover:opacity-100">Partner ↗</span>
+              </div>
+              <div className="flex flex-1 items-center justify-center py-10">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={logo.src} alt={logo.name} className="sponsor-logo max-h-28 w-auto max-w-[80%] object-contain sm:max-h-36" />
+              </div>
+              <p className="font-display-title text-sm font-black uppercase tracking-tight text-[#F7F2F6]/60 transition-colors duration-500 group-hover:text-[#F7F2F6]">{logo.name}</p>
+            </a>
           ))}
         </ScrollReveal>
       </section>
