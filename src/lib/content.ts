@@ -552,7 +552,7 @@ export const currentSponsors = {
   heading: "Backing the Future of Entrepreneurship",
   body: "We are grateful to the organisations and brands that support Equinox and MLRIT-CIE in building a stronger entrepreneurial ecosystem.",
   logos: [
-    { name: "Fortune Toyota", src: "/logos/sponsors/fortune-toyota.svg" },
+    { name: "Fortune Toyota", src: "/logos/sponsors/fortune-toyota.svg", href: "https://www.instagram.com/fortunetoyotatelangana/" },
     { name: "Student Tribe", src: "/logos/sponsors/student-tribe.svg", href: "https://www.instagram.com/studenttribe.st/" },
   ],
 };
