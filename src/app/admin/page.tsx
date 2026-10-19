@@ -11,10 +11,15 @@ export default async function AdminPage() {
   if (!(await isAdminAuthenticated())) redirect("/admin/login");
 
   const supabase = supabaseAdmin();
-  const { data, error } = await supabase
-    .from("pass_registrations")
-    .select("*")
-    .order("created_at", { ascending: false });
+  // Registrations and teams are independent, so fetch them in one round trip.
+  const [{ data, error }, { data: teamRows }] = await Promise.all([
+    supabase.from("pass_registrations").select("*").order("created_at", { ascending: false }),
+    // Every team, including ones nobody has joined yet, for the Teams page.
+    supabase
+      .from("registration_teams")
+      .select("id, name, code, max_members, created_at")
+      .order("created_at", { ascending: false }),
+  ]);
 
   // Never send the secret-link hash or member email to the browser.
   /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -23,11 +28,6 @@ export default async function AdminPage() {
   );
   /* eslint-enable @typescript-eslint/no-unused-vars */
 
-  // Every team, including ones nobody has joined yet, for the Teams page.
-  const { data: teamRows } = await supabase
-    .from("registration_teams")
-    .select("id, name, code, max_members, created_at")
-    .order("created_at", { ascending: false });
   const teams: AdminTeam[] = teamRows ?? [];
   const teamNames = new Map(teams.map((t) => [t.id, t.name]));
 
