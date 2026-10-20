@@ -21,8 +21,9 @@ export default function AdminLoginPage() {
     });
 
     if (res.ok) {
-      router.push("/admin");
-      router.refresh();
+      // /admin is force-dynamic, so this already renders fresh; a refresh()
+      // on top would render the whole dashboard a second time.
+      router.replace("/admin");
     } else {
       const body = await res.json().catch(() => null);
       setError(body?.error ?? "Login failed.");
