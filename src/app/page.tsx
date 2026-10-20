@@ -43,6 +43,13 @@ const heroFadeUp: Variants = {
 export default function HomePage() {
   return (
     <div id="top" className="riso-texture brochure-grid min-h-screen overflow-x-clip text-[#F7F2F6] selection:bg-[#7484FE] selection:text-[#2A2A2A]">
+      {/* SpiderIntro (the CIE->EQUINOX opener) animates the logo the instant it
+          mounts. Preloading starts the fetch/decode during initial page load
+          instead of when the intro's own effect runs, which was causing the
+          stutter on the first reveal (the C). Home-only: the globe data is
+          2.7 MB and was slowing every other page, the admin login included. */}
+      <link rel="preload" href="/equinox-logo.svg" as="image" type="image/svg+xml" fetchPriority="high" />
+      <link rel="preload" as="fetch" href="/ne_50m_land.json" crossOrigin="anonymous" fetchPriority="high" />
       <ScrollJourney />
 
       {/* Seam out of the journey: warp exit, then the summit chapters */}
