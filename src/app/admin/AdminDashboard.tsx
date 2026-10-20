@@ -1,14 +1,19 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import type { RegistrationRecord, RegistrationStatus } from "@/lib/registration/types";
 import { Sidebar, type AdminView } from "./components/Sidebar";
 import { MobileMenu } from "./components/MobileMenu";
 import { DashboardStats } from "./components/DashboardStats";
 import { FilterPanel } from "./components/FilterPanel";
-import { RegistrationChart } from "./components/RegistrationChart";
 import { RegistrationList } from "./components/RegistrationList";
 import { TeamList } from "./components/TeamList";
+
+// Recharts is the heaviest thing on the page and only the Analytics tab uses it.
+const RegistrationChart = dynamic(() =>
+  import("./components/RegistrationChart").then((m) => m.RegistrationChart)
+);
 
 export interface RegistrationWithUrls extends RegistrationRecord {
   screenshotUrl: string | null;

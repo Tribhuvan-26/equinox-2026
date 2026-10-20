@@ -86,6 +86,8 @@ export function RegistrationList({
                     <img
                       src={r.screenshotUrl}
                       alt="Payment screenshot"
+                      loading="lazy"
+                      decoding="async"
                       className="h-32 w-auto rounded-lg border border-white/15 object-contain transition hover:border-[#7484FE]"
                     />
                   )}
