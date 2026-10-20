@@ -76,18 +76,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <body className="night flex min-h-full flex-col" suppressHydrationWarning>
-        {/* SpiderIntro (the CIE->EQUINOX opener) animates this the instant it
-            mounts. Preloading it here starts the fetch/decode during initial
-            page load instead of when the intro's own effect runs, which is
-            what was causing the stutter on the very first reveal (the C). */}
-        <link
-          rel="preload"
-          href="/equinox-logo.svg"
-          as="image"
-          type="image/svg+xml"
-          fetchPriority="high"
-        />
-        <link rel="preload" as="fetch" href="/ne_50m_land.json" crossOrigin="anonymous" fetchPriority="high" />
         {/* Event structured data: lets search engines show the dates, venue and
             sub-events as a rich result instead of a plain link. */}
         <script
