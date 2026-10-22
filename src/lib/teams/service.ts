@@ -419,14 +419,13 @@ export async function removeMember(reg: Reg, targetRegistrationId: string): Prom
 
   const { data: target, error } = await supabaseAdmin()
     .from("pass_registrations")
-    .select("id, team_role, status")
+    .select("id, team_role")
     .eq("id", targetRegistrationId)
     .eq("team_id", teamId)
     .maybeSingle();
   if (error) throw error;
   if (!target) throw new ApiError(404, "That person is not on this team.");
   if (target.team_role === "leader") throw new ApiError(400, "The team leader cannot be removed. Delete the team instead.");
-  if (target.status === "approved") throw new ApiError(409, APPROVED_LOCK);
 
   await unlink({ id: target.id });
 }

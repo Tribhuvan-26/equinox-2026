@@ -201,7 +201,7 @@ function Ready({
                     {m.role === "leader" && <Crown className="h-3 w-3" />}
                     {m.role === "leader" ? "Team Leader" : "Member"}
                   </span>
-                  {isLeader && m.role !== "leader" && m.status !== "approved" && (
+                  {isLeader && m.role !== "leader" && (
                     <button
                       onClick={() => setConfirm({ kind: "remove", id: m.registrationId, name: m.name })}
                       disabled={busy}
