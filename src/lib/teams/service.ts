@@ -35,9 +35,6 @@ type PgError = { code?: string; message: string; details?: string | null };
 const isUnique = (err: PgError, constraint: string) =>
   err.code === "23505" && `${err.message} ${err.details ?? ""}`.includes(constraint);
 
-export const APPROVED_LOCK =
-  "This registration is already approved. Contact the organisers if something needs to change.";
-
 export const REJECTED_LOCK =
   "This registration was not approved, so it cannot join a team. Contact the organisers.";
 
@@ -397,17 +394,6 @@ async function unlink(where: { id?: string; team_id?: string }): Promise<void> {
 export async function deleteTeam(reg: Reg): Promise<void> {
   const teamId = requireLeader(reg);
 
-  const { data: approved, error } = await supabaseAdmin()
-    .from("pass_registrations")
-    .select("id")
-    .eq("team_id", teamId)
-    .eq("status", "approved")
-    .limit(1);
-  if (error) throw error;
-  if ((approved ?? []).length > 0) {
-    throw new ApiError(409, "Someone on this team is already approved, so the team can't be deleted. Contact the organisers.");
-  }
-
   // Everyone keeps their (paid) registration; they just stop being grouped.
   await unlink({ team_id: teamId });
   const { error: deleteError } = await supabaseAdmin().from("registration_teams").delete().eq("id", teamId);
@@ -518,7 +504,6 @@ export async function leaveTeam(reg: Reg): Promise<void> {
   if (reg.team_role === "leader") {
     throw new ApiError(403, "The team leader cannot leave. Delete the team instead.");
   }
-  if (reg.status === "approved") throw new ApiError(409, APPROVED_LOCK);
   await unlink({ id: reg.id });
 }
 

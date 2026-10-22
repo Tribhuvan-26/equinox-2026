@@ -108,7 +108,6 @@ function Ready({
   const [editing, setEditing] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const approved = reg.status === "approved";
 
   async function run(fn: () => Promise<Result<MyRegistrationView>>) {
     setBusy(true);
@@ -307,14 +306,11 @@ function Ready({
                 </button>
               </>
             ) : (
-              <button onClick={() => setConfirm({ kind: "leave" })} disabled={busy || approved} className={dangerBtn}>
+              <button onClick={() => setConfirm({ kind: "leave" })} disabled={busy} className={dangerBtn}>
                 Leave Team
               </button>
             )}
           </div>
-          )}
-          {approved && !isLeader && (
-            <p className="mt-2 text-xs text-[#F7F2F6]/50">Approved registrations can&apos;t leave a team. Contact the organisers.</p>
           )}
         </div>
       ) : (
