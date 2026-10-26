@@ -1,5 +1,5 @@
 // chatbot/data/events.ts
-// Official source of truth for the 10 Equinox 2026 sub-events from the program
+// Official source of truth for the 12 Equinox 2026 sub-events (10 from the program + 2 evening shows)
 
 export interface EventCoordinator {
   name: string;
@@ -18,7 +18,7 @@ export interface SubEventInfo {
   id: string;
   slug: string;
   name: string;
-  pageNumber: "05" | "06";
+  pageNumber: "05" | "06" | "07";
   category: string;
   tagline: string;
   description: string;
@@ -38,7 +38,9 @@ export interface SubEventInfo {
     | "internship-drive"
     | "startup-poly"
     | "e-cell-meet"
-    | "pitch-deck";
+    | "pitch-deck"
+    | "standup-comedy"
+    | "musical-night";
   badgeAccent: string;
   prize?: string;
   spocs?: EventSPOC[];
@@ -113,6 +115,8 @@ export const EVENT_SPOCS: Record<string, EventSPOC[]> = {
   "pitch-deck": [
     { name: "Anuj Lomte", phone: "+91 93901 20510", phoneRaw: "+919390120510" },
   ],
+  "standup-comedy": OFFICIAL_COORDINATORS,
+  "musical-night": OFFICIAL_COORDINATORS,
 };
 
 export function getEventSPOCs(eventIdentifier: string): EventSPOC[] {
@@ -144,6 +148,13 @@ export function getEventSPOCs(eventIdentifier: string): EventSPOC[] {
     ecell: "e-cell-meet",
     pitchdeck: "pitch-deck",
     pitch: "pitch-deck",
+    standupcomedy: "standup-comedy",
+    standup: "standup-comedy",
+    comedy: "standup-comedy",
+    musicalnight: "musical-night",
+    musical: "musical-night",
+    band: "musical-night",
+    music: "musical-night",
   };
 
   const targetSlug = slugMap[normalized] || eventIdentifier.toLowerCase().trim().replace(/\s+/g, "-");
@@ -353,6 +364,44 @@ export const EQUINOX_SUB_EVENTS: SubEventInfo[] = [
     badgeAccent: "#14b8a6",
     prize: "Seed funding & incubation support",
     spocs: EVENT_SPOCS["pitch-deck"],
+  },
+  {
+    id: "standup-comedy",
+    slug: "standup-comedy",
+    name: "Standup Comedy",
+    pageNumber: "07",
+    category: "Entertainment",
+    tagline: "Live Comedy Evening at Equinox",
+    description:
+      "Standup Comedy is an evening of live comedy at Equinox. Sit back after a day of pitching, bidding, and hustling, and unwind with sharp sets, campus humour, and plenty of laughs.",
+    skills: [],
+    format: "Live standup comedy sets",
+    timing: "30 Oct (Evening)",
+    venueRoom: "MLRIT Campus",
+    eligibility: "Open to all summit attendees",
+    registrationStatus: "Register Now",
+    animationType: "standup-comedy",
+    badgeAccent: "#33FF67",
+    spocs: EVENT_SPOCS["standup-comedy"],
+  },
+  {
+    id: "musical-night",
+    slug: "musical-night",
+    name: "Musical Night",
+    pageNumber: "07",
+    category: "Entertainment",
+    tagline: "Live Band Musical Night",
+    description:
+      "Musical Night is a live band performance that brings Equinox to a close on a high note. Join fellow participants, organisers, and guests for an evening of music and celebration.",
+    skills: [],
+    format: "Live band performance",
+    timing: "31 Oct (Evening)",
+    venueRoom: "MLRIT Campus",
+    eligibility: "Open to all summit attendees",
+    registrationStatus: "Register Now",
+    animationType: "musical-night",
+    badgeAccent: "#7484FE",
+    spocs: EVENT_SPOCS["musical-night"],
   },
 ];
 

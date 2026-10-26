@@ -13,7 +13,7 @@ export const SITE_NAME = `${event.name} ${event.edition}`;
 
 export const SITE_DESCRIPTION =
   `${SITE_NAME} — the ${event.year} E-Summit by ${event.host}. ${event.datesFull} at ` +
-  `${event.venue}. Ten sub-events across strategy, startups and tech: ` +
+  `${event.venue}. Twelve sub-events across strategy, startups, tech and entertainment: ` +
   `${events.slice(0, 5).map((e) => e.name).join(", ")} and more.`;
 
 export const SITE_KEYWORDS = [

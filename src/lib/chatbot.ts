@@ -157,6 +157,17 @@ function generateSubEventAttributeAnswer(
       ? content.rules.map((r: string) => `• ${r}`).join("\n")
       : `• Format: ${info.format}`;
 
+    // Evening shows have no skills/rules worth listing — describe the show instead.
+    if (info.skills.length === 0) {
+      return {
+        answer: `**${info.name}** — ${info.tagline}\n\n${info.description}\n\n• **When**: ${info.timing}\n• **Where**: ${info.venueRoom}\n• **Who**: ${info.eligibility}${spocsSection}`,
+        eventCard: undefined,
+        suggestions: [`When is it?`, "How to register?", "List all events"],
+        links: [{ label: "View Sub-Events", url: "#events" }],
+        grounded: true,
+      };
+    }
+
     return {
       answer: `**${info.name}** Rules & Guidelines:\n\n${rulesList}\n\n• **Key Skills**: ${info.skills.join(", ")}${spocsSection}`,
       eventCard: undefined,
@@ -228,8 +239,8 @@ export function getMockEquinoxResponse(
   if (isIdeathonQuery(trimmed)) {
     return {
       answer:
-        "Ideathon is not part of the Equinox 2.0 chatbot's supported event information. Equinox 2.0 officially features 10 sub-events: Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, and Pitch Deck.",
-      suggestions: ["List all 10 Sub-Events", "Dates & Venue", "Registration details"],
+        "Ideathon is not part of the Equinox 2.0 chatbot's supported event information. Equinox 2.0 officially features 12 sub-events: Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, Pitch Deck, Standup Comedy, and Musical Night.",
+      suggestions: ["List all 12 Sub-Events", "Dates & Venue", "Registration details"],
       links: [{ label: "Browse Sub-Events", url: "#events" }],
       grounded: true,
     };
@@ -572,7 +583,7 @@ export function getMockEquinoxResponse(
     q.includes("who handles")
   ) {
     return {
-      answer: `Which sub-event's SPOC or coordinator are you looking for? Equinox 2.0 features 10 sub-events (Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, and Pitch Deck).\n\nFor general summit inquiries, you can contact the **Overall Equinox Coordinators**:\n\nPrimary:\n• **Ghanashyam**: +91 93900 06806\n• **Jaikar**: +91 90324 10189\n\nSecondary:\n• **Sanjana**: +91 82084 99746\n• **Adithya Ganesh**: +91 91822 40970`,
+      answer: `Which sub-event's SPOC or coordinator are you looking for? Equinox 2.0 features 12 sub-events (Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, Pitch Deck, Standup Comedy, and Musical Night).\n\nFor general summit inquiries, you can contact the **Overall Equinox Coordinators**:\n\nPrimary:\n• **Ghanashyam**: +91 93900 06806\n• **Jaikar**: +91 90324 10189\n\nSecondary:\n• **Sanjana**: +91 82084 99746\n• **Adithya Ganesh**: +91 91822 40970`,
       suggestions: ["SPOCs for IPL Auction", "Who manages Crossroads?", "Chatbot Support"],
       links: [{ label: "Browse Sub-Events", url: "#events" }],
       grounded: true,
@@ -605,7 +616,11 @@ export function getMockEquinoxResponse(
     q.includes("what events are there")
   ) {
     return {
-      answer: `The Equinox 2.0 features **10 official sub-events** from the program:\n\n**Page 05:**\n1. **Spotlight**: Visionary keynotes from tech & startup leaders\n2. **Cross Roads**: Business case-study strategy challenge\n3. **Startup Expo**: Live product & venture exhibition\n4. **Brand Battles**: Rival brand defense debate\n5. **IPL Auction**: Simulated cricket bidding & squad valuation\n\n**Page 06:**\n6. **Hustle Mania**: On-campus product selling & negotiation\n7. **Internship Drive**: Direct recruitment with startups\n8. **Startup Poly**: Monopoly-inspired business board game\n9. **E-Cell Meet**: Inter-college entrepreneurship leaders conclave\n10. **Pitch Deck**: Live investor pitch for student ventures`,
+      answer: `The Equinox 2.0 features **12 official sub-events** from the program:\n\n**Page 05:**\n1. **Spotlight**: Visionary keynotes from tech & startup leaders\n2. **Cross Roads**: Business case-study strategy challenge\n3. **Startup Expo**: Live product & venture exhibition\n4. **Brand Battles**: Rival brand defense debate\n5. **IPL Auction**: Simulated cricket bidding & squad valuation\n\n**Page 06:**\n6. **Hustle Mania**: On-campus product selling & negotiation\n7. **Internship Drive**: Direct recruitment with startups\n8. **Startup Poly**: Monopoly-inspired business board game\n9. **E-Cell Meet**: Inter-college entrepreneurship leaders conclave\n10. **Pitch Deck**: Live investor pitch for student ventures
+
+**Evenings:**
+11. **Standup Comedy**: Live comedy evening
+12. **Musical Night**: Live band musical night`,
       suggestions: ["Tell me about Hustle Mania", "What is Startup Poly?", "IPL Auction details"],
       links: [{ label: "Explore Sub-Events", url: "#events" }],
       grounded: true,
@@ -625,7 +640,7 @@ export function getMockEquinoxResponse(
   // 11. About CIE / Equinox
   if (q.includes("about equinox") || q.includes("what is equinox") || q.includes("who are we") || q.includes("about cie")) {
     return {
-      answer: `**The Equinox 2.0** is organized by the Centre for Innovation and Entrepreneurship (CIE) at MLR Institute of Technology, Hyderabad. It envisions creating a vibrant and engaging environment where students tackle real-world challenges and ignite their entrepreneurial spirit through 10 premier sub-events: Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, and Pitch Deck.\n\n• **Tagline**: *"# WHERE PASSION MEETS PERSEVERANCE"*\n• **Dates**: **30 - 31 October 2026** at MLRIT Hyderabad.`,
+      answer: `**The Equinox 2.0** is organized by the Centre for Innovation and Entrepreneurship (CIE) at MLR Institute of Technology, Hyderabad. It envisions creating a vibrant and engaging environment where students tackle real-world challenges and ignite their entrepreneurial spirit through 12 premier sub-events: Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, Pitch Deck, Standup Comedy, and Musical Night.\n\n• **Tagline**: *"# WHERE PASSION MEETS PERSEVERANCE"*\n• **Dates**: **30 - 31 October 2026** at MLRIT Hyderabad.`,
       suggestions: ["Explore Sub-Events", "When is the summit?", "Venue details"],
       links: [{ label: "About Section", url: "#about" }],
       grounded: true,

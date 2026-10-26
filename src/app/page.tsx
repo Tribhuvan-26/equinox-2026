@@ -9,7 +9,7 @@ import Link from "next/link";
 import {
   event,
   about,
-  subEvents,
+  events,
   highlights,
   studentCoordinators,
   contact,
@@ -209,9 +209,9 @@ export default function HomePage() {
         </ScrollReveal>
       </section>
 
-      {/* Ten sub-events, running as one continuous strip */}
+      {/* All 12 sub-events, running as one continuous strip */}
       <div id="events" className="border-y border-white/10">
-        <LogoMarquee slugs={subEvents.map((e) => e.slug)} names={subEvents.map((e) => e.name)} />
+        <LogoMarquee slugs={events.map((e) => e.slug)} names={events.map((e) => e.name)} />
       </div>
 
       {/* =========================================================================
@@ -307,7 +307,7 @@ export default function HomePage() {
 
             <div className="program-card rounded-2xl sm:rounded-3xl border border-[#33FF67]/30 bg-[#151515] p-4 sm:p-8 text-[#F7F2F6] flex flex-col justify-between">
               <span className="font-mono text-[10px] sm:text-xs font-black uppercase text-[#33FF67] tracking-wider">Competitions</span>
-              <p className="mt-1 sm:mt-2 font-mono text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-black text-[#33FF67] tracking-tight whitespace-nowrap">10</p>
+              <p className="mt-1 sm:mt-2 font-mono text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-black text-[#33FF67] tracking-tight whitespace-nowrap">12</p>
               <p className="mt-1 sm:mt-2 text-xs sm:text-base font-bold text-[#F7F2F6]">Sub-Events</p>
             </div>
           </ScrollReveal>

@@ -2,7 +2,7 @@ export interface EventDetail {
   slug: string;
   title: string;
   category: string;
-  pageNumber: "05" | "06";
+  pageNumber: "05" | "06" | "07";
   headlineWordPair: {
     blackWord: string;
     whiteWord: string;
@@ -134,6 +134,30 @@ export const eventsData: Record<string, EventDetail> = {
     description:
       "Pitch Deck is a startup pitching platform where students present their ideas to investors, startup mentors, and industry experts. Participants receive valuable feedback and insights to help improve and develop their ideas.",
   },
+  "standup-comedy": {
+    slug: "standup-comedy",
+    title: "Standup Comedy",
+    category: "Entertainment",
+    pageNumber: "07",
+    headlineWordPair: {
+      blackWord: "STANDUP",
+      whiteWord: "COMEDY",
+    },
+    description:
+      "Standup Comedy is an evening of live comedy at Equinox. Sit back after a day of pitching, bidding, and hustling, and unwind with sharp sets, campus humour, and plenty of laughs.",
+  },
+  "musical-night": {
+    slug: "musical-night",
+    title: "Musical Night",
+    category: "Entertainment",
+    pageNumber: "07",
+    headlineWordPair: {
+      blackWord: "MUSICAL",
+      whiteWord: "NIGHT",
+    },
+    description:
+      "Musical Night is a live band performance that brings Equinox to a close on a high note. Join fellow participants, organisers, and guests for an evening of music and celebration.",
+  },
 };
 
 export const canonicalSlugs = [
@@ -147,6 +171,8 @@ export const canonicalSlugs = [
   "startup-poly",
   "e-cell-meet",
   "pitch-deck",
+  "standup-comedy",
+  "musical-night",
 ] as const;
 
 export type CanonicalSlug = (typeof canonicalSlugs)[number];

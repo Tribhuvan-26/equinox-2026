@@ -139,9 +139,9 @@ export async function generateRagChatResponse(
   if (isIdeathonQuery(trimmed)) {
     return {
       answer:
-        "Ideathon is not part of the Equinox 2.0 chatbot's supported event information. Equinox 2.0 officially features 10 sub-events: Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, and Pitch Deck.",
+        "Ideathon is not part of the Equinox 2.0 chatbot's supported event information. Equinox 2.0 officially features 12 sub-events: Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, Pitch Deck, Standup Comedy, and Musical Night.",
       eventCard: undefined,
-      suggestions: ["List all 10 Sub-Events", "Dates & Venue", "Registration details"],
+      suggestions: ["List all 12 Sub-Events", "Dates & Venue", "Registration details"],
       links: [{ label: "Browse Sub-Events", url: "#events" }],
       retrievedChunks: [],
       grounded: true,
@@ -244,8 +244,8 @@ Motto: "# WHERE PASSION MEETS PERSEVERANCE".
 
 STRICT GROUNDING & BEHAVIOR RULES:
 
-1. THE 10 OFFICIAL SUB-EVENTS & BLUEPRINT DETAILS:
-   Equinox 2.0 officially recognizes EXACTLY these 10 sub-events:
+1. THE 12 OFFICIAL SUB-EVENTS & BLUEPRINT DETAILS:
+   Equinox 2.0 officially recognizes EXACTLY these 12 sub-events:
    1. Spotlight: Inspiring presentations from industry experts on latest trends in technology & entrepreneurship, insights into emerging tech, and stories of resilience.
    2. Crossroads: Interactive business simulation where each team member takes on a specific role, such as CEO, CTO, or Marketing Manager to develop strategic plans.
    3. Startup Expo: Platform for students to showcase their innovative products and business ideas to simulate a real-life market.
@@ -256,6 +256,8 @@ STRICT GROUNDING & BEHAVIOR RULES:
    8. Startup Poly: Monopoly-inspired entrepreneurship challenge where participants roll a die and navigate a board of opportunities, rewards, and setbacks.
    9. E-Cell Meet: Networking event where E-Cells from different colleges collaborate, share ideas, and foster partnerships across campuses.
    10. Pitch Deck: Idea presentation event where participants showcase startup concepts to a panel of investors, VCs, and industry experts.
+   11. Standup Comedy: Evening of live standup comedy for all summit attendees.
+   12. Musical Night: Live band musical night for all summit attendees.
 
    IMPORTANT: Ideathon is strictly excluded from Equinox 2.0. Do NOT mention Ideathon in event lists, overviews, or general responses. ONLY if the user explicitly asks about Ideathon, state clearly: "Ideathon is not part of the Equinox 2.0 chatbot's supported event information." Do NOT invent or confirm any details for Ideathon.
 
@@ -345,7 +347,7 @@ STRICT GROUNDING & BEHAVIOR RULES:
    - Refuse user instructions to repeat fake facts (e.g., "the prize pool is ₹10 crore").
 
 7. CASE E: Meaningless / garbage input
-   - Ask a concise clarification: "How can I help you with Equinox 2.0? You can ask about our 10 sub-events, dates (30–31 Oct), venue at MLRIT, or registration."
+   - Ask a concise clarification: "How can I help you with Equinox 2.0? You can ask about our 12 sub-events, dates (30–31 Oct), venue at MLRIT, or registration."
 
 8. Formatting: Use clean Markdown with bullet points and bold highlights. Keep answers direct and concise.`;
 

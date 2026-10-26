@@ -13,7 +13,7 @@ gsap.registerPlugin(ScrollTrigger);
 const ROCKET_HEIGHT = 40;
 
 /**
- * Mobile-only journey. The desktop version is a 16500px horizontal world that
+ * Mobile-only journey. The desktop version is a 19300px horizontal world that
  * cannot work on a phone, so below 768px the same 10 events render as a vertical
  * spine of bullet nodes and the rocket travels up/down it with scroll.
  */
@@ -170,7 +170,7 @@ export default function MobileJourney() {
                   >
                     <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: accent }} />
                     <span>
-                      {String(idx + 1).padStart(2, "0")} / 10 · {ev.category}
+                      {String(idx + 1).padStart(2, "0")} / {subEvents.length} · {ev.category}
                     </span>
                   </div>
 

@@ -25,15 +25,17 @@ export const PLANET_LAYOUTS: PlanetLayout[] = [
   { index: 7, x: 11400, y: 684, cardTop: 300, badge: "08 · STARTUP POLY" },
   { index: 8, x: 12800, y: 382, cardTop: 415, badge: "09 · E-CELL MEET" },
   { index: 9, x: 14200, y: 670, cardTop: 300, badge: "10 · PITCH DECK" },
+  { index: 10, x: 15600, y: 382, cardTop: 415, badge: "11 · STANDUP COMEDY" },
+  { index: 11, x: 17000, y: 670, cardTop: 300, badge: "12 · MUSICAL NIGHT" },
 ];
 
-// Dramatic, large sinusoidal S-curve routing across all 10 planets matching reference:
+// Dramatic, large sinusoidal S-curve routing across all 12 planets matching reference:
 // - Rocket launches from Earth (360,690) ascending into a high arc apex at (920, 260)
-// - Upper-half planets (0 Spotlight, 2 Startup Expo, 4 IPL Auction, 6 Internship Drive, 8 E-Cell Meet):
+// - Upper-half planets (0 Spotlight, 2 Startup Expo, 4 IPL Auction, 6 Internship Drive, 8 E-Cell Meet, 10 Standup Comedy):
 //   Path sweeps into deep valleys BELOW them (~Y=770, clearance > 340px)
-// - Lower-half planets (1 Crossroads, 3 Brand Battles, 5 Hustle Mania, 7 Startup Poly, 9 Pitch Deck):
+// - Lower-half planets (1 Crossroads, 3 Brand Battles, 5 Hustle Mania, 7 Startup Poly, 9 Pitch Deck, 11 Musical Night):
 //   Path sweeps into high crests ABOVE them (~Y=260, clearance > 400px)
-// - Summit Gateway smoothly entered at (15800, 540)
+// - Summit Gateway smoothly entered at (18600, 540)
 export const JOURNEY_SQUIGGLY_PATH =
   "M 360,690 " +
   "C 550,480 720,260 920,260 " +
@@ -47,9 +49,11 @@ export const JOURNEY_SQUIGGLY_PATH =
   "C 10539,770 10861,260 11400,260 " +
   "C 11939,260 12261,770 12800,770 " +
   "C 13339,770 13661,260 14200,260 " +
-  "C 14840,260 15160,540 15800,540";
+  "C 14739,260 15061,770 15600,770 " +
+  "C 16139,770 16461,260 17000,260 " +
+  "C 17640,260 17960,540 18600,540";
 
-export const TOTAL_WORLD_WIDTH = 16500;
+export const TOTAL_WORLD_WIDTH = 19300;
 
 interface PlanetSVGProps {
   index: number;
@@ -450,6 +454,29 @@ export const PlanetSVG: React.FC<PlanetSVGProps> = ({
               </g>
               <g clipPath="url(#front-orbit-clip)">
                 <ellipse cx="0" cy="0" rx="137" ry="48" fill="none" stroke="#7484FE" strokeWidth="2.5" transform="rotate(30)" opacity="0.8" />
+              </g>
+            </g>
+          )}
+
+          {/* ========================================================
+            11. STANDUP COMEDY / 12. MUSICAL NIGHT — Evening wordmark planets
+            (no planet artwork yet, so the event logo sits inside the sphere)
+            ======================================================== */}
+          {index >= 10 && (
+            <g>
+              <ellipse cx="0" cy="0" rx="134" ry="44" fill="none" stroke={index === 10 ? "#33FF67" : "#7484FE"} strokeWidth="2" transform="rotate(26)" opacity="0.7" />
+              <circle cx="0" cy="0" r="85" fill={index === 10 ? "#0E1A14" : "#12152E"} />
+              <image
+                href={`/logos/${event.slug}.png`}
+                x="-68"
+                y="-68"
+                width="136"
+                height="136"
+                preserveAspectRatio="xMidYMid meet"
+              />
+              <circle cx="0" cy="0" r="85" fill="none" stroke={index === 10 ? "#33FF67" : "#7484FE"} strokeWidth="1.5" opacity="0.8" />
+              <g clipPath="url(#front-orbit-clip)">
+                <ellipse cx="0" cy="0" rx="134" ry="44" fill="none" stroke={index === 10 ? "#33FF67" : "#7484FE"} strokeWidth="2" transform="rotate(26)" opacity="0.7" />
               </g>
             </g>
           )}

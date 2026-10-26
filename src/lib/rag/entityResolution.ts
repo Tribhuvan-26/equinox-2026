@@ -333,6 +333,18 @@ const EVENT_DEFINITIONS: EventEntityDef[] = [
       "investor pitch",
     ],
   },
+  {
+    slug: "standup-comedy",
+    name: "Standup Comedy",
+    primaryKeywords: ["standup comedy", "stand up comedy", "standup", "stand up", "comedy", "comedian"],
+    semanticPhrases: ["comedy show", "comedy night", "something funny", "laugh"],
+  },
+  {
+    slug: "musical-night",
+    name: "Musical Night",
+    primaryKeywords: ["musical night", "music night", "live band", "band night", "musical", "band", "concert"],
+    semanticPhrases: ["live music", "music show"],
+  },
 ];
 
 /**
@@ -376,7 +388,7 @@ export function normalizeQueryString(str: string): string {
 }
 
 /**
- * Resolves a query against the 10 official sub-events with typo tolerance and semantic phrases
+ * Resolves a query against the 12 official sub-events with typo tolerance and semantic phrases
  */
 export function resolveSubEvent(query: string): ResolvedEntity | undefined {
   if (isIdeathonQuery(query)) {
