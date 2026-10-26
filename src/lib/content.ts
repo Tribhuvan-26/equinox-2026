@@ -77,11 +77,11 @@ export const about = {
   whatWeDo:
     "We host high-impact hackathons, from MetaLoop, our biggest national-level AR/VR hackathon, to Inventron, our flagship 36-hour build challenge.",
   whatIsEquinox:
-    "Equinox is an entrepreneurship summit organized by the Centre for Innovation and Entrepreneurship at MLR Institute of Technology, Hyderabad. It pictures a vibrant and engaging environment where students tackle real-world challenges and ignite their entrepreneurial spirit through sub-events Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, and Pitch Deck.",
+    "Equinox is an entrepreneurship summit organized by the Centre for Innovation and Entrepreneurship at MLR Institute of Technology, Hyderabad. It pictures a vibrant and engaging environment where students tackle real-world challenges and ignite their entrepreneurial spirit through sub-events Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, Pitch Deck, Standup Comedy, and Musical Night.",
   vision:
     "We envision creating an inclusive space where students, entrepreneurs, and investors come together to collaborate, learn, and shape impactful ideas. By fostering entrepreneurial thinking and encouraging practical problem-solving, we provide a platform for participants to showcase their ideas, experience real-world business scenarios, and build meaningful connections with industry leaders. Our event empowers emerging innovators and aspiring entrepreneurs to refine their concepts, gain visibility, and explore opportunities for growth, mentorship, and collaboration.",
   body: [
-    "The Equinox is designed to test grit, sharp business acumen, street hustle, and visionary thinking. Across two high-voltage days on 30 - 31 October at MLRIT Hyderabad, participants dive into 10 premier sub-events ranging from simulated live cricket bidding and Monopoly-style business conquer to high-stakes investor pitch decks.",
+    "The Equinox is designed to test grit, sharp business acumen, street hustle, and visionary thinking. Across two high-voltage days on 30 - 31 October at MLRIT Hyderabad, participants dive into 12 premier sub-events ranging from simulated live cricket bidding and Monopoly-style business conquer to high-stakes investor pitch decks.",
     "Whether you're marketing products on campus in Hustle Mania, dissecting corporate dilemmas in Crossroads, or defending your favourite enterprise in Brand Battles, Equinox is where collegiate passion transforms into real-world perseverance.",
   ],
 };
@@ -93,7 +93,7 @@ export const studentCoordinators = [
   { name: "Bhavana", phone: "+91 99895 32925", phoneRaw: "+919989532925", role: "Overall Equinox Coordinator" },
 ];
 
-// The 10 Official Sub-Events from Pages 05 & 06 of the Program & Blueprint
+// The 12 Official Sub-Events: Pages 05 & 06 of the Program & Blueprint, plus the two evening shows
 export const subEvents: SubEvent[] = [
   // Page 05
   {
@@ -432,6 +432,64 @@ export const subEvents: SubEvent[] = [
     spocs: EVENT_SPOCS["pitch-deck"],
     spoc: EVENT_SPOCS["pitch-deck"][0],
   },
+
+  // Evening entertainment
+  {
+    id: "standup-comedy",
+    slug: "standup-comedy",
+    name: "Standup Comedy",
+    pageNumber: "07",
+    tagline: "Live Comedy Evening at Equinox",
+    category: "Entertainment",
+    description:
+      "Standup Comedy is an evening of live comedy at Equinox. Sit back after a day of pitching, bidding, and hustling, and unwind with sharp sets, campus humour, and plenty of laughs.",
+    skills: [],
+    format: "Live standup comedy sets",
+    timing: "30 Oct (Evening)",
+    venueRoom: "MLRIT Campus",
+    eligibility: "Open to all summit attendees",
+    registrationStatus: "Register Now",
+    day: "Day 1 (30 Oct) · Evening",
+    time: "Evening",
+    venue: "MLRIT Campus",
+    teamSize: "Open entry",
+    fee: "Free with summit pass",
+    prize: "Laughs guaranteed",
+    about: [
+      "An evening of live comedy to unwind after a packed day of summit events.",
+    ],
+    rules: ["Open to all registered summit delegates"],
+    spocs: EVENT_SPOCS["standup-comedy"],
+    spoc: EVENT_SPOCS["standup-comedy"][0],
+  },
+  {
+    id: "musical-night",
+    slug: "musical-night",
+    name: "Musical Night",
+    pageNumber: "07",
+    tagline: "Live Band Musical Night",
+    category: "Entertainment",
+    description:
+      "Musical Night is a live band performance that brings Equinox to a close on a high note. Join fellow participants, organisers, and guests for an evening of music and celebration.",
+    skills: [],
+    format: "Live band performance",
+    timing: "31 Oct (Evening)",
+    venueRoom: "MLRIT Campus",
+    eligibility: "Open to all summit attendees",
+    registrationStatus: "Register Now",
+    day: "Day 2 (31 Oct) · Evening",
+    time: "Evening",
+    venue: "MLRIT Campus",
+    teamSize: "Open entry",
+    fee: "Free with summit pass",
+    prize: "An unforgettable night",
+    about: [
+      "A live band performance to celebrate Equinox 2.0 with music and good company.",
+    ],
+    rules: ["Open to all registered summit delegates"],
+    spocs: EVENT_SPOCS["musical-night"],
+    spoc: EVENT_SPOCS["musical-night"][0],
+  },
 ];
 
 // For backward compatibility where code references `events`
@@ -441,7 +499,7 @@ export const events = subEvents;
 export const highlights = [
   { value: "2,000+", label: "Students", detail: "Builders, founders, and leaders across campuses" },
   { value: "15+", label: "Startups", detail: "Exhibiting and networking across the two days" },
-  { value: "10", label: "Official Sub-Events", detail: "Across strategy, auctions, debates, and pitching" },
+  { value: "12", label: "Official Sub-Events", detail: "Across strategy, auctions, debates, pitching, and evening shows" },
   { value: "2", label: "Action-Packed Days", detail: "30 & 31 October at MLRIT Hyderabad" },
 ];
 
@@ -491,7 +549,7 @@ export const registration = {
   body: "Registrations for The Equinox 2.0 (30 - 31 October 2026) are now live! Secure your team spot to participate in our flagship sub-events across strategy, tech, and business.",
   formUrl: "#contact",
   steps: [
-    { title: "Select Sub-Events", body: "Pick from the 10 official competitions and exhibitions across tech, strategy, and business." },
+    { title: "Select Sub-Events", body: "Pick from the 12 official competitions, exhibitions, and shows across tech, strategy, and business." },
     { title: "Form Your Team", body: "Assemble your squad or enter solo depending on event criteria." },
     { title: "Submit Details", body: "Register online or via CIE MLRIT campus desk." },
     { title: "Compete & Win", body: "Arrive at MLRIT Hyderabad on 30 - 31 October to pitch, hustle, and conquer." },
@@ -566,7 +624,7 @@ export const hosts = {
 export const tickets = [
   {
     name: "Summit Pass",
-    description: "Full access pass for both days covering all 10 sub-events, keynotes, and expo floor.",
+    description: "Full access pass for both days covering all 12 sub-events, keynotes, and expo floor.",
     perks: ["Access to all sub-events", "Startup Expo badge", "Kit & participation certificate", "Networking access"],
     unit: "Individual Pass",
     href: "#contact",
@@ -580,7 +638,7 @@ export const faqs = [
   },
   {
     q: "How many sub-events are part of Equinox 2.0?",
-    a: "There are 10 confirmed sub-events: Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, and Pitch Deck.",
+    a: "There are 12 confirmed sub-events: Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, Pitch Deck, Standup Comedy, and Musical Night.",
   },
   {
     q: "Who can participate in Equinox 2.0?",

@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { event, events } from "@/lib/content";
 import { EventCard, PageTransition, SectionHeading } from "../ui";
 
-const eventsDescription = `The 10 official sub-events at ${event.name} ${event.edition}: Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, and Pitch Deck.`;
+const eventsDescription = `The 12 official sub-events at ${event.name} ${event.edition}: Spotlight, Crossroads, Startup Expo, Brand Battles, IPL Auction, Hustle Mania, Internship Drive, Startup Poly, E-Cell Meet, Pitch Deck, Standup Comedy, and Musical Night.`;
 
 export const metadata: Metadata = {
   title: "Sub-Events",

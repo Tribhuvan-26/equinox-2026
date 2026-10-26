@@ -338,6 +338,10 @@ export function SubEventBadge({ slug }: { slug: string }) {
       return <BadgeECellMeet />;
     case "pitch-deck":
       return <BadgePitchDeck />;
+    case "standup-comedy":
+      return <EventLogo slug="standup-comedy" alt="Standup Comedy" />;
+    case "musical-night":
+      return <EventLogo slug="musical-night" alt="Musical Night" />;
     default:
       return <span className="font-black text-lg">{slug}</span>;
   }
