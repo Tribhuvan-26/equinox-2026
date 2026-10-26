@@ -91,8 +91,8 @@ export default function ScrollJourney() {
     }
   }, [showLoader]);
 
-  // Below 768px the 16500px horizontal world is unusable, so the journey phases
-  // are skipped and <MobileJourney /> renders the same 10 events as a vertical spine.
+  // Below 768px the 19300px horizontal world is unusable, so the journey phases
+  // are skipped and <MobileJourney /> renders the same 12 events as a vertical spine.
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -291,13 +291,13 @@ export default function ScrollJourney() {
       }
 
       // Easter Egg Trigger: Among Us character drifting into black hole
-      if (pt.x > 14350 && !hasTriggeredAmongUs.current && amongUsRef.current) {
+      if (pt.x > 17150 && !hasTriggeredAmongUs.current && amongUsRef.current) {
         hasTriggeredAmongUs.current = true;
 
-        // Start from the right side of Planet 10 (Pitch Deck is at x=14200, y=670)
-        const startX = 14350;
+        // Start from the right side of Planet 12 (Musical Night is at x=17000, y=670)
+        const startX = 17150;
         const startY = 670;
-        const endX = 15800;
+        const endX = 18600;
         const endY = 540;
 
         amongUsRef.current.style.visibility = "visible";
@@ -333,14 +333,14 @@ export default function ScrollJourney() {
       }
 
       // Smooth black hole event horizon entry: progressively scale down and fade
-      const blackHoleX = 15800;
+      const blackHoleX = 18600;
       const blackHoleY = 540;
       const distToBlackHole = Math.hypot(pt.x - blackHoleX, pt.y - blackHoleY);
 
       let blackHoleScale = 1;
       let blackHoleOpacity = 1;
 
-      if (pt.x > 15300) {
+      if (pt.x > 18100) {
         const horizonOuter = 260; // Event horizon approach
         const horizonCenter = 40; // Singularity center
         if (distToBlackHole <= horizonCenter) {
@@ -705,7 +705,7 @@ export default function ScrollJourney() {
 
   return (
     <>
-      <div ref={containerRef} className="relative w-full" style={{ height: isMobile ? "115vh" : "1500vh" }}>
+      <div ref={containerRef} className="relative w-full" style={{ height: isMobile ? "115vh" : "1750vh" }}>
         <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
           <div className="absolute inset-0 pointer-events-none z-[-10]">
             <NebulaBackground />
@@ -1271,7 +1271,7 @@ export default function ScrollJourney() {
                       </g>
                     </g>
 
-                    {/* 10 planets */}
+                    {/* 12 planets */}
                     {PLANET_LAYOUTS.map((layout, idx) => {
                       const ev = subEvents[idx];
                       if (!ev) return null;
@@ -1279,7 +1279,7 @@ export default function ScrollJourney() {
                     })}
 
                     {/* Summit gateway (Black Hole) */}
-                    <g transform="translate(15800, 540)">
+                    <g transform="translate(18600, 540)">
                       {/* Gravitational event horizon & gravitational lensing orbital rings */}
                       <circle cx="0" cy="0" r="260" fill="none" stroke="#38BDF8" strokeWidth="1" strokeDasharray="6 8" opacity="0.25" />
                       <circle cx="0" cy="0" r="200" fill="none" stroke="#7484FE" strokeWidth="1" strokeDasharray="4 6" opacity="0.3" />
@@ -1419,7 +1419,7 @@ export default function ScrollJourney() {
                               : "text-[#33FF67] bg-[#33FF67]/10 border-[#33FF67]/30 shadow-[0_0_15px_rgba(51,255,103,0.15)]"
                               }`}>
                               <span className={`h-1.5 w-1.5 rounded-full ${isEven ? "bg-[#7484FE]" : "bg-[#33FF67]"}`} />
-                              <span>{String(idx + 1).padStart(2, "0")} / 10 · {ev.category}</span>
+                              <span>{String(idx + 1).padStart(2, "0")} / {subEvents.length} · {ev.category}</span>
                             </div>
 
                           </div>
