@@ -93,7 +93,7 @@ export function evaluateGuardrails(rawMessage: string): GuardrailResult {
     return {
       type: "garbage",
       response:
-        "How can I help you with Equinox 2.0? You can ask about our 10 sub-events, dates (30–31 Oct), venue at MLRIT, or registration.",
+        "How can I help you with Equinox 2.0? You can ask about our 12 sub-events, dates (30–31 Oct), venue at MLRIT, or registration.",
     };
   }
 
@@ -133,7 +133,7 @@ export function evaluateGuardrails(rawMessage: string): GuardrailResult {
     return {
       type: "garbage",
       response:
-        "How can I help you with Equinox 2.0? You can ask about our 10 sub-events, dates (30–31 Oct), venue at MLRIT, or registration.",
+        "How can I help you with Equinox 2.0? You can ask about our 12 sub-events, dates (30–31 Oct), venue at MLRIT, or registration.",
     };
   }
 

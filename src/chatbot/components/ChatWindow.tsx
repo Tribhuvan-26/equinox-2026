@@ -39,7 +39,7 @@ const DEFAULT_QUICK_ACTIONS = [
 const INITIAL_MESSAGE: MessageData = {
   id: "msg-welcome",
   sender: "bot",
-  text: "Welcome to **The Equinox 2.0**!\n\nI am your interactive event assistant, grounded directly in the official event program. Ask me about any of our **10 sub-events**, confirmed dates (**30 - 31 OCT**), MLRIT venue, or coordinators!",
+  text: "Welcome to **The Equinox 2.0**!\n\nI am your interactive event assistant, grounded directly in the official event program. Ask me about any of our **12 sub-events**, confirmed dates (**30 - 31 OCT**), MLRIT venue, or coordinators!",
   suggestions: [
     "Events",
     "E-Cell Meet",
