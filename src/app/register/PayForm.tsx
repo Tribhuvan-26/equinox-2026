@@ -2,9 +2,27 @@
 
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
-import { Check, Copy, User, Users } from "lucide-react";
+import {
+  Check,
+  Copy,
+  Sparkles,
+  Trophy,
+  Music,
+  Smile,
+  User,
+  Users,
+  CheckCircle2,
+} from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import { MAX_TEAM_SIZE, REGISTRATION_FEE, TOKEN_STORAGE_KEY } from "@/lib/registration/constants";
+import {
+  MAX_TEAM_SIZE,
+  PASS_OPTIONS,
+  ACTIVE_PASS_TYPES,
+  SINGLE_EVENT_CHOICES,
+  type PassType,
+  type SingleEventChoice,
+  TOKEN_STORAGE_KEY,
+} from "@/lib/registration/constants";
 import { emptyParticipant, type Participant } from "@/lib/registration/types";
 import { isParticipantValid, validateParticipant } from "@/lib/registration/validation";
 import { validateTeamName } from "@/lib/teams/validation";
@@ -87,15 +105,42 @@ function PaymentPanel({ totalAmount }: { totalAmount: number }) {
   );
 }
 
-function SuccessCard({ done, count, mode }: { done: Done; count: number; mode: RegistrationMode }) {
+function SuccessCard({
+  done,
+  count,
+  mode,
+  passType,
+  singleEvent,
+}: {
+  done: Done;
+  count: number;
+  mode: RegistrationMode;
+  passType: PassType;
+  singleEvent: SingleEventChoice;
+}) {
   const link = `${typeof window === "undefined" ? "" : window.location.origin}/my-registration#token=${done.accessToken}`;
   const isTeam = mode === "team" && Boolean(done.team);
+  const pass = PASS_OPTIONS[passType] ?? PASS_OPTIONS.single;
+
+  const eventLabel =
+    passType === "single"
+      ? singleEvent === "standup-comedy"
+        ? "Stand-Up Comedy"
+        : "Musical Night"
+      : null;
+
+  const passDisplayName = eventLabel ? `${pass.name} (${eventLabel})` : pass.name;
 
   return (
     <div className="rounded-3xl border-2 border-[#33FF67]/50 bg-[#33FF67]/10 p-6 text-left sm:p-10">
-      <p className="text-xs font-black uppercase tracking-wider text-[#33FF67]">
-        {isTeam ? "Team Registration Received" : "Payment Received"}
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-xs font-black uppercase tracking-wider text-[#33FF67]">
+          {isTeam ? "Team Registration Received" : "Payment Received"}
+        </p>
+        <span className="rounded-full border border-[#33FF67]/40 bg-[#33FF67]/20 px-3 py-1 font-mono text-[11px] font-black uppercase tracking-wider text-[#33FF67]">
+          {passDisplayName} (₹{pass.price})
+        </span>
+      </div>
       <h3 className="heading mt-3 text-2xl font-black sm:text-3xl">
         {isTeam
           ? `Team "${done.team?.name}" is registered!`
@@ -103,13 +148,26 @@ function SuccessCard({ done, count, mode }: { done: Done; count: number; mode: R
       </h3>
       <p className="mt-3 text-[#F7F2F6]/85">
         {isTeam
-          ? `All ${count} members have been registered together and associated with team "${done.team?.name}". We have emailed each member their own private link to view and manage their registration.`
-          : "Your payment proof is with the organisers. Next, open your registration and either start your own team or request to join an existing team."}
+          ? `All ${count} members have been registered together under ${passDisplayName} and associated with team "${done.team?.name}". We have emailed each member their own private link to view and manage their registration.`
+          : `Your payment proof for ${passDisplayName} is with the organisers. Next, open your registration and either start your own team or request to join an existing team.`}
       </p>
 
       <div className="mt-6 flex flex-col gap-2 font-mono text-sm text-[#F7F2F6]/80">
         <p>
           Confirmation Number: <span className="font-bold text-[#33FF67]">{done.confirmationNumber}</span>
+        </p>
+        <p>
+          Pass Tier: <span className="font-bold text-[#F7F2F6]">{passDisplayName}</span> (₹{pass.price} / person)
+        </p>
+        <p>
+          Included Events:{" "}
+          <span className="font-bold text-[#33FF67]">
+            {passType === "single"
+              ? eventLabel
+              : passType === "combo"
+              ? "Musical Night + Stand-Up Comedy"
+              : "IPL Auction + Musical Night + Stand-Up Comedy"}
+          </span>
         </p>
         {done.team && (
           <div className="flex flex-wrap items-center gap-2">
@@ -142,6 +200,8 @@ function SuccessCard({ done, count, mode }: { done: Done; count: number; mode: R
 }
 
 export function PayForm() {
+  const [passType, setPassType] = useState<PassType>("single");
+  const [singleEvent, setSingleEvent] = useState<SingleEventChoice>("musical-night");
   const [mode, setMode] = useState<RegistrationMode>("team");
   const [teamName, setTeamName] = useState("");
   const [teamNameTouched, setTeamNameTouched] = useState(false);
@@ -155,8 +215,9 @@ export function PayForm() {
   const [done, setDone] = useState<Done | null>(null);
   const lock = useRef(false);
 
+  const selectedPass = PASS_OPTIONS[passType] ?? PASS_OPTIONS.single;
   const activeParticipants = mode === "team" ? participants : [participants[0]];
-  const totalAmount = activeParticipants.length * REGISTRATION_FEE;
+  const totalAmount = activeParticipants.length * selectedPass.price;
 
   const teamNameError = mode === "team" ? validateTeamName(teamName) : null;
   const isTeamNameValid = mode === "individual" || !teamNameError;
@@ -176,6 +237,11 @@ export function PayForm() {
     setError(null);
   }
 
+  function handlePassTypeChange(nextPass: PassType) {
+    setPassType(nextPass);
+    setError(null);
+  }
+
   function updateParticipant(index: number, patch: Partial<Participant>) {
     setParticipants((prev) => prev.map((p, i) => (i === index ? { ...p, ...patch } : p)));
   }
@@ -188,7 +254,6 @@ export function PayForm() {
   function removeParticipant(index: number) {
     if (participants.length <= 1) return;
     setParticipants((prev) => prev.filter((_, i) => i !== index));
-    // Re-index touched field keys
     setTouched((prev) => {
       const next = new Set<string>();
       for (const item of prev) {
@@ -219,6 +284,16 @@ export function PayForm() {
 
     const body = new FormData();
     body.set("registrationType", mode);
+    body.set("passType", passType);
+    if (passType === "single") {
+      body.set("selectedEvent", singleEvent);
+    }
+    const included =
+      passType === "single"
+        ? [singleEvent === "standup-comedy" ? "Stand-Up Comedy" : "Musical Night"]
+        : selectedPass.includedEvents;
+    body.set("includedEvents", JSON.stringify(included));
+
     if (mode === "team") {
       body.set("teamName", teamName.trim());
     }
@@ -246,75 +321,275 @@ export function PayForm() {
     setSubmitting(false);
   }
 
-  if (done) return <SuccessCard done={done} count={activeParticipants.length} mode={mode} />;
+  if (done) {
+    return (
+      <SuccessCard
+        done={done}
+        count={activeParticipants.length}
+        mode={mode}
+        passType={passType}
+        singleEvent={singleEvent}
+      />
+    );
+  }
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-8">
-      {/* Registration Type Selector: Option A vs Option B */}
-      <section className="grid gap-3 sm:grid-cols-2">
-        <button
-          type="button"
-          onClick={() => handleModeChange("team")}
-          className={`flex flex-col items-start gap-2 rounded-2xl border-2 p-5 text-left transition-all ${
-            mode === "team"
-              ? "border-[#33FF67] bg-[#33FF67]/10 shadow-[0_0_20px_rgba(51,255,103,0.15)]"
-              : "border-white/15 bg-black/20 hover:border-white/30 hover:bg-black/30"
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            <span
-              className={`flex size-8 items-center justify-center rounded-xl font-bold ${
-                mode === "team" ? "bg-[#33FF67] text-[#2A2A2A]" : "bg-white/10 text-[#F7F2F6]"
-              }`}
-            >
-              <Users className="size-4" />
-            </span>
+      {/* 1. Entertainment Pass Selection */}
+      <section className="flex flex-col gap-4">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <div>
             <p className="font-mono text-xs font-black uppercase tracking-wider text-[#33FF67]">
-              Option A
+              Step 1
             </p>
+            <h2 className="heading text-xl font-black text-[#F7F2F6]">
+              Choose Your Entertainment Pass
+            </h2>
           </div>
-          <h3 className="heading text-lg font-black text-[#F7F2F6]">
-            Register a Team Together
-          </h3>
-          <p className="text-xs leading-relaxed text-[#F7F2F6]/70">
-            Enter 1–5 members together in one session and associate everyone with the same team.
-          </p>
-          <span className="mt-1 font-mono text-xs font-bold text-[#33FF67]">
-            ₹{REGISTRATION_FEE} / person
-          </span>
-        </button>
+          <span className="text-xs text-[#F7F2F6]/60">Select one pass tier for your registration</span>
+        </div>
 
-        <button
-          type="button"
-          onClick={() => handleModeChange("individual")}
-          className={`flex flex-col items-start gap-2 rounded-2xl border-2 p-5 text-left transition-all ${
-            mode === "individual"
-              ? "border-[#7484FE] bg-[#7484FE]/10 shadow-[0_0_20px_rgba(116,132,254,0.15)]"
-              : "border-white/15 bg-black/20 hover:border-white/30 hover:bg-black/30"
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            <span
-              className={`flex size-8 items-center justify-center rounded-xl font-bold ${
-                mode === "individual" ? "bg-[#7484FE] text-[#2A2A2A]" : "bg-white/10 text-[#F7F2F6]"
-              }`}
-            >
-              <User className="size-4" />
-            </span>
-            <p className="font-mono text-xs font-black uppercase tracking-wider text-[#7484FE]">
-              Option B
-            </p>
+        {/* Pass cards: 1. Single Pass (₹299), 2. Combo Pass (₹499), 3. Entertainment Pass (₹569) */}
+        <div className="grid gap-4 md:grid-cols-3">
+          {ACTIVE_PASS_TYPES.map((type) => {
+            const opt = PASS_OPTIONS[type];
+            const isSelected = passType === type;
+            const isSingle = type === "single";
+            const isCombo = type === "combo";
+            const isEntertainment = type === "entertainment";
+
+            // Theme accent per pass
+            const accentColor = isSingle ? "#7484FE" : isCombo ? "#FFBE33" : "#33FF67";
+            const borderActive = isSingle
+              ? "border-[#7484FE] bg-[#7484FE]/10 shadow-[0_0_24px_rgba(116,132,254,0.18)]"
+              : isCombo
+              ? "border-[#FFBE33] bg-[#FFBE33]/10 shadow-[0_0_24px_rgba(255,190,51,0.18)]"
+              : "border-[#33FF67] bg-[#33FF67]/10 shadow-[0_0_24px_rgba(51,255,103,0.18)]";
+
+            return (
+              <button
+                key={type}
+                type="button"
+                onClick={() => handlePassTypeChange(type)}
+                className={`group relative flex flex-col justify-between rounded-2xl border-2 p-5 text-left transition-all ${
+                  isSelected
+                    ? borderActive
+                    : "border-white/15 bg-black/20 hover:border-white/30 hover:bg-black/30"
+                }`}
+              >
+                <div className="flex w-full flex-col gap-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <span
+                      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[10px] font-black uppercase tracking-wider"
+                      style={{
+                        backgroundColor: `${accentColor}25`,
+                        color: accentColor,
+                        border: `1px solid ${accentColor}40`,
+                      }}
+                    >
+                      {isSingle ? (
+                        <Music className="size-3" />
+                      ) : isCombo ? (
+                        <Sparkles className="size-3" />
+                      ) : (
+                        <Trophy className="size-3" />
+                      )}
+                      {opt.badge}
+                    </span>
+                    <span className="font-mono text-2xl font-black" style={{ color: accentColor }}>
+                      ₹{opt.price}
+                      <span className="text-xs font-normal text-[#F7F2F6]/60"> / person</span>
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="heading text-xl font-black text-[#F7F2F6]">{opt.name}</h3>
+                    <p className="mt-0.5 text-xs font-bold" style={{ color: accentColor }}>
+                      {opt.tagline}
+                    </p>
+                    <p className="mt-1.5 text-xs leading-relaxed text-[#F7F2F6]/75">
+                      {opt.description}
+                    </p>
+                  </div>
+
+                  {/* Included Events Checklist */}
+                  <div className="mt-1 space-y-1.5 border-t border-white/10 pt-3 text-xs">
+                    <p className="font-mono text-[10px] font-black uppercase tracking-wider text-[#F7F2F6]/50">
+                      Included Events:
+                    </p>
+                    {opt.includedEvents.map((evt, i) => (
+                      <div key={i} className="flex items-start gap-2 text-[#F7F2F6]/90">
+                        <CheckCircle2
+                          className="mt-0.5 size-3.5 shrink-0"
+                          style={{ color: accentColor }}
+                        />
+                        <span className="font-medium">{evt}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-5 flex w-full items-center justify-between border-t border-white/10 pt-3 text-[11px]">
+                  <span className="text-[#F7F2F6]/60">Access Scope</span>
+                  <span
+                    className="rounded-md px-2 py-0.5 font-mono font-black"
+                    style={{ backgroundColor: `${accentColor}20`, color: accentColor }}
+                  >
+                    {isSingle
+                      ? "1 Evening Show"
+                      : isCombo
+                      ? "2 Evening Shows"
+                      : "IPL Auction + 2 Shows"}
+                  </span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Choice for Single Pass: Musical Night vs Stand-Up Comedy */}
+        {passType === "single" && (
+          <div className="rounded-2xl border-2 border-[#7484FE]/40 bg-[#7484FE]/10 p-5 transition-all sm:p-6">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <div>
+                <p className="font-mono text-xs font-black uppercase tracking-wider text-[#7484FE]">
+                  Single Pass Event Selection
+                </p>
+                <h3 className="heading mt-1 text-lg font-black text-[#F7F2F6]">
+                  Select Which Show You Want to Attend
+                </h3>
+              </div>
+              <span className="text-xs text-[#F7F2F6]/70">
+                Included with your ₹299 pass (choose 1)
+              </span>
+            </div>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {SINGLE_EVENT_CHOICES.map((choice) => {
+                const isChosen = singleEvent === choice.id;
+                const Icon = choice.id === "musical-night" ? Music : Smile;
+
+                return (
+                  <button
+                    key={choice.id}
+                    type="button"
+                    onClick={() => setSingleEvent(choice.id)}
+                    className={`relative flex items-start gap-3.5 rounded-xl border-2 p-4 text-left transition-all ${
+                      isChosen
+                        ? "border-[#7484FE] bg-[#7484FE]/20 shadow-[0_0_16px_rgba(116,132,254,0.25)]"
+                        : "border-white/15 bg-black/30 hover:border-white/30 hover:bg-black/40"
+                    }`}
+                  >
+                    <div
+                      className={`flex size-10 shrink-0 items-center justify-center rounded-xl transition-all ${
+                        isChosen ? "bg-[#7484FE] text-[#151515]" : "bg-white/10 text-[#F7F2F6]"
+                      }`}
+                    >
+                      <Icon className="size-5" />
+                    </div>
+
+                    <div className="flex flex-1 flex-col">
+                      <div className="flex items-center justify-between gap-1">
+                        <h4 className="font-bold text-[#F7F2F6]">{choice.name}</h4>
+                        <span
+                          className={`flex size-5 items-center justify-center rounded-full border text-[10px] font-black ${
+                            isChosen
+                              ? "border-[#7484FE] bg-[#7484FE] text-[#151515]"
+                              : "border-white/30 bg-transparent text-transparent"
+                          }`}
+                        >
+                          <Check className="size-3 stroke-[3]" />
+                        </span>
+                      </div>
+                      <p className="mt-0.5 font-mono text-[11px] font-black uppercase tracking-wider text-[#7484FE]">
+                        {choice.day}
+                      </p>
+                      <p className="mt-1 text-xs leading-relaxed text-[#F7F2F6]/75">
+                        {choice.description}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          <h3 className="heading text-lg font-black text-[#F7F2F6]">
-            Register Individually
-          </h3>
-          <p className="text-xs leading-relaxed text-[#F7F2F6]/70">
-            Pay for yourself now. Receive your private team link to create or join a team later.
-          </p>
-          <span className="mt-1 font-mono text-xs font-bold text-[#7484FE]">
-            ₹{REGISTRATION_FEE} solo pass
-          </span>
-        </button>
+        )}
+      </section>
+
+      {/* 2. Registration Format: Team vs Individual */}
+      <section className="flex flex-col gap-3">
+        <p className="font-mono text-xs font-black uppercase tracking-wider text-[#33FF67]">
+          Step 2
+        </p>
+        <h2 className="heading text-xl font-black text-[#F7F2F6]">
+          Select Registration Format
+        </h2>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <button
+            type="button"
+            onClick={() => handleModeChange("team")}
+            className={`flex flex-col items-start gap-2 rounded-2xl border-2 p-5 text-left transition-all ${
+              mode === "team"
+                ? "border-[#33FF67] bg-[#33FF67]/10 shadow-[0_0_20px_rgba(51,255,103,0.15)]"
+                : "border-white/15 bg-black/20 hover:border-white/30 hover:bg-black/30"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <span
+                className={`flex size-8 items-center justify-center rounded-xl font-bold ${
+                  mode === "team" ? "bg-[#33FF67] text-[#2A2A2A]" : "bg-white/10 text-[#F7F2F6]"
+                }`}
+              >
+                <Users className="size-4" />
+              </span>
+              <p className="font-mono text-xs font-black uppercase tracking-wider text-[#33FF67]">
+                Option A
+              </p>
+            </div>
+            <h3 className="heading text-lg font-black text-[#F7F2F6]">
+              Register a Team / Group Together
+            </h3>
+            <p className="text-xs leading-relaxed text-[#F7F2F6]/70">
+              Enter 1–5 members together in one session and associate everyone under the same team.
+            </p>
+            <span className="mt-1 font-mono text-xs font-bold text-[#33FF67]">
+              ₹{selectedPass.price} / person · {selectedPass.name}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleModeChange("individual")}
+            className={`flex flex-col items-start gap-2 rounded-2xl border-2 p-5 text-left transition-all ${
+              mode === "individual"
+                ? "border-[#7484FE] bg-[#7484FE]/10 shadow-[0_0_20px_rgba(116,132,254,0.15)]"
+                : "border-white/15 bg-black/20 hover:border-white/30 hover:bg-black/30"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <span
+                className={`flex size-8 items-center justify-center rounded-xl font-bold ${
+                  mode === "individual" ? "bg-[#7484FE] text-[#2A2A2A]" : "bg-white/10 text-[#F7F2F6]"
+                }`}
+              >
+                <User className="size-4" />
+              </span>
+              <p className="font-mono text-xs font-black uppercase tracking-wider text-[#7484FE]">
+                Option B
+              </p>
+            </div>
+            <h3 className="heading text-lg font-black text-[#F7F2F6]">
+              Register Individually
+            </h3>
+            <p className="text-xs leading-relaxed text-[#F7F2F6]/70">
+              Pay for yourself now. Receive your private link to create or join a team later.
+            </p>
+            <span className="mt-1 font-mono text-xs font-bold text-[#7484FE]">
+              ₹{selectedPass.price} solo pass · {selectedPass.name}
+            </span>
+          </button>
+        </div>
       </section>
 
       {/* Team Details (Option A) */}
@@ -389,11 +664,22 @@ export function PayForm() {
       {/* Payment details section */}
       <section className={card}>
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h3 className="heading text-xl font-black">Your Payment</h3>
+          <div>
+            <h3 className="heading text-xl font-black">Your Payment</h3>
+            <p className="mt-1 text-xs text-[#F7F2F6]/60">
+              Selected:{" "}
+              <span className="font-bold text-[#F7F2F6]">
+                {selectedPass.name}
+                {passType === "single"
+                  ? ` (${singleEvent === "standup-comedy" ? "Stand-Up Comedy" : "Musical Night"})`
+                  : ""}
+              </span>
+            </p>
+          </div>
           <div className="flex items-baseline gap-2">
             <span className="text-sm text-[#F7F2F6]/70">
               {mode === "team"
-                ? `Total (${activeParticipants.length} × ₹${REGISTRATION_FEE}):`
+                ? `Total (${activeParticipants.length} × ₹${selectedPass.price}):`
                 : "Total to Pay:"}
             </span>
             <span className="text-2xl font-black text-[#33FF67]">
