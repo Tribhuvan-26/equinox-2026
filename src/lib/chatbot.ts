@@ -451,7 +451,7 @@ export function getMockEquinoxResponse(
   ) {
     return {
       answer:
-        `**Equinox 2.0 Registration Pass & Pricing**:\n\n• **IPL Auction Pass (₹569 per person)**: The IPL Auction Pass includes access to all three entertainment events: IPL Auction, Musical Night, and Stand-Up Comedy.\n• **Hustle Mania stalls**: ₹2,999 onwards\n• **How to Register**: Register either with your team (Option A) or individually (Option B) on the registration portal.\n• **Dates & Venue**: 30 – 31 October 2026 at MLRIT Hyderabad.`,
+        `**Equinox 2.0 Registration Pass & Pricing**:\n\n• **Summit Pass (₹769 per person)**: Full access to both days — all sub-events, keynotes, and the expo floor.\n• **IPL Auction Pass (₹569 per person)**: Access to the three entertainment events: IPL Auction, Musical Night, and Stand-Up Comedy.\n• **Hustle Mania stalls**: ₹2,999 onwards\n• **How to Register**: Register either with your team (Option A) or individually (Option B) on the registration portal.\n• **Dates & Venue**: 30 – 31 October 2026 at MLRIT Hyderabad.`,
       suggestions: ["IPL Auction Pass Details", "Explore Sub-Events", "Dates & Venue"],
       links: [{ label: "Register on Website", url: "/register" }],
       grounded: true,
