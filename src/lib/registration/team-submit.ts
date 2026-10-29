@@ -138,7 +138,7 @@ export async function readRegistrationForm(request: Request): Promise<ParsedRegi
   } else if (rawPassType === "premium" || rawPassType === "summit" || !rawPassType) {
     passType = "premium";
   } else {
-    throw new ApiError(400, "Invalid pass type. Only Premium Pass (₹769) and IPL Pass (₹569) are available.");
+    throw new ApiError(400, "Invalid pass type. Only Premium Pass (₹769) and Entertainment Pass (₹569) are available.");
   }
   const passInfo = PASS_OPTIONS[passType];
   const includedEvents = [...passInfo.includedEvents];

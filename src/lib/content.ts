@@ -253,7 +253,7 @@ export const subEvents: SubEvent[] = [
     time: "10:00 AM - 04:30 PM",
     venue: "Indoor Sports Complex / Hall A",
     teamSize: "Teams of 4–5",
-    fee: "Included in ₹769 Premium Pass or ₹569 IPL Pass",
+    fee: "Included in ₹769 Premium Pass or ₹569 Entertainment Pass",
     prize: "Champion purse & team medals",
     about: [
       "The IPL Auction is a competitive cricket draft experience where participants step into the shoes of team owners and build their own squads. Just like the official auction, each team is given a fixed budget to bid on players. The event runs in a fast-paced, high-energy format as participants strategize, outbid rivals, and assemble the strongest lineup for their team.",
@@ -457,7 +457,7 @@ export const subEvents: SubEvent[] = [
     time: "Evening",
     venue: "MLRIT Campus",
     teamSize: "Open entry",
-    fee: "Included in ₹769 Premium Pass or ₹569 IPL Pass",
+    fee: "Included in ₹769 Premium Pass or ₹569 Entertainment Pass",
     prize: "Laughs guaranteed",
     about: [
       "An evening of live comedy to unwind after a packed day of summit events.",
@@ -485,7 +485,7 @@ export const subEvents: SubEvent[] = [
     time: "Evening",
     venue: "MLRIT Campus",
     teamSize: "Open entry",
-    fee: "Included in ₹769 Premium Pass or ₹569 IPL Pass",
+    fee: "Included in ₹769 Premium Pass or ₹569 Entertainment Pass",
     prize: "An unforgettable night",
     about: [
       "A live band performance to celebrate Equinox 2.0 with music and good company.",
@@ -550,7 +550,7 @@ export const board = studentCoordinators.map((c) => ({
 export const registration = {
   eyebrow: "Registration",
   heading: "Register for Equinox 2.0",
-  body: "Registrations for The Equinox 2.0 (30 - 31 October 2026) are now live! Choose the all-access Premium Pass (₹769) for all sub-events & night shows, or the IPL Pass (₹569) for the IPL Auction and evening entertainment.",
+  body: "Registrations for The Equinox 2.0 (30 - 31 October 2026) are now live! Choose the all-access Premium Pass (₹769) for all sub-events & night shows, or the Entertainment Pass (₹569) for the IPL Auction and evening entertainment.",
   formUrl: "#contact",
   steps: [
     { title: "Select Sub-Events", body: "Pick from the 12 official competitions, exhibitions, and shows across tech, strategy, and business." },
