@@ -5,10 +5,12 @@ import { useMemo, useRef, useState } from "react";
 import {
   Check,
   Copy,
+  Sparkles,
   Trophy,
   User,
   Users,
   CheckCircle2,
+  XCircle,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import {
@@ -176,8 +178,8 @@ function SuccessCard({
 }
 
 export function PayForm() {
-  const passType: PassType = "ipl";
-  const selectedPass = PASS_OPTIONS.ipl;
+  const [passType, setPassType] = useState<PassType>("premium");
+  const selectedPass = PASS_OPTIONS[passType] ?? PASS_OPTIONS.premium;
   const [mode, setMode] = useState<RegistrationMode>("team");
   const [teamName, setTeamName] = useState("");
   const [teamNameTouched, setTeamNameTouched] = useState(false);
@@ -206,6 +208,11 @@ export function PayForm() {
 
   const valid =
     isTeamNameValid && allParticipantsValid && !hasDuplicateEmails && screenshot !== null && utrValid;
+
+  function handlePassTypeChange(nextPass: PassType) {
+    setPassType(nextPass);
+    setError(null);
+  }
 
   function handleModeChange(nextMode: RegistrationMode) {
     setMode(nextMode);
@@ -297,7 +304,7 @@ export function PayForm() {
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-8">
-      {/* 1. Official Pass */}
+      {/* 1. Registration Pass */}
       <section className="flex flex-col gap-4">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <div>
@@ -305,68 +312,121 @@ export function PayForm() {
               Step 1
             </p>
             <h2 className="heading text-xl font-black text-[#F7F2F6]">
-              Registration Pass
+              Choose Your Registration Pass
             </h2>
           </div>
-          <span className="text-xs text-[#F7F2F6]/60">All-in-one entertainment pass</span>
+          <span className="text-xs text-[#F7F2F6]/60">Select one pass tier for your registration</span>
         </div>
 
-        {/* Single Pass Card: IPL Auction Pass — ₹569 */}
-        <div className="group relative flex flex-col justify-between rounded-2xl border-2 border-[#33FF67] bg-[#33FF67]/10 p-6 text-left shadow-[0_0_24px_rgba(51,255,103,0.18)] transition-all">
-          <div className="flex w-full flex-col gap-3">
-            <div className="flex items-center justify-between gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#33FF67]/40 bg-[#33FF67]/20 px-3 py-1 font-mono text-[11px] font-black uppercase tracking-wider text-[#33FF67]">
-                <Trophy className="size-3.5" />
-                {selectedPass.badge}
-              </span>
-              <span className="font-mono text-2xl font-black text-[#33FF67] sm:text-3xl">
-                ₹{selectedPass.price}
-                <span className="text-xs font-normal text-[#F7F2F6]/60"> / person</span>
-              </span>
-            </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {/* Card 1: Premium Pass (₹769) */}
+          <button
+            type="button"
+            onClick={() => handlePassTypeChange("premium")}
+            className={`group relative flex flex-col justify-between rounded-2xl border-2 p-6 text-left transition-all ${
+              passType === "premium"
+                ? "border-[#33FF67] bg-[#33FF67]/10 shadow-[0_0_24px_rgba(51,255,103,0.18)]"
+                : "border-white/15 bg-black/20 hover:border-white/30 hover:bg-black/30"
+            }`}
+          >
+            <div className="flex w-full flex-col gap-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#33FF67]/40 bg-[#33FF67]/20 px-3 py-1 font-mono text-[11px] font-black uppercase tracking-wider text-[#33FF67]">
+                  <Sparkles className="size-3.5" />
+                  {PASS_OPTIONS.premium.badge}
+                </span>
+                <span className="font-mono text-2xl font-black text-[#33FF67] sm:text-3xl">
+                  ₹{PASS_OPTIONS.premium.price}
+                  <span className="text-xs font-normal text-[#F7F2F6]/60"> / person</span>
+                </span>
+              </div>
 
-            <div>
-              <h3 className="heading text-2xl font-black text-[#F7F2F6]">
-                {selectedPass.name}
-              </h3>
-              <p className="mt-1 text-sm font-bold text-[#33FF67]">
-                {selectedPass.tagline}
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-[#F7F2F6]/85">
-                {selectedPass.description}
-              </p>
-            </div>
-
-            {/* Included Events Checklist */}
-            <div className="mt-2 space-y-2 border-t border-white/10 pt-4 text-xs sm:text-sm">
-              <p className="font-mono text-[11px] font-black uppercase tracking-wider text-[#F7F2F6]/60">
-                Included Events (All 3 Included):
-              </p>
-              {selectedPass.includedEvents.map((evt, i) => (
-                <div key={i} className="flex items-start gap-2 text-[#F7F2F6]/95">
-                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#33FF67]" />
-                  <span className="font-semibold">{evt}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Highlights */}
-            <div className="mt-1 space-y-1.5 text-xs text-[#F7F2F6]/75">
-              {selectedPass.highlights.map((h, i) => (
-                <p key={i} className="flex items-center gap-2">
-                  <span className="size-1 rounded-full bg-[#33FF67]" />
-                  <span>{h}</span>
+              <div>
+                <h3 className="heading text-2xl font-black text-[#F7F2F6]">
+                  {PASS_OPTIONS.premium.name}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-[#F7F2F6]/85">
+                  {PASS_OPTIONS.premium.description}
                 </p>
-              ))}
-            </div>
-          </div>
+              </div>
 
-          <div className="mt-6 flex w-full items-center justify-between border-t border-white/10 pt-4 text-xs">
-            <span className="text-[#F7F2F6]/60">Access Scope</span>
-            <span className="rounded-md bg-[#33FF67]/20 px-2.5 py-1 font-mono text-[11px] font-black text-[#33FF67]">
-              {selectedPass.accessScope}
-            </span>
-          </div>
+              {/* Feature bullets */}
+              <div className="mt-2 space-y-2.5 text-xs sm:text-sm">
+                {PASS_OPTIONS.premium.features.map((f, i) => (
+                  <div key={i} className="flex items-start gap-2.5 text-[#F7F2F6]/90">
+                    <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#33FF67]" />
+                    <span>{f.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-6 flex w-full items-center justify-between border-t border-white/10 pt-4 text-xs">
+              <span className="text-[#F7F2F6]/60">Access Scope</span>
+              <span className="rounded-md bg-[#33FF67]/20 px-2.5 py-1 font-mono text-[11px] font-black text-[#33FF67]">
+                {PASS_OPTIONS.premium.accessScope}
+              </span>
+            </div>
+          </button>
+
+          {/* Card 2: IPL Pass (₹569) */}
+          <button
+            type="button"
+            onClick={() => handlePassTypeChange("ipl")}
+            className={`group relative flex flex-col justify-between rounded-2xl border-2 p-6 text-left transition-all ${
+              passType === "ipl"
+                ? "border-[#7484FE] bg-[#7484FE]/10 shadow-[0_0_24px_rgba(116,132,254,0.18)]"
+                : "border-white/15 bg-black/20 hover:border-white/30 hover:bg-black/30"
+            }`}
+          >
+            <div className="flex w-full flex-col gap-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#7484FE]/40 bg-[#7484FE]/20 px-3 py-1 font-mono text-[11px] font-black uppercase tracking-wider text-[#7484FE]">
+                  <Trophy className="size-3.5" />
+                  {PASS_OPTIONS.ipl.badge}
+                </span>
+                <span className="font-mono text-2xl font-black text-[#7484FE] sm:text-3xl">
+                  ₹{PASS_OPTIONS.ipl.price}
+                  <span className="text-xs font-normal text-[#F7F2F6]/60"> / person</span>
+                </span>
+              </div>
+
+              <div>
+                <h3 className="heading text-2xl font-black text-[#F7F2F6]">
+                  {PASS_OPTIONS.ipl.name}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-[#F7F2F6]/85">
+                  {PASS_OPTIONS.ipl.description}
+                </p>
+              </div>
+
+              {/* Feature bullets */}
+              <div className="mt-2 space-y-2.5 text-xs sm:text-sm">
+                {PASS_OPTIONS.ipl.features.map((f, i) => (
+                  <div
+                    key={i}
+                    className={`flex items-start gap-2.5 ${
+                      f.included ? "text-[#F7F2F6]/90" : "text-amber-400/90"
+                    }`}
+                  >
+                    {f.included ? (
+                      <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#7484FE]" />
+                    ) : (
+                      <XCircle className="mt-0.5 size-4 shrink-0 text-amber-400" />
+                    )}
+                    <span>{f.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-6 flex w-full items-center justify-between border-t border-white/10 pt-4 text-xs">
+              <span className="text-[#F7F2F6]/60">Access Scope</span>
+              <span className="rounded-md bg-amber-400/20 px-2.5 py-1 font-mono text-[11px] font-black text-amber-400">
+                {PASS_OPTIONS.ipl.accessScope}
+              </span>
+            </div>
+          </button>
         </div>
       </section>
 

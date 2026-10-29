@@ -132,16 +132,15 @@ export async function readRegistrationForm(request: Request): Promise<ParsedRegi
   }
 
   const rawPassType = form.get("passType");
-  if (
-    rawPassType &&
-    rawPassType !== "ipl" &&
-    rawPassType !== "entertainment" &&
-    rawPassType !== "ipl-auction"
-  ) {
-    throw new ApiError(400, "Only the IPL Auction Pass (₹569) is available for registration.");
+  let passType: PassType = "premium";
+  if (rawPassType === "ipl" || rawPassType === "entertainment" || rawPassType === "ipl-auction") {
+    passType = "ipl";
+  } else if (rawPassType === "premium" || rawPassType === "summit" || !rawPassType) {
+    passType = "premium";
+  } else {
+    throw new ApiError(400, "Invalid pass type. Only Premium Pass (₹769) and IPL Pass (₹569) are available.");
   }
-  const passType: PassType = "ipl";
-  const passInfo = PASS_OPTIONS.ipl;
+  const passInfo = PASS_OPTIONS[passType];
   const includedEvents = [...passInfo.includedEvents];
 
   return {

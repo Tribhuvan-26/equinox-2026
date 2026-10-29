@@ -13,12 +13,12 @@ function getPassBadge(r: { total_amount: number; admin_note: string | null }) {
     note.includes("Entertainment")
   ) {
     return {
-      label: "IPL Auction Pass",
+      label: "IPL Pass",
       color: "bg-[#7484FE]/20 text-[#7484FE] border border-[#7484FE]/30",
     };
   }
   return {
-    label: "IPL Auction Pass",
+    label: "Premium Pass",
     color: "bg-[#33FF67]/20 text-[#33FF67] border border-[#33FF67]/30",
   };
 }
