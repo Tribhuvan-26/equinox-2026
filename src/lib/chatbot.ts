@@ -451,7 +451,6 @@ export function getMockEquinoxResponse(
   ) {
     return {
       answer:
-      answer:
         `**Equinox 2.0 Registration Passes & Pricing**:\n\n• **Premium Pass (₹769 per person)**: Full summit all-access pass covering all 10 official competitions, keynote talks, expo exhibits, Stand-Up Comedy, and Musical Night.\n• **IPL Pass (₹569 per person)**: Tailored pass giving exclusive access to the IPL Auction, Stand-Up Comedy, and Musical Night (does not include participation in other sub-events).\n• **Hustle Mania stalls**: ₹2,999 onwards\n• **How to Register**: Register either with your team (Option A) or individually (Option B) on the registration portal.\n• **Dates & Venue**: 30 – 31 October 2026 at MLRIT Hyderabad.`,
       suggestions: ["Premium Pass Details", "IPL Pass Details", "Explore Sub-Events"],
       links: [{ label: "Register on Website", url: "/register" }],
