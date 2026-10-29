@@ -49,7 +49,7 @@ export const event = {
 };
 
 export const SLOT_BOOKING_URL =
-  process.env.NEXT_PUBLIC_SLOT_BOOKING_URL || "https://equinox-slot-booking.vercel.app/";
+  process.env.NEXT_PUBLIC_SLOT_BOOKING_URL || "https://slotbooking.mlritcie.in/";
 
 export const nav = [
   { label: "Homepage", href: "/#top" },
