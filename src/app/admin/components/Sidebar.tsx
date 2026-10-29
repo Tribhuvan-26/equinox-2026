@@ -1,13 +1,16 @@
 "use client";
 
-import { Home, Users, ClipboardList, BarChart3, Clock, CheckCircle, XCircle, UserMinus, UserPlus, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { Home, Users, ClipboardList, BarChart3, Clock, CheckCircle, XCircle, UserMinus, UserPlus, ChevronsLeft, ChevronsRight, Sparkles, Trophy } from "lucide-react";
+import { PASS_OPTIONS } from "@/lib/registration/constants";
 
-export type AdminView = "dashboard" | "teams" | "registrations" | "analytics" | "pending" | "no-team" | "join-requests" | "approved" | "rejected";
+export type AdminView = "dashboard" | "teams" | "registrations" | "premium" | "ipl" | "analytics" | "pending" | "no-team" | "join-requests" | "approved" | "rejected";
 
 const MENU_ITEMS: { id: AdminView; label: string; icon: typeof Home }[] = [
   { id: "dashboard", label: "Dashboard", icon: Home },
   { id: "teams", label: "Teams", icon: Users },
   { id: "registrations", label: "Registrations", icon: ClipboardList },
+  { id: "premium", label: `${PASS_OPTIONS.premium.name} ₹${PASS_OPTIONS.premium.price}`, icon: Sparkles },
+  { id: "ipl", label: `${PASS_OPTIONS.ipl.name} ₹${PASS_OPTIONS.ipl.price}`, icon: Trophy },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
   { id: "pending", label: "Pending", icon: Clock },
   { id: "no-team", label: "No Team", icon: UserMinus },
