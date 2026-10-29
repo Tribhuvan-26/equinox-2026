@@ -97,7 +97,7 @@ export function summitJsonLd() {
         offers: {
           "@type": "Offer",
           name: "Participant pass",
-          price: "869",
+          price: "769",
           priceCurrency: "INR",
           availability: "https://schema.org/InStock",
           url: `${SITE_ORIGIN}/register`,
