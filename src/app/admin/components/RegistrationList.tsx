@@ -2,24 +2,18 @@
 
 import { useEffect, useRef, useState } from "react";
 import { formatTeamNumber } from "@/lib/registration/team-number";
+import { PASS_OPTIONS, passTypeOf } from "@/lib/registration/constants";
 import type { RegistrationStatus } from "@/lib/registration/types";
 import type { RegistrationWithUrls } from "../AdminDashboard";
 
-function getPassBadge(r: { total_amount: number; admin_note: string | null }) {
-  const note = r.admin_note ?? "";
-  if (
-    r.total_amount === 569 ||
-    note.includes("IPL") ||
-    note.includes("Entertainment")
-  ) {
-    return {
-      label: "Entertainment Pass",
-      color: "bg-[#7484FE]/20 text-[#7484FE] border border-[#7484FE]/30",
-    };
-  }
+function getPassBadge(r: RegistrationWithUrls) {
+  const type = passTypeOf(r);
   return {
-    label: "Premium Pass",
-    color: "bg-[#33FF67]/20 text-[#33FF67] border border-[#33FF67]/30",
+    label: PASS_OPTIONS[type].name,
+    color:
+      type === "ipl"
+        ? "bg-[#7484FE]/20 text-[#7484FE] border border-[#7484FE]/30"
+        : "bg-[#33FF67]/20 text-[#33FF67] border border-[#33FF67]/30",
   };
 }
 

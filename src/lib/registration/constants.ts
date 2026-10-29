@@ -95,6 +95,16 @@ export const PASS_OPTIONS: Record<PassType, PassOption> = {
 
 export const ACTIVE_PASS_TYPES: PassType[] = ["premium", "ipl"];
 
+/**
+ * Which pass a registration paid for. Early rows have no stored passType,
+ * so fall back to the amount: ₹569 is the Entertainment Pass, anything else Premium.
+ */
+export function passTypeOf(r: { total_amount: number; participants?: { passType?: string }[] }): PassType {
+  const stored = r.participants?.[0]?.passType;
+  if (stored === "ipl" || stored === "premium") return stored;
+  return r.total_amount === IPL_PASS_FEE ? "ipl" : "premium";
+}
+
 export const DEPARTMENTS = [
   "CSE",
   "CSM",

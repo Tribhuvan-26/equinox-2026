@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
+import { PASS_OPTIONS, passTypeOf } from "@/lib/registration/constants";
 import { formatTeamNumber } from "@/lib/registration/team-number";
 import type { RegistrationStatus } from "@/lib/registration/types";
 import type { AdminTeam, RegistrationWithUrls } from "../AdminDashboard";
@@ -122,7 +123,7 @@ export function TeamList({
               <p className="mt-4 text-sm text-[#F7F2F6]/60">No members yet.</p>
             ) : (
               <div className="mt-4 overflow-x-auto">
-                <table className="w-full min-w-[720px] text-left text-sm">
+                <table className="w-full min-w-[840px] text-left text-sm">
                   <thead className="text-xs uppercase tracking-wider text-[#F7F2F6]/50">
                     <tr>
                       <th className="py-2 pr-3">Name</th>
@@ -131,6 +132,7 @@ export function TeamList({
                       <th className="py-2 pr-3">College · Dept</th>
                       <th className="py-2 pr-3">Contact</th>
                       <th className="py-2 pr-3">Reg No</th>
+                      <th className="py-2 pr-3">Pass</th>
                       <th className="py-2">Status</th>
                     </tr>
                   </thead>
@@ -150,6 +152,9 @@ export function TeamList({
                             {p.email}
                           </td>
                           <td className="py-2 pr-3 font-mono text-[#33FF67]">{formatTeamNumber(m.team_seq)}</td>
+                          <td className={`py-2 pr-3 font-bold ${passTypeOf(m) === "ipl" ? "text-[#7484FE]" : "text-[#33FF67]"}`}>
+                            {PASS_OPTIONS[passTypeOf(m)].name}
+                          </td>
                           <td className="py-2">
                             <StatusText status={m.status} />
                           </td>

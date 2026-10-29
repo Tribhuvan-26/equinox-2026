@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/admin/session";
 import { supabaseAdmin, type RegistrationRow } from "@/lib/supabase/admin";
+import { PASS_OPTIONS, passTypeOf } from "@/lib/registration/constants";
 import { formatTeamNumber } from "@/lib/registration/team-number";
 
 export const dynamic = "force-dynamic";
@@ -9,6 +10,7 @@ export const dynamic = "force-dynamic";
 const PAGE = 1000;
 
 const HEADERS = [
+  "Pass",
   "Team",
   "Team Code",
   "Role",
@@ -65,8 +67,12 @@ export async function GET() {
   const teamById = new Map((teams ?? []).map((t) => [t.id, t]));
   const teamName = (id: string | null) => (id ? (teamById.get(id)?.name ?? "") : "");
 
-  // By team name (people with no team last), then leader first, then who came first.
+  // Premium Pass rows, then Entertainment Pass rows. Within each: by team name
+  // (people with no team last), then leader first, then who came first.
   const sorted = [...rows].sort((a, b) => {
+    const pa = passTypeOf(a);
+    const pb = passTypeOf(b);
+    if (pa !== pb) return pa === "premium" ? -1 : 1;
     const ta = teamName(a.team_id);
     const tb = teamName(b.team_id);
     if (!ta !== !tb) return ta ? -1 : 1;
@@ -81,6 +87,7 @@ export async function GET() {
     const p = r.participants[0];
     lines.push(
       [
+        PASS_OPTIONS[passTypeOf(r)].name,
         teamName(r.team_id),
         r.team_id ? teamById.get(r.team_id)?.code : "",
         r.team_role ?? "",

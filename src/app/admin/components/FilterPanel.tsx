@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Search, Filter, X } from "lucide-react";
+import { PASS_OPTIONS, passTypeOf, type PassType } from "@/lib/registration/constants";
 import { formatTeamNumber } from "@/lib/registration/team-number";
 import type { RegistrationRecord, RegistrationStatus } from "@/lib/registration/types";
 
@@ -14,6 +15,7 @@ export function FilterPanel<T extends RegistrationRecord>({
 }) {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<RegistrationStatus | "">("");
+  const [pass, setPass] = useState<PassType | "">("");
   const [dateRange, setDateRange] = useState({ start: "", end: "" });
   const [showFilters, setShowFilters] = useState(false);
 
@@ -37,6 +39,7 @@ export function FilterPanel<T extends RegistrationRecord>({
     }
 
     if (status) filtered = filtered.filter((r) => r.status === status);
+    if (pass) filtered = filtered.filter((r) => passTypeOf(r) === pass);
 
     if (dateRange.start) {
       filtered = filtered.filter((r) => new Date(r.created_at) >= new Date(`${dateRange.start}T00:00:00`));
@@ -47,15 +50,16 @@ export function FilterPanel<T extends RegistrationRecord>({
 
     onFilterChange(filtered);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, status, dateRange, registrations]);
+  }, [search, status, pass, dateRange, registrations]);
 
   function clearFilters() {
     setSearch("");
     setStatus("");
+    setPass("");
     setDateRange({ start: "", end: "" });
   }
 
-  const hasFilters = search || status || dateRange.start || dateRange.end;
+  const hasFilters = search || status || pass || dateRange.start || dateRange.end;
 
   return (
     <div className="rounded-xl border border-white/15 bg-black/20 p-6">
@@ -82,7 +86,7 @@ export function FilterPanel<T extends RegistrationRecord>({
       </div>
 
       {showFilters && (
-        <div className="mt-4 grid gap-4 sm:grid-cols-3">
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#F7F2F6]/60">Status</label>
             <select
@@ -94,6 +98,18 @@ export function FilterPanel<T extends RegistrationRecord>({
               <option value="pending">Pending</option>
               <option value="approved">Approved</option>
               <option value="rejected">Not Approved</option>
+            </select>
+          </div>
+          <div>
+            <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#F7F2F6]/60">Pass</label>
+            <select
+              value={pass}
+              onChange={(e) => setPass(e.target.value as PassType | "")}
+              className="w-full rounded-lg border border-white/20 bg-black/20 px-3 py-2 text-sm text-[#F7F2F6] outline-none focus:border-[#7484FE]"
+            >
+              <option value="">All Passes</option>
+              <option value="premium">{PASS_OPTIONS.premium.name} (₹{PASS_OPTIONS.premium.price})</option>
+              <option value="ipl">{PASS_OPTIONS.ipl.name} (₹{PASS_OPTIONS.ipl.price})</option>
             </select>
           </div>
           <div>
