@@ -15,7 +15,6 @@ const ALLOWED_TYPES = new Set(["image/png", "image/jpeg", "image/webp", "applica
 export type ParsedRegistrationForm = {
   registrationType: "team" | "individual";
   passType: PassType;
-  selectedEvent: string | null;
   includedEvents: string[];
   teamName: string | null;
   participants: Participant[];
@@ -133,35 +132,21 @@ export async function readRegistrationForm(request: Request): Promise<ParsedRegi
   }
 
   const rawPassType = form.get("passType");
-  const passType: PassType =
-    rawPassType === "single" ||
-    rawPassType === "combo" ||
-    rawPassType === "entertainment" ||
-    rawPassType === "premium"
-      ? (rawPassType as PassType)
-      : rawPassType === "ipl"
-      ? "entertainment"
-      : "single";
-
-  const rawSelectedEvent = form.get("selectedEvent");
-  const selectedEvent =
-    typeof rawSelectedEvent === "string" &&
-    (rawSelectedEvent === "musical-night" || rawSelectedEvent === "standup-comedy")
-      ? rawSelectedEvent
-      : passType === "single"
-      ? "musical-night"
-      : null;
-
-  const passInfo = PASS_OPTIONS[passType] ?? PASS_OPTIONS.single;
-  let includedEvents = [...passInfo.includedEvents];
-  if (passType === "single") {
-    includedEvents = [selectedEvent === "standup-comedy" ? "Stand-Up Comedy" : "Musical Night"];
+  if (
+    rawPassType &&
+    rawPassType !== "ipl" &&
+    rawPassType !== "entertainment" &&
+    rawPassType !== "ipl-auction"
+  ) {
+    throw new ApiError(400, "Only the IPL Auction Pass (₹569) is available for registration.");
   }
+  const passType: PassType = "ipl";
+  const passInfo = PASS_OPTIONS.ipl;
+  const includedEvents = [...passInfo.includedEvents];
 
   return {
     registrationType,
     passType,
-    selectedEvent,
     includedEvents,
     teamName,
     participants,
@@ -286,18 +271,9 @@ export async function insertTeamRegistration(opts: {
   }
 
   const p = parsed.participants[0];
-  const passInfo = PASS_OPTIONS[parsed.passType] ?? PASS_OPTIONS.single;
+  const passInfo = PASS_OPTIONS[parsed.passType];
   const passAmount = passInfo.price;
-
-  let passNote = `[${passInfo.name}]`;
-  if (parsed.passType === "single" && parsed.selectedEvent) {
-    const eventName = parsed.selectedEvent === "standup-comedy" ? "Stand-Up Comedy" : "Musical Night";
-    passNote = `[Single Pass: ${eventName}]`;
-  } else if (parsed.passType === "combo") {
-    passNote = `[Combo Pass: Musical Night + Stand-Up Comedy]`;
-  } else if (parsed.passType === "entertainment") {
-    passNote = `[Entertainment Pass: IPL Auction + Musical Night + Stand-Up Comedy]`;
-  }
+  const passNote = `[${passInfo.name}: ${passInfo.accessScope}]`;
 
   const { token, hash } = newAccessToken();
   const uploaded = proofPath ? [screenshotPath, proofPath] : [screenshotPath];
@@ -305,7 +281,7 @@ export async function insertTeamRegistration(opts: {
   const storedParticipant = {
     ...participantForStorage(p),
     passType: parsed.passType,
-    selectedEvent: parsed.selectedEvent,
+    passName: passInfo.name,
     includedEvents: parsed.includedEvents,
   };
 
@@ -389,18 +365,9 @@ export async function insertTeamBatchRegistration(opts: {
   const insertedIds: string[] = [];
 
   try {
-    const passInfo = PASS_OPTIONS[parsed.passType] ?? PASS_OPTIONS.single;
+    const passInfo = PASS_OPTIONS[parsed.passType];
     const passAmount = passInfo.price;
-
-    let passPrefix = `[${passInfo.name}]`;
-    if (parsed.passType === "single" && parsed.selectedEvent) {
-      const eventName = parsed.selectedEvent === "standup-comedy" ? "Stand-Up Comedy" : "Musical Night";
-      passPrefix = `[Single Pass: ${eventName}]`;
-    } else if (parsed.passType === "combo") {
-      passPrefix = `[Combo Pass: Musical Night + Stand-Up Comedy]`;
-    } else if (parsed.passType === "entertainment") {
-      passPrefix = `[Entertainment Pass: IPL Auction + Musical Night + Stand-Up Comedy]`;
-    }
+    const passPrefix = `[${passInfo.name}]`;
 
     for (let i = 0; i < parsed.participants.length; i++) {
       const p = parsed.participants[i];
@@ -417,7 +384,7 @@ export async function insertTeamBatchRegistration(opts: {
       const storedParticipant = {
         ...participantForStorage(p),
         passType: parsed.passType,
-        selectedEvent: parsed.selectedEvent,
+        passName: passInfo.name,
         includedEvents: parsed.includedEvents,
       };
 

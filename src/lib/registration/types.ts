@@ -19,7 +19,6 @@ export type StoredParticipant = {
   mobile: string;
   email: string;
   passType?: string;
-  selectedEvent?: string | null;
   includedEvents?: string[];
 };
 

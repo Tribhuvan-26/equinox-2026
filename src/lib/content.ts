@@ -48,10 +48,14 @@ export const event = {
   rotatingWords: ["Builders", "Founders", "Hustlers", "Strategists"],
 };
 
+export const SLOT_BOOKING_URL =
+  process.env.NEXT_PUBLIC_SLOT_BOOKING_URL || "https://equinox-slot-booking.vercel.app/";
+
 export const nav = [
   { label: "Homepage", href: "/#top" },
   { label: "Sub-Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },
+  { label: "Slot Booking", href: SLOT_BOOKING_URL },
   { label: "Registration", href: "/register" },
 ];
 
@@ -546,7 +550,7 @@ export const board = studentCoordinators.map((c) => ({
 export const registration = {
   eyebrow: "Registration",
   heading: "Register for Equinox 2.0",
-  body: "Registrations for The Equinox 2.0 (30 - 31 October 2026) are now live! Choose your Entertainment Pass: Single Pass (₹299 for Musical Night or Stand-Up Comedy), Combo Pass (₹499 for both evening shows), or Entertainment Pass (₹569 including IPL Auction and both shows).",
+  body: "Registrations for The Equinox 2.0 (30 - 31 October 2026) are now live! Get the IPL Auction Pass (₹569) for access to all three entertainment events: IPL Auction, Musical Night, and Stand-Up Comedy.",
   formUrl: "#contact",
   steps: [
     { title: "Select Sub-Events", body: "Pick from the 12 official competitions, exhibitions, and shows across tech, strategy, and business." },

@@ -7,30 +7,19 @@ import type { RegistrationWithUrls } from "../AdminDashboard";
 
 function getPassBadge(r: { total_amount: number; admin_note: string | null }) {
   const note = r.admin_note ?? "";
-  if (r.total_amount === 299 || note.includes("Single Pass")) {
-    const isComedy = note.includes("Stand-Up Comedy");
-    const isMusic = note.includes("Musical Night");
-    const show = isComedy ? "Comedy" : isMusic ? "Music" : "";
+  if (
+    r.total_amount === 569 ||
+    note.includes("IPL") ||
+    note.includes("Entertainment")
+  ) {
     return {
-      label: show ? `Single Pass (${show})` : "Single Pass",
+      label: "IPL Auction Pass",
       color: "bg-[#7484FE]/20 text-[#7484FE] border border-[#7484FE]/30",
     };
   }
-  if (r.total_amount === 499 || note.includes("Combo Pass")) {
-    return {
-      label: "Combo Pass",
-      color: "bg-[#FFBE33]/20 text-[#FFBE33] border border-[#FFBE33]/30",
-    };
-  }
-  if (r.total_amount === 569 || note.includes("Entertainment Pass") || note.includes("IPL Pass")) {
-    return {
-      label: "Entertainment Pass",
-      color: "bg-[#33FF67]/20 text-[#33FF67] border border-[#33FF67]/30",
-    };
-  }
   return {
-    label: "Summit Pass",
-    color: "bg-white/10 text-[#F7F2F6] border border-white/20",
+    label: "IPL Auction Pass",
+    color: "bg-[#33FF67]/20 text-[#33FF67] border border-[#33FF67]/30",
   };
 }
 
