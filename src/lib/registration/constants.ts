@@ -64,7 +64,7 @@ export const PASS_OPTIONS: Record<PassType, PassOption> = {
   },
   ipl: {
     id: "ipl",
-    name: "IPL Pass",
+    name: "Entertainment Pass",
     price: IPL_PASS_FEE,
     badge: "SPECIALIZED PASS",
     tagline: "IPL Auction + Stand-up Comedy + Musical Night",

@@ -13,7 +13,7 @@ function getPassBadge(r: { total_amount: number; admin_note: string | null }) {
     note.includes("Entertainment")
   ) {
     return {
-      label: "IPL Pass",
+      label: "Entertainment Pass",
       color: "bg-[#7484FE]/20 text-[#7484FE] border border-[#7484FE]/30",
     };
   }

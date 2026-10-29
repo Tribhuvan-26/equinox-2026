@@ -369,7 +369,7 @@ export function PayForm() {
             </div>
           </button>
 
-          {/* Card 2: IPL Pass (₹569) */}
+          {/* Card 2: Entertainment Pass (₹569) */}
           <button
             type="button"
             onClick={() => handlePassTypeChange("ipl")}
