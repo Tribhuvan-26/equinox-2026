@@ -18,6 +18,8 @@ export type StoredParticipant = {
   department: string;
   mobile: string;
   email: string;
+  passType?: string;
+  includedEvents?: string[];
 };
 
 export type RegistrationRecord = {

@@ -5,7 +5,7 @@ import { supabaseAdmin, PAYMENT_PROOFS_BUCKET } from "@/lib/supabase/admin";
 import { newAccessToken } from "@/lib/teams/access";
 import type { RegistrationTeamRow } from "@/lib/teams/types";
 import { validateTeamName } from "@/lib/teams/validation";
-import { MAX_TEAM_SIZE, REGISTRATION_FEE } from "./constants";
+import { MAX_TEAM_SIZE, PASS_OPTIONS, type PassType } from "./constants";
 import type { Participant } from "./types";
 import { participantForStorage, isParticipantValid } from "./validation";
 
@@ -14,6 +14,8 @@ const ALLOWED_TYPES = new Set(["image/png", "image/jpeg", "image/webp", "applica
 
 export type ParsedRegistrationForm = {
   registrationType: "team" | "individual";
+  passType: PassType;
+  includedEvents: string[];
   teamName: string | null;
   participants: Participant[];
   utrNumber: string;
@@ -129,8 +131,23 @@ export async function readRegistrationForm(request: Request): Promise<ParsedRegi
     if (!utrProof) throw new ApiError(400, "UTR proof must be a PNG/JPG/WEBP/PDF under 5MB.");
   }
 
+  const rawPassType = form.get("passType");
+  if (
+    rawPassType &&
+    rawPassType !== "ipl" &&
+    rawPassType !== "entertainment" &&
+    rawPassType !== "ipl-auction"
+  ) {
+    throw new ApiError(400, "Only the IPL Auction Pass (₹569) is available for registration.");
+  }
+  const passType: PassType = "ipl";
+  const passInfo = PASS_OPTIONS.ipl;
+  const includedEvents = [...passInfo.includedEvents];
+
   return {
     registrationType,
+    passType,
+    includedEvents,
     teamName,
     participants,
     utrNumber,
@@ -254,8 +271,19 @@ export async function insertTeamRegistration(opts: {
   }
 
   const p = parsed.participants[0];
+  const passInfo = PASS_OPTIONS[parsed.passType];
+  const passAmount = passInfo.price;
+  const passNote = `[${passInfo.name}: ${passInfo.accessScope}]`;
+
   const { token, hash } = newAccessToken();
   const uploaded = proofPath ? [screenshotPath, proofPath] : [screenshotPath];
+
+  const storedParticipant = {
+    ...participantForStorage(p),
+    passType: parsed.passType,
+    passName: passInfo.name,
+    includedEvents: parsed.includedEvents,
+  };
 
   try {
     let number = confirmationNumber();
@@ -264,14 +292,14 @@ export async function insertTeamRegistration(opts: {
         .from("pass_registrations")
         .insert({
           id,
-          participants: [participantForStorage(p)],
+          participants: [storedParticipant],
           participant_count: 1,
-          total_amount: REGISTRATION_FEE,
+          total_amount: passAmount,
           payment_screenshot_path: screenshotPath,
           utr_number: parsed.utrNumber,
           utr_proof_path: proofPath,
           status: "pending",
-          admin_note: null,
+          admin_note: passNote,
           confirmation_number: number,
           team_id: teamId,
           team_role: role,
@@ -337,6 +365,10 @@ export async function insertTeamBatchRegistration(opts: {
   const insertedIds: string[] = [];
 
   try {
+    const passInfo = PASS_OPTIONS[parsed.passType];
+    const passAmount = passInfo.price;
+    const passPrefix = `[${passInfo.name}]`;
+
     for (let i = 0; i < parsed.participants.length; i++) {
       const p = parsed.participants[i];
       const id = i === 0 ? leadId : randomUUID();
@@ -346,8 +378,15 @@ export async function insertTeamBatchRegistration(opts: {
       const memberEmail = p.email.trim().toLowerCase();
       const memberNote =
         i === 0
-          ? `Team registration: ${team.name} (${parsed.participants.length} members)`
-          : `Team member of ${team.name} (Lead: ${parsed.participants[0].email})`;
+          ? `${passPrefix} Team registration: ${team.name} (${parsed.participants.length} members)`
+          : `${passPrefix} Team member of ${team.name} (Lead: ${parsed.participants[0].email})`;
+
+      const storedParticipant = {
+        ...participantForStorage(p),
+        passType: parsed.passType,
+        passName: passInfo.name,
+        includedEvents: parsed.includedEvents,
+      };
 
       let number = confirmationNumber();
       let inserted = false;
@@ -357,9 +396,9 @@ export async function insertTeamBatchRegistration(opts: {
           .from("pass_registrations")
           .insert({
             id,
-            participants: [participantForStorage(p)],
+            participants: [storedParticipant],
             participant_count: 1,
-            total_amount: REGISTRATION_FEE,
+            total_amount: passAmount,
             payment_screenshot_path: screenshotPath,
             utr_number: memberUtr,
             utr_proof_path: proofPath,

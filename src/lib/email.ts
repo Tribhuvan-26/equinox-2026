@@ -86,6 +86,9 @@ function renderApprovalText(registration: RegistrationRecord, link?: string): st
     "Your Equinox 2.0 registration has been verified and approved.",
     "",
     `Confirmation number: ${checkInRef(registration)}`,
+    ...(registration.admin_note
+      ? [`Pass: ${registration.admin_note.replace(/^\[(.*)\]$/, "$1")}`]
+      : []),
     `Total participants: ${registration.participant_count}`,
     `Amount paid: Rs ${registration.total_amount.toLocaleString("en-IN")}`,
     "",
@@ -113,6 +116,11 @@ function renderApprovalEmail(registration: RegistrationRecord, link?: string): s
       <h1 style="color:#2A2A2A;">Registration Confirmed 🎉</h1>
       <p>Your Equinox 2026 registration has been verified and approved.</p>
       <p><strong>Confirmation number:</strong> ${escapeHtml(checkInRef(registration))}</p>
+      ${
+        registration.admin_note
+          ? `<p><strong>Pass:</strong> ${escapeHtml(registration.admin_note.replace(/^\[(.*)\]$/, "$1"))}</p>`
+          : ""
+      }
       <p><strong>Total participants:</strong> ${registration.participant_count}</p>
       <p><strong>Amount paid:</strong> ₹${registration.total_amount.toLocaleString("en-IN")}</p>
       <table style="border-collapse:collapse;width:100%;margin-top:12px;">

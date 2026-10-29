@@ -2,9 +2,22 @@
 
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
-import { Check, Copy, User, Users } from "lucide-react";
+import {
+  Check,
+  Copy,
+  Trophy,
+  User,
+  Users,
+  CheckCircle2,
+} from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import { MAX_TEAM_SIZE, REGISTRATION_FEE, TOKEN_STORAGE_KEY } from "@/lib/registration/constants";
+import {
+  MAX_TEAM_SIZE,
+  PASS_OPTIONS,
+  type PassOption,
+  type PassType,
+  TOKEN_STORAGE_KEY,
+} from "@/lib/registration/constants";
 import { emptyParticipant, type Participant } from "@/lib/registration/types";
 import { isParticipantValid, validateParticipant } from "@/lib/registration/validation";
 import { validateTeamName } from "@/lib/teams/validation";
@@ -87,15 +100,30 @@ function PaymentPanel({ totalAmount }: { totalAmount: number }) {
   );
 }
 
-function SuccessCard({ done, count, mode }: { done: Done; count: number; mode: RegistrationMode }) {
+function SuccessCard({
+  done,
+  count,
+  mode,
+  pass,
+}: {
+  done: Done;
+  count: number;
+  mode: RegistrationMode;
+  pass: PassOption;
+}) {
   const link = `${typeof window === "undefined" ? "" : window.location.origin}/my-registration#token=${done.accessToken}`;
   const isTeam = mode === "team" && Boolean(done.team);
 
   return (
     <div className="rounded-3xl border-2 border-[#33FF67]/50 bg-[#33FF67]/10 p-6 text-left sm:p-10">
-      <p className="text-xs font-black uppercase tracking-wider text-[#33FF67]">
-        {isTeam ? "Team Registration Received" : "Payment Received"}
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-xs font-black uppercase tracking-wider text-[#33FF67]">
+          {isTeam ? "Team Registration Received" : "Payment Received"}
+        </p>
+        <span className="rounded-full border border-[#33FF67]/40 bg-[#33FF67]/20 px-3 py-1 font-mono text-[11px] font-black uppercase tracking-wider text-[#33FF67]">
+          {pass.name} (₹{pass.price})
+        </span>
+      </div>
       <h3 className="heading mt-3 text-2xl font-black sm:text-3xl">
         {isTeam
           ? `Team "${done.team?.name}" is registered!`
@@ -103,13 +131,19 @@ function SuccessCard({ done, count, mode }: { done: Done; count: number; mode: R
       </h3>
       <p className="mt-3 text-[#F7F2F6]/85">
         {isTeam
-          ? `All ${count} members have been registered together and associated with team "${done.team?.name}". We have emailed each member their own private link to view and manage their registration.`
-          : "Your payment proof is with the organisers. Next, open your registration and either start your own team or request to join an existing team."}
+          ? `All ${count} members have been registered together under ${pass.name} and associated with team "${done.team?.name}". We have emailed each member their own private link to view and manage their registration.`
+          : `Your payment proof for ${pass.name} is with the organisers. Next, open your registration and either start your own team or request to join an existing team.`}
       </p>
 
       <div className="mt-6 flex flex-col gap-2 font-mono text-sm text-[#F7F2F6]/80">
         <p>
           Confirmation Number: <span className="font-bold text-[#33FF67]">{done.confirmationNumber}</span>
+        </p>
+        <p>
+          Pass Tier: <span className="font-bold text-[#F7F2F6]">{pass.name}</span> (₹{pass.price} / person)
+        </p>
+        <p>
+          Access Scope: <span className="font-bold text-[#33FF67]">{pass.accessScope}</span>
         </p>
         {done.team && (
           <div className="flex flex-wrap items-center gap-2">
@@ -142,6 +176,8 @@ function SuccessCard({ done, count, mode }: { done: Done; count: number; mode: R
 }
 
 export function PayForm() {
+  const passType: PassType = "ipl";
+  const selectedPass = PASS_OPTIONS.ipl;
   const [mode, setMode] = useState<RegistrationMode>("team");
   const [teamName, setTeamName] = useState("");
   const [teamNameTouched, setTeamNameTouched] = useState(false);
@@ -156,7 +192,7 @@ export function PayForm() {
   const lock = useRef(false);
 
   const activeParticipants = mode === "team" ? participants : [participants[0]];
-  const totalAmount = activeParticipants.length * REGISTRATION_FEE;
+  const totalAmount = activeParticipants.length * selectedPass.price;
 
   const teamNameError = mode === "team" ? validateTeamName(teamName) : null;
   const isTeamNameValid = mode === "individual" || !teamNameError;
@@ -188,7 +224,6 @@ export function PayForm() {
   function removeParticipant(index: number) {
     if (participants.length <= 1) return;
     setParticipants((prev) => prev.filter((_, i) => i !== index));
-    // Re-index touched field keys
     setTouched((prev) => {
       const next = new Set<string>();
       for (const item of prev) {
@@ -219,6 +254,9 @@ export function PayForm() {
 
     const body = new FormData();
     body.set("registrationType", mode);
+    body.set("passType", passType);
+    body.set("includedEvents", JSON.stringify(selectedPass.includedEvents));
+
     if (mode === "team") {
       body.set("teamName", teamName.trim());
     }
@@ -246,75 +284,166 @@ export function PayForm() {
     setSubmitting(false);
   }
 
-  if (done) return <SuccessCard done={done} count={activeParticipants.length} mode={mode} />;
+  if (done) {
+    return (
+      <SuccessCard
+        done={done}
+        count={activeParticipants.length}
+        mode={mode}
+        pass={selectedPass}
+      />
+    );
+  }
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-8">
-      {/* Registration Type Selector: Option A vs Option B */}
-      <section className="grid gap-3 sm:grid-cols-2">
-        <button
-          type="button"
-          onClick={() => handleModeChange("team")}
-          className={`flex flex-col items-start gap-2 rounded-2xl border-2 p-5 text-left transition-all ${
-            mode === "team"
-              ? "border-[#33FF67] bg-[#33FF67]/10 shadow-[0_0_20px_rgba(51,255,103,0.15)]"
-              : "border-white/15 bg-black/20 hover:border-white/30 hover:bg-black/30"
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            <span
-              className={`flex size-8 items-center justify-center rounded-xl font-bold ${
-                mode === "team" ? "bg-[#33FF67] text-[#2A2A2A]" : "bg-white/10 text-[#F7F2F6]"
-              }`}
-            >
-              <Users className="size-4" />
-            </span>
+      {/* 1. Official Pass */}
+      <section className="flex flex-col gap-4">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <div>
             <p className="font-mono text-xs font-black uppercase tracking-wider text-[#33FF67]">
-              Option A
+              Step 1
             </p>
+            <h2 className="heading text-xl font-black text-[#F7F2F6]">
+              Registration Pass
+            </h2>
           </div>
-          <h3 className="heading text-lg font-black text-[#F7F2F6]">
-            Register a Team Together
-          </h3>
-          <p className="text-xs leading-relaxed text-[#F7F2F6]/70">
-            Enter 1–5 members together in one session and associate everyone with the same team.
-          </p>
-          <span className="mt-1 font-mono text-xs font-bold text-[#33FF67]">
-            ₹{REGISTRATION_FEE} / person
-          </span>
-        </button>
+          <span className="text-xs text-[#F7F2F6]/60">All-in-one entertainment pass</span>
+        </div>
 
-        <button
-          type="button"
-          onClick={() => handleModeChange("individual")}
-          className={`flex flex-col items-start gap-2 rounded-2xl border-2 p-5 text-left transition-all ${
-            mode === "individual"
-              ? "border-[#7484FE] bg-[#7484FE]/10 shadow-[0_0_20px_rgba(116,132,254,0.15)]"
-              : "border-white/15 bg-black/20 hover:border-white/30 hover:bg-black/30"
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            <span
-              className={`flex size-8 items-center justify-center rounded-xl font-bold ${
-                mode === "individual" ? "bg-[#7484FE] text-[#2A2A2A]" : "bg-white/10 text-[#F7F2F6]"
-              }`}
-            >
-              <User className="size-4" />
-            </span>
-            <p className="font-mono text-xs font-black uppercase tracking-wider text-[#7484FE]">
-              Option B
-            </p>
+        {/* Single Pass Card: IPL Auction Pass — ₹569 */}
+        <div className="group relative flex flex-col justify-between rounded-2xl border-2 border-[#33FF67] bg-[#33FF67]/10 p-6 text-left shadow-[0_0_24px_rgba(51,255,103,0.18)] transition-all">
+          <div className="flex w-full flex-col gap-3">
+            <div className="flex items-center justify-between gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#33FF67]/40 bg-[#33FF67]/20 px-3 py-1 font-mono text-[11px] font-black uppercase tracking-wider text-[#33FF67]">
+                <Trophy className="size-3.5" />
+                {selectedPass.badge}
+              </span>
+              <span className="font-mono text-2xl font-black text-[#33FF67] sm:text-3xl">
+                ₹{selectedPass.price}
+                <span className="text-xs font-normal text-[#F7F2F6]/60"> / person</span>
+              </span>
+            </div>
+
+            <div>
+              <h3 className="heading text-2xl font-black text-[#F7F2F6]">
+                {selectedPass.name}
+              </h3>
+              <p className="mt-1 text-sm font-bold text-[#33FF67]">
+                {selectedPass.tagline}
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-[#F7F2F6]/85">
+                {selectedPass.description}
+              </p>
+            </div>
+
+            {/* Included Events Checklist */}
+            <div className="mt-2 space-y-2 border-t border-white/10 pt-4 text-xs sm:text-sm">
+              <p className="font-mono text-[11px] font-black uppercase tracking-wider text-[#F7F2F6]/60">
+                Included Events (All 3 Included):
+              </p>
+              {selectedPass.includedEvents.map((evt, i) => (
+                <div key={i} className="flex items-start gap-2 text-[#F7F2F6]/95">
+                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#33FF67]" />
+                  <span className="font-semibold">{evt}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Highlights */}
+            <div className="mt-1 space-y-1.5 text-xs text-[#F7F2F6]/75">
+              {selectedPass.highlights.map((h, i) => (
+                <p key={i} className="flex items-center gap-2">
+                  <span className="size-1 rounded-full bg-[#33FF67]" />
+                  <span>{h}</span>
+                </p>
+              ))}
+            </div>
           </div>
-          <h3 className="heading text-lg font-black text-[#F7F2F6]">
-            Register Individually
-          </h3>
-          <p className="text-xs leading-relaxed text-[#F7F2F6]/70">
-            Pay for yourself now. Receive your private team link to create or join a team later.
-          </p>
-          <span className="mt-1 font-mono text-xs font-bold text-[#7484FE]">
-            ₹{REGISTRATION_FEE} solo pass
-          </span>
-        </button>
+
+          <div className="mt-6 flex w-full items-center justify-between border-t border-white/10 pt-4 text-xs">
+            <span className="text-[#F7F2F6]/60">Access Scope</span>
+            <span className="rounded-md bg-[#33FF67]/20 px-2.5 py-1 font-mono text-[11px] font-black text-[#33FF67]">
+              {selectedPass.accessScope}
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. Registration Format: Team vs Individual */}
+      <section className="flex flex-col gap-3">
+        <p className="font-mono text-xs font-black uppercase tracking-wider text-[#33FF67]">
+          Step 2
+        </p>
+        <h2 className="heading text-xl font-black text-[#F7F2F6]">
+          Select Registration Format
+        </h2>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <button
+            type="button"
+            onClick={() => handleModeChange("team")}
+            className={`flex flex-col items-start gap-2 rounded-2xl border-2 p-5 text-left transition-all ${
+              mode === "team"
+                ? "border-[#33FF67] bg-[#33FF67]/10 shadow-[0_0_20px_rgba(51,255,103,0.15)]"
+                : "border-white/15 bg-black/20 hover:border-white/30 hover:bg-black/30"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <span
+                className={`flex size-8 items-center justify-center rounded-xl font-bold ${
+                  mode === "team" ? "bg-[#33FF67] text-[#2A2A2A]" : "bg-white/10 text-[#F7F2F6]"
+                }`}
+              >
+                <Users className="size-4" />
+              </span>
+              <p className="font-mono text-xs font-black uppercase tracking-wider text-[#33FF67]">
+                Option A
+              </p>
+            </div>
+            <h3 className="heading text-lg font-black text-[#F7F2F6]">
+              Register a Team Together
+            </h3>
+            <p className="text-xs leading-relaxed text-[#F7F2F6]/70">
+              Enter 1–5 members together in one session and associate everyone with the same team.
+            </p>
+            <span className="mt-1 font-mono text-xs font-bold text-[#33FF67]">
+              ₹{selectedPass.price} / person · {selectedPass.name}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleModeChange("individual")}
+            className={`flex flex-col items-start gap-2 rounded-2xl border-2 p-5 text-left transition-all ${
+              mode === "individual"
+                ? "border-[#7484FE] bg-[#7484FE]/10 shadow-[0_0_20px_rgba(116,132,254,0.15)]"
+                : "border-white/15 bg-black/20 hover:border-white/30 hover:bg-black/30"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <span
+                className={`flex size-8 items-center justify-center rounded-xl font-bold ${
+                  mode === "individual" ? "bg-[#7484FE] text-[#2A2A2A]" : "bg-white/10 text-[#F7F2F6]"
+                }`}
+              >
+                <User className="size-4" />
+              </span>
+              <p className="font-mono text-xs font-black uppercase tracking-wider text-[#7484FE]">
+                Option B
+              </p>
+            </div>
+            <h3 className="heading text-lg font-black text-[#F7F2F6]">
+              Register Individually
+            </h3>
+            <p className="text-xs leading-relaxed text-[#F7F2F6]/70">
+              Pay for yourself now. Receive your private team link to create or join a team later.
+            </p>
+            <span className="mt-1 font-mono text-xs font-bold text-[#7484FE]">
+              ₹{selectedPass.price} solo pass · {selectedPass.name}
+            </span>
+          </button>
+        </div>
       </section>
 
       {/* Team Details (Option A) */}
@@ -389,11 +518,16 @@ export function PayForm() {
       {/* Payment details section */}
       <section className={card}>
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h3 className="heading text-xl font-black">Your Payment</h3>
+          <div>
+            <h3 className="heading text-xl font-black">Your Payment</h3>
+            <p className="mt-1 text-xs text-[#F7F2F6]/60">
+              Pass: <span className="font-bold text-[#33FF67]">{selectedPass.name}</span>
+            </p>
+          </div>
           <div className="flex items-baseline gap-2">
             <span className="text-sm text-[#F7F2F6]/70">
               {mode === "team"
-                ? `Total (${activeParticipants.length} × ₹${REGISTRATION_FEE}):`
+                ? `Total (${activeParticipants.length} × ₹${selectedPass.price} · ${selectedPass.name}):`
                 : "Total to Pay:"}
             </span>
             <span className="text-2xl font-black text-[#33FF67]">

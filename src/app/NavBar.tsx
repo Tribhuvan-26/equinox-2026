@@ -9,6 +9,7 @@ import {
   Ticket,
   Circle,
   Image as ImageIcon,
+  Calendar,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -19,6 +20,7 @@ const ICONS: Record<string, LucideIcon> = {
   Overview: Home,
   "Sub-Events": Layers,
   Gallery: ImageIcon,
+  "Slot Booking": Calendar,
   Registration: Ticket,
   Register: Ticket,
 };
@@ -29,6 +31,7 @@ const SHORT_NAMES: Record<string, string> = {
   Overview: "Home",
   "Sub-Events": "Events",
   Gallery: "Gallery",
+  "Slot Booking": "Slots",
   Registration: "Register",
   Register: "Register",
 };
@@ -172,6 +175,7 @@ export function NavBar({
               <a
                 key={item.name}
                 href={item.url}
+                target={item.url.startsWith("http") ? "_self" : undefined}
                 onClick={(e) => handleNavClick(e, item)}
                 aria-label={item.name}
                 className={cn(

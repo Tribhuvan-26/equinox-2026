@@ -1,4 +1,77 @@
-export const REGISTRATION_FEE = 769;
+export type PassType = "ipl" | "entertainment" | "premium";
+
+export const IPL_PASS_FEE = 569;
+
+/** Default fallback registration fee: ₹569 for IPL Auction Pass */
+export const REGISTRATION_FEE = IPL_PASS_FEE;
+
+export type PassOption = {
+  id: PassType;
+  name: string;
+  price: number;
+  badge: string;
+  tagline: string;
+  description: string;
+  includedEvents: string[];
+  highlights: string[];
+  accessScope: string;
+};
+
+export const PASS_OPTIONS: Record<PassType, PassOption> = {
+  ipl: {
+    id: "ipl",
+    name: "IPL Auction Pass",
+    price: IPL_PASS_FEE,
+    badge: "Official Pass",
+    tagline: "IPL Auction + Musical Night + Stand-Up Comedy",
+    description:
+      "The IPL Auction Pass includes access to all three entertainment events: IPL Auction, Musical Night, and Stand-Up Comedy.",
+    includedEvents: ["IPL Auction", "Musical Night", "Stand-Up Comedy"],
+    highlights: [
+      "Participation in the simulated IPL Auction bidding battle",
+      "Access to Stand-Up Comedy (Day 1 · 30 Oct Evening)",
+      "Access to Musical Night live band show (Day 2 · 31 Oct Evening)",
+      "Register as a team (1–5 members) or individually",
+    ],
+    accessScope: "IPL Auction + Musical Night + Stand-Up Comedy",
+  },
+  entertainment: {
+    id: "entertainment",
+    name: "IPL Auction Pass",
+    price: IPL_PASS_FEE,
+    badge: "Official Pass",
+    tagline: "IPL Auction + Musical Night + Stand-Up Comedy",
+    description:
+      "The IPL Auction Pass includes access to all three entertainment events: IPL Auction, Musical Night, and Stand-Up Comedy.",
+    includedEvents: ["IPL Auction", "Musical Night", "Stand-Up Comedy"],
+    highlights: [
+      "Participation in the simulated IPL Auction bidding battle",
+      "Access to Stand-Up Comedy (Day 1 · 30 Oct Evening)",
+      "Access to Musical Night live band show (Day 2 · 31 Oct Evening)",
+      "Register as a team (1–5 members) or individually",
+    ],
+    accessScope: "IPL Auction + Musical Night + Stand-Up Comedy",
+  },
+  premium: {
+    id: "premium",
+    name: "IPL Auction Pass",
+    price: IPL_PASS_FEE,
+    badge: "Official Pass",
+    tagline: "IPL Auction + Musical Night + Stand-Up Comedy",
+    description:
+      "The IPL Auction Pass includes access to all three entertainment events: IPL Auction, Musical Night, and Stand-Up Comedy.",
+    includedEvents: ["IPL Auction", "Musical Night", "Stand-Up Comedy"],
+    highlights: [
+      "Participation in the simulated IPL Auction bidding battle",
+      "Access to Stand-Up Comedy (Day 1 · 30 Oct Evening)",
+      "Access to Musical Night live band show (Day 2 · 31 Oct Evening)",
+      "Register as a team (1–5 members) or individually",
+    ],
+    accessScope: "IPL Auction + Musical Night + Stand-Up Comedy",
+  },
+};
+
+export const ACTIVE_PASS_TYPES: PassType[] = ["ipl"];
 
 export const DEPARTMENTS = [
   "CSE",

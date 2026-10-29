@@ -5,6 +5,24 @@ import { formatTeamNumber } from "@/lib/registration/team-number";
 import type { RegistrationStatus } from "@/lib/registration/types";
 import type { RegistrationWithUrls } from "../AdminDashboard";
 
+function getPassBadge(r: { total_amount: number; admin_note: string | null }) {
+  const note = r.admin_note ?? "";
+  if (
+    r.total_amount === 569 ||
+    note.includes("IPL") ||
+    note.includes("Entertainment")
+  ) {
+    return {
+      label: "IPL Auction Pass",
+      color: "bg-[#7484FE]/20 text-[#7484FE] border border-[#7484FE]/30",
+    };
+  }
+  return {
+    label: "IPL Auction Pass",
+    color: "bg-[#33FF67]/20 text-[#33FF67] border border-[#33FF67]/30",
+  };
+}
+
 export function RegistrationList({
   registrations,
   busyId,
@@ -72,9 +90,19 @@ export function RegistrationList({
 
             <div>
               <p className="text-xs font-bold uppercase tracking-wider text-[#F7F2F6]/50">Payment</p>
-              <p className="mt-2 text-sm">
-                Total: <span className="font-black text-[#33FF67]">₹{r.total_amount.toLocaleString("en-IN")}</span>
-              </p>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <span className="text-sm">
+                  Total: <span className="font-black text-[#33FF67]">₹{r.total_amount.toLocaleString("en-IN")}</span>
+                </span>
+                {(() => {
+                  const pass = getPassBadge(r);
+                  return (
+                    <span className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider ${pass.color}`}>
+                      {pass.label}
+                    </span>
+                  );
+                })()}
+              </div>
               <p className="text-sm">UTR / Txn No: <span className="font-mono">{r.utr_number}</span></p>
               {r.screenshotUrl && (
                 <button type="button" onClick={() => setPreviewUrl(r.screenshotUrl)} className="mt-3 block w-fit">
