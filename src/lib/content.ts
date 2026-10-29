@@ -48,6 +48,8 @@ export const event = {
   rotatingWords: ["Builders", "Founders", "Hustlers", "Strategists"],
 };
 
+export const SHOW_SLOT_BOOKING = false;
+
 export const SLOT_BOOKING_URL =
   process.env.NEXT_PUBLIC_SLOT_BOOKING_URL || "https://slotbooking.mlritcie.in/";
 
@@ -55,7 +57,7 @@ export const nav = [
   { label: "Homepage", href: "/#top" },
   { label: "Sub-Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Slot Booking", href: SLOT_BOOKING_URL },
+  ...(SHOW_SLOT_BOOKING ? [{ label: "Slot Booking", href: SLOT_BOOKING_URL }] : []),
   { label: "Registration", href: "/register" },
 ];
 

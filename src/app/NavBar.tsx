@@ -13,6 +13,9 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SHOW_SLOT_BOOKING } from "@/lib/content";
+
+export { SHOW_SLOT_BOOKING };
 
 const ICONS: Record<string, LucideIcon> = {
   Homepage: Home,
@@ -146,7 +149,9 @@ export function NavBar({
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.3 }}
         >
-          {items.map((item) => {
+          {items
+            .filter((item) => SHOW_SLOT_BOOKING || item.name !== "Slot Booking")
+            .map((item) => {
             const Icon = ICONS[item.name] ?? Circle;
             const isActive = isActiveItem(item.name);
             const isRegistration = item.name.toLowerCase().includes("regist");
