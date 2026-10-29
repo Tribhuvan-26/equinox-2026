@@ -550,7 +550,7 @@ export const board = studentCoordinators.map((c) => ({
 export const registration = {
   eyebrow: "Registration",
   heading: "Register for Equinox 2.0",
-  body: "Registrations for The Equinox 2.0 (30 - 31 October 2026) are now live! Get the IPL Auction Pass (₹569) for access to all three entertainment events: IPL Auction, Musical Night, and Stand-Up Comedy.",
+  body: "Registrations for The Equinox 2.0 (30 - 31 October 2026) are now live! Choose the all-access Premium Pass (₹769) for all sub-events & night shows, or the IPL Pass (₹569) for the IPL Auction and evening entertainment.",
   formUrl: "#contact",
   steps: [
     { title: "Select Sub-Events", body: "Pick from the 12 official competitions, exhibitions, and shows across tech, strategy, and business." },
