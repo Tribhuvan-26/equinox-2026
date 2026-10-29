@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import type { RegistrationRecord, RegistrationStatus } from "@/lib/registration/types";
+import { PASS_OPTIONS, passTypeOf } from "@/lib/registration/constants";
 import { Sidebar, type AdminView } from "./components/Sidebar";
 import { MobileMenu } from "./components/MobileMenu";
 import { DashboardStats } from "./components/DashboardStats";
@@ -37,6 +38,8 @@ const VIEW_TITLES: Record<AdminView, string> = {
   dashboard: "Dashboard",
   teams: "Teams",
   registrations: "All Registrations",
+  premium: `${PASS_OPTIONS.premium.name} (₹${PASS_OPTIONS.premium.price})`,
+  ipl: `${PASS_OPTIONS.ipl.name} (₹${PASS_OPTIONS.ipl.price})`,
   analytics: "Analytics",
   pending: "Pending Verification",
   "no-team": "Paid, No Team Yet",
@@ -72,6 +75,7 @@ export function AdminDashboard({
     if (view === "no-team") return filtered.filter((r) => !r.team_id && r.status !== "rejected");
     if (view === "join-requests") return filtered.filter((r) => r.requested_team_id && r.status !== "rejected");
     if (view === "pending") return filtered.filter((r) => r.status === "pending");
+    if (view === "premium" || view === "ipl") return filtered.filter((r) => passTypeOf(r) === view);
     return filtered;
   }, [filtered, view]);
 
@@ -210,7 +214,7 @@ export function AdminDashboard({
           </div>
         )}
 
-        {(view === "registrations" || view === "pending" || view === "no-team" || view === "join-requests" || view === "approved" || view === "rejected") && (
+        {(view === "registrations" || view === "premium" || view === "ipl" || view === "pending" || view === "no-team" || view === "join-requests" || view === "approved" || view === "rejected") && (
           <div className="mt-6 flex flex-col gap-6">
             <FilterPanel registrations={items} onFilterChange={setFiltered} />
             <RegistrationList

@@ -1,6 +1,7 @@
 "use client";
 
-import { Users, UsersRound, Clock, CheckCircle, XCircle, UserMinus, UserPlus, TrendingUp } from "lucide-react";
+import { Users, UsersRound, Clock, CheckCircle, XCircle, UserMinus, UserPlus, TrendingUp, Sparkles, Trophy } from "lucide-react";
+import { PASS_OPTIONS, passTypeOf, type PassType } from "@/lib/registration/constants";
 import type { RegistrationRecord } from "@/lib/registration/types";
 import type { AdminTeam } from "../AdminDashboard";
 
@@ -15,6 +16,10 @@ export function DashboardStats({
   const people = registrations
     .filter((r) => r.status !== "rejected")
     .reduce((sum, r) => sum + r.participant_count, 0);
+  const peopleOn = (pass: PassType) =>
+    registrations
+      .filter((r) => r.status !== "rejected" && passTypeOf(r) === pass)
+      .reduce((sum, r) => sum + r.participant_count, 0);
   const pending = registrations.filter((r) => r.status === "pending").length;
   const approved = registrations.filter((r) => r.status === "approved").length;
   const rejected = registrations.filter((r) => r.status === "rejected").length;
@@ -26,6 +31,8 @@ export function DashboardStats({
 
   const stats = [
     { title: "People Registered", value: people, icon: Users, color: "text-[#7484FE]", bg: "bg-[#7484FE]/10" },
+    { title: `${PASS_OPTIONS.premium.name} ₹${PASS_OPTIONS.premium.price}`, value: peopleOn("premium"), icon: Sparkles, color: "text-[#33FF67]", bg: "bg-[#33FF67]/10" },
+    { title: `${PASS_OPTIONS.ipl.name} ₹${PASS_OPTIONS.ipl.price}`, value: peopleOn("ipl"), icon: Trophy, color: "text-[#7484FE]", bg: "bg-[#7484FE]/10" },
     { title: "Total Teams", value: teams.length, icon: UsersRound, color: "text-[#7484FE]", bg: "bg-[#7484FE]/10" },
     { title: "Pending Verification", value: pending, icon: Clock, color: "text-yellow-400", bg: "bg-yellow-400/10" },
     { title: "Approved", value: approved, icon: CheckCircle, color: "text-[#33FF67]", bg: "bg-[#33FF67]/10" },
