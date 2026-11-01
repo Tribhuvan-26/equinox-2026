@@ -50,6 +50,9 @@ export const event = {
 
 export const SHOW_SLOT_BOOKING = false;
 
+/** Event is over: closes /register, the register API, and shows the wrap-up banner. */
+export const REGISTRATIONS_OPEN = false;
+
 export const SLOT_BOOKING_URL =
   process.env.NEXT_PUBLIC_SLOT_BOOKING_URL || "https://slotbooking.mlritcie.in/";
 
@@ -58,7 +61,7 @@ export const nav = [
   { label: "Sub-Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },
   ...(SHOW_SLOT_BOOKING ? [{ label: "Slot Booking", href: SLOT_BOOKING_URL }] : []),
-  { label: "Registration", href: "/register" },
+  ...(REGISTRATIONS_OPEN ? [{ label: "Registration", href: "/register" }] : []),
 ];
 
 export const contentsList = [
