@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Calendar, MapPin, Mail, ArrowRight, ArrowLeft } from "lucide-react";
-import { contact, event, registration } from "@/lib/content";
+import { contact, event, registration, REGISTRATIONS_OPEN } from "@/lib/content";
 import { PageTransition } from "../ui";
 import { PayForm } from "./PayForm";
 
@@ -57,16 +57,33 @@ export default function RegisterPage() {
             className="font-display-title mt-4 max-w-4xl leading-[0.95] text-[#F7F2F6]"
             style={{ fontSize: "clamp(2.5rem, 8vw, 6rem)" }}
           >
-            Register <span className="text-[#33FF67]">Now</span>
+            {REGISTRATIONS_OPEN ? (
+              <>Register <span className="text-[#33FF67]">Now</span></>
+            ) : (
+              <>Registrations <span className="text-[#33FF67]">Closed</span></>
+            )}
           </h1>
 
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#F7F2F6]/85">
-            {registration.body}
+            {REGISTRATIONS_OPEN
+              ? registration.body
+              : `${event.name} ${event.edition} wrapped up on 31 October 2026. Thank you to every builder, founder and hustler who showed up. Already registered? Your pass details stay available under My Registration.`}
           </p>
 
-          <div className="mt-12 w-full max-w-4xl text-left">
-            <PayForm />
-          </div>
+          {REGISTRATIONS_OPEN ? (
+            <div className="mt-12 w-full max-w-4xl text-left">
+              <PayForm />
+            </div>
+          ) : (
+            <div className="mt-10 flex flex-wrap justify-center gap-4">
+              <Link href="/gallery" className="rounded-full bg-[#33FF67] px-7 py-3 text-sm font-black text-[#141414] transition hover:bg-[#5aff87]">
+                Relive it in the Gallery
+              </Link>
+              <Link href="/my-registration" className="rounded-full border border-white/20 px-7 py-3 text-sm font-bold text-[#F7F2F6] transition hover:border-[#33FF67]">
+                My Registration
+              </Link>
+            </div>
+          )}
 
           <div className="mt-16 grid w-full gap-4 sm:grid-cols-3">
             {details.map(({ icon: Icon, label, value, accent }) => (
