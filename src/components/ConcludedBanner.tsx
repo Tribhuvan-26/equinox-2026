@@ -100,7 +100,7 @@ export default function ConcludedBanner() {
             exit={{ y: -60, opacity: 0, transition: { duration: 0.3, ease: "easeIn", delay: reduceMotion ? 0 : ROLL_UP.duration } }}
             style={{
               position: "relative",
-              width: "min(560px, 100%, calc((100dvh - 180px) * 0.8))",
+              width: "min(820px, 100%, calc((100dvh - 180px) * 1.77))",
               marginTop: 44,
               // Pivot far above the rod, as if the cords hang from the ceiling.
               transformOrigin: "50% -45vh",
@@ -162,66 +162,14 @@ export default function ConcludedBanner() {
                   boxShadow: `0 30px 80px rgba(0,0,0,0.6), 0 0 60px rgba(${PRIMARY_RGB}, 0.25)`,
                 }}
               >
-                {/* Wrap-up card — the "paper" on the scroll */}
-                <div style={{
-                  position: "relative", aspectRatio: "4 / 5", overflow: "hidden",
-                  display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between",
-                  padding: "16cqw 7cqw 7cqw", textAlign: "center", color: "#F7F2F6",
-                  background: "#151515",
-                }}>
-                  <div aria-hidden="true" style={{
-                    position: "absolute", inset: 0,
-                    backgroundImage: "linear-gradient(rgba(247,242,246,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(247,242,246,0.06) 1px, transparent 1px)",
-                    backgroundSize: "8cqw 8cqw",
-                    maskImage: "radial-gradient(circle at 50% 45%, #000 30%, transparent 75%)",
-                  }} />
-                  {/* Equinox orb: night half / day half, split down the middle */}
-                  <div aria-hidden="true" style={{
-                    position: "absolute", left: "50%", top: "52%", width: "78cqw", aspectRatio: "1",
-                    transform: "translate(-50%, -50%) rotate(-23deg)", borderRadius: "50%",
-                    background: "linear-gradient(90deg, rgba(116,132,254,0.55) 50%, rgba(51,255,103,0.4) 50%)",
-                    filter: "blur(10cqw)", opacity: 0.55,
-                  }} />
-                  <div aria-hidden="true" style={{
-                    position: "absolute", left: "50%", top: "52%", width: "70cqw", aspectRatio: "1",
-                    transform: "translate(-50%, -50%) rotate(-23deg)", borderRadius: "50%",
-                    border: "1px solid rgba(247,242,246,0.14)",
-                    boxShadow: "inset 0 0 0 9cqw rgba(247,242,246,0.015)",
-                  }} />
-                  <div aria-hidden="true" style={{
-                    position: "absolute", inset: 0,
-                    background: "radial-gradient(120% 60% at 50% 0%, rgba(116,132,254,0.25), transparent 60%)",
-                  }} />
-
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/equinox-wordmark.svg" alt={EVENT.title} style={{ position: "relative", width: "56%" }} />
-
-                  <div style={{ position: "relative" }}>
-                    <p style={{
-                      fontFamily: "var(--font-geist-mono)", fontWeight: 800, fontSize: "3cqw",
-                      letterSpacing: "0.3em", textTransform: "uppercase", color: "#33FF67",
-                    }}>
-                      30 – 31 Oct 2026 · MLRIT
-                    </p>
-                    <h2 style={{
-                      margin: "2cqw 0 0", fontFamily: "var(--font-syne)", fontWeight: 800,
-                      fontSize: "14cqw", lineHeight: 0.9, textTransform: "uppercase",
-                    }}>
-                      That&apos;s a <span style={{ color: "#33FF67" }}>wrap.</span>
-                    </h2>
-                    <p style={{ margin: "4cqw auto 0", maxWidth: "88%", fontSize: "3.6cqw", lineHeight: 1.5, color: "rgba(247,242,246,0.82)" }}>
-                      Two days of pitches, auctions and late-night shows. Thank you to every builder,
-                      founder and hustler who made it unforgettable.
-                    </p>
-                  </div>
-
-                  <p style={{
-                    position: "relative", fontFamily: "var(--font-geist-mono)", fontWeight: 800, fontSize: "2.8cqw",
-                    letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(247,242,246,0.6)",
-                  }}>
-                    See you at the <span style={{ color: "#7484FE" }}>next event</span>
-                  </p>
-                </div>
+                {/* The Equinox slide from Figma, as the poster on the scroll */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/equinox-wrap-poster.webp"
+                  alt={`${EVENT.title} — E-Summit 2K26, 30 & 31 October`}
+                  width={1173} height={661}
+                  style={{ display: "block", width: "100%", height: "auto" }}
+                />
                 {/* "Concluded" stamp across the poster */}
                 <motion.div
                   aria-hidden="true"
@@ -233,7 +181,7 @@ export default function ConcludedBanner() {
                     border: "3px solid #33FF67", color: "#33FF67",
                     background: "rgba(10, 11, 18, 0.72)",
                     fontFamily: "var(--font-syne)", fontWeight: 800,
-                    fontSize: "3.6cqw", letterSpacing: "0.12em",
+                    fontSize: "2.6cqw", letterSpacing: "0.12em",
                     textTransform: "uppercase", whiteSpace: "nowrap",
                     boxShadow: "0 0 40px rgba(51,255,103,0.35)",
                   }}
