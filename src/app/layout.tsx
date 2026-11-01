@@ -7,6 +7,7 @@ import { Footer } from "./Footer";
 import { Chatbot } from "./Chatbot";
 import { OverlayAnimationHost } from "./overlay-animations";
 import PreIntroCover from "@/components/PreIntroCover";
+import ConcludedBanner from "@/components/ConcludedBanner";
 import { sanityAssets } from "@/lib/sanity-assets";
 import { urlForImage } from "@/sanity/lib/image";
 import "./globals.css";
@@ -90,6 +91,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Footer />
         <Chatbot />
         <OverlayAnimationHost />
+        <ConcludedBanner />
       </body>
     </html>
   );
