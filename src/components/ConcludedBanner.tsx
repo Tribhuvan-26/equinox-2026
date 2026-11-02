@@ -32,7 +32,7 @@ export default function ConcludedBanner() {
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    if (sessionStorage.getItem(SEEN_KEY)) return;
+    if (pathname.startsWith("/admin") || sessionStorage.getItem(SEEN_KEY)) return;
     const show = () => setOpen(true);
     if (pathname !== "/") {
       const t = setTimeout(show, 600);
